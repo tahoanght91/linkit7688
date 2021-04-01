@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin thiết bị</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1 style="background-color:#cc0; width: 90%; text-align: center;">Thông tin thiết bị</h1>
+    <table style="width:90%">
+        <tr>
+            <th>Tên</th>
+            <th> Giá trị</th>
+        </tr>
+        <tr>
+            <td>
+                <p>Device Name</p>
+            </td>
+            <td>
+                <span>{{data_index['deviceName']}}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>Bootloader Version</p>
+            </td>
+            <td>
+                <span>{{data_index['bootLoaderVersion']}}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>Firmware Version</p>
+            </td>
+            <td>
+                <span>{{data_index['firmwareVersion']}}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>Memory</p>
+            </td>
+            <td>
+                <span>{{data_index['totalMemory']}}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>Dram Bus</p>
+            </td>
+            <td>
+                <span>{{data_index['dramBus']}}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>CPU Frequency</p>
+            </td>
+            <td>
+                <span>{{data_index['cpuFreq']}}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>Broad Name</p>
+            </td>
+            <td>
+                <span>{{data_index['board']}}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>Protocol content to server</p>
+            </td>
+            <td>
+                <span>{{data_index['protocolToServer']}}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>Protocol content to IO</p>
+            </td>
+            <td>
+                <span>{{data_index['protocolToIO']}}</span>
+            </td>
+        </tr>
+
+    </table>
+
+</body>
+
+</html>

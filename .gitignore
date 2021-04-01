@@ -1,0 +1,7 @@
+.vscode
+**/__pycache__
+*.pyc
+test
+test.py
+config/*.json
+!config/factory_data.json
