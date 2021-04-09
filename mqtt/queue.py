@@ -7,9 +7,6 @@ if sys.version_info >= (3, 9):
 
 _T = TypeVar("_T")
 
-class Empty(Exception): ...
-class Full(Exception): ...
-
 class Queue(Generic[_T]):
     maxsize: int
 
