@@ -4,9 +4,9 @@ import time
 import Queue
 import uuid
 from json import loads, dumps
-from jsonschema import Draft7Validator
+# from jsonschema import Draft7Validator
 import ssl
-from jsonschema import ValidationError
+# from jsonschema import ValidationError
 import threading
 
 KV_SCHEMA = {
@@ -55,11 +55,11 @@ DEVICE_TS_OR_KV_SCHEMA = {
             ]
     }
 }
-RPC_VALIDATOR = Draft7Validator(SCHEMA_FOR_CLIENT_RPC)
-KV_VALIDATOR = Draft7Validator(KV_SCHEMA)
-TS_KV_VALIDATOR = Draft7Validator(TS_KV_SCHEMA)
-DEVICE_TS_KV_VALIDATOR = Draft7Validator(DEVICE_TS_KV_SCHEMA)
-DEVICE_TS_OR_KV_VALIDATOR = Draft7Validator(DEVICE_TS_OR_KV_SCHEMA)
+# RPC_VALIDATOR = Draft7Validator(SCHEMA_FOR_CLIENT_RPC)
+# KV_VALIDATOR = Draft7Validator(KV_SCHEMA)
+# TS_KV_VALIDATOR = Draft7Validator(TS_KV_SCHEMA)
+# DEVICE_TS_KV_VALIDATOR = Draft7Validator(DEVICE_TS_KV_SCHEMA)
+# DEVICE_TS_OR_KV_VALIDATOR = Draft7Validator(DEVICE_TS_OR_KV_SCHEMA)
 
 RPC_RESPONSE_TOPIC = 'v1/devices/me/rpc/response/'
 RPC_REQUEST_TOPIC = 'v1/devices/me/rpc/request/'
@@ -243,13 +243,13 @@ class TBDeviceMqttClient:
         log.debug(message.topic)
         return content
 
-    @staticmethod
-    def validate(validator, data):
-        try:
-            validator.validate(data)
-        except ValidationError as e:
-            log.error(e)
-            raise e
+    # @staticmethod
+    # def validate(validator, data):
+    #     try:
+    #         validator.validate(data)
+    #     except ValidationError as e:
+    #         log.error(e)
+    #         raise e
 
     def _on_decoded_message(self, content, message):
         if message.topic.startswith(RPC_REQUEST_TOPIC):
