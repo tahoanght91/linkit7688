@@ -6,14 +6,15 @@ import threading
 from . import default_data
 import mqtt
 
-with io.open('./config/devices.json', encoding = 'utf8') as f:
+with io.open('./config/devices.json', encoding='utf8') as f:
     device_config = json.load(f)
 LOGGER = logging.getLogger('App')
 BYTE_ORDER = 'little'
 HOST = device_config['host']
 ACCESS_TOKEN = device_config['access_token']
 CLIENT_ID = device_config['device_id']
-CLIENT = mqtt.TBDeviceMqttClient(host = HOST, token = ACCESS_TOKEN, client_id = CLIENT_ID)
+# CLIENT = mqtt.TBDeviceMqttClient(host=HOST, token=ACCESS_TOKEN, client_id=CLIENT_ID)
+CLIENT = mqtt.TBGatewayMqttClient(host=HOST, port=1883, token=ACCESS_TOKEN, gateway="gateway_python_001")
 IO_PORT = '/dev/ttyS0'
 BAUDRATE = 115200
 UPDATE_PERIOD = 7 * 24 * 60 * 60

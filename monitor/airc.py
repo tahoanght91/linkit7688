@@ -2,8 +2,9 @@ import time
 
 from config import *
 
-CONTINUOUS_RUN = 180 * 60 # time run
+CONTINUOUS_RUN = 180 * 60  # time run
 period_start = 0
+
 
 def _send_command(device, command):
     if device == 'airc1':
@@ -30,19 +31,20 @@ def _send_command(device, command):
             return 'airc2: off'
     return ''
 
+
 def apply():
     global period_start
     now = time.time()
     if client_attributes.get('smokeState', default_data.smokeState) or client_attributes.get('fireState', default_data.fireState):
         LOGGER.debug('Smoke or fire detected, turn off AIRC')
         period_start = 0
-        return  _send_command('airc1', 'off') + ', ' + _send_command('airc2', 'off')
+        return _send_command('airc1', 'off') + ', ' + _send_command('airc2', 'off')
     elif telemetries.get('miscTemp', default_data.miscTemp) > shared_attributes.get('miscMaxTemp', default_data.miscMaxTemp):
         LOGGER.debug('Temperature too high, turn on AIRC')
         period_start = 0
         return _send_command('airc1', 'on') + ', ' + _send_command('airc2', 'on')
     elif (telemetries.get('miscTemp', default_data.miscTemp) < shared_attributes.get('miscExpectedTemp', default_data.miscExpectedTemp)
-            and telemetries.get('miscHumid', default_data.miscHumid) < shared_attributes.get('miscMaxHumid', default_data.miscMaxHumid)):
+          and telemetries.get('miscHumid', default_data.miscHumid) < shared_attributes.get('miscMaxHumid', default_data.miscMaxHumid)):
         LOGGER.debug('Temperature lower than expected and humidity lower than acceptable, turn off AIRC')
         period_start = 0
         return _send_command('airc1', 'off') + ', ' + _send_command('airc2', 'off')

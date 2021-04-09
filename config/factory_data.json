@@ -1,88 +1,110 @@
 {
-    "shared": {
-        "periodReadDataIO": 0.05,
-        "periodSendTelemetry": 50,
-        "periodUpdate": 5,
-        "miscExpectedTemp": 26,
-        "miscMinTemp": 20,
-        "miscMaxTemp": 32,
-        "miscMaxHumid": 80,
-        "miscFanControlAuto": 1,
-        "aircControlAuto": 1,
-        "aircBalance": 2,
-        "aircVacThThreshold": 180,
-        "aircGenAllow": 1,
-        "aircCycle": 180,
-        "atsControlAuto": 1,
-        "atsMaxRunTime": 240,
-        "atsMinRestTime": 120,
-        "atsTestEn": 0,
-        "atsVdcThreshold": 48,
-        "atsVacThreshold": 160,
-        "atsTestStart": 0,
-        "atsTestCycle": 10080,
-        "atsTestTime": 5,
-        "crmuControlAuto": 1
+  "shared": {
+    "periodReadDataIO": 0.05,
+    "periodSendTelemetry": 50,
+    "periodUpdate": 5,
+    "miscExpectedTemp": 26,
+    "miscMinTemp": 20,
+    "miscMaxTemp": 32,
+    "miscMaxHumid": 80,
+    "miscFanControlAuto": 1,
+    "aircControlAuto": 1,
+    "aircBalance": 2,
+    "aircVacThThreshold": 180,
+    "aircGenAllow": 1,
+    "aircCycle": 180,
+    "atsControlAuto": 1,
+    "atsMaxRunTime": 240,
+    "atsMinRestTime": 120,
+    "atsTestEn": 0,
+    "atsVdcThreshold": 48,
+    "atsVacThreshold": 160,
+    "atsTestStart": 0,
+    "atsTestCycle": 10080,
+    "atsTestTime": 5,
+    "crmuControlAuto": 1
+  },
+  "client": {
+    "device_misc": {
+      "miscDin0": 0,
+      "miscDin1": 0,
+      "miscDin2": 0,
+      "miscDin3": 0,
+      "miscDin4": 0,
+      "miscDin5": 0,
+      "miscDin6": 0,
+      "miscDin7": 0,
+      "miscFanState": 0,
+      "miscBellState": 0,
+      "miscV12": 1,
+      "miscVbus": 1
     },
-
-    "client": {
-        "fireState": 0,
-        "offOnFire": 0,
-        "smokeState": 0,
-        "floodState": 0,
-        "moveSensor": 0,
-        "miscDin0": 0,
-        "miscDin1": 0,
-        "miscDin2": 0,
-        "miscDin3": 0,
-        "miscDin4": 0,
-        "miscDin5": 0,
-        "miscDin6": 0,
-        "miscDin7": 0,
-        "miscFanState": 0,
-        "miscBellState": 0,
-        "miscV12": 1,
-        "miscVbus": 1,
-        "aircOnlineStatus": 1,
-        "aircAirc1RunState": 0,
-        "aircAirc1Error": 0,
-        "aircAirc2RunState": 0,
-        "aircAirc2Error": 0,
-        "aircAirc1RunThreshold": 26,
-        "aircAirc2RunThreshold": 26,
-        "aircAirc1Command": 1,
-        "aircAirc2Command": 1,
-        "aircIrStatus": 1,
-        "aircLearnCmdId": 0,
-        "atsOnlineStatus": 1,
-        "atsCommState": 1,
-        "atsMode": 0,
-        "atsType": 1,
-        "atsContactorState": 1,
-        "atsBatFull": 1,
-        "atsIsAllBatFull": 0,
-        "atsGscType": 1,
-        "atsGscPwrCounter": 1,
-        "atsGscAlarm": 0,
-        "atuOnlineStatus": 1,
-        "crmuOnlineStatus": 1,
-        "crmuCardId": "AAA",
-        "crmuDoorState": 1,
-        "dcOnlineStatus": 1,
-        "dcRectState": 1
+    "device_airc": {
+      "aircOnlineStatus": 1,
+      "aircAirc1RunState": 0,
+      "aircAirc1Error": 0,
+      "aircAirc2RunState": 0,
+      "aircAirc2Error": 0,
+      "aircAirc1RunThreshold": 26,
+      "aircAirc2RunThreshold": 26,
+      "aircAirc1Command": 1,
+      "aircAirc2Command": 1,
+      "aircIrStatus": 1,
+      "aircLearnCmdId": 0
     },
-
-    "telemetry" : {
+    "device_ats": {
+      "atsOnlineStatus": 1,
+      "atsCommState": 1,
+      "atsMode": 0,
+      "atsType": 1,
+      "atsContactorState": 1,
+      "atsBatFull": 1,
+      "atsIsAllBatFull": 0,
+      "atsGscType": 1,
+      "atsGscPwrCounter": 1,
+      "atsGscAlarm": 0
+    },
+    "device_atu": {
+      "atuOnlineStatus": 1
+    },
+    "device_dc": {
+      "dcOnlineStatus": 1,
+      "dcRectState": 1
+    },
+    "device_crmu": {
+      "crmuOnlineStatus": 1,
+      "crmuCardId": "AAA",
+      "crmuDoorState": 1
+    },
+    "gateway_python_001": {
+      "fireState": 0,
+      "offOnFire": 0,
+      "smokeState": 0,
+      "floodState": 0,
+      "moveSensor": 0
+    }
+  },
+  "telemetry": {
+    "device_misc": [
+      {
         "miscTemp": 19,
-        "miscHumid": 60,
+        "miscHumid": 60
+      }
+    ],
+    "device_airc": [
+      {
         "aircTemp": 35,
         "aircHumid": 85,
         "aircAirc1Temp": 30,
         "aircAirc2Temp": 26,
-        "aircOutdoorTemp": 36,
+        "aircOutdoorTemp": 36
+      }
+    ],
+    "device_ats": [
+      {
         "atsVacP1": 220,
         "atsVacP2": 10,
-        "atsVacP3": 11  ,
+        "atsVacP3": 11,
         "atsVacFreq": 13,
         "atsVgenP1": 10,
         "atsVgenP2": 11,
@@ -109,7 +131,11 @@
         "atsGscKva2": 20,
         "atsGscKva3": 10,
         "atsGscRunHoursCounter": 60,
-        "atsGscCrankCounter": 10,
+        "atsGscCrankCounter": 10
+      }
+    ],
+    "device_atu": [
+      {
         "atuAtu1X": 10,
         "atuAtu1Y": 20,
         "atuAtu1Z": 30,
@@ -118,7 +144,11 @@
         "atuAtu2Z": 30,
         "atuAtu3X": 10,
         "atuAtu3Y": 20,
-        "atuAtu3Z": 30,
+        "atuAtu3Z": 30
+      }
+    ],
+    "device_dc": [
+      {
         "dcVdc": 21,
         "dcIbat1": 22,
         "dcBat1Temp": 23,
@@ -132,5 +162,43 @@
         "dcIbat4": 18,
         "dcBat4Temp": 19,
         "dcVbat4Div2": 20
-    }
+      }
+    ],
+    "device_crmu": [{}]
+  },
+  "attribute_name": {
+    "device_misc": [
+      "miscFanControlAuto",
+      "miscMinTemp",
+      "miscMaxHumid",
+      "miscExpectedTemp",
+      "miscMaxTemp"
+    ],
+    "device_airc": [
+      "aircControlAuto",
+      "aircBalance",
+      "aircCycle",
+      "aircGenAllow",
+      "aircVacThThreshold"
+    ],
+    "gateway_python_001": [
+      "periodReadDataIO",
+      "periodUpdate",
+      "periodSendTelemetry"
+    ],
+    "device_crmu": [
+      "crmuControlAuto"
+    ],
+    "device_ats": [
+      "atsVdcThreshold",
+      "atsMaxRunTime",
+      "atsVacThreshold",
+      "atsMinRestTime",
+      "atsTestCycle",
+      "atsTestStart",
+      "atsControlAuto",
+      "atsTestEn",
+      "atsTestTime"
+    ]
+  }
 }

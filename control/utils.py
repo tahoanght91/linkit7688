@@ -12,11 +12,7 @@ def _check_command(device, command):
 
 
 def _process_set_auto(device, command):
-    if not (type(command) == bool
-            and (device == 'fan'
-                    or device == 'airc'
-                    or device == 'ats'
-                    or device == 'crmu')):
+    if not (type(command) == bool and (device == 'fan' or device == 'airc' or device == 'ats' or device == 'crmu')):
         return False
     if device == 'airc':
         shared_attributes['aircControlAuto'] = command

@@ -1,28 +1,22 @@
-import time
-import json
-
 from config import *
-import mqtt
 import control
 
 
-def _attribute_change_callback(result, exception):
-    LOGGER.info(
-        'Received attribution changed message, exception: ' + str(exception))
-    if exception is None:
+def _attribute_change_callback(result):
+    LOGGER.info(result)
+    if result is not None:
         log_info = []
-        for key, value in result.items():
-            log_info.append('\t{:>20s}: {:>20s}'.format(str(key), str(value)))
+        for key, value in result['data'].items():
             shared_attributes[key] = value
         LOGGER.info('\n'.join(log_info))
 
+
 def _rpc_callback(request_id, request_body):
-    LOGGER.info('Received rpc message\n    Id: %s\n    Body: %s',
-                request_id, request_body)
+    LOGGER.info('Received rpc message\n    Id: %s\n    Body: %s', request_id, request_body)
     try:
         params = request_body.get('params')
         method = request_body.get('method')
-        
+
         if method == 'setAuto':
             if control.process_set_auto(params):
                 CLIENT.send_rpc_reply(request_id, 'success')
@@ -48,4 +42,24 @@ def _rpc_callback(request_id, request_body):
         LOGGER.info('    Unexpected error: %s', str(e))
 
 
-#body: {"method": "rpcCall", "params": {"device": "airc", "command": "on"}}
+def _gw_rpc_callback(self, content):
+    LOGGER.info('Received rpc message\n    Content: %s\n', content)
+    method = content['data']['method']
+    device = content['device']
+    value = content['data']['params']
+    params = {'device': device, 'command': value}
+    if 'auto' in method:
+        if control.process_set_auto(params):
+            LOGGER.info('    Success')
+        else:
+            LOGGER.info('    Malformed message')
+    elif method == 'setAircValue':
+        if control.check_command(params):
+            commands_lock.acquire()
+            commands[params['device']] = params['command']
+            commands_lock.release()
+            LOGGER.info('    Success')
+        else:
+            LOGGER.info('    Malformed message or manual mode not activated')
+
+# body: {"method": "rpcCall", "params": {"device": "airc", "command": "on"}}

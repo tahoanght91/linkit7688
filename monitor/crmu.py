@@ -1,5 +1,6 @@
 from config import *
 
+
 def _send_command(command):
     if command == 'on' and not client_attributes.get('crmuDoorState', default_data.crmuDoorState):
         commands_lock.acquire()
@@ -13,6 +14,7 @@ def _send_command(command):
         return 'off'
     return ''
 
+
 def apply():
     if (client_attributes.get('smokeState', default_data.smokeState) == 1
             or client_attributes.get('fireState', default_data.fireState) == 1
@@ -22,4 +24,3 @@ def apply():
     else:
         LOGGER.debug('No smoke and fire and flood, CRMU operate normally')
         return _send_command('on')
-        
