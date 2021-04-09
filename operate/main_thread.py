@@ -95,7 +95,7 @@ def call():
 
         # thread_list = [io_thread, telemetry_thread, update_attributes_thread, monitor_thread, ui_thread]
         # thread_list = [telemetry_thread, update_attributes_thread, monitor_thread, ui_thread]
-        thread_list = [telemetry_thread, update_attributes_thread]
+        thread_list = [telemetry_thread]
 
         for i, thread in enumerate(thread_list):
             thread.name = thread.__name__
