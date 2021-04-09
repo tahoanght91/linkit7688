@@ -37,7 +37,7 @@ def format_telemetry():
     transform_telemetry = {
         "device_misc": [
             {
-                # "miscTemp": telemetries['miscTemp'],
+                "miscTemp": telemetries['miscTemp'],
                 "miscHumid": telemetries['miscHumid']
             }
         ],
