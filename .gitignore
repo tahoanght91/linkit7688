@@ -3,5 +3,4 @@
 *.pyc
 test
 test.py
-config/*.json
 !config/factory_data.json
