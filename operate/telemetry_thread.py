@@ -3,27 +3,12 @@ import time
 from config import *
 
 
-def call():
-    period = shared_attributes.get('periodSendTelemetry', default_data.periodSendTelemetry)
-    while True:
-        if CLIENT.is_connected():
-            fake_telemetry = generate_fake_telemetry()
-            base = fake_telemetry.items()
-            for key, value in base:
-                CLIENT.gw_send_telemetry(key, value)
-            LOGGER.info('Sent telemetry data')
-            telemetries_lock.acquire()
-            telemetries.clear()
-            telemetries_lock.release()
-        time.sleep(period)
-
-
 # def call():
 #     period = shared_attributes.get('periodSendTelemetry', default_data.periodSendTelemetry)
 #     while True:
 #         if CLIENT.is_connected():
-#             real_telemetry = format_telemetry()
-#             base = real_telemetry.items()
+#             fake_telemetry = generate_fake_telemetry()
+#             base = fake_telemetry.items()
 #             for key, value in base:
 #                 CLIENT.gw_send_telemetry(key, value)
 #             LOGGER.info('Sent telemetry data')
@@ -31,6 +16,21 @@ def call():
 #             telemetries.clear()
 #             telemetries_lock.release()
 #         time.sleep(period)
+
+
+def call():
+    period = shared_attributes.get('periodSendTelemetry', default_data.periodSendTelemetry)
+    while True:
+        if CLIENT.is_connected():
+            real_telemetry = format_telemetry()
+            base = real_telemetry.items()
+            for key, value in base:
+                CLIENT.gw_send_telemetry(key, value)
+            LOGGER.info('Sent telemetry data')
+            telemetries_lock.acquire()
+            telemetries.clear()
+            telemetries_lock.release()
+        time.sleep(period)
 
 
 def format_telemetry():

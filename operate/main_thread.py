@@ -72,7 +72,7 @@ def call():
 
         if CLIENT.is_connected():
             LOGGER.debug('Set IO time')
-            # clock.set()
+            clock.set()
             LOGGER.debug('Get original attributes')
             device_name = data_dict["attribute_name"]
             for key, value in device_name.items():
@@ -94,7 +94,8 @@ def call():
         CLIENT.gw_set_server_side_rpc_request_handler(handler=subscription_thread._gw_rpc_callback)
 
         # thread_list = [io_thread, telemetry_thread, update_attributes_thread, monitor_thread, ui_thread]
-        thread_list = [telemetry_thread, update_attributes_thread, monitor_thread, ui_thread]
+        # thread_list = [telemetry_thread, update_attributes_thread, monitor_thread, ui_thread]
+        thread_list = [telemetry_thread, update_attributes_thread]
 
         for i, thread in enumerate(thread_list):
             thread.name = thread.__name__

@@ -3,34 +3,14 @@ import time
 from config import *
 
 
-def call():
-    period = shared_attributes.get('periodUpdate', default_data.periodUpdate)
-    while True:
-        if CLIENT.is_connected():
-            update_attributes_lock.acquire()
-            update_attributes = fake_client_attributes()
-            if update_attributes:
-                base = update_attributes.items()
-                for key, value in base:
-                    CLIENT.gw_send_attributes(key, value)
-                LOGGER.info('Sent changed client attributes')
-                log_info = []
-                for key, value in update_attributes.items():
-                    log_info.append('\t{:>20s}: {:>20s}'.format(str(key), str(value)))
-                LOGGER.info('\n'.join(log_info))
-                update_attributes.clear()
-            update_attributes_lock.release()
-        time.sleep(period)
-
-
 # def call():
 #     period = shared_attributes.get('periodUpdate', default_data.periodUpdate)
 #     while True:
 #         if CLIENT.is_connected():
 #             update_attributes_lock.acquire()
-#             real_client_attributes = format_client_attributes()
-#             if real_client_attributes:
-#                 base = real_client_attributes.items()
+#             update_attributes = fake_client_attributes()
+#             if update_attributes:
+#                 base = update_attributes.items()
 #                 for key, value in base:
 #                     CLIENT.gw_send_attributes(key, value)
 #                 LOGGER.info('Sent changed client attributes')
@@ -41,6 +21,26 @@ def call():
 #                 update_attributes.clear()
 #             update_attributes_lock.release()
 #         time.sleep(period)
+
+
+def call():
+    period = shared_attributes.get('periodUpdate', default_data.periodUpdate)
+    while True:
+        if CLIENT.is_connected():
+            update_attributes_lock.acquire()
+            real_client_attributes = format_client_attributes()
+            if real_client_attributes:
+                base = real_client_attributes.items()
+                for key, value in base:
+                    CLIENT.gw_send_attributes(key, value)
+                LOGGER.info('Sent changed client attributes')
+                log_info = []
+                for key, value in update_attributes.items():
+                    log_info.append('\t{:>20s}: {:>20s}'.format(str(key), str(value)))
+                LOGGER.info('\n'.join(log_info))
+                update_attributes.clear()
+            update_attributes_lock.release()
+        time.sleep(period)
 
 
 def format_client_attributes():
