@@ -37,81 +37,81 @@ def format_telemetry():
     transform_telemetry = {
         "device_misc": [
             {
-                "miscTemp": telemetries['miscTemp'],
-                "miscHumid": telemetries['miscHumid']
+                "miscTemp": telemetries['miscTemp'] if 'miscTemp' in telemetries else 0,
+                "miscHumid": telemetries['miscHumid'] if 'miscHumid' in telemetries else 0
             }
         ],
         "device_airc": [
             {
-                "aircTemp": telemetries['aircTemp'],
-                "aircHumid": telemetries['aircHumid'],
-                "aircAirc1Temp": telemetries['aircAirc1Temp'],
-                "aircAirc2Temp": telemetries['aircAirc2Temp'],
-                "aircOutdoorTemp": telemetries['aircOutdoorTemp']
+                "aircTemp": telemetries['aircTemp'] if 'aircTemp' in telemetries else 0,
+                "aircHumid": telemetries['aircHumid'] if 'aircHumid' in telemetries else 0,
+                "aircAirc1Temp": telemetries['aircAirc1Temp'] if 'aircAirc1Temp' in telemetries else 0,
+                "aircAirc2Temp": telemetries['aircAirc2Temp'] if 'aircAirc2Temp' in telemetries else 0,
+                "aircOutdoorTemp": telemetries['aircOutdoorTemp'] if 'aircOutdoorTemp' in telemetries else 0
             }
         ],
         "device_ats": [
             {
-                "atsVacP1": telemetries['atsVacP1'],
-                "atsVacP2": telemetries['atsVacP2'],
-                "atsVacP3": telemetries['atsVacP3'],
-                "atsVacFreq": telemetries['atsVacFreq'],
-                "atsVgenP1": telemetries['atsVgenP1'],
-                "atsVgenP2": telemetries['atsVgenP2'],
-                "atsVgenP3": telemetries['atsVgenP3'],
-                "atsVgenFreq": telemetries['atsVgenFreq'],
-                "atsVloadP1": telemetries['atsVloadP1'],
-                "atsVloadP2": telemetries['atsVloadP2'],
-                "atsVloadP3": telemetries['atsVloadP3'],
-                "atsVloadFreq": telemetries['atsVloadFreq'],
-                "atsIloadP1": telemetries['atsIloadP1'],
-                "atsIloadP2": telemetries['atsIloadP2'],
-                "atsIloadP3": telemetries['atsIloadP3'],
-                "atsGscOil": telemetries['atsGscOil'],
-                "atsGscCoolantTemp": telemetries['atsGscCoolantTemp'],
-                "atsGscFuel": telemetries['atsGscFuel'],
-                "atsGscVbat": telemetries['atsGscVbat'],
-                "atsGscSpeed": telemetries['atsGscSpeed'],
-                "atsGscPowerTotal": telemetries['atsGscPowerTotal'],
-                "atsGscPower1": telemetries['atsGscPower1'],
-                "atsGscPower2": telemetries['atsGscPower2'],
-                "atsGscPower3": telemetries['atsGscPower3'],
-                "atsGscKvaTotal": telemetries['atsGscKvaTotal'],
-                "atsGscKva1": telemetries['atsGscKva1'],
-                "atsGscKva2": telemetries['atsGscKva2'],
-                "atsGscKva3": telemetries['atsGscKva3'],
-                "atsGscRunHoursCounter": telemetries['atsGscRunHoursCounter'],
-                "atsGscCrankCounter": telemetries['atsGscCrankCounter']
+                "atsVacP1": telemetries['atsVacP1'] if 'atsVacP1' in telemetries else 0,
+                "atsVacP2": telemetries['atsVacP2'] if 'atsVacP2' in telemetries else 0,
+                "atsVacP3": telemetries['atsVacP3'] if 'atsVacP3' in telemetries else 0,
+                "atsVacFreq": telemetries['atsVacFreq'] if 'atsVacFreq' in telemetries else 0,
+                "atsVgenP1": telemetries['atsVgenP1'] if 'atsVgenP1' in telemetries else 0,
+                "atsVgenP2": telemetries['atsVgenP2'] if 'atsVgenP2' in telemetries else 0,
+                "atsVgenP3": telemetries['atsVgenP3'] if 'atsVgenP3' in telemetries else 0,
+                "atsVgenFreq": telemetries['atsVgenFreq'] if 'atsVgenFreq' in telemetries else 0,
+                "atsVloadP1": telemetries['atsVloadP1'] if 'atsVloadP1' in telemetries else 0,
+                "atsVloadP2": telemetries['atsVloadP2'] if 'atsVloadP2' in telemetries else 0,
+                "atsVloadP3": telemetries['atsVloadP3'] if 'atsVloadP3' in telemetries else 0,
+                "atsVloadFreq": telemetries['atsVloadFreq'] if 'atsVloadFreq' in telemetries else 0,
+                "atsIloadP1": telemetries['atsIloadP1'] if 'atsIloadP1' in telemetries else 0,
+                "atsIloadP2": telemetries['atsIloadP2'] if 'atsIloadP2' in telemetries else 0,
+                "atsIloadP3": telemetries['atsIloadP3'] if 'atsIloadP3' in telemetries else 0,
+                "atsGscOil": telemetries['atsGscOil'] if 'atsGscOil' in telemetries else 0,
+                "atsGscCoolantTemp": telemetries['atsGscCoolantTemp'] if 'atsGscCoolantTemp' in telemetries else 0,
+                "atsGscFuel": telemetries['atsGscFuel'] if 'atsGscFuel' in telemetries else 0,
+                "atsGscVbat": telemetries['atsGscVbat'] if 'atsGscVbat' in telemetries else 0,
+                "atsGscSpeed": telemetries['atsGscSpeed'] if 'atsGscSpeed' in telemetries else 0,
+                "atsGscPowerTotal": telemetries['atsGscPowerTotal'] if 'atsGscPowerTotal' in telemetries else 0,
+                "atsGscPower1": telemetries['atsGscPower1'] if 'atsGscPower1' in telemetries else 0,
+                "atsGscPower2": telemetries['atsGscPower2'] if 'atsGscPower2' in telemetries else 0,
+                "atsGscPower3": telemetries['atsGscPower3'] if 'atsGscPower3' in telemetries else 0,
+                "atsGscKvaTotal": telemetries['atsGscKvaTotal'] if 'atsGscKvaTotal' in telemetries else 0,
+                "atsGscKva1": telemetries['atsGscKva1'] if 'atsGscKva1' in telemetries else 0,
+                "atsGscKva2": telemetries['atsGscKva2'] if 'atsGscKva2' in telemetries else 0,
+                "atsGscKva3": telemetries['atsGscKva3'] if 'atsGscKva3' in telemetries else 0,
+                "atsGscRunHoursCounter": telemetries['atsGscRunHoursCounter'] if 'atsGscRunHoursCounter' in telemetries else 0,
+                "atsGscCrankCounter": telemetries['atsGscCrankCounter'] if 'atsGscCrankCounter' in telemetries else 0
             }
         ],
         "device_atu": [
             {
-                "atuAtu1X": telemetries['atuAtu1X'],
-                "atuAtu1Y": telemetries['atuAtu1Y'],
-                "atuAtu1Z": telemetries['atuAtu1Z'],
-                "atuAtu2X": telemetries['atuAtu2X'],
-                "atuAtu2Y": telemetries['atuAtu2Y'],
-                "atuAtu2Z": telemetries['atuAtu2Z'],
-                "atuAtu3X": telemetries['atuAtu3X'],
-                "atuAtu3Y": telemetries['atuAtu3Y'],
-                "atuAtu3Z": telemetries['atuAtu3Z']
+                "atuAtu1X": telemetries['atuAtu1X']  if 'atuAtu1X' in telemetries else 0,
+                "atuAtu1Y": telemetries['atuAtu1Y']  if 'atuAtu1Y' in telemetries else 0,
+                "atuAtu1Z": telemetries['atuAtu1Z']  if 'atuAtu1Z' in telemetries else 0,
+                "atuAtu2X": telemetries['atuAtu2X']  if 'atuAtu2X' in telemetries else 0,
+                "atuAtu2Y": telemetries['atuAtu2Y']  if 'atuAtu2Y' in telemetries else 0,
+                "atuAtu2Z": telemetries['atuAtu2Z']  if 'atuAtu2Z' in telemetries else 0,
+                "atuAtu3X": telemetries['atuAtu3X']  if 'atuAtu3X' in telemetries else 0,
+                "atuAtu3Y": telemetries['atuAtu3Y']  if 'atuAtu3Y' in telemetries else 0,
+                "atuAtu3Z": telemetries['atuAtu3Z']  if 'atuAtu3Z' in telemetries else 0
             }
         ],
         "device_dc": [
             {
-                "dcVdc": telemetries['dcVdc'],
-                "dcIbat1": telemetries['dcIbat1'],
-                "dcBat1Temp": telemetries['dcBat1Temp'],
-                "dcVbat1Div2": telemetries['dcVbat1Div2'],
-                "dcIbat2": telemetries['dcIbat2'],
-                "dcBat2Temp": telemetries['dcBat2Temp'],
-                "dcVbat2Div2": telemetries['dcVbat2Div2'],
-                "dcIbat3": telemetries['dcIbat3'],
-                "dcBat3Temp": telemetries['dcBat3Temp'],
-                "dcVbat3Div2": telemetries['dcVbat3Div2'],
-                "dcIbat4": telemetries['dcIbat4'],
-                "dcBat4Temp": telemetries['dcBat4Temp'],
-                "dcVbat4Div2": telemetries['dcVbat4Div2']
+                "dcVdc": telemetries['dcVdc'] if 'dcVdc' in telemetries else 0,
+                "dcIbat1": telemetries['dcIbat1'] if 'dcIbat1' in telemetries else 0,
+                "dcBat1Temp": telemetries['dcBat1Temp'] if 'dcBat1Temp' in telemetries else 0,
+                "dcVbat1Div2": telemetries['dcVbat1Div2'] if 'dcVbat1Div2' in telemetries else 0,
+                "dcIbat2": telemetries['dcIbat2'] if 'dcIbat2' in telemetries else 0,
+                "dcBat2Temp": telemetries['dcBat2Temp'] if 'dcBat2Temp' in telemetries else 0,
+                "dcVbat2Div2": telemetries['dcVbat2Div2'] if 'dcVbat2Div2' in telemetries else 0,
+                "dcIbat3": telemetries['dcIbat3'] if 'dcIbat3' in telemetries else 0,
+                "dcBat3Temp": telemetries['dcBat3Temp'] if 'dcBat3Temp' in telemetries else 0,
+                "dcVbat3Div2": telemetries['dcVbat3Div2'] if 'dcVbat3Div2' in telemetries else 0,
+                "dcIbat4": telemetries['dcIbat4'] if 'dcIbat4' in telemetries else 0,
+                "dcBat4Temp": telemetries['dcBat4Temp'] if 'dcBat4Temp' in telemetries else 0,
+                "dcVbat4Div2": telemetries['dcVbat4Div2'] if 'dcVbat4Div2' in telemetries else 0
             }
         ]
     }
