@@ -1,6 +1,8 @@
 import time
 import struct
 # from numba import jit
+from config import LOGGER
+
 
 def bytes_to_int(data, byteorder = None):
     if len(data) == 1:
@@ -24,6 +26,10 @@ def check_check_sum(byte_stream, byteorder):
 
 def blocking_read(ser, message_break):
     initial_break = message_break
+    LOGGER.debug("initial_break")
+    LOGGER.debug(initial_break)
+    LOGGER.debug("ser")
+    LOGGER.debug(ser)
     continuous_break = message_break / 10
     result = b''
     time.sleep(initial_break)
@@ -31,8 +37,12 @@ def blocking_read(ser, message_break):
         time.sleep(continuous_break)
         data_left = ser.inWaiting()
         if data_left > 0:
+            LOGGER.debug("If:")
             result += ser.read(data_left)
+            LOGGER.debug(result)
         else:
+            LOGGER.debug("Else:")
+            LOGGER.debug(result)
             return result
 
 def _check_sum(byte_stream, byteorder):
