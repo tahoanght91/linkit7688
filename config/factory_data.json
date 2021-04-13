@@ -26,11 +26,11 @@
     },
 
     "client": {
-        "miscDin0": 0,
-        "miscDin1": 0,
-        "miscDin2": 0,
-        "miscDin3": 0,
-        "miscDin4": 0,
+        "fireState": 0,
+        "offOnFire": 0,
+        "smokeState": 0,
+        "floodState": 0,
+        "moveSensor": 0,
         "miscDin5": 0,
         "miscDin6": 0,
         "miscDin7": 0,
@@ -64,12 +64,7 @@
         "crmuCardId": "AAA",
         "crmuDoorState": 1,
         "dcOnlineStatus": 1,
-        "dcRectState": 1,
-        "fireState": 0,
-        "offOnFire": 0,
-        "smokeState": 0,
-        "floodState": 0,
-        "moveSensor": 0
+        "dcRectState": 1
     },
 
     "telemetry" : {

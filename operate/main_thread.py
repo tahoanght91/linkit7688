@@ -41,8 +41,6 @@ def call():
             LOGGER.debug('Set IO time')
             clock.set()
             LOGGER.debug('Get original attributes')
-            LOGGER.debug("client_keys")
-            LOGGER.debug(default_data.client_keys)
             CLIENT.request_attributes(client_keys = default_data.client_keys, shared_keys = default_data.shared_keys, callback = _on_receive_attributes_callback)
             semaphore.acquire()
         else:
