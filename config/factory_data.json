@@ -26,11 +26,11 @@
     },
 
     "client": {
-        "fireState": 0,
-        "offOnFire": 0,
-        "smokeState": 0,
-        "floodState": 0,
-        "moveSensor": 0,
+        "fireState1": 0,
+        "offOnFire1": 0,
+        "smokeState1": 0,
+        "floodState1": 0,
+        "moveSensor1": 0,
         "miscDin0": 0,
         "miscDin1": 0,
         "miscDin2": 0,
