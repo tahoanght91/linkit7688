@@ -66,7 +66,6 @@
         "dcOnlineStatus": 1,
         "dcRectState": 1,
         "fireState": 0,
-        "huy": 123,
         "offOnFire": 0,
         "smokeState": 0,
         "floodState": 0,
@@ -132,11 +131,6 @@
         "dcVbat3Div2": 17,
         "dcIbat4": 18,
         "dcBat4Temp": 19,
-        "dcVbat4Div2": 20,
-        "fireState": 0,
-        "offOnFire": 0,
-        "smokeState": 0,
-        "floodState": 0,
-        "moveSensor": 0
+        "dcVbat4Div2": 20
     }
 }
