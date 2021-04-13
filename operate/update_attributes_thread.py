@@ -25,7 +25,10 @@ def call():
     while True:
         if CLIENT.is_connected():
             update_attributes_lock.acquire()
-            client_attr = format_telemetry()
+            client_attr_temp1 = format_telemetry()
+            client_attr_temp2 = client_attr_temp1
+
+            client_attr = {**client_attr_temp1, **client_attr_temp2}
             if client_attr:
                 CLIENT.send_attributes(client_attr)
                 LOGGER.info('Sent changed client attributes')
