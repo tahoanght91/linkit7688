@@ -86,7 +86,6 @@
         "miscBellState": 0,
         "miscV12": 1,
         "miscVbus": 1,
-
         "airc1_command": 1,
         "airc2_command": 0,
         "fan_command": 0,
@@ -96,18 +95,14 @@
         "thr_temp_4": 26,
         "airc_count": 1,
         "mode_auto_en": 1,
-
         "atsCommState": 1,
         "atsMode": 0,
         "atsType": 1,
         "atsContactorState": 1,
-
         "atuOnlineStatus": 1,
-
         "card_len": 1,
         "crmuCardId": "AAA",
         "crmuDoorState": 1,
-
         "dcOnlineStatus": 1,
         "dcRectState": 1,
         "dcVdc": 1
