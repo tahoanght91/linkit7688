@@ -3,11 +3,11 @@ from utility import bytes_to_int
 from .utils import _read_attribute, _read_telemetry
 
 def extract(byte_data):
-    fireState = bytes_to_int(byte_data[0])
-    offOnFire = bytes_to_int(byte_data[1])
-    smokeState = bytes_to_int(byte_data[2])
-    floodState = bytes_to_int(byte_data[3])
-    moveSensor = bytes_to_int(byte_data[4])
+    fireState = bytes_to_int(byte_data[0])   # fireState
+    smokeState = bytes_to_int(byte_data[1])   # smokeState
+    moveSensor = bytes_to_int(byte_data[2])   # moveSensor
+    din3 = bytes_to_int(byte_data[3])
+    din4 = bytes_to_int(byte_data[4])
     din5 = bytes_to_int(byte_data[5])
     din6 = bytes_to_int(byte_data[6])
     din7 = bytes_to_int(byte_data[7])
@@ -19,10 +19,10 @@ def extract(byte_data):
     vbus = bytes_to_int(byte_data[15])
 
     _read_attribute('fireState', fireState)
-    _read_attribute('offOnFire', offOnFire)
     _read_attribute('smokeState', smokeState)
-    _read_attribute('floodState', floodState)
     _read_attribute('moveSensor', moveSensor)
+    _read_attribute('miscDin4', din4)
+    _read_attribute('miscDin3', din3)
     _read_attribute('miscDin5', din5)
     _read_attribute('miscDin6', din6)
     _read_attribute('miscDin7', din7)
