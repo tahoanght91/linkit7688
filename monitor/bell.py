@@ -30,9 +30,9 @@ def apply():
     if (client_attributes.get('smokeState', default_data.smokeState)
             or client_attributes.get('fireState', default_data.fireState)
             or client_attributes.get('crmuDoorState', default_data.crmuDoorState)
-                and (now.tm_hour > 17 or now.tm_hour < 7)
-            or client_attributes.get('moveSensor', default_data.moveSensor)
                 and (now.tm_hour > 17 or now.tm_hour < 7)):
+            # or client_attributes.get('moveSensor', default_data.moveSensor)
+            #     and (now.tm_hour > 17 or now.tm_hour < 7)):
         return _send_command('on')
     else:
         return _send_command('off')
