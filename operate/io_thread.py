@@ -4,7 +4,7 @@ import serial
 
 import control
 from config import *
-from devices import airc, ats, atu, crmu, dc, misc
+from devices import airc, ats, atu, crmu, dc, misc, clock
 from utility import *
 
 def call():
@@ -14,7 +14,13 @@ def call():
     message_break = shared_attributes.get('periodReadDataIO', default_data.periodReadDataIO) # time read data from IO
     flip = READ_PER_WRITE
 
+    original_Cycle = int(time.time() / 60)
     while True:
+        # Update time clock to IO
+        current_Cycle = int(time.time() / 60)
+        if not (current_Cycle - original_Cycle) % 5:
+            clock.set()
+
         # Read data
         byte_stream = blocking_read(ser, message_break)
         if byte_stream and _read_data(byte_stream):
