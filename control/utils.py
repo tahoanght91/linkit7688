@@ -7,7 +7,8 @@ def _check_command(device, command):
     return (device == 'fan' and (command == 'off' or command == 'on') and not shared_attributes.get('miscFanControlAuto', default_data.miscFanControlAuto)
             or device == 'airc1' and (command == 'off' or command == 'on') and not shared_attributes.get('aircControlAuto', default_data.aircControlAuto)
             or device == 'airc2' and (command == 'off' or command == 'on') and not shared_attributes.get('aircControlAuto', default_data.aircControlAuto)
-            or device == 'ats' and (command == 'main' or command == 'gen' or command == 'test') and not shared_attributes.get('atsControlAuto', default_data.atsControlAuto)
+            # or device == 'ats' and (command == 'main' or command == 'gen' or command == 'test') and not shared_attributes.get('atsControlAuto', default_data.atsControlAuto)
+            or device == 'ats' and (command == 'off' or command == 'on') and not shared_attributes.get('atsControlAuto', default_data.atsControlAuto)
             or device == 'crmu' and (command == 'off' or command == 'on') and not shared_attributes.get('crmuControlAuto', default_data.crmuControlAuto)
             or device == 'bell' and (command == 'off' or command == 'on'))
 
@@ -58,14 +59,20 @@ def _process_command(device, command):
             command = 0
         else:
             command = 1
+    # elif device == 'ats':
+    #     device = 5
+    #     if command == 'main':
+    #         command = 0
+    #     elif command == 'gen':
+    #         command = 1
+    #     else:
+    #         command = 2
     elif device == 'ats':
         device = 5
-        if command == 'main':
+        if command == 'off':
             command = 0
-        elif command == 'gen':
-            command = 1
         else:
-            command = 2
+            command = 1
     elif device == 'crmu':
         device = 6
         if command == 'off':
