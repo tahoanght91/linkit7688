@@ -2,6 +2,7 @@ import time
 import struct
 # from numba import jit
 
+
 def bytes_to_int(data, byteorder = None):
     if len(data) == 1:
         return struct.unpack('B', data)[0]

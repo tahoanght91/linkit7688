@@ -3,6 +3,7 @@ import time
 from config import *
 import mqtt
 
+
 def call():
     period = shared_attributes.get('periodUpdate', default_data.periodUpdate)
     while True:

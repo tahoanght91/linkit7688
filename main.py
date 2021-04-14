@@ -16,7 +16,7 @@ def main():
     root.setLevel(logging.DEBUG)
     handler = logging.FileHandler('./app.log')
     handler.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter('%(asctime)s - %(filename)s:%(lineno)s - %(funcName)s() - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
     root.addHandler(handler)
     # run
