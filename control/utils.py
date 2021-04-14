@@ -29,7 +29,7 @@ def _process_set_auto(device, command):
         shared_attributes['atsControlAuto'] = command 
     elif device == 'crmu':
         shared_attributes['crmuControlAuto'] = command
-    else:
+    elif device == 'bell':
         shared_attributes['bellAuto'] = command
     return True
 
