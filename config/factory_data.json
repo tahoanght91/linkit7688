@@ -22,7 +22,8 @@
         "atsTestStart": 0,
         "atsTestCycle": 10080,
         "atsTestTime": 5,
-        "crmuControlAuto": 1
+        "crmuControlAuto": 1,
+        "bellAuto": 1
     },
 
     "client": {

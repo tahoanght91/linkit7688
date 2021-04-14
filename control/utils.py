@@ -8,7 +8,8 @@ def _check_command(device, command):
             or device == 'airc1' and (command == 'off' or command == 'on') and not shared_attributes.get('aircControlAuto', default_data.aircControlAuto)
             or device == 'airc2' and (command == 'off' or command == 'on') and not shared_attributes.get('aircControlAuto', default_data.aircControlAuto)
             or device == 'ats' and (command == 'main' or command == 'gen' or command == 'test') and not shared_attributes.get('atsControlAuto', default_data.atsControlAuto)
-            or device == 'crmu' and (command == 'off' or command == 'on') and not shared_attributes.get('crmuControlAuto', default_data.crmuControlAuto))
+            or device == 'crmu' and (command == 'off' or command == 'on') and not shared_attributes.get('crmuControlAuto', default_data.crmuControlAuto)
+            or device == 'bell' and (command == 'off' or command == 'on'))
 
 
 def _process_set_auto(device, command):
@@ -16,7 +17,8 @@ def _process_set_auto(device, command):
             and (device == 'fan'
                     or device == 'airc'
                     or device == 'ats'
-                    or device == 'crmu')):
+                    or device == 'crmu')
+                    or device == 'bell'):
         return False
     if device == 'airc':
         shared_attributes['aircControlAuto'] = command
@@ -24,8 +26,10 @@ def _process_set_auto(device, command):
         shared_attributes['miscFanControlAuto'] = command
     elif device == 'ats':
         shared_attributes['atsControlAuto'] = command 
-    else:
+    elif device == 'crmu':
         shared_attributes['crmuControlAuto'] = command
+    else:
+        shared_attributes['bellAuto'] = command
     return True
 
 def _process_command(device, command):
