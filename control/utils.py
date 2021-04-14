@@ -33,6 +33,7 @@ def _process_set_auto(device, command):
     return True
 
 def _process_command(device, command):
+    LOGGER.info("Go into _process_command")
     if device == 'bell':
         device = 1
         if command == 'off':
@@ -72,4 +73,7 @@ def _process_command(device, command):
         else:
             command = 1
     result = struct.pack('BBBBB', 0xA0, 0x03, 0x21, device, command)
+    LOGGER.info("result in _process_command")
+    LOGGER.info(result)
+    LOGGER.info("Get out _process_command")
     return result
