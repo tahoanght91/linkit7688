@@ -18,7 +18,8 @@ def call():
     while True:
         # Update time clock to IO
         current_Cycle = int(time.time() / 60)
-        if not (current_Cycle - original_Cycle) % 5:
+        if not (current_Cycle - original_Cycle) and not (current_Cycle - original_Cycle) % 2:
+            LOGGER.info("Send clock set")
             clock.set()
 
         # Read data
