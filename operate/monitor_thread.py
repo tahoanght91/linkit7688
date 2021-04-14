@@ -6,8 +6,8 @@ from monitor import *
 def call():
     period = shared_attributes.get('periodUpdate', default_data.periodUpdate)
     while True:
-        if shared_attributes.get('bellAuto', default_data.bellAuto):
-            bell.apply()
+        # if shared_attributes.get('bellAuto', default_data.bellAuto):
+        #     bell.apply()
         if shared_attributes.get('atsControlAuto', default_data.atsControlAuto):
             ats.apply()
         if shared_attributes.get('miscFanControlAuto', default_data.miscFanControlAuto):
