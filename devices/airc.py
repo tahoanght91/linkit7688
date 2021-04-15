@@ -7,11 +7,11 @@ def extract(byte_data):
     '''
     Extract the data from an AIRC message sent from the IO
     '''
-    temp = utility.bytes_to_int(byte_data[0:2], byteorder=BYTE_ORDER)
+    temp = float(utility.bytes_to_int(byte_data[0:2], byteorder=BYTE_ORDER) / 10)
     humid = utility.bytes_to_int(byte_data[2:4], byteorder=BYTE_ORDER)
-    airc1_temp = utility.bytes_to_int(byte_data[4:6], byteorder=BYTE_ORDER)
-    airc2_temp = utility.bytes_to_int(byte_data[6:8], byteorder=BYTE_ORDER)
-    outdoor_temp = utility.bytes_to_int(byte_data[8:10], byteorder=BYTE_ORDER)
+    airc1_temp = float(utility.bytes_to_int(byte_data[4:6], byteorder=BYTE_ORDER) / 10)
+    airc2_temp = float(utility.bytes_to_int(byte_data[6:8], byteorder=BYTE_ORDER) / 10)
+    outdoor_temp = float(utility.bytes_to_int(byte_data[8:10], byteorder=BYTE_ORDER) / 10)
     airc1_run_state = utility.bytes_to_int(byte_data[10])
     airc1_error = utility.bytes_to_int(byte_data[11])
     airc2_run_state = utility.bytes_to_int(byte_data[12])
