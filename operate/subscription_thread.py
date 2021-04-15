@@ -5,7 +5,6 @@ from config import *
 import mqtt
 import control
 from monitor import bell, crmu
-from monitor.bell import _send_command
 
 
 def _attribute_change_callback(result, exception):
@@ -27,16 +26,6 @@ def _rpc_callback(request_id, request_body):
 
         if method == 'setAuto':
             if control.process_set_auto(params):
-                CLIENT.send_rpc_reply(request_id, 'success')
-                LOGGER.info('    Success')
-            else:
-                CLIENT.send_rpc_reply(request_id, 'failed')
-                LOGGER.info('    Malformed message')
-        elif method == 'setBellAuto':
-            if control.process_set_auto(params):
-                commands_lock.acquire()
-                bell._send_command(params['command'])
-                commands_lock.release()
                 CLIENT.send_rpc_reply(request_id, 'success')
                 LOGGER.info('    Success')
             else:
