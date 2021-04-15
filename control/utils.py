@@ -79,6 +79,10 @@ def _process_command(device, command):
             command = 0
         else:
             command = 1
+    LOGGER.debug("Device")
+    LOGGER.debug(device)
+    LOGGER.debug("Command")
+    LOGGER.debug(command)
     result = struct.pack('BBBBB', 0xA0, 0x03, 0x21, device, command)
     LOGGER.info("result in _process_command")
     LOGGER.info(result)
