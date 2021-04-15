@@ -4,19 +4,19 @@ from config import BYTE_ORDER
 
 def extract(byte_data):
     rect_state = bytes_to_int(byte_data[0])
-    vdc = bytes_to_int(byte_data[1:3], byteorder = BYTE_ORDER) / 10
+    vdc = float(bytes_to_int(byte_data[1:3], byteorder = BYTE_ORDER) / 10)
     ibat1 = bytes_to_int(byte_data[3:5], byteorder = BYTE_ORDER)
-    bat1_temp = bytes_to_int(byte_data[5:7], byteorder = BYTE_ORDER) / 10
-    vbat1_div2 = bytes_to_int(byte_data[7:9], byteorder = BYTE_ORDER) / 10
+    bat1_temp = float(bytes_to_int(byte_data[5:7], byteorder = BYTE_ORDER) / 10)
+    vbat1_div2 = float(bytes_to_int(byte_data[7:9], byteorder = BYTE_ORDER) / 10)
     ibat2 = bytes_to_int(byte_data[9:11], byteorder = BYTE_ORDER)
-    bat2_temp = bytes_to_int(byte_data[11:13], byteorder = BYTE_ORDER) / 10
-    vbat2_div2 = bytes_to_int(byte_data[13:15], byteorder = BYTE_ORDER) / 10
+    bat2_temp = float(bytes_to_int(byte_data[11:13], byteorder = BYTE_ORDER) / 10)
+    vbat2_div2 = float(bytes_to_int(byte_data[13:15], byteorder = BYTE_ORDER) / 10)
     ibat3 = bytes_to_int(byte_data[15:17], byteorder = BYTE_ORDER)
-    bat3_temp = bytes_to_int(byte_data[17:19], byteorder = BYTE_ORDER) / 10
-    vbat3_div2 = bytes_to_int(byte_data[19:21], byteorder = BYTE_ORDER) / 10
+    bat3_temp = float(bytes_to_int(byte_data[17:19], byteorder = BYTE_ORDER) / 10)
+    vbat3_div2 = float(bytes_to_int(byte_data[19:21], byteorder = BYTE_ORDER) / 10)
     ibat4 = bytes_to_int(byte_data[21:23], byteorder = BYTE_ORDER)
-    bat4_temp = bytes_to_int(byte_data[23:25], byteorder = BYTE_ORDER) / 10
-    vbat4_div2 = bytes_to_int(byte_data[25:27], byteorder = BYTE_ORDER) / 10
+    bat4_temp = float(bytes_to_int(byte_data[23:25], byteorder = BYTE_ORDER) / 10)
+    vbat4_div2 = float(bytes_to_int(byte_data[25:27], byteorder = BYTE_ORDER) / 10)
 
     online_status = bytes_to_int(byte_data[27])
 
