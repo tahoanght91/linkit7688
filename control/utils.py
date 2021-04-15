@@ -3,13 +3,22 @@ import struct
 from config import *
 from utility import with_check_sum
 
+# def _check_command(device, command):
+#     return (device == 'fan' and (command == 'off' or command == 'on') and not shared_attributes.get('miscFanControlAuto', default_data.miscFanControlAuto)
+#             or device == 'airc1' and (command == 'off' or command == 'on') and not shared_attributes.get('aircControlAuto', default_data.aircControlAuto)
+#             or device == 'airc2' and (command == 'off' or command == 'on') and not shared_attributes.get('aircControlAuto', default_data.aircControlAuto)
+#             # or device == 'ats' and (command == 'main' or command == 'gen' or command == 'test') and not shared_attributes.get('atsControlAuto', default_data.atsControlAuto)
+#             or device == 'ats' and (command == 'off' or command == 'on') and not shared_attributes.get('atsControlAuto', default_data.atsControlAuto)
+#             or device == 'crmu' and (command == 'off' or command == 'on') and not shared_attributes.get('crmuControlAuto', default_data.crmuControlAuto)
+#             or device == 'bell' and (command == 'off' or command == 'on'))
+
 def _check_command(device, command):
-    return (device == 'fan' and (command == 'off' or command == 'on') and not shared_attributes.get('miscFanControlAuto', default_data.miscFanControlAuto)
-            or device == 'airc1' and (command == 'off' or command == 'on') and not shared_attributes.get('aircControlAuto', default_data.aircControlAuto)
-            or device == 'airc2' and (command == 'off' or command == 'on') and not shared_attributes.get('aircControlAuto', default_data.aircControlAuto)
+    return (device == 'fan' and (command == 'off' or command == 'on')
+            or device == 'airc1' and (command == 'off' or command == 'on')
+            or device == 'airc2' and (command == 'off' or command == 'on')
             # or device == 'ats' and (command == 'main' or command == 'gen' or command == 'test') and not shared_attributes.get('atsControlAuto', default_data.atsControlAuto)
-            or device == 'ats' and (command == 'off' or command == 'on') and not shared_attributes.get('atsControlAuto', default_data.atsControlAuto)
-            or device == 'crmu' and (command == 'off' or command == 'on') and not shared_attributes.get('crmuControlAuto', default_data.crmuControlAuto)
+            or device == 'ats' and (command == 'off' or command == 'on')
+            or device == 'crmu' and (command == 'off' or command == 'on')
             or device == 'bell' and (command == 'off' or command == 'on'))
 
 
