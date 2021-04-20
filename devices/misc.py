@@ -2,6 +2,7 @@ from config import BYTE_ORDER
 from utility import bytes_to_int
 from .utils import _read_attribute, _read_telemetry
 
+
 def extract(byte_data):
     din0 = bytes_to_int(byte_data[0])
     din1 = bytes_to_int(byte_data[1])
