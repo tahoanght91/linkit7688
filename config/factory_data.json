@@ -164,9 +164,11 @@
         "dcVbat4Div2": 20
       }
     ],
-    "device_crmu": [{}]
+    "device_crmu": [
+      {}
+    ]
   },
-  "attribute_name": {
+  "shared_attribute_name": {
     "device_misc": [
       "miscFanControlAuto",
       "miscMinTemp",
@@ -199,6 +201,76 @@
       "atsControlAuto",
       "atsTestEn",
       "atsTestTime"
+    ]
+  },
+  "client_attribute_name": {
+    "device_misc": [
+        "miscBellState",
+        "miscFanState",
+        "miscVbus",
+        "miscV12",
+        "miscDin3",
+        "miscDin2",
+        "miscDin1",
+        "miscDin0",
+        "miscDin7",
+        "miscDin6",
+        "miscDin5",
+        "miscDin4"
+    ],
+    "device_airc": [
+      "aircAirc1Command",
+      "aircAirc1Error",
+      "aircAirc1RunState",
+      "aircAirc1RunThreshold",
+      "aircAirc2Command",
+      "aircAirc2Error",
+      "aircAirc2RunState",
+      "aircAirc2RunThreshold",
+      "aircIrStatus",
+      "aircLearnCmdId",
+      "aircOnlineStatus"
+    ],
+    "gateway_python_001": [
+      "periodReadDataIO",
+      "periodUpdate",
+      "periodSendTelemetry"
+    ],
+    "device_crmu": [
+      "crmuCardId",
+      "crmuDoorState",
+      "crmuOnlineStatus"
+    ],
+    "device_atu": [
+      "atuOnlineStatus"
+    ],
+    "device_dc": [
+      "dcOnlineStatus",
+      "dcRectState"
+    ],
+    "device_fire_sensor": [
+      "fireState"
+    ],
+    "device_flood_sensor": [
+      "floodState"
+    ],
+    "device_move_sensor": [
+      "moveSensor"
+    ],
+    "device_smoke_sensor": [
+      "smokeState"
+    ],
+    "device_ats": [
+      "atsBatFull",
+      "atsCommState",
+      "atsContactorState",
+      "atsGscAlarm",
+      "atsGscPwrCounter",
+      "atsGscType",
+      "atsIsAllBatFull",
+      "atsMode",
+      "atsOnlineStatus",
+      "atsType"
     ]
   }
 }
