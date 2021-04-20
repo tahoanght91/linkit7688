@@ -15,6 +15,10 @@ def check_command(command):
     return utils._check_command(command.get('device', None), command.get('command', None))
 
 
+def check_command_send_rpc(command):
+    return utils._check_command_send_rpc(command.get('device', None), command.get('command', None))
+
+
 def process_command(command):
     """
     Take a command and create a bytes respective to that command, without the check sum
