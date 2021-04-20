@@ -1,15 +1,16 @@
 from config import *
+from config.common import DEVICE_CRMU
 
 
 def _send_command(command):
     if command == 'on' and not client_attributes.get('crmuDoorState', default_data.crmuDoorState):
         commands_lock.acquire()
-        commands['crmu'] = 'on'
+        commands[DEVICE_CRMU] = 'on'
         commands_lock.release()
         return 'on'
     elif command == 'off' and client_attributes.get('crmuDoorState', default_data.crmuDoorState):
         commands_lock.acquire()
-        commands['crmu'] = 'off'
+        commands[DEVICE_CRMU] = 'off'
         commands_lock.release()
         return 'off'
     return ''
