@@ -1,15 +1,16 @@
 from config import *
+from config.common import *
 
 
 def _send_command(command):
     if command == 'on' and client_attributes.get('miscFanState', default_data.miscFanState) == 0:
         commands_lock.acquire()
-        commands['fan'] = 'on'
+        commands[DEVICE_MISC] = 'on'
         commands_lock.release()
         return 'on'
     elif command == 'off' and client_attributes.get('miscFanState', default_data.miscFanState) == 1:
         commands_lock.acquire()
-        commands['fan'] = 'off'
+        commands[DEVICE_MISC] = 'off'
         commands_lock.release()
         return 'off'
     return ''
