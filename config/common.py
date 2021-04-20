@@ -34,11 +34,6 @@ SET_FAN_CONTROL = 'setControlFan'
 GET_FAN_AUTO = 'getStateAutoFan'
 SET_FAN_AUTO = 'setAutoFan'
 #ats
-# GET_ATS_CONTROL = 'getStateControlAts'
-# SET_ATS_CONTROL = 'setControlAts'
-# GET_ATS_AUTO = 'getStateAutoAts'
-# SET_ATS_AUTO = 'setAutoAts'
-
 GET_ATS_CONTROL_MAIN = 'getStateControlAtsMain'
 SET_ATS_CONTROL_MAIN = 'setControlAtsMain'
 GET_ATS_CONTROL_GEN = 'getStateControlAtsGen'
