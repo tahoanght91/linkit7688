@@ -1,9 +1,6 @@
 import os
 import sys
-import threading
 import time
-import io
-import json
 import math
 import subprocess
 
@@ -20,29 +17,7 @@ def _connect_callback(client, userdata, flags, rc, *extra_params):
     semaphore.release()
 
 
-# def _on_receive_attributes_callback(key, result, exception):
-#     if exception is None:
-#         LOGGER.debug(result)
-#         for key, value in result.get('shared', {}).items():
-#             shared_attributes[key] = value
-#         for key, value in result.get('client', {}).items():
-#             client_attributes[key] = value
-#     else:
-#         LOGGER.error(exception)
-#     semaphore.release()
-
-# def _on_receive_attributes_callback(key, result, exception):
-#     if exception is None:
-#         LOGGER.debug(result)
-#         if 'value' in result:
-#             shared_attributes[key] = result["value"]
-#             LOGGER.info('Shared attributes changes')
-#             LOGGER.info(shared_attributes)
-#     else:
-#         LOGGER.error(exception)
-#     semaphore.release()
-
-def _on_receive_attributes_callback(content, exception):
+def _on_receive_shared_attributes_callback(content, exception):
     if exception is None:
         LOGGER.debug(content)
         if 'values' in content:
@@ -61,6 +36,25 @@ def _on_receive_attributes_callback(content, exception):
     semaphore.release()
 
 
+def _on_receive_client_attributes_callback(content, exception):
+    if exception is None:
+        LOGGER.debug(content)
+        if 'values' in content:
+            list_client_attributes = content['values']
+            if isinstance(list_client_attributes, dict):
+                for key, value in list_client_attributes.items():
+                    client_attributes[key] = value
+            LOGGER.info('client attributes changes')
+            LOGGER.info(client_attributes)
+        elif 'value' in content:
+            value = content['value']
+            key = content['key']
+            client_attributes[key] = value
+    else:
+        LOGGER.error(exception)
+    semaphore.release()
+
+
 def call():
     try:
         LOGGER.info('Start main thread')
@@ -72,11 +66,18 @@ def call():
 
         if CLIENT.is_connected():
             LOGGER.debug('Set IO time')
-            clock.set()
+            # clock.set()
             LOGGER.debug('Get original attributes')
-            device_name = data_dict["attribute_name"]
-            for key, value in device_name.items():
-                CLIENT.gw_request_shared_attributes(key, value, _on_receive_attributes_callback)
+            #shared_attributes
+            device_shared_attributes_name = data_dict["shared_attribute_name"]
+            for key, value in device_shared_attributes_name.items():
+                CLIENT.gw_request_shared_attributes(key, value, _on_receive_shared_attributes_callback)
+                semaphore.acquire()
+
+            #client_attributes
+            device_client_attributes_name = data_dict["client_attribute_name"]
+            for key, value in device_client_attributes_name.items():
+                CLIENT.gw_request_client_attributes(key, value, _on_receive_client_attributes_callback)
                 semaphore.acquire()
         else:
             LOGGER.debug('Get current time')
@@ -89,13 +90,17 @@ def call():
         CLIENT.gw_connect_device("device_dc", "default")
         CLIENT.gw_connect_device("device_crmu", "default")
         CLIENT.gw_connect_device("device_misc", "default")
+        CLIENT.gw_connect_device("device_move_sensor", "default")
+        CLIENT.gw_connect_device("device_smoke_sensor", "default")
+        CLIENT.gw_connect_device("device_fire_sensor", "default")
+        CLIENT.gw_connect_device("device_flood_sensor", "default")
 
         CLIENT.gw_subscribe_to_all_attributes(callback=subscription_thread._attribute_change_callback)
         CLIENT.gw_set_server_side_rpc_request_handler(handler=subscription_thread._gw_rpc_callback)
 
         # thread_list = [io_thread, telemetry_thread, update_attributes_thread, monitor_thread, ui_thread]
         # thread_list = [telemetry_thread, update_attributes_thread, monitor_thread, ui_thread]
-        thread_list = [telemetry_thread]
+        thread_list = [io_thread, telemetry_thread, update_attributes_thread]
 
         for i, thread in enumerate(thread_list):
             thread.name = thread.__name__
