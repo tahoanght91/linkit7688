@@ -1,6 +1,7 @@
 from config import *
 import control
 from config.common import *
+from control.utils import check_state_device, get_value_device
 
 
 def _attribute_change_callback(result):
@@ -57,16 +58,17 @@ def _gw_rpc_callback(self, content):
     elif len(content['data']) == 2:
         params = {'device': device, 'command': GET_STATE}
 
+    if 'Airc1' in method:
+        params = {'device': DEVICE_AIRC_1, 'command': value}
+    elif 'Airc2' in method:
+        params = {'device': DEVICE_AIRC_2, 'command': value}
+
     if AUTO in method:
         if control.process_set_auto(params):
             LOGGER.info('    Success')
         else:
             LOGGER.info('    Malformed message')
     elif CONTROL in method:
-        if 'Airc1' in method:
-            params = {'device': DEVICE_AIRC_1, 'command': value}
-        elif 'Airc2' in method:
-            params = {'device': DEVICE_AIRC_2, 'command': value}
         if control.check_command_send_rpc(params):
             commands_lock.acquire()
             commands[params['device']] = params['command']
@@ -76,38 +78,18 @@ def _gw_rpc_callback(self, content):
             LOGGER.info('    Malformed message or manual mode not activated')
     elif GET_STATE in method:
         if control.check_command(params):
-            value = check_state_device(device, method)
-            CLIENT.gw_send_rpc_reply(device, request_id, value, 1)
+            state = check_state_device(device, method)
+            CLIENT.gw_send_rpc_reply(device, request_id, state, 1)
             LOGGER.info('    Success')
         else:
-            LOGGER.info('    Malformed message or manual mode not activated')
-
-
-def check_state_device(device_name, method):
-    value = ''
-    if device_name == DEVICE_AIRC and method == GET_AIRC_CONTROL_1:
-        value = bool(client_attributes.get('aircIrStatus', default_data.aircIrStatus))
-    elif device_name == DEVICE_AIRC and method == GET_AIRC_AUTO_1:
-        value = bool(client_attributes.get('aircIrStatus', default_data.aircIrStatus))
-    elif device_name == DEVICE_AIRC and method == GET_AIRC_CONTROL_2:
-        value = bool(client_attributes.get('aircIrStatus', default_data.aircIrStatus))
-    elif device_name == DEVICE_AIRC and method == GET_AIRC_AUTO_2:
-        value = bool(client_attributes.get('aircIrStatus', default_data.aircIrStatus))
-    elif device_name == DEVICE_MISC and method == GET_FAN_CONTROL:
-        value = bool(client_attributes.get('miscDin0', default_data.miscDin0))
-    elif device_name == DEVICE_MISC and method == GET_FAN_AUTO:
-        value = bool(client_attributes.get('miscDin0', default_data.miscDin0))
-    elif device_name == DEVICE_ATS and method == GET_ATS_CONTROL_MAIN:
-        value = bool(client_attributes.get('atsMode', default_data.atsMode))
-    elif device_name == DEVICE_ATS and method == GET_ATS_CONTROL_GEN:
-        value = bool(client_attributes.get('atsMode', default_data.atsMode))
-    elif device_name == DEVICE_ATS and method == GET_ATS_AUTO:
-        value = bool(client_attributes.get('atsMode', default_data.atsMode))
-    elif device_name == DEVICE_CRMU and method == GET_CRMU_CONTROL:
-        value = bool(client_attributes.get('crmuOnlineStatus', default_data.crmuOnlineStatus))
-    elif device_name == DEVICE_CRMU and method == GET_CRMU_AUTO:
-        value = bool(client_attributes.get('crmuOnlineStatus', default_data.crmuOnlineStatus))
-    return value
+            LOGGER.info('    Fail')
+    elif GET_VALUE in method:
+        if control.check_command(params):
+            value_of_device = get_value_device(device, method)
+            CLIENT.gw_send_rpc_reply(device, request_id, value_of_device, 1)
+            LOGGER.info('    Success')
+        else:
+            LOGGER.info('    Fail')
 
 # body: {"method": "rpcCall", "params": {"device": "airc", "command": "on"}}
 # gateway-set : {'device': 'device_airc', 'data': {'params': False, 'id': 4, 'method': 'setAircValue'}}
