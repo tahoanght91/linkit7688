@@ -1,6 +1,7 @@
 import time
 
 from config import *
+from config.common import *
 
 
 def call():
@@ -84,8 +85,7 @@ def replica_telemetry():
 
 
 def format_telemetry():
-    list_telemetry = {'device_misc': [{}], 'device_airc': [{}], 'device_ats': [{}], 'device_atu': [{}],
-                      'device_dc': [{}]}
+    list_telemetry = {DEVICE_MISC: [{}], DEVICE_AIRC: [{}], DEVICE_ATS: [{}], DEVICE_ATU: [{}], DEVICE_DC: [{}]}
     telemetry_misc = {}
     telemetry_airc = {}
     telemetry_ats = {}
@@ -105,14 +105,14 @@ def format_telemetry():
             telemetry_dc[key] = value
 
     if telemetry_misc:
-        list_telemetry['device_misc'] = [telemetry_misc]
+        list_telemetry[DEVICE_MISC] = [telemetry_misc]
     if telemetry_airc:
-        list_telemetry['device_airc'] = [telemetry_airc]
+        list_telemetry[DEVICE_AIRC] = [telemetry_airc]
     if telemetry_ats:
-        list_telemetry['device_ats'] = [telemetry_ats]
+        list_telemetry[DEVICE_ATS] = [telemetry_ats]
     if telemetry_atu:
-        list_telemetry['device_atu'] = [telemetry_atu]
+        list_telemetry[DEVICE_ATU] = [telemetry_atu]
     if telemetry_dc:
-        list_telemetry['device_dc'] = [telemetry_dc]
+        list_telemetry[DEVICE_DC] = [telemetry_dc]
 
     return list_telemetry
