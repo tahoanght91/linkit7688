@@ -1,6 +1,7 @@
 import time
 
 from config import *
+from config.common import *
 
 
 def call():
@@ -74,9 +75,9 @@ def replica_client_attributes():
 
 
 def format_client_attributes():
-    list_client_attributes = {'device_misc': {}, 'device_airc': {}, 'device_ats': {}, 'device_atu': {},
-                              'device_dc': {}, 'device_crmu': {}, 'device_fire_sensor': {}, 'device_smoke_sensor': {},
-                              'device_move_sensor': {}, 'device_flood_sensor': {}}
+    list_client_attributes = {DEVICE_MISC: {}, DEVICE_AIRC: {}, DEVICE_ATS: {}, DEVICE_ATU: {},
+                              DEVICE_DC: {}, DEVICE_CRMU: {}, DEVICE_FIRE_SENSOR: {}, DEVICE_SMOKE_SENSOR: {},
+                              DEVICE_MOVE_SENSOR: {}, DEVICE_FLOOD_SENSOR: {}}
     client_attributes_misc = {}
     client_attributes_airc = {}
     client_attributes_ats = {}
@@ -88,6 +89,7 @@ def format_client_attributes():
     client_attributes_move_sensor = {}
     client_attributes_flood_sensor = {}
     data_from_stm32 = replica_client_attributes()
+
     for key, value in data_from_stm32.items():
         if 'misc' in key:
             client_attributes_misc[key] = value
@@ -111,24 +113,24 @@ def format_client_attributes():
             client_attributes_flood_sensor[key] = value
 
     if client_attributes_misc:
-        list_client_attributes['device_misc'] = client_attributes_misc
+        list_client_attributes[DEVICE_MISC] = client_attributes_misc
     if client_attributes_airc:
-        list_client_attributes['device_airc'] = client_attributes_airc
+        list_client_attributes[DEVICE_AIRC] = client_attributes_airc
     if client_attributes_ats:
-        list_client_attributes['device_ats'] = client_attributes_ats
+        list_client_attributes[DEVICE_ATS] = client_attributes_ats
     if client_attributes_atu:
-        list_client_attributes['device_atu'] = client_attributes_atu
+        list_client_attributes[DEVICE_ATU] = client_attributes_atu
     if client_attributes_dc:
-        list_client_attributes['device_dc'] = client_attributes_dc
+        list_client_attributes[DEVICE_DC] = client_attributes_dc
     if client_attributes_crmu:
-        list_client_attributes['device_crmu'] = client_attributes_crmu
+        list_client_attributes[DEVICE_CRMU] = client_attributes_crmu
     if client_attributes_fire_sensor:
-        list_client_attributes['device_fire_sensor'] = client_attributes_fire_sensor
+        list_client_attributes[DEVICE_FIRE_SENSOR] = client_attributes_fire_sensor
     if client_attributes_smoke_sensor:
-        list_client_attributes['device_smoke_sensor'] = client_attributes_smoke_sensor
+        list_client_attributes[DEVICE_SMOKE_SENSOR] = client_attributes_smoke_sensor
     if client_attributes_move_sensor:
-        list_client_attributes['device_move_sensor'] = client_attributes_move_sensor
+        list_client_attributes[DEVICE_MOVE_SENSOR] = client_attributes_move_sensor
     if client_attributes_flood_sensor:
-        list_client_attributes['device_flood_sensor'] = client_attributes_flood_sensor
+        list_client_attributes[DEVICE_FLOOD_SENSOR] = client_attributes_flood_sensor
 
     return list_client_attributes
