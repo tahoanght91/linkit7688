@@ -115,11 +115,21 @@ def _read_data(byte_stream):
 
 
 class _OpData:
-    MISC_SIZE = 16
-    AIRC_SIZE = 24
-    ATS_SIZE = 92
-    ATU_SIZE = 38
+    #old
+    # MISC_SIZE = 16
+    # AIRC_SIZE = 24
+    # ATS_SIZE = 92
+    # ATU_SIZE = 38
+    # CRMU_SIZE = 15
+    # DC_SIZE = 29
+    # KEY_SIZE = 3
+
+    #new
+    AIRC_SIZE = 17
+    ATS_SIZE = 36
     CRMU_SIZE = 15
+    MISC_SIZE = 16
+    ATU_SIZE = 38
     DC_SIZE = 29
     KEY_SIZE = 3
 
