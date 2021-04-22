@@ -1,4 +1,4 @@
-#device_name
+# device_name
 DEVICE_AIRC = 'device_airc'
 DEVICE_AIRC_1 = 'device_airc1'
 DEVICE_AIRC_2 = 'device_airc2'
@@ -12,36 +12,34 @@ DEVICE_FLOOD_SENSOR = 'device_flood_sensor'
 DEVICE_MOVE_SENSOR = 'device_move_sensor'
 DEVICE_SMOKE_SENSOR = 'device_smoke_sensor'
 
-#rpc
+# rpc
 AUTO = 'setAuto'
 CONTROL = 'setControl'
 GET_STATE = 'getState'
+GET_VALUE = 'getValue'
 
-#method
-#airc1
-GET_AIRC_CONTROL_1 = 'getStateControlAirc1'
+# method
+# airc1
+GET_SATE_AIRC_1 = 'getStateAirc1'
+GET_VALUE_AIRC_1 = 'getValueAirc1'
 SET_AIRC_CONTROL_1 = 'setControlAirc1'
-GET_AIRC_AUTO_1 = 'getStateAutoAirc1'
 SET_AIRC_AUTO_1 = 'setAutoAirc1'
-#airc2
-GET_AIRC_CONTROL_2 = 'getStateControlAirc2'
+# airc2
+GET_STATE_AIRC_2 = 'getStateAirc2'
+GET_VALUE_AIRC_2 = 'getValueAirc2'
 SET_AIRC_CONTROL_2 = 'setControlAirc2'
-GET_AIRC_AUTO_2 = 'getStateAutoAirc2'
 SET_AIRC_AUTO_2 = 'setAutoAirc2'
-#fan
-GET_FAN_CONTROL = 'getStateControlFan'
+# fan
+GET_STATE_FAN = 'getStateFan'
+GET_VALUE_FAN = 'getValueFan'
 SET_FAN_CONTROL = 'setControlFan'
-GET_FAN_AUTO = 'getStateAutoFan'
 SET_FAN_AUTO = 'setAutoFan'
-#ats
-GET_ATS_CONTROL_MAIN = 'getStateControlAtsMain'
+# ats
+GET_STATE_ATS = 'getStateAts'
 SET_ATS_CONTROL_MAIN = 'setControlAtsMain'
-GET_ATS_CONTROL_GEN = 'getStateControlAtsGen'
 SET_ATS_CONTROL_GEN = 'setControlAtsGen'
-GET_ATS_AUTO = 'getStateAutoAts'
 SET_ATS_AUTO = 'setAutoAts'
-#crmu
-GET_CRMU_CONTROL = 'getStateControlCrmu'
+# crmu
+GET_STATE_CRMU = 'getStateControlCrmu'
 SET_CRMU_CONTROL = 'setControlCrmu'
-GET_CRMU_AUTO = 'getStateAutoCrmu'
 SET_CRMU_AUTO = 'setAutoCrmu'
