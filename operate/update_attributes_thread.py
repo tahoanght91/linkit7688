@@ -25,50 +25,43 @@ def call():
 
 def replica_client_attributes():
     attributes = {
-        "aircAirc2RunState": 0,
-        "aircAirc1RunState": 0,
-        "aircOnlineStatus": 1,
-        "aircAirc1Command": 1,
-        "aircAirc1RunThreshold": 26,
-        "aircLearnCmdId": 0,
-        "aircAirc2Command": 1,
-        "aircAirc1Error": 0,
-        "aircAirc2RunThreshold": 26,
-        "aircAirc2Error": 0,
-        "aircIrStatus": 1,
-        "atsBatFull": 1,
-        "atsGscType": 1,
-        "atsIsAllBatFull": 0,
-        "atsGscPwrCounter": 1,
-        "atsGscAlarm": 0,
-        "atsMode": 0,
-        "atsContactorState": 1,
+        "aircAirc1Command": 0,
+        "aircAirc2Command": 0,
+        "aircFanCommand": 1,
+        "aircThrTemp1": 1,
+        "aircThrTemp2": 26,
+        "aircThrTemp3": 0,
+        "aircThrTemp4": 1,
+        "aircAirc2RunThreshold": 0,
+        "aircCount": 26,
+        "aircModeAutoEn": 0,
+
         "atsCommState": 1,
-        "atsOnlineStatus": 1,
-        "atsType": 1,
+        "atsMode": 1,
+        "atsType": 0,
+        "atsContactorState": 1,
+
         "atuOnlineStatus": 1,
+
         "crmuCardId": "AAA",
-        "crmuOnlineStatus": 1,
         "crmuDoorState": 1,
+        "crmuLen": 1,
+
         "miscBellState": 0,
         "miscFanState": 0,
         "miscVbus": 1,
         "miscV12": 1,
-        "miscDin3": 0,
-        "miscDin2": 0,
-        "miscDin1": 0,
-        "miscDin0": 0,
+        "floodState": 1,
+        "moveSensor": 1,
+        "fireState": 1,
+        "smokeState": 1,
         "miscDin7": 0,
         "miscDin6": 0,
         "miscDin5": 0,
         "miscDin4": 0,
+
         "dcOnlineStatus": 22,
-        "dcRectState": 111,
-        "moveSensor": 1,
-        "smokeState": 1,
-        "fireState": 1,
-        "offOnFire": 1,
-        "floodState": 1
+        "dcRectState": 111
     }
 
     return attributes
@@ -97,10 +90,10 @@ def format_client_attributes():
             client_attributes_airc[key] = value
         elif 'ats' in key:
             client_attributes_ats[key] = value
-        elif 'atu' in key:
-            client_attributes_atu[key] = value
         elif 'dc' in key:
             client_attributes_dc[key] = value
+        elif 'atu' in key:
+            client_attributes_atu[key] = value
         elif 'crmu' in key:
             client_attributes_crmu[key] = value
         elif 'fireState' in key:

@@ -19,6 +19,9 @@ def extract(byte_data):
     v12 = bytes_to_int(byte_data[14])
     vbus = bytes_to_int(byte_data[15])
 
+    _read_telemetry('miscTemp', temp)
+    _read_telemetry('miscHumid', humid)
+
     _read_attribute('miscDin0', din0)
     _read_attribute('miscDin1', din1)
     _read_attribute('miscDin2', din2)
@@ -27,8 +30,6 @@ def extract(byte_data):
     _read_attribute('miscDin5', din5)
     _read_attribute('miscDin6', din6)
     _read_attribute('miscDin7', din7)
-    _read_telemetry('miscTemp', temp)
-    _read_telemetry('miscHumid', humid)
     _read_attribute('miscBellState', bell_state)
     _read_attribute('miscFanState', fan_state)
     _read_attribute('miscV12', v12)

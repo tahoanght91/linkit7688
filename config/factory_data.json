@@ -26,43 +26,36 @@
   },
   "client": {
     "device_misc": {
-      "miscDin0": 0,
-      "miscDin1": 0,
-      "miscDin2": 0,
-      "miscDin3": 0,
-      "miscDin4": 0,
-      "miscDin5": 0,
-      "miscDin6": 0,
-      "miscDin7": 0,
       "miscFanState": 0,
       "miscBellState": 0,
       "miscV12": 1,
-      "miscVbus": 1
+      "miscVbus": 1,
+      "floodState": 1,
+      "moveSensor": 1,
+      "fireState": 1,
+      "smokeState": 1,
+      "miscDin7": 0,
+      "miscDin6": 0,
+      "miscDin5": 0,
+      "miscDin4": 0
     },
     "device_airc": {
-      "aircOnlineStatus": 1,
-      "aircAirc1RunState": 0,
-      "aircAirc1Error": 0,
-      "aircAirc2RunState": 0,
-      "aircAirc2Error": 0,
-      "aircAirc1RunThreshold": 26,
-      "aircAirc2RunThreshold": 26,
-      "aircAirc1Command": 1,
-      "aircAirc2Command": 1,
-      "aircIrStatus": 1,
-      "aircLearnCmdId": 0
+      "aircAirc1Command": 0,
+      "aircAirc2Command": 0,
+      "aircFanCommand": 0,
+      "aircThrTemp1": 1,
+      "aircThrTemp2": 10,
+      "aircThrTemp3": 0,
+      "aircThrTemp4": 1,
+      "aircAirc2RunThreshold": 0,
+      "aircCount": 2,
+      "aircModeAutoEn": 1
     },
     "device_ats": {
-      "atsOnlineStatus": 1,
-      "atsCommState": 1,
-      "atsMode": 0,
+      "atsCommState": 0,
+      "atsMode": 1,
       "atsType": 1,
-      "atsContactorState": 1,
-      "atsBatFull": 1,
-      "atsIsAllBatFull": 0,
-      "atsGscType": 1,
-      "atsGscPwrCounter": 1,
-      "atsGscAlarm": 0
+      "atsContactorState": 1
     },
     "device_atu": {
       "atuOnlineStatus": 1
@@ -72,7 +65,7 @@
       "dcRectState": 1
     },
     "device_crmu": {
-      "crmuOnlineStatus": 1,
+      "crmuLen": 1,
       "crmuCardId": "AAA",
       "crmuDoorState": 1
     },
@@ -84,7 +77,6 @@
       "moveSensor": 0
     }
   },
-
   "telemetry": {
     "device_misc": [
       {
@@ -94,11 +86,9 @@
     ],
     "device_airc": [
       {
-        "aircTemp": 35,
-        "aircHumid": 85,
-        "aircAirc1Temp": 30,
-        "aircAirc2Temp": 26,
-        "aircOutdoorTemp": 36
+        "aircTempIndoor": 35,
+        "aircTempOutdoor": 85,
+        "aircHumidIndoor": 30
       }
     ],
     "device_ats": [
@@ -117,22 +107,7 @@
         "atsVloadFreq": 23,
         "atsIloadP1": 24,
         "atsIloadP2": 21,
-        "atsIloadP3": 22,
-        "atsGscOil": 11,
-        "atsGscCoolantTemp": 27,
-        "atsGscFuel": 31,
-        "atsGscVbat": 34,
-        "atsGscSpeed": 32,
-        "atsGscPowerTotal": 125,
-        "atsGscPower1": 45,
-        "atsGscPower2": 40,
-        "atsGscPower3": 40,
-        "atsGscKvaTotal": 40,
-        "atsGscKva1": 10,
-        "atsGscKva2": 20,
-        "atsGscKva3": 10,
-        "atsGscRunHoursCounter": 60,
-        "atsGscCrankCounter": 10
+        "atsIloadP3": 22
       }
     ],
     "device_atu": [
@@ -150,7 +125,6 @@
     ],
     "device_dc": [
       {
-        "dcVdc": 21,
         "dcIbat1": 22,
         "dcBat1Temp": 23,
         "dcVbat1Div2": 30,
@@ -184,11 +158,6 @@
       "aircGenAllow",
       "aircVacThThreshold"
     ],
-    "gateway_python_001": [
-      "periodReadDataIO",
-      "periodUpdate",
-      "periodSendTelemetry"
-    ],
     "device_crmu": [
       "crmuControlAuto"
     ],
@@ -206,18 +175,18 @@
   },
   "client_attribute_name": {
     "device_misc": [
-        "miscBellState",
-        "miscFanState",
-        "miscVbus",
-        "miscV12",
-        "miscDin3",
-        "miscDin2",
-        "miscDin1",
-        "miscDin0",
-        "miscDin7",
-        "miscDin6",
-        "miscDin5",
-        "miscDin4"
+      "miscBellState",
+      "miscFanState",
+      "miscVbus",
+      "miscV12",
+      "floodState",
+      "moveSensor",
+      "fireState",
+      "smokeState",
+      "miscDin7",
+      "miscDin6",
+      "miscDin5",
+      "miscDin4"
     ],
     "device_airc": [
       "aircAirc1Command",
@@ -250,194 +219,4 @@
       "atsContactorState"
     ]
   }
-
-//  "telemetry": {
-//    "device_misc": [
-//      {
-//        "miscTemp": 19,
-//        "miscHumid": 60
-//      }
-//    ],
-//    "device_airc": [
-//      {
-//        "aircTemp": 35,
-//        "aircHumid": 85,
-//        "aircAirc1Temp": 30,
-//        "aircAirc2Temp": 26,
-//        "aircOutdoorTemp": 36
-//      }
-//    ],
-//    "device_ats": [
-//      {
-//        "atsVacP1": 220,
-//        "atsVacP2": 10,
-//        "atsVacP3": 11,
-//        "atsVacFreq": 13,
-//        "atsVgenP1": 10,
-//        "atsVgenP2": 11,
-//        "atsVgenP3": 12,
-//        "atsVgenFreq": 17,
-//        "atsVloadP1": 20,
-//        "atsVloadP2": 21,
-//        "atsVloadP3": 22,
-//        "atsVloadFreq": 23,
-//        "atsIloadP1": 24,
-//        "atsIloadP2": 21,
-//        "atsIloadP3": 22,
-//        "atsGscOil": 11,
-//        "atsGscCoolantTemp": 27,
-//        "atsGscFuel": 31,
-//        "atsGscVbat": 34,
-//        "atsGscSpeed": 32,
-//        "atsGscPowerTotal": 125,
-//        "atsGscPower1": 45,
-//        "atsGscPower2": 40,
-//        "atsGscPower3": 40,
-//        "atsGscKvaTotal": 40,
-//        "atsGscKva1": 10,
-//        "atsGscKva2": 20,
-//        "atsGscKva3": 10,
-//        "atsGscRunHoursCounter": 60,
-//        "atsGscCrankCounter": 10
-//      }
-//    ],
-//    "device_atu": [
-//      {
-//        "atuAtu1X": 10,
-//        "atuAtu1Y": 20,
-//        "atuAtu1Z": 30,
-//        "atuAtu2X": 10,
-//        "atuAtu2Y": 20,
-//        "atuAtu2Z": 30,
-//        "atuAtu3X": 10,
-//        "atuAtu3Y": 20,
-//        "atuAtu3Z": 30
-//      }
-//    ],
-//    "device_dc": [
-//      {
-//        "dcVdc": 21,
-//        "dcIbat1": 22,
-//        "dcBat1Temp": 23,
-//        "dcVbat1Div2": 30,
-//        "dcIbat2": 12,
-//        "dcBat2Temp": 13,
-//        "dcVbat2Div2": 14,
-//        "dcIbat3": 15,
-//        "dcBat3Temp": 16,
-//        "dcVbat3Div2": 17,
-//        "dcIbat4": 18,
-//        "dcBat4Temp": 19,
-//        "dcVbat4Div2": 20
-//      }
-//    ],
-//    "device_crmu": [
-//      {}
-//    ]
-//  },
-//  "shared_attribute_name": {
-//    "device_misc": [
-//      "miscFanControlAuto",
-//      "miscMinTemp",
-//      "miscMaxHumid",
-//      "miscExpectedTemp",
-//      "miscMaxTemp"
-//    ],
-//    "device_airc": [
-//      "aircControlAuto",
-//      "aircBalance",
-//      "aircCycle",
-//      "aircGenAllow",
-//      "aircVacThThreshold"
-//    ],
-//    "gateway_python_001": [
-//      "periodReadDataIO",
-//      "periodUpdate",
-//      "periodSendTelemetry"
-//    ],
-//    "device_crmu": [
-//      "crmuControlAuto"
-//    ],
-//    "device_ats": [
-//      "atsVdcThreshold",
-//      "atsMaxRunTime",
-//      "atsVacThreshold",
-//      "atsMinRestTime",
-//      "atsTestCycle",
-//      "atsTestStart",
-//      "atsControlAuto",
-//      "atsTestEn",
-//      "atsTestTime"
-//    ]
-//  },
-//  "client_attribute_name": {
-//    "device_misc": [
-//        "miscBellState",
-//        "miscFanState",
-//        "miscVbus",
-//        "miscV12",
-//        "miscDin3",
-//        "miscDin2",
-//        "miscDin1",
-//        "miscDin0",
-//        "miscDin7",
-//        "miscDin6",
-//        "miscDin5",
-//        "miscDin4"
-//    ],
-//    "device_airc": [
-//      "aircAirc1Command",
-//      "aircAirc1Error",
-//      "aircAirc1RunState",
-//      "aircAirc1RunThreshold",
-//      "aircAirc2Command",
-//      "aircAirc2Error",
-//      "aircAirc2RunState",
-//      "aircAirc2RunThreshold",
-//      "aircIrStatus",
-//      "aircLearnCmdId",
-//      "aircOnlineStatus"
-//    ],
-//    "gateway_python_001": [
-//      "periodReadDataIO",
-//      "periodUpdate",
-//      "periodSendTelemetry"
-//    ],
-//    "device_crmu": [
-//      "crmuCardId",
-//      "crmuDoorState",
-//      "crmuOnlineStatus"
-//    ],
-//    "device_atu": [
-//      "atuOnlineStatus"
-//    ],
-//    "device_dc": [
-//      "dcOnlineStatus",
-//      "dcRectState"
-//    ],
-//    "device_fire_sensor": [
-//      "fireState"
-//    ],
-//    "device_flood_sensor": [
-//      "floodState"
-//    ],
-//    "device_move_sensor": [
-//      "moveSensor"
-//    ],
-//    "device_smoke_sensor": [
-//      "smokeState"
-//    ],
-//    "device_ats": [
-//      "atsBatFull",
-//      "atsCommState",
-//      "atsContactorState",
-//      "atsGscAlarm",
-//      "atsGscPwrCounter",
-//      "atsGscType",
-//      "atsIsAllBatFull",
-//      "atsMode",
-//      "atsOnlineStatus",
-//      "atsType"
-//    ]
-//  }
 }

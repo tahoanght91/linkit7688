@@ -23,13 +23,13 @@ def check_state_device(device_name, method):
     value = ''
     if device_name == DEVICE_AIRC_1 and method == GET_SATE_AIRC_1:
         # TODO: change client attributes of airc1:
-        value = client_attributes.get('aircIrStatus', default_data.aircIrStatus)
+        value = client_attributes.get('aircAirc1Command', default_data.aircAirc1Command)
     elif device_name == DEVICE_AIRC_2 and method == GET_STATE_AIRC_2:
         # TODO: change client attributes of airc2:
-        value = client_attributes.get('aircIrStatus', default_data.aircIrStatus)
+        value = client_attributes.get('aircAirc2Command', default_data.aircAirc2Command)
     elif device_name == DEVICE_MISC and method == GET_STATE_FAN:
         # TODO: change client attributes of fan (misc):
-        value = client_attributes.get('miscDin0', default_data.miscDin0)
+        value = client_attributes.get('aircFanCommand', default_data.aircFanCommand)
     elif device_name == DEVICE_ATS and method == GET_STATE_ATS:
         value = client_attributes.get('atsMode', default_data.atsMode)
     elif device_name == DEVICE_CRMU and method == GET_STATE_CRMU:
@@ -42,10 +42,10 @@ def get_value_device(device_name, method):
     value = ''
     if device_name == DEVICE_AIRC_1 and method == GET_VALUE_AIRC_1:
         # TODO: change telemetry of airc1:
-        value = telemetries.get('temp_indoor', default_data.temp_indoor)
+        value = telemetries.get('aircTempIndoor', default_data.aircTempIndoor)
     elif device_name == DEVICE_AIRC_2 and method == GET_VALUE_AIRC_2:
         # TODO: change telemetry of airc2:
-        value = telemetries.get('temp_indoor', default_data.temp_indoor)
+        value = telemetries.get('aircTempIndoor', default_data.aircTempIndoor)
     # elif device_name == DEVICE_MISC and method == GET_VALUE_FAN:
     #     # TODO: change telemetry of fan (misc):
     #     value = telemetries.get('miscDin0', default_data.miscDin0)
@@ -97,20 +97,26 @@ def _process_command(device, command):
         device = 2
         if value == 'off':
             command = 0
-        else:
+        elif value == 'on':
             command = 1
+        else:
+            command = value
     elif device == DEVICE_AIRC_1:
         device = 3
         if value == 'off':
             command = 0
         elif value == 'on':
             command = 1
+        else:
+            command = value
     elif device == DEVICE_AIRC_2:
         device = 4
         if value == 'off':
             command = 0
         elif value == 'on':
             command = 1
+        else:
+            command = value
     elif device == DEVICE_ATS:
         device = 5
         if value == 'main':
@@ -149,15 +155,15 @@ def convert_boolean_to_int(command):
 
 
 def _check_command_send_rpc(device, command):
-    if device == DEVICE_AIRC_1 and (command == False or command == True or command == GET_STATE) and not shared_attributes.get('aircControlAuto', default_data.aircControlAuto):
+    if device == DEVICE_AIRC_1 and (command == False or command == True) and not shared_attributes.get('aircControlAuto', default_data.aircControlAuto):
         return True
-    elif device == DEVICE_AIRC_2 and (command == False or command == True or command == GET_STATE) and not shared_attributes.get('aircControlAuto', default_data.miscFanControlAuto):
+    elif device == DEVICE_AIRC_2 and (command == False or command == True) and not shared_attributes.get('aircControlAuto', default_data.miscFanControlAuto):
         return True
-    elif device == DEVICE_MISC and (command == False or command == True or command == GET_STATE) and not shared_attributes.get('miscFanControlAuto', default_data.miscFanControlAuto):
+    elif device == DEVICE_MISC and (command == False or command == True) and not shared_attributes.get('miscFanControlAuto', default_data.miscFanControlAuto):
         return True
-    elif device == DEVICE_ATS and (command == 'main' or command == 'gen' or command == GET_STATE) and not shared_attributes.get('atsControlAuto', default_data.atsControlAuto):
+    elif device == DEVICE_ATS and (command == COMMAND_MAIN or command == COMMAND_GEN) and not shared_attributes.get('atsControlAuto', default_data.atsControlAuto):
         return True
-    elif device == DEVICE_CRMU and (command == False or command == True or command == GET_STATE) and not shared_attributes.get('crmuControlAuto', default_data.crmuControlAuto):
+    elif device == DEVICE_CRMU and (command == False or command == True) and not shared_attributes.get('crmuControlAuto', default_data.crmuControlAuto):
         return True
     else:
         return False

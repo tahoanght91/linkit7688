@@ -18,11 +18,12 @@ def extract(byte_data):
     ibat4 = bytes_to_int(byte_data[21:23], byteorder=BYTE_ORDER)
     bat4_temp = bytes_to_int(byte_data[23:25], byteorder=BYTE_ORDER)
     vbat4_div2 = bytes_to_int(byte_data[25:27], byteorder=BYTE_ORDER)
-
     online_status = bytes_to_int(byte_data[27])
 
     _read_attribute('dcRectState', rect_state)
     _read_attribute('dcVdc', vdc)
+    _read_attribute('dcOnlineStatus', online_status)
+
     _read_telemetry('dcIbat1', ibat1)
     _read_telemetry('dcBat1Temp', bat1_temp)
     _read_telemetry('dcVbat1Div2', vbat1_div2)
@@ -36,4 +37,4 @@ def extract(byte_data):
     _read_telemetry('dcBat4Temp', bat4_temp)
     _read_telemetry('dcVbat4Div2', vbat4_div2)
 
-    _read_attribute('dcOnlineStatus', online_status)
+
