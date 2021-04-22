@@ -68,13 +68,6 @@
       "crmuLen": 1,
       "crmuCardId": "AAA",
       "crmuDoorState": 1
-    },
-    "gateway_python_001": {
-      "fireState": 0,
-      "offOnFire": 0,
-      "smokeState": 0,
-      "floodState": 0,
-      "moveSensor": 0
     }
   },
   "telemetry": {
