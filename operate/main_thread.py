@@ -135,6 +135,10 @@ def call():
             current_update_cycle = math.floor(time.time() / UPDATE_PERIOD)
             if current_update_cycle > original_update_cycle and CLIENT.is_connected():
                 LOGGER.info('Update system, disconnect with server')
+                CLIENT.gw_disconnect_device(DEVICE_MDC_1)
+                CLIENT.gw_disconnect_device(DEVICE_MCC_1)
+                CLIENT.gw_disconnect_device(DEVICE_ATS_1)
+                CLIENT.gw_disconnect_device(DEVICE_ACM_1)
                 CLIENT.disconnect()
                 LOGGER.info('Retrieve update from server')
                 try:
@@ -142,16 +146,28 @@ def call():
                         'cd /IoT && git clone https://github.com/MeryKitty/linkit7688 && mv ./linkit ./linkit_old && mv ./linkit7688 ./linkit',
                         stdout=subprocess.STDOUT, stderr=subprocess.STDOUT)
                     LOGGER.info('Successfully update the program, reboot the system')
+                    CLIENT.gw_disconnect_device(DEVICE_MDC_1)
+                    CLIENT.gw_disconnect_device(DEVICE_MCC_1)
+                    CLIENT.gw_disconnect_device(DEVICE_ATS_1)
+                    CLIENT.gw_disconnect_device(DEVICE_ACM_1)
                     CLIENT.disconnect()
                     os.system('reboot')
                 except subprocess.CalledProcessError as e:
                     LOGGER.error('Cannot update repository, error %s', str(e))
             time.sleep(period)
     except KeyboardInterrupt:
+        CLIENT.gw_disconnect_device(DEVICE_MDC_1)
+        CLIENT.gw_disconnect_device(DEVICE_MCC_1)
+        CLIENT.gw_disconnect_device(DEVICE_ATS_1)
+        CLIENT.gw_disconnect_device(DEVICE_ACM_1)
         CLIENT.disconnect()
         sys.exit(1)
     except Exception as e:
         LOGGER.error('Fatal error %s, terminate immediately', str(e))
+        CLIENT.gw_disconnect_device(DEVICE_MDC_1)
+        CLIENT.gw_disconnect_device(DEVICE_MCC_1)
+        CLIENT.gw_disconnect_device(DEVICE_ATS_1)
+        CLIENT.gw_disconnect_device(DEVICE_ACM_1)
         CLIENT.disconnect()
         sys.exit(1)
 
