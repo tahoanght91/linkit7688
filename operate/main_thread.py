@@ -5,9 +5,11 @@ import math
 import subprocess
 
 from config import *
+from config.common import *
 from config.default_data import data_dict
 from devices import clock
 from . import subscription_thread, monitor_thread, io_thread, telemetry_thread, update_attributes_thread, ui_thread
+from .update_attributes_thread import format_client_attributes, get_list_key
 
 semaphore = threading.Semaphore(0)
 
@@ -69,31 +71,27 @@ def call():
             # clock.set()
             LOGGER.debug('Get original attributes')
             #shared_attributes
-            device_shared_attributes_name = data_dict["shared_attribute_name"]
+            device_shared_attributes_name = format_client_attributes(data_dict['shared'])
             for key, value in device_shared_attributes_name.items():
-                CLIENT.gw_request_shared_attributes(key, value, _on_receive_shared_attributes_callback)
+                list_shared_keys = get_list_key(value)
+                CLIENT.gw_request_shared_attributes(key, list_shared_keys, _on_receive_shared_attributes_callback)
                 semaphore.acquire()
 
             #client_attributes
-            device_client_attributes_name = data_dict["client_attribute_name"]
+            device_client_attributes_name = format_client_attributes(data_dict['client'])
             for key, value in device_client_attributes_name.items():
-                CLIENT.gw_request_client_attributes(key, value, _on_receive_client_attributes_callback)
+                list_client_keys = get_list_key(value)
+                CLIENT.gw_request_client_attributes(key, list_client_keys, _on_receive_client_attributes_callback)
                 semaphore.acquire()
         else:
             LOGGER.debug('Get current time')
             clock.extract()
         LOGGER.info('Start working threads')
 
-        CLIENT.gw_connect_device("device_airc", "default")
-        CLIENT.gw_connect_device("device_ats", "default")
-        CLIENT.gw_connect_device("device_atu", "default")
-        CLIENT.gw_connect_device("device_dc", "default")
-        CLIENT.gw_connect_device("device_crmu", "default")
-        CLIENT.gw_connect_device("device_misc", "default")
-        CLIENT.gw_connect_device("device_move_sensor", "default")
-        CLIENT.gw_connect_device("device_smoke_sensor", "default")
-        CLIENT.gw_connect_device("device_fire_sensor", "default")
-        CLIENT.gw_connect_device("device_flood_sensor", "default")
+        CLIENT.gw_connect_device(DEVICE_MDC_1, "default")
+        CLIENT.gw_connect_device(DEVICE_MCC_1, "default")
+        CLIENT.gw_connect_device(DEVICE_ATS_1, "default")
+        CLIENT.gw_connect_device(DEVICE_ACM_1, "default")
 
         CLIENT.gw_subscribe_to_all_attributes(callback=subscription_thread._attribute_change_callback)
         CLIENT.gw_set_server_side_rpc_request_handler(handler=subscription_thread._gw_rpc_callback)
