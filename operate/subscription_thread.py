@@ -56,12 +56,15 @@ def _gw_rpc_callback(self, content):
         value = content['data']['params']
         params = {'device': device, 'command': value}
     elif len(content['data']) == 2:
-        params = {'device': device, 'command': GET_STATE}
+        if GET_STATE in method:
+            params = {'device': device, 'command': GET_STATE}
+        elif GET_VALUE in method:
+            params = {'device': device, 'command': GET_VALUE}
 
-    if 'Airc1' in method:
-        params = {'device': DEVICE_AIRC_1, 'command': value}
-    elif 'Airc2' in method:
-        params = {'device': DEVICE_AIRC_2, 'command': value}
+    # if 'Airc1' in method:
+    #     params = {'device': DEVICE_AIRC_1, 'command': value}
+    # elif 'Airc2' in method:
+    #     params = {'device': DEVICE_AIRC_2, 'command': value}
 
     if AUTO in method:
         if control.process_set_auto(params):
@@ -73,23 +76,23 @@ def _gw_rpc_callback(self, content):
             commands_lock.acquire()
             commands[params['device']] = params['command']
             commands_lock.release()
-            LOGGER.info('    Success')
+            LOGGER.info('Command CONTROL receive success')
         else:
-            LOGGER.info('    Malformed message or manual mode not activated')
+            LOGGER.info('Command CONTROL malformed message or manual mode not activated')
     elif GET_STATE in method:
         if control.check_command(params):
             state = check_state_device(device, method)
             CLIENT.gw_send_rpc_reply(device, request_id, state, 1)
-            LOGGER.info('    Success')
+            LOGGER.info('Command GET_SATE receive success: %s', state)
         else:
-            LOGGER.info('    Fail')
+            LOGGER.info('Command GET_SATE fail')
     elif GET_VALUE in method:
         if control.check_command(params):
             value_of_device = get_value_device(device, method)
             CLIENT.gw_send_rpc_reply(device, request_id, value_of_device, 1)
-            LOGGER.info('    Success')
+            LOGGER.info('Command GET_VALUE receive success: %s', value_of_device)
         else:
-            LOGGER.info('    Fail')
+            LOGGER.info('Command GET_VALUE fail')
 
 # body: {"method": "rpcCall", "params": {"device": "airc", "command": "on"}}
 # gateway-set : {'device': 'device_airc', 'data': {'params': False, 'id': 4, 'method': 'setAircValue'}}
