@@ -10,9 +10,13 @@ def call():
         if CLIENT.is_connected():
             update_attributes_lock.acquire()
             gw_client_attributes = format_client_attributes(replica_client_attributes())
+            gw_shared_attributes = format_client_attributes(fake_shared_attributes())
             if gw_client_attributes:
                 for key, value in gw_client_attributes.items():
                     CLIENT.gw_send_attributes(key, value)
+                if gw_shared_attributes:
+                    for key, value in gw_shared_attributes.items():
+                        CLIENT.gw_send_attributes(key, value)
                 LOGGER.info('Sent changed client attributes')
                 log_info = []
                 for key, value in update_attributes.items():
@@ -70,66 +74,34 @@ def replica_client_attributes():
     return attributes
 
 
-# def format_client_attributes(client_attribtes):
-#     list_client_attributes = {DEVICE_MISC: {}, DEVICE_AIRC: {}, DEVICE_ATS: {}, DEVICE_ATU: {},
-#                               DEVICE_DC: {}, DEVICE_CRMU: {}, DEVICE_FIRE_SENSOR: {}, DEVICE_SMOKE_SENSOR: {},
-#                               DEVICE_MOVE_SENSOR: {}, DEVICE_FLOOD_SENSOR: {}}
-#     client_attributes_misc = {}
-#     client_attributes_airc = {}
-#     client_attributes_ats = {}
-#     client_attributes_atu = {}
-#     client_attributes_dc = {}
-#     client_attributes_crmu = {}
-#     client_attributes_fire_sensor = {}
-#     client_attributes_smoke_sensor = {}
-#     client_attributes_move_sensor = {}
-#     client_attributes_flood_sensor = {}
-#     data_from_stm32 = client_attribtes
-#
-#     for key, value in data_from_stm32.items():
-#         if 'misc' in key:
-#             client_attributes_misc[key] = value
-#         elif 'airc' in key:
-#             client_attributes_airc[key] = value
-#         elif 'ats' in key:
-#             client_attributes_ats[key] = value
-#         elif 'dc' in key:
-#             client_attributes_dc[key] = value
-#         elif 'atu' in key:
-#             client_attributes_atu[key] = value
-#         elif 'crmu' in key:
-#             client_attributes_crmu[key] = value
-#         elif 'fireState' in key:
-#             client_attributes_fire_sensor[key] = value
-#         elif 'smokeState' in key:
-#             client_attributes_smoke_sensor[key] = value
-#         elif 'moveSensor' in key:
-#             client_attributes_move_sensor[key] = value
-#         elif 'floodState' in key:
-#             client_attributes_flood_sensor[key] = value
-#
-#     if client_attributes_misc:
-#         list_client_attributes[DEVICE_MISC] = client_attributes_misc
-#     if client_attributes_airc:
-#         list_client_attributes[DEVICE_AIRC] = client_attributes_airc
-#     if client_attributes_ats:
-#         list_client_attributes[DEVICE_ATS] = client_attributes_ats
-#     if client_attributes_atu:
-#         list_client_attributes[DEVICE_ATU] = client_attributes_atu
-#     if client_attributes_dc:
-#         list_client_attributes[DEVICE_DC] = client_attributes_dc
-#     if client_attributes_crmu:
-#         list_client_attributes[DEVICE_CRMU] = client_attributes_crmu
-#     if client_attributes_fire_sensor:
-#         list_client_attributes[DEVICE_FIRE_SENSOR] = client_attributes_fire_sensor
-#     if client_attributes_smoke_sensor:
-#         list_client_attributes[DEVICE_SMOKE_SENSOR] = client_attributes_smoke_sensor
-#     if client_attributes_move_sensor:
-#         list_client_attributes[DEVICE_MOVE_SENSOR] = client_attributes_move_sensor
-#     if client_attributes_flood_sensor:
-#         list_client_attributes[DEVICE_FLOOD_SENSOR] = client_attributes_flood_sensor
-#
-#     return list_client_attributes
+def fake_shared_attributes():
+    attributes = {
+        "periodReadDataIO": 0.05,
+        "periodSendTelemetry": 50,
+        "periodUpdate": 5,
+        "miscExpectedTemp": 26,
+        "miscMinTemp": 20,
+        "miscMaxTemp": 32,
+        "miscMaxHumid": 80,
+        "miscFanControlAuto": 1,
+        "aircControlAuto": 1,
+        "aircBalance": 2,
+        "aircVacThThreshold": 180,
+        "aircGenAllow": 1,
+        "aircCycle": 180,
+        "atsControlAuto": 1,
+        "atsMaxRunTime": 240,
+        "atsMinRestTime": 120,
+        "atsTestEn": 0,
+        "atsVdcThreshold": 48,
+        "atsVacThreshold": 160,
+        "atsTestStart": 0,
+        "atsTestCycle": 10080,
+        "atsTestTime": 5,
+        "crmuControlAuto": 1
+    }
+
+    return attributes
 
 
 def format_client_attributes(dict_attributes):
