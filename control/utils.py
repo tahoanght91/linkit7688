@@ -105,8 +105,38 @@ def _process_command(device, command):
             command = 0
         else:
             command = 1
-    elif device == DEVICE_MISC:
+    elif device == 'fan':
         device = 2
+        if command == 'off':
+            command = 0
+        else:
+            command = 1
+    elif device == 'airc1':
+        device = 3
+        if command == 'off':
+            command = 0
+        else:
+            command = 1
+    elif device == 'airc2':
+        device = 4
+        if command == 'off':
+            command = 0
+        else:
+            command = 1
+    elif device == 'ats':
+        device = 5
+        if command == 'off':
+            command = 0
+        else:
+            command = 1
+    elif device == 'crmu':
+        device = 6
+        if command == 'off':
+            command = 0
+        else:
+            command = 1
+    elif device == DEVICE_MCC_1:
+        device = 7
         if value == COMMAND_MCC_CLOSE_DOOR:
             command = 0
         elif value == COMMAND_MCC_OPEN_DOOR:
@@ -126,7 +156,7 @@ def _process_command(device, command):
         else:
             command = value
     elif device == DEVICE_ATS_1:
-        device = 5
+        device = 8
         if value == COMMAND_ATS_MAIN:
             command = 0
         elif value == COMMAND_ATS_GEN:
@@ -134,7 +164,7 @@ def _process_command(device, command):
         elif value == 'auto':
             command = 2
     elif device == DEVICE_ACM_1:
-        device = 3
+        device = 9
         if value == COMMAND_AIRC_1_OFF:
             command = 0
         elif value == COMMAND_AIRC_1_ON:
@@ -173,7 +203,29 @@ def convert_boolean_to_int(command):
 
 
 def _check_command_send_rpc(device, command):
-    if device == DEVICE_ACM_1 \
+    if device == DEVICE_AIRC_1 \
+            and (command == 'off' or command == 'on') \
+            and not shared_attributes.get('aircControlAuto', default_data.aircControlAuto):
+        return True
+    elif device == 'bell' and (command == 'off' or command == 'on'):
+        return True
+    elif device == DEVICE_AIRC_2 \
+            and (command == 'off' or command == 'on') \
+            and not shared_attributes.get('aircControlAuto', default_data.aircControlAuto):
+        return True
+    elif device == DEVICE_MISC \
+            and (command == 'off' or command == 'on') \
+            and not shared_attributes.get('miscFanControlAuto', default_data.miscFanControlAuto):
+        return True
+    elif device == DEVICE_ATS \
+            and (command == 'main' or command == 'gen') \
+            and not shared_attributes.get('atsControlAuto', default_data.atsControlAuto):
+        return True
+    elif device == DEVICE_CRMU \
+            and (command == 'off' or command == 'on') \
+            and not shared_attributes.get('crmuControlAuto', default_data.crmuControlAuto):
+        return True
+    elif device == DEVICE_ACM_1 \
             and (command == COMMAND_AIRC_1_ON or
                  command == COMMAND_AIRC_1_OFF or
                  command == COMMAND_AIRC_2_ON or
