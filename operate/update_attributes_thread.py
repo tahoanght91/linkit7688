@@ -49,10 +49,7 @@ def replica_client_attributes():
         "aircIrStatus": 1,
         "aircLearnCmdId": 0,
         "atsOnlineStatus": 1,
-        "atsCommState": 1,
-        "atsMode": 0,
         "atsType": 1,
-        "atsContactorState": 1,
         "atsBatFull": 1,
         "atsIsAllBatFull": 0,
         "atsGscType": 1,
@@ -61,7 +58,6 @@ def replica_client_attributes():
         "atuOnlineStatus": 1,
         "crmuOnlineStatus": 1,
         "crmuCardId": "AAA",
-        "crmuDoorState": 1,
         "dcOnlineStatus": 1,
         "dcRectState": 1
     }

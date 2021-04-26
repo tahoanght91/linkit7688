@@ -1,5 +1,5 @@
 from utility import bytes_to_int
-from .utils import _read_attribute
+from .utils import _read_attribute, _read_telemetry
 
 
 def extract(byte_data):
@@ -8,5 +8,6 @@ def extract(byte_data):
     online_status = bytes_to_int(byte_data[13])
 
     _read_attribute('crmuCardId', card_id)
-    _read_attribute('crmuDoorState', door_state)
     _read_attribute('crmuOnlineStatus', online_status)
+
+    _read_telemetry('crmuDoorState', door_state)

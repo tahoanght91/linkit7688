@@ -62,6 +62,9 @@ def replica_telemetry():
         "atsGscKva3": 10,
         "atsGscRunHoursCounter": 60,
         "atsGscCrankCounter": 10,
+        "atsCommState": 1,
+        "atsMode": 0,
+        "atsContactorState": 1,
         "atuAtu1X": 10,
         "atuAtu1Y": 20,
         "atuAtu1Z": 30,
@@ -83,7 +86,9 @@ def replica_telemetry():
         "dcVbat3Div2": 17,
         "dcIbat4": 18,
         "dcBat4Temp": 19,
-        "dcVbat4Div2": 20
+        "dcVbat4Div2": 20,
+        "crmuDoorState": 1
+
     }
 
     return telemetry

@@ -47,15 +47,15 @@ def extract(byte_data):
     gsc_alarm = bytes_to_int(byte_data[89], byteorder=BYTE_ORDER)
     online_status = bytes_to_int(byte_data[90])
 
-    _read_attribute('atsCommState', comm_state)
-    _read_attribute('atsMode', mode)
     _read_attribute('atsType', dev_type)
-    _read_attribute('atsContactorState', contactor_state)
     _read_attribute('atsGscPwrCounter', pwr_counter)
     _read_attribute('atsGscType', gsc_type)
     _read_attribute('atsGscAlarm', gsc_alarm)
     _read_attribute('atsOnlineStatus', online_status)
 
+    _read_telemetry('atsCommState', comm_state)
+    _read_telemetry('atsMode', mode)
+    _read_telemetry('atsContactorState', contactor_state)
     _read_telemetry('atsVacP1', vac_p1)
     _read_telemetry('atsVacP2', vac_p2)
     _read_telemetry('atsVacP3', vac_p3)
