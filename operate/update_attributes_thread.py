@@ -29,11 +29,6 @@ def call():
 
 def replica_client_attributes():
     attributes = {
-        "fireState": 0,
-        "offOnFire": 0,
-        "smokeState": 0,
-        "floodState": 0,
-        "moveSensor": 0,
         "miscDin4": 0,
         "miscDin5": 0,
         "miscDin6": 0,

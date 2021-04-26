@@ -20,6 +20,11 @@ def call():
 
 def replica_telemetry():
     telemetry = {
+        "fireState": 0,
+        "offOnFire": 0,
+        "smokeState": 0,
+        "floodState": 0,
+        "moveSensor": 0,
         "miscTemp": 19,
         "miscHumid": 60,
         "aircTemp": 35,
