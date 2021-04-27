@@ -125,10 +125,12 @@ def _process_command(device, command):
             command = 1
     elif device == 'ats':
         device = 5
-        if command == 'off':
+        if command == 'main':
             command = 0
-        else:
+        elif command == 'gen':
             command = 1
+        else:
+            command = 2
     elif device == 'crmu':
         device = 6
         if command == 'off':
@@ -203,25 +205,25 @@ def convert_boolean_to_int(command):
 
 
 def _check_command_send_rpc(device, command):
-    if device == DEVICE_AIRC_1 \
+    if device == 'airc1' \
             and (command == 'off' or command == 'on') \
             and not shared_attributes.get('aircControlAuto', default_data.aircControlAuto):
         return True
     elif device == 'bell' and (command == 'off' or command == 'on'):
         return True
-    elif device == DEVICE_AIRC_2 \
+    elif device == 'airc2' \
             and (command == 'off' or command == 'on') \
             and not shared_attributes.get('aircControlAuto', default_data.aircControlAuto):
         return True
-    elif device == DEVICE_MISC \
+    elif device == 'fan' \
             and (command == 'off' or command == 'on') \
             and not shared_attributes.get('miscFanControlAuto', default_data.miscFanControlAuto):
         return True
-    elif device == DEVICE_ATS \
+    elif device == 'ats' \
             and (command == 'main' or command == 'gen') \
             and not shared_attributes.get('atsControlAuto', default_data.atsControlAuto):
         return True
-    elif device == DEVICE_CRMU \
+    elif device == 'crmu' \
             and (command == 'off' or command == 'on') \
             and not shared_attributes.get('crmuControlAuto', default_data.crmuControlAuto):
         return True
