@@ -1,10 +1,8 @@
-import time
-
 import serial
 
 import control
 from config import *
-from devices import airc, ats, atu, crmu, dc, misc
+from devices import airc, ats, atu, crmu, dc, misc, clock
 from utility import *
 
 
@@ -15,13 +13,20 @@ def call():
     message_break = shared_attributes.get('periodReadDataIO', default_data.periodReadDataIO)  # time read data from IO
     flip = READ_PER_WRITE
 
+    original_cycle = int(time.time() / 60)
     while True:
+        # Update time clock to IO
+        current_cycle = int(time.time() / 60)
+        if not (current_cycle - original_cycle) and not (current_cycle - original_cycle) % 2:
+            LOGGER.info("Send clock set")
+            clock.set()
+
         # Read data
         byte_stream = blocking_read(ser, message_break)
         if byte_stream and _read_data(byte_stream):
             ser.write(with_check_sum(data_ack, BYTE_ORDER))
 
-            # Write command
+        # Write command
         if commands:
             commands_snap = []
             commands_lock.acquire()
@@ -116,22 +121,22 @@ def _read_data(byte_stream):
 
 class _OpData:
     #old
-    # MISC_SIZE = 16
-    # AIRC_SIZE = 24
-    # ATS_SIZE = 92
-    # ATU_SIZE = 38
-    # CRMU_SIZE = 15
-    # DC_SIZE = 29
-    # KEY_SIZE = 3
-
-    #new
-    AIRC_SIZE = 17
-    ATS_SIZE = 36
-    CRMU_SIZE = 15
     MISC_SIZE = 16
+    AIRC_SIZE = 24
+    ATS_SIZE = 92
     ATU_SIZE = 38
+    CRMU_SIZE = 15
     DC_SIZE = 29
     KEY_SIZE = 3
+
+    #new
+    # AIRC_SIZE = 17
+    # ATS_SIZE = 36
+    # CRMU_SIZE = 15
+    # MISC_SIZE = 16
+    # ATU_SIZE = 38
+    # DC_SIZE = 29
+    # KEY_SIZE = 3
 
     IO_STATUS_MISC = b'\x11'
     IO_STATUS_DC = b'\x12'
