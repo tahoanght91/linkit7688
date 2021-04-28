@@ -1,5 +1,4 @@
 # device_name
-GATEWAY = 'gateway_python_001'
 DEVICE_AIRC = 'device_airc'
 DEVICE_AIRC_1 = 'device_airc1'
 DEVICE_AIRC_2 = 'device_airc2'
