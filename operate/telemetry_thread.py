@@ -1,11 +1,12 @@
 import time
+from random import randint
 
 from config import *
 from config.common import *
 
 
 def call():
-    period = shared_attributes.get('periodSendTelemetry', default_data.periodSendTelemetry)
+    period = shared_attributes.get('mccPeriodSendTelemetry', default_data.mccPeriodSendTelemetry)
     while True:
         if CLIENT.is_connected():
             telemetry = format_telemetry(replica_telemetry())
@@ -20,18 +21,15 @@ def call():
 
 def replica_telemetry():
     telemetry = {
-        "fireState": 0,
-        "offOnFire": 0,
-        "smokeState": 0,
-        "floodState": 0,
-        "moveSensor": 0,
-        "miscTemp": 19,
-        "miscHumid": 60,
-        "aircTemp": 35,
-        "aircHumid": 85,
-        "aircAirc1Temp": 30,
-        "aircAirc2Temp": 26,
-        "aircOutdoorTemp": 36,
+        "mccFireState": 0,
+        "mccSmokeState": 0,
+        "mccFloodState": 0,
+        "mccMoveSensor": 0,
+        "acmAircTemp": randint(0, 100),
+        "acmAircHumid": randint(0, 100),
+        "acmAirc1Temp": 30,
+        "acmAirc2Temp": 26,
+        "acmOutdoorTemp": 36,
         "atsVacP1": 220,
         "atsVacP2": 10,
         "atsVacP3": 11,
@@ -53,9 +51,9 @@ def replica_telemetry():
         "atsGscVbat": 34,
         "atsGscSpeed": 32,
         "atsGscPowerTotal": 125,
-        "atsGscPower1": 45,
-        "atsGscPower2": 40,
-        "atsGscPower3": 40,
+        "atsGscPower1": randint(0, 100),
+        "atsGscPower2": randint(0, 100),
+        "atsGscPower3": randint(0, 100),
         "atsGscKvaTotal": 40,
         "atsGscKva1": 10,
         "atsGscKva2": 20,
@@ -65,29 +63,20 @@ def replica_telemetry():
         "atsCommState": 1,
         "atsMode": 0,
         "atsContactorState": 1,
-        "atuAtu1X": 10,
-        "atuAtu1Y": 20,
-        "atuAtu1Z": 30,
-        "atuAtu2X": 10,
-        "atuAtu2Y": 20,
-        "atuAtu2Z": 30,
-        "atuAtu3X": 10,
-        "atuAtu3Y": 20,
-        "atuAtu3Z": 30,
-        "dcVdc": 21,
-        "dcIbat1": 22,
-        "dcBat1Temp": 23,
-        "dcVbat1Div2": 30,
-        "dcIbat2": 12,
-        "dcBat2Temp": 13,
-        "dcVbat2Div2": 14,
-        "dcIbat3": 15,
-        "dcBat3Temp": 16,
-        "dcVbat3Div2": 17,
-        "dcIbat4": 18,
-        "dcBat4Temp": 19,
-        "dcVbat4Div2": 20,
-        "crmuDoorState": 1
+        "mccDcVdc": 21,
+        "mccDcIbat1": 22,
+        "mccDcBat1Temp": 23,
+        "mccDcVbat1Div2": 30,
+        "mccDcIbat2": 12,
+        "mccDcBat2Temp": 13,
+        "mccDcVbat2Div2": 14,
+        "mccDcIbat3": 15,
+        "mccDcBat3Temp": 16,
+        "mccDcVbat3Div2": 17,
+        "mccDcIbat4": 18,
+        "mccDcBat4Temp": 19,
+        "mccDcVbat4Div2": 20,
+        "mccDoorState": 1
 
     }
 
@@ -95,25 +84,20 @@ def replica_telemetry():
 
 
 def format_telemetry(dict_telemetry):
-    list_telemetry = {DEVICE_MDC_1: [{}], DEVICE_MCC_1: [{}], DEVICE_ATS_1: [{}], DEVICE_ACM_1: [{}]}
-    telemetry_mdc_1 = {}
+    list_telemetry = {DEVICE_MCC_1: [{}], DEVICE_ATS_1: [{}], DEVICE_ACM_1: [{}]}
     telemetry_mcc_1 = {}
     telemetry_ats_1 = {}
     telemetry_acm_1 = {}
     data_from_stm32 = dict_telemetry
 
     for key, value in data_from_stm32.items():
-        if 'crmu' in key:
-            telemetry_mdc_1[key] = value
+        if 'mcc' in key:
+            telemetry_mcc_1[key] = value
         elif 'ats' in key:
             telemetry_ats_1[key] = value
-        elif 'airc' in key:
+        elif 'acm' in key:
             telemetry_acm_1[key] = value
-        else:
-            telemetry_mcc_1[key] = value
 
-    if telemetry_mdc_1:
-        list_telemetry[DEVICE_MDC_1] = [telemetry_mdc_1]
     if telemetry_mcc_1:
         list_telemetry[DEVICE_MCC_1] = [telemetry_mcc_1]
     if telemetry_ats_1:
@@ -122,37 +106,3 @@ def format_telemetry(dict_telemetry):
         list_telemetry[DEVICE_ACM_1] = [telemetry_acm_1]
 
     return list_telemetry
-
-
-# def format_telemetry():
-#     list_telemetry = {DEVICE_MISC: [{}], DEVICE_AIRC: [{}], DEVICE_ATS: [{}], DEVICE_ATU: [{}], DEVICE_DC: [{}]}
-#     telemetry_misc = {}
-#     telemetry_airc = {}
-#     telemetry_ats = {}
-#     telemetry_atu = {}
-#     telemetry_dc = {}
-#     data_from_stm32 = replica_telemetry()
-#     for key, value in data_from_stm32.items():
-#         if 'misc' in key:
-#             telemetry_misc[key] = value
-#         elif 'airc' in key:
-#             telemetry_airc[key] = value
-#         elif 'ats' in key:
-#             telemetry_ats[key] = value
-#         elif 'atu' in key:
-#             telemetry_atu[key] = value
-#         elif 'dc' in key:
-#             telemetry_dc[key] = value
-#
-#     if telemetry_misc:
-#         list_telemetry[DEVICE_MISC] = [telemetry_misc]
-#     if telemetry_airc:
-#         list_telemetry[DEVICE_AIRC] = [telemetry_airc]
-#     if telemetry_ats:
-#         list_telemetry[DEVICE_ATS] = [telemetry_ats]
-#     if telemetry_atu:
-#         list_telemetry[DEVICE_ATU] = [telemetry_atu]
-#     if telemetry_dc:
-#         list_telemetry[DEVICE_DC] = [telemetry_dc]
-#
-#     return list_telemetry
