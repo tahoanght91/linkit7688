@@ -10,7 +10,7 @@ def call():
     ser = serial.Serial(port=IO_PORT, baudrate=BAUDRATE)
     data_ack = b'\xa0\x02\x11\x00'
     control_ack = b'\xa0\x01\x21'
-    message_break = shared_attributes.get('periodReadDataIO', default_data.periodReadDataIO)  # time read data from IO
+    message_break = shared_attributes.get('mccPeriodReadDataIO', default_data.mccPeriodReadDataIO)  # time read data from IO
     flip = READ_PER_WRITE
 
     original_cycle = int(time.time() / 60)
