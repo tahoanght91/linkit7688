@@ -5,7 +5,7 @@ from config.common import *
 
 
 def call():
-    period = shared_attributes.get('periodUpdate', default_data.periodUpdate)
+    period = shared_attributes.get('mccPeriodUpdate', default_data.mccPeriodUpdate)
     while True:
         if CLIENT.is_connected():
             update_attributes_lock.acquire()
@@ -29,25 +29,25 @@ def call():
 
 def replica_client_attributes():
     attributes = {
-        "miscDin4": 0,
-        "miscDin5": 0,
-        "miscDin6": 0,
-        "miscDin7": 0,
-        "miscFanState": 0,
-        "miscBellState": 0,
-        "miscV12": 1,
-        "miscVbus": 1,
-        "aircOnlineStatus": 1,
-        "aircAirc1RunState": 0,
-        "aircAirc1Error": 0,
-        "aircAirc2RunState": 0,
-        "aircAirc2Error": 0,
-        "aircAirc1RunThreshold": 26,
-        "aircAirc2RunThreshold": 26,
-        "aircAirc1Command": 1,
-        "aircAirc2Command": 1,
-        "aircIrStatus": 1,
-        "aircLearnCmdId": 0,
+        "mccDin4": 0,
+        "mccDin5": 0,
+        "mccDin6": 0,
+        "mccDin7": 0,
+        "mccFanState": 0,
+        "mccBellState": 0,
+        "mccV12": 1,
+        "mccVbus": 1,
+        "acmOnlineStatus": 1,
+        "acmAirc1RunState": 0,
+        "acmAirc1Error": 0,
+        "acmAirc2RunState": 0,
+        "acmAirc2Error": 0,
+        "acmAirc1RunThreshold": 26,
+        "acmAirc2RunThreshold": 26,
+        "acmAirc1Command": 1,
+        "acmAirc2Command": 1,
+        "acmIrStatus": 1,
+        "acmLearnCmdId": 0,
         "atsOnlineStatus": 1,
         "atsType": 1,
         "atsBatFull": 1,
@@ -55,9 +55,8 @@ def replica_client_attributes():
         "atsGscType": 1,
         "atsGscPwrCounter": 1,
         "atsGscAlarm": 0,
-        "atuOnlineStatus": 1,
-        "crmuOnlineStatus": 1,
-        "crmuCardId": "AAA",
+        "mccOnlineStatus": 1,
+        "mccCardId": "AAA",
         "dcOnlineStatus": 1,
         "dcRectState": 1
     }
@@ -67,19 +66,19 @@ def replica_client_attributes():
 
 def fake_shared_attributes():
     attributes = {
-        "periodReadDataIO": 0.05,
-        "periodSendTelemetry": 50,
-        "periodUpdate": 5,
-        "miscExpectedTemp": 26,
-        "miscMinTemp": 20,
-        "miscMaxTemp": 32,
-        "miscMaxHumid": 80,
-        "miscFanControlAuto": 1,
-        "aircControlAuto": 1,
-        "aircBalance": 2,
-        "aircVacThThreshold": 180,
-        "aircGenAllow": 1,
-        "aircCycle": 180,
+        "mccPeriodReadDataIO": 0.05,
+        "mccPeriodSendTelemetry": 50,
+        "mccPeriodUpdate": 5,
+        "mccExpectedTemp": 26,
+        "mccMinTemp": 20,
+        "mccMaxTemp": 32,
+        "mccMaxHumid": 80,
+        "mccFanControlAuto": 1,
+        "acmControlAuto": 1,
+        "acmBalance": 2,
+        "acmVacThThreshold": 180,
+        "acmGenAllow": 1,
+        "acmCycle": 180,
         "atsControlAuto": 1,
         "atsMaxRunTime": 240,
         "atsMinRestTime": 120,
@@ -89,32 +88,27 @@ def fake_shared_attributes():
         "atsTestStart": 0,
         "atsTestCycle": 10080,
         "atsTestTime": 5,
-        "crmuControlAuto": 1
+        "mccControlAuto": 1
     }
 
     return attributes
 
 
 def format_client_attributes(dict_attributes):
-    list_client_attributes = {DEVICE_MDC_1: {}, DEVICE_MCC_1: {}, DEVICE_ATS_1: {}, DEVICE_ACM_1: {}}
-    client_attributes_mdc_1 = {}
+    list_client_attributes = {DEVICE_MCC_1: {}, DEVICE_ATS_1: {}, DEVICE_ACM_1: {}}
     client_attributes_mcc_1 = {}
     client_attributes_ats_1 = {}
     client_attributes_acm_1 = {}
     data_from_stm32 = dict_attributes
 
     for key, value in data_from_stm32.items():
-        if 'crmu' in key:
-            client_attributes_mdc_1[key] = value
+        if 'mcc' in key:
+            client_attributes_mcc_1[key] = value
         elif 'ats' in key:
             client_attributes_ats_1[key] = value
-        elif 'airc' in key:
+        elif 'acm' in key:
             client_attributes_acm_1[key] = value
-        else:
-            client_attributes_mcc_1[key] = value
 
-    if client_attributes_mdc_1:
-        list_client_attributes[DEVICE_MDC_1] = client_attributes_mdc_1
     if client_attributes_ats_1:
         list_client_attributes[DEVICE_ATS_1] = client_attributes_ats_1
     if client_attributes_acm_1:
