@@ -61,16 +61,14 @@ def _gw_rpc_callback(self, content):
         elif GET_VALUE in method:
             params = {'device': device, 'command': GET_VALUE}
 
-    # if 'Airc1' in method:
-    #     params = {'device': DEVICE_AIRC_1, 'command': value}
-    # elif 'Airc2' in method:
-    #     params = {'device': DEVICE_AIRC_2, 'command': value}
-
     if AUTO in method:
-        if control.process_set_auto(params):
-            LOGGER.info('    Success')
+        if control.check_command_send_rpc(params):
+            commands_lock.acquire()
+            commands[params['device']] = params['command']
+            commands_lock.release()
+            LOGGER.info('Command AUTO receive success')
         else:
-            LOGGER.info('    Malformed message')
+            LOGGER.info('Command AUTO fail')
     elif CONTROL in method:
         if control.check_command_send_rpc(params):
             commands_lock.acquire()
