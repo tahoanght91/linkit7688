@@ -26,11 +26,14 @@ GET_VALUE = 'getValue'
 # command
 COMMAND_CONTROL = 'control'
 # ATS
-COMMAND_AUTO = 'auto'
+COMMAND_ATS_AUTO = 'auto'
 COMMAND_ATS_MAIN = 'main'
 COMMAND_ATS_GEN = 'gen'
 
 # MCC
+#module MCC
+COMMAND_MCC_AUTO_ON = 'onAutoMcc'
+COMMAND_MCC_AUTO_OFF = 'offAutoMcc'
 # door
 COMMAND_MCC_OPEN_DOOR = 'openDoor'
 COMMAND_MCC_CLOSE_DOOR = 'closeDoor'
@@ -45,6 +48,9 @@ COMMAND_MCC_ON_ERROR = 'onError'
 COMMAND_MCC_OFF_ERROR = 'offError'
 
 # ACM
+#module acm
+COMMAND_ACM_AUTO_ON = 'onAutoAcm'
+COMMAND_ACM_AUTO_OFF = 'offAutoAcm'
 # air conditioner 1
 COMMAND_AIRC_1_ON = 'onAirc1'
 COMMAND_AIRC_1_OFF = 'offAirc1'
