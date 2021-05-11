@@ -1,6 +1,7 @@
 {
   "shared": {
     "mccPeriodReadDataIO": 0.05,
+    "mccPeriodSendShared": 30,
     "mccPeriodSendTelemetry": 50,
     "mccPeriodUpdate": 5,
     "mccExpectedTemp": 26,
@@ -8,6 +9,10 @@
     "mccMaxTemp": 32,
     "mccMaxHumid": 80,
     "mccFanControlAuto": 1,
+    "acmAlternativeState": 0,
+    "acmMaxTemp": 60,
+    "acmRestTime": 320,
+    "acmRunTime": 240,
     "acmControlAuto": 1,
     "acmBalance": 2,
     "acmVacThThreshold": 180,

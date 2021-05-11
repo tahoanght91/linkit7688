@@ -92,6 +92,7 @@ def _process_set_auto(device, command):
 
 
 def _process_command(device, command):
+    result = ''
     value = ''
 
     if type(command) is bool:
@@ -157,6 +158,7 @@ def _process_command(device, command):
             command = 7
         else:
             command = value
+        result = struct.pack('BBBBB', 0xA0, 0x03, 0x21, device, command)
     elif device == DEVICE_ATS_1:
         device = 98
         if value == COMMAND_ATS_MAIN:
@@ -165,6 +167,7 @@ def _process_command(device, command):
             command = 1
         elif value == COMMAND_ATS_AUTO:
             command = 2
+        result = struct.pack('BBBBB', 0xA0, 0x03, 0x21, device, command)
     elif device == DEVICE_ACM_1:
         device = 99
         if value == COMMAND_ACM_AUTO_OFF:
@@ -185,9 +188,68 @@ def _process_command(device, command):
             command = 7
         else:
             command = value
+        result = struct.pack('BBBBB', 0xA0, 0x03, 0x21, device, command)
+    else:
+        response_classify = classify_shared_attributes(device, command)
+        id_shared_attributes = response_classify['idSharedAttributes']
+        if 'ats' in device and type(id_shared_attributes) is int:
+            result = struct.pack('BBBBB', 0xA0, 0x03, 0x22, id_shared_attributes, command)
+        elif 'acm' in device and type(id_shared_attributes) is int:
+            result = struct.pack('BBBBB', 0xA0, 0x03, 0x23, id_shared_attributes, command)
+        elif 'mcc' in device and type(id_shared_attributes) is int:
+            result = struct.pack('BBBBB', 0xA0, 0x03, 0x24, id_shared_attributes, command)
+
     LOGGER.debug('Process command: device: %s, command: %s', device, command)
-    result = struct.pack('BBBBB', 0xA0, 0x03, 0x21, device, command)
     return result
+
+
+def classify_shared_attributes(key, value):
+    formatted = {}
+    number = 0
+    if 'ats' in key:
+        number = parse_ats_shared_attributes_to_number(key)
+    elif 'mcc' in key:
+        number = parse_mcc_shared_attributes_to_number(key)
+    elif 'acm' in key:
+        number = parse_acm_shared_attributes_to_number(key)
+    formatted = {'idSharedAttributes': number, 'value': value}
+    return formatted
+
+
+def parse_ats_shared_attributes_to_number(key):
+    switcher_ats = {
+        'atsVacThreshold': 1,
+        'atsVdcThreshold': 2
+    }
+    return switcher_ats.get(key, "Out of range!")
+
+
+def parse_mcc_shared_attributes_to_number(key):
+    switcher_mcc = {
+        'mccPeriodReadDataIO': 1,
+        'mccPeriodSendTelemetry': 2,
+        'mccPeriodUpdate': 3,
+        'mccPeriodSendShared': 4
+    }
+    return switcher_mcc.get(key, "Out of range!")
+
+
+def parse_acm_shared_attributes_to_number(key):
+    switcher_acm = {
+        'acmAlternativeState': 1,
+        'acmAlternativeTime': 2,
+        'acmRunTime': 3,
+        'acmRestTime': 4,
+        'acmGenAllow': 5,
+        'acmVacThreshold': 6,
+        'acmMinTemp': 7,
+        'acmMaxTemp': 8,
+        'acmMinHumid': 9,
+        'acmMaxHumid': 10,
+        'acmExpectedTemp': 11,
+        'acmExpectedHumid': 12
+    }
+    return switcher_acm.get(key, "Out of range!")
 
 
 def convert_boolean_to_string(command):
