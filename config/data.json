@@ -9,6 +9,7 @@
     "mccMaxTemp": 32,
     "mccMaxHumid": 80,
     "mccFanControlAuto": 1,
+    "mccListRfid": [],
     "acmAlternativeState": 0,
     "acmMaxTemp": 60,
     "acmRestTime": 320,
