@@ -189,6 +189,9 @@ def _process_command(device, command):
         else:
             command = value
         result = struct.pack('BBBBB', 0xA0, 0x03, 0x21, device, command)
+    elif device == SHARED_ATTRIBUTES_RFID_CARD:
+        device = 5
+        result = struct.pack('BBBBB', 0xA0, 0x03, 0x24, device, command)
     else:
         response_classify = classify_shared_attributes(device, command)
         id_shared_attributes = response_classify['idSharedAttributes']
