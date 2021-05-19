@@ -29,3 +29,4 @@ Cau truc gui shared attributes xuong STM32 thong qua io_thread va send_shared_th
 'mccPeriodSendTelemetry':2,
 'mccPeriodUpdate':3,
 'mccPeriodSendShared':4
+'mccRespCardId':5 *
