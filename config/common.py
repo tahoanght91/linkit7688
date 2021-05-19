@@ -46,6 +46,8 @@ COMMAND_MCC_OFF_LAMP = 'offLamp'
 # device error
 COMMAND_MCC_ON_ERROR = 'onError'
 COMMAND_MCC_OFF_ERROR = 'offError'
+#compare rfid card
+SHARED_ATTRIBUTES_RFID_CARD = 'mccRespCardId'
 
 # ACM
 #module acm
