@@ -54,14 +54,14 @@ SHARED_ATTRIBUTES_RFID_CARD = 'mccRespCardId'
 COMMAND_ACM_AUTO_ON = 'onAutoAcm'
 COMMAND_ACM_AUTO_OFF = 'offAutoAcm'
 # air conditioner 1
-COMMAND_AIRC_1_ON = 'onAirc1'
-COMMAND_AIRC_1_OFF = 'offAirc1'
+COMMAND_ACM_AIRC_1_ON = 'onAcmAirc1'
+COMMAND_ACM_AIRC_1_OFF = 'offAcmAirc1'
 # air conditioner 2
-COMMAND_AIRC_2_ON = 'onAirc2'
-COMMAND_AIRC_2_OFF = 'offAirc2'
+COMMAND_ACM_AIRC_2_ON = 'onAcmAirc2'
+COMMAND_ACM_AIRC_2_OFF = 'offAcmAirc2'
 # fan
-COMMAND_FAN_ON = 'onFan'
-COMMAND_FAN_OFF = 'offFan'
+COMMAND_ACM_FAN_ON = 'onAcmFan'
+COMMAND_ACM_FAN_OFF = 'offAcmFan'
 
 # method
 # airc1

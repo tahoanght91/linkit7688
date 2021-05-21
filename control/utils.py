@@ -174,17 +174,17 @@ def _process_command(device, command):
             command = 0
         elif value == COMMAND_ACM_AUTO_ON:
             command = 1
-        elif value == COMMAND_AIRC_1_OFF:
+        elif value == COMMAND_ACM_AIRC_1_OFF:
             command = 2
-        elif value == COMMAND_AIRC_1_ON:
+        elif value == COMMAND_ACM_AIRC_1_ON:
             command = 3
-        elif value == COMMAND_AIRC_2_OFF:
+        elif value == COMMAND_ACM_AIRC_2_OFF:
             command = 4
-        elif value == COMMAND_AIRC_2_ON:
+        elif value == COMMAND_ACM_AIRC_2_ON:
             command = 5
-        elif value == COMMAND_FAN_OFF:
+        elif value == COMMAND_ACM_FAN_OFF:
             command = 6
-        elif value == COMMAND_FAN_ON:
+        elif value == COMMAND_ACM_FAN_ON:
             command = 7
         else:
             command = value
@@ -275,12 +275,12 @@ def convert_boolean_to_int(command):
 
 def _check_command_send_rpc(device, command):
     if device == DEVICE_ACM_1 \
-            and (command == COMMAND_AIRC_1_ON or
-                 command == COMMAND_AIRC_1_OFF or
-                 command == COMMAND_AIRC_2_ON or
-                 command == COMMAND_AIRC_2_OFF or
-                 command == COMMAND_FAN_OFF or
-                 command == COMMAND_FAN_ON or
+            and (command == COMMAND_ACM_AIRC_1_ON or
+                 command == COMMAND_ACM_AIRC_1_OFF or
+                 command == COMMAND_ACM_AIRC_2_ON or
+                 command == COMMAND_ACM_AIRC_2_OFF or
+                 command == COMMAND_ACM_FAN_OFF or
+                 command == COMMAND_ACM_FAN_ON or
                  command == COMMAND_ACM_AUTO_ON or
                  command == COMMAND_ACM_AUTO_OFF):
         return True
