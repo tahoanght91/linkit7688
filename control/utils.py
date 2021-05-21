@@ -5,15 +5,11 @@ from config.common import *
 
 
 def _check_command(device, command):
-    if device == DEVICE_AIRC_1 and (command == GET_STATE or command == GET_VALUE):
+    if device == DEVICE_MCC_1 and (command == GET_STATE or command == GET_VALUE):
         return True
-    elif device == DEVICE_AIRC_2 and (command == GET_STATE or command == GET_VALUE):
-        return True
-    elif device == DEVICE_MISC and (command == GET_STATE or command == GET_VALUE):
+    elif device == DEVICE_ACM_1 and (command == GET_STATE or command == GET_VALUE):
         return True
     elif device == DEVICE_ATS and (command == GET_STATE or command == GET_VALUE):
-        return True
-    elif device == DEVICE_CRMU and (command == GET_STATE or command == GET_VALUE):
         return True
     else:
         return False
@@ -21,74 +17,64 @@ def _check_command(device, command):
 
 def check_state_device(device_name, method):
     value = ''
-    if device_name == DEVICE_AIRC_1 and method == GET_SATE_AIRC_1:
+    if device_name == DEVICE_MCC_1 and method == GET_SATE_ACM_AIRC_1:
         # TODO: change client attributes of airc1:
-        value = client_attributes.get('aircAirc1Command', default_data.aircAirc1Command)
-    elif device_name == DEVICE_AIRC_2 and method == GET_STATE_AIRC_2:
+        value = client_attributes.get('acmAirc1RunState', default_data.acmAirc1RunState)
+    elif device_name == DEVICE_ACM_1 and method == GET_STATE_ACM_AIRC_2:
         # TODO: change client attributes of airc2:
-        value = client_attributes.get('aircAirc2Command', default_data.aircAirc2Command)
-    elif device_name == DEVICE_MISC and method == GET_STATE_FAN:
-        # TODO: change client attributes of fan (misc):
-        value = client_attributes.get('aircFanCommand', default_data.aircFanCommand)
-    elif device_name == DEVICE_ATS and method == GET_STATE_ATS:
-        value = client_attributes.get('atsMode', default_data.atsMode)
-    elif device_name == DEVICE_CRMU and method == GET_STATE_CRMU:
-        # TODO: change client attributes of crmu:
-        value = client_attributes.get('crmuOnlineStatus', default_data.crmuOnlineStatus)
+        value = client_attributes.get('acmAirc2RunState', default_data.acmAirc2RunState)
+    elif device_name == DEVICE_ACM_1 and method == GET_STATE_ACM_FAN:
+        # TODO: change client attributes of fan:
+        value = client_attributes.get('acmFanRunState', default_data.acmFanRunState)
     return value
 
 
 def get_value_device(device_name, method):
     value = ''
-    if device_name == DEVICE_AIRC_1 and method == GET_VALUE_AIRC_1:
+    if device_name == DEVICE_ACM_1 and method == GET_VALUE_ACM_AIRC_1:
         # TODO: change telemetry of airc1:
-        value = telemetries.get('aircTempIndoor', default_data.aircTempIndoor)
-    elif device_name == DEVICE_AIRC_2 and method == GET_VALUE_AIRC_2:
+        value = telemetries.get('acmTempIndoor', default_data.acmTempIndoor)
+    elif device_name == DEVICE_ACM_1 and method == GET_VALUE_ACM_AIRC_2:
         # TODO: change telemetry of airc2:
-        value = telemetries.get('aircTempIndoor', default_data.aircTempIndoor)
-    # elif device_name == DEVICE_MISC and method == GET_VALUE_FAN:
-    #     # TODO: change telemetry of fan (misc):
-    #     value = telemetries.get('miscDin0', default_data.miscDin0)
-    # elif device_name == DEVICE_ATS and method == GET_STATE_ATS:
-    #     value = client_attributes.get('atsMode', default_data.atsMode)
-    # elif device_name == DEVICE_CRMU and method == GET_STATE_CRMU:
-    #     # TODO: change client attributes of crmu:
-    #     value = client_attributes.get('crmuOnlineStatus', default_data.crmuOnlineStatus)
+        value = telemetries.get('acmTempOutdoor', default_data.acmTempOutdoor)
+    elif device_name == DEVICE_MCC_1 and method == GET_STATE_MCC_DOOR:
+        # TODO: change telemetry of airc2:
+        value = telemetries.get('mccDoorState', default_data.mccDoorState)
     return value
 
 
-def _process_set_auto(device, command):
-    if not (type(command) == bool
-            and
-            (device == DEVICE_MISC
-             or device == DEVICE_AIRC_1
-             or device == DEVICE_AIRC_2
-             or device == DEVICE_ATS
-             or device == DEVICE_CRMU
-             or device == DEVICE_MCC_1
-             or device == DEVICE_ATS_1
-             or device == DEVICE_ACM_1)):
-        return False
-
-    value = convert_boolean_to_int(command)
-
-    if device == DEVICE_AIRC_1:
-        shared_attributes['aircControlAuto'] = value
-    elif device == DEVICE_AIRC_2:
-        shared_attributes['aircControlAuto'] = value
-    elif device == DEVICE_MISC:
-        shared_attributes['miscFanControlAuto'] = value
-    elif device == DEVICE_ATS:
-        shared_attributes['atsControlAuto'] = value
-    elif device == DEVICE_CRMU:
-        shared_attributes['crmuControlAuto'] = value
-    elif device == DEVICE_MCC_1:
-        shared_attributes['miscFanControlAuto'] = value
-    elif device == DEVICE_ATS_1:
-        shared_attributes['atsControlAuto'] = value
-    elif device == DEVICE_ACM_1:
-        shared_attributes['aircControlAuto'] = value
-    return True
+# def _process_set_auto(device, command):
+#     if not (type(command) == bool
+#             and
+#             (device == DEVICE_MISC
+#              or device == DEVICE_AIRC_1
+#              or device == DEVICE_AIRC_2
+#              or device == DEVICE_ATS
+#              or device == DEVICE_CRMU
+#              or device == DEVICE_MCC_1
+#              or device == DEVICE_ATS_1
+#              or device == DEVICE_ACM_1)):
+#         return False
+#
+#     value = convert_boolean_to_int(command)
+#
+#     if device == DEVICE_AIRC_1:
+#         shared_attributes['aircControlAuto'] = value
+#     elif device == DEVICE_AIRC_2:
+#         shared_attributes['aircControlAuto'] = value
+#     elif device == DEVICE_MISC:
+#         shared_attributes['miscFanControlAuto'] = value
+#     elif device == DEVICE_ATS:
+#         shared_attributes['atsControlAuto'] = value
+#     elif device == DEVICE_CRMU:
+#         shared_attributes['crmuControlAuto'] = value
+#     elif device == DEVICE_MCC_1:
+#         shared_attributes['miscFanControlAuto'] = value
+#     elif device == DEVICE_ATS_1:
+#         shared_attributes['atsControlAuto'] = value
+#     elif device == DEVICE_ACM_1:
+#         shared_attributes['aircControlAuto'] = value
+#     return True
 
 
 def _process_command(device, command):
@@ -100,45 +86,45 @@ def _process_command(device, command):
     else:
         value = command
 
-    if device == 'bell':
-        device = 1
-        if command == 'off':
-            command = 0
-        else:
-            command = 1
-    elif device == 'fan':
-        device = 2
-        if command == 'off':
-            command = 0
-        else:
-            command = 1
-    elif device == 'airc1':
-        device = 3
-        if command == 'off':
-            command = 0
-        else:
-            command = 1
-    elif device == 'airc2':
-        device = 4
-        if command == 'off':
-            command = 0
-        else:
-            command = 1
-    elif device == 'ats':
-        device = 5
-        if command == 'main':
-            command = 0
-        elif command == 'gen':
-            command = 1
-        else:
-            command = 2
-    elif device == 'crmu':
-        device = 6
-        if command == 'off':
-            command = 0
-        else:
-            command = 1
-    elif device == DEVICE_MCC_1:
+    # if device == 'bell':
+    #     device = 1
+    #     if command == 'off':
+    #         command = 0
+    #     else:
+    #         command = 1
+    # elif device == 'fan':
+    #     device = 2
+    #     if command == 'off':
+    #         command = 0
+    #     else:
+    #         command = 1
+    # elif device == 'airc1':
+    #     device = 3
+    #     if command == 'off':
+    #         command = 0
+    #     else:
+    #         command = 1
+    # elif device == 'airc2':
+    #     device = 4
+    #     if command == 'off':
+    #         command = 0
+    #     else:
+    #         command = 1
+    # elif device == 'ats':
+    #     device = 5
+    #     if command == 'main':
+    #         command = 0
+    #     elif command == 'gen':
+    #         command = 1
+    #     else:
+    #         command = 2
+    # elif device == 'crmu':
+    #     device = 6
+    #     if command == 'off':
+    #         command = 0
+    #     else:
+    #         command = 1
+    if device == DEVICE_MCC_1:
         device = 97
         if value == COMMAND_MCC_AUTO_OFF:
             command = 0
