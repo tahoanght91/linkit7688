@@ -138,9 +138,9 @@ def _process_command(device, command):
             command = 4
         elif value == COMMAND_MCC_ON_LAMP:
             command = 5
-        elif value == COMMAND_MCC_OFF_ERROR:
+        elif value == COMMAND_MCC_OPEN_DOOR:
             command = 6
-        elif value == COMMAND_MCC_ON_ERROR:
+        elif value == COMMAND_MCC_CLOSE_DOOR:
             command = 7
         else:
             command = value
@@ -208,7 +208,12 @@ def classify_shared_attributes(key, value):
 def parse_ats_shared_attributes_to_number(key):
     switcher_ats = {
         'atsVacThreshold': 1,
-        'atsVdcThreshold': 2
+        'atsVdcThreshold': 2,
+        'atsVacMinThreshold': 3,
+        'atsVgenMaxThreshold': 4,
+        'atsVgenMinThreshold': 5,
+        'atsVacStabilizeTimeout': 6,
+        'atsVgenIdleCoolingTimeout': 7
     }
     return switcher_ats.get(key, "Out of range!")
 
@@ -218,7 +223,9 @@ def parse_mcc_shared_attributes_to_number(key):
         'mccPeriodReadDataIO': 1,
         'mccPeriodSendTelemetry': 2,
         'mccPeriodUpdate': 3,
-        'mccPeriodSendShared': 4
+        'mccPeriodSendShared': 4,
+        'mccListRfid': 6,
+        'mccDcMinThreshold': 7
     }
     return switcher_mcc.get(key, "Out of range!")
 

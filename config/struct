@@ -19,8 +19,13 @@ Cau truc gui shared attributes xuong STM32 thong qua io_thread va send_shared_th
 #ATS
 'BBBBB', 0xA0, 0x05, 0x22, key, value
 *key:
-'atsVacThreshold':1,
-'atsVdcThreshold':2
+'atsVacMaxThreshold':1,
+'atsVdcThreshold':2,
+'atsVacMinThreshold':3,
+'atsVgenMaxThreshold':4,
+'atsVgenMinThreshold':5,
+'atsVacStabilizeTimeout':6,
+'atsVgenIdleCoolingTimeout':7
 
 #MCC
 'BBBBB', 0xA0, 0x05, 0x24, key, value
@@ -30,3 +35,5 @@ Cau truc gui shared attributes xuong STM32 thong qua io_thread va send_shared_th
 'mccPeriodUpdate':3,
 'mccPeriodSendShared':4
 'mccRespCardId':5 *
+'mccListRfid':6
+'mccDcMinThreshold':7
