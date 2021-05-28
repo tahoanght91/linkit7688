@@ -9,8 +9,8 @@ def call():
     while True:
         if CLIENT.is_connected():
             update_attributes_lock.acquire()
-            gw_client_attributes = format_client_attributes(replica_client_attributes())
-            gw_shared_attributes = format_client_attributes(fake_shared_attributes())
+            gw_client_attributes = format_client_attributes(update_attributes)
+            gw_shared_attributes = format_client_attributes(shared_attributes)
             if gw_client_attributes:
                 for key, value in gw_client_attributes.items():
                     CLIENT.gw_send_attributes(key, value)
