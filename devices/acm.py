@@ -10,17 +10,17 @@ def extract(byte_data):
     acmHumidIndoor = utility.bytes_to_int(byte_data[4:6], byteorder=BYTE_ORDER)
 
     #client attributes
-    acmTempError = utility.bytes_to_int(byte_data[7])
-    acmHumidError = utility.bytes_to_int(byte_data[8])
-    acmAutoMode = utility.bytes_to_int(byte_data[9])
-    acmOnlineState = utility.bytes_to_int(byte_data[10])
-    acmIState = utility.bytes_to_int(byte_data[11])
-    acmAirc1RunState = utility.bytes_to_int(byte_data[12])
-    acmAirc2RunState = utility.bytes_to_int(byte_data[13])
-    acmAirc1Error = utility.bytes_to_int(byte_data[14])
-    acmAirc2Error = utility.bytes_to_int(byte_data[15])
-    acmFanRunState = utility.bytes_to_int(byte_data[16])
-    acmFanError = utility.bytes_to_int(byte_data[17])
+    acmTempError = utility.bytes_to_int(byte_data[6])
+    acmHumidError = utility.bytes_to_int(byte_data[7])
+    acmAutoMode = utility.bytes_to_int(byte_data[8])
+    acmOnlineState = utility.bytes_to_int(byte_data[9])
+    acmIState = utility.bytes_to_int(byte_data[10])
+    acmAirc1RunState = utility.bytes_to_int(byte_data[11])
+    acmAirc2RunState = utility.bytes_to_int(byte_data[12])
+    acmAirc1Error = utility.bytes_to_int(byte_data[13])
+    acmAirc2Error = utility.bytes_to_int(byte_data[14])
+    acmFanRunState = utility.bytes_to_int(byte_data[15])
+    acmFanError = utility.bytes_to_int(byte_data[16])
 
     #telemetry
     utils._read_telemetry('acmTempIndoor', acmTempIndoor)
