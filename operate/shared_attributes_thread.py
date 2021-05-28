@@ -4,7 +4,7 @@ from config import LOGGER, shared_attributes, default_data, CLIENT, commands_loc
 
 
 def call():
-    period = shared_attributes.get('mccPeriodSendShared', default_data.mccPeriodSendShared)
+    period = shared_attributes.get('mccPeriodUpdate', default_data.mccPeriodUpdate)
     while True:
         if CLIENT.is_connected():
             for key, value in shared_attributes.items():
