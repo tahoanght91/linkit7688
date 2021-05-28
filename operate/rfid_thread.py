@@ -16,7 +16,7 @@ def call():
         if CLIENT.is_connected():
             if 'mccListRfid' in shared_attributes:
                 list_card = shared_attributes['mccListRfid']
-
+                #TODO: change key rfid card get from stm32
                 list_mcc_client_attributes = replica_client_attributes()
                 LOGGER.info('Get rfid card list successful from tb2: %s', list_card)
                 if len(list_card) > 0:
