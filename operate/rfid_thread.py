@@ -11,7 +11,7 @@ URL_SEND_LOG ='https://backend.smartsite.dft.vn/api/services/app/DMTram/LogQuetT
 
 
 def call():
-    period = 300
+    period = 1
     while True:
         if CLIENT.is_connected():
             if 'mccListRfid' in shared_attributes:
@@ -20,16 +20,18 @@ def call():
                 if len(list_card) > 0:
                 #TODO: change key rfid card get from stm32
                     rfid_card = update_attributes['mccRfidCard']
-                    result = compare_rfid_card(rfid_card, list_card)
-                    if result == -1 or result == 0 or result == 1:
-                        log = write_log(rfid_card, result)
-                        if log is not None:
-                            commands_lock.acquire()
-                            commands[SHARED_ATTRIBUTES_RFID_CARD] = result
-                            commands_lock.release()
-                            send_log(log)
-                        else:
-                            LOGGER.info('Log is null!')
+                    if rfid_card is not None:
+                        result = compare_rfid_card(rfid_card, list_card)
+                        if result == -1 or result == 0 or result == 1:
+                            log = write_log(rfid_card, result)
+                            del shared_attributes['mccListRfid']
+                            if log is not None:
+                                commands_lock.acquire()
+                                commands[SHARED_ATTRIBUTES_RFID_CARD] = result
+                                commands_lock.release()
+                                send_log(log)
+                            else:
+                                LOGGER.info('Log is null!')
         time.sleep(period)
 
 
@@ -37,7 +39,8 @@ def compare_rfid_card(rfid_card, list_card):
     result = -1
     try:
         LOGGER.info('Go into the function write_log')
-        if rfid_card in list_card:
+        set_temp = set(list_card)
+        if rfid_card in set_temp:
             LOGGER.info('Card %s is in the rfid card list', rfid_card)
             result = 1
         else:
