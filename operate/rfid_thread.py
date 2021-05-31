@@ -16,20 +16,20 @@ def call():
         if CLIENT.is_connected():
             if 'mccListRfid' in shared_attributes:
                 list_card = shared_attributes['mccListRfid']
-                #TODO: change key rfid card get from stm32
-                list_mcc_client_attributes = replica_client_attributes()
                 LOGGER.info('Get rfid card list successful from tb2: %s', list_card)
                 if len(list_card) > 0:
-                    rfid_card = list_mcc_client_attributes['mccCardId']
+                #TODO: change key rfid card get from stm32
+                    rfid_card = update_attributes['crmuCardId']
                     result = compare_rfid_card(rfid_card, list_card)
-                    log = write_log(rfid_card, result)
-                    if log is not None:
-                        commands_lock.acquire()
-                        commands[SHARED_ATTRIBUTES_RFID_CARD] = result
-                        commands_lock.release()
-                        send_log(log)
-                    else:
-                        LOGGER.info('Log is null!')
+                    if result == -1 or result == 0 or result == 1:
+                        log = write_log(rfid_card, result)
+                        if log is not None:
+                            commands_lock.acquire()
+                            commands[SHARED_ATTRIBUTES_RFID_CARD] = result
+                            commands_lock.release()
+                            send_log(log)
+                        else:
+                            LOGGER.info('Log is null!')
         time.sleep(period)
 
 

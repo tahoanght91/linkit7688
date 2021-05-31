@@ -81,7 +81,7 @@ def _read_data(byte_stream):
     LOGGER.debug('Opcode %s', op_code.encode('hex'))
     data = byte_stream[3:-2]
     if op_code == _OpData.IO_STATUS_MCC:  # MCC
-        LOGGER.info('MISC message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
+        LOGGER.info('MCC message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
                     len(data), _OpData.MCC_SIZE)
         if _check_data(frame_length, data, _OpData.MCC_SIZE):
             mcc.extract(data)
@@ -93,10 +93,16 @@ def _read_data(byte_stream):
             ats.extract(data[1:])
             return True
     elif op_code == _OpData.IO_STATUS_ACM:  # ACM
-        LOGGER.info('AIRC message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
+        LOGGER.info('ACM message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
                     len(data), _OpData.ACM_SIZE)
         if _check_data(frame_length, data, _OpData.ACM_SIZE):
             acm.extract(data[1:])
+            return True
+    elif op_code == _OpData.IO_STATUS_CRMU:  # CRMU
+        LOGGER.info('CRMU message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
+                    len(data), _OpData.CRMU_SIZE)
+        if _check_data(frame_length, data, _OpData.CRMU_SIZE):
+            crmu.extract(data[1:])
             return True
     return False
 
@@ -161,10 +167,12 @@ class _OpData:
     ACM_SIZE = 18
     ATS_SIZE = 60
     MCC_SIZE = 37
+    CRMU_SIZE = 15
     KEY_SIZE = 3
     IO_STATUS_MCC = b'\x11'
     IO_STATUS_ATS = b'\x13'
     IO_STATUS_ACM = b'\x14'
+    IO_STATUS_CRMU = b'\x16'
 
     #old
     # MISC_SIZE = 16
