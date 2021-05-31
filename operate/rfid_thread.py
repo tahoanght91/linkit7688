@@ -19,7 +19,7 @@ def call():
                 LOGGER.info('Get rfid card list successful from tb2: %s', list_card)
                 if len(list_card) > 0:
                 #TODO: change key rfid card get from stm32
-                    rfid_card = update_attributes['crmuCardId']
+                    rfid_card = update_attributes['mccRfidCard']
                     result = compare_rfid_card(rfid_card, list_card)
                     if result == -1 or result == 0 or result == 1:
                         log = write_log(rfid_card, result)
