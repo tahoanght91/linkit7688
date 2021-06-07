@@ -24,12 +24,11 @@ def extract(byte_data):
     mccDcPcabinet = bytes_to_int(byte_data[24:26], byteorder=BYTE_ORDER)
     mccDcPaccumulator = bytes_to_int(byte_data[26:28], byteorder=BYTE_ORDER)
     mccSystemClock = bytes_to_int(byte_data[28:30], byteorder=BYTE_ORDER)
-    mccNetworkParam = bytes_to_int(byte_data[30:32], byteorder=BYTE_ORDER)
 
     #client attributes
-    mccCardLength = bytes_to_int(byte_data[32:34], byteorder=BYTE_ORDER)
-    mccRfidConnectState = bytes_to_int(byte_data[34])
-    mccDcCabinetSate = bytes_to_int(byte_data[35])
+    mccCardLength = bytes_to_int(byte_data[30:32], byteorder=BYTE_ORDER)
+    mccRfidConnectState = bytes_to_int(byte_data[32])
+    mccDcCabinetSate = bytes_to_int(byte_data[33])
 
     #telemetry
     _read_telemetry('mccSmokeState', mccSmokeState)
@@ -51,7 +50,6 @@ def extract(byte_data):
     _read_telemetry('mccDcPcabinet', mccDcPcabinet)
     _read_telemetry('mccDcPaccumulator', mccDcPaccumulator)
     _read_telemetry('mccSystemClock', mccSystemClock)
-    _read_telemetry('mccNetworkParam', mccNetworkParam)
 
     #client attributes
     _read_attribute('mccCardLength', mccCardLength)

@@ -81,7 +81,6 @@
     "mccDcPcabinet": 0,
     "mccDcPaccumulator": 0,
     "mccSystemClock": 0,
-    "mccNetworkParam": {},
     "acmTempIndoor": 35,
     "acmTempOutdoor": 85,
     "acmHumidIndoor": 30,
