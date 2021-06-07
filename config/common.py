@@ -13,9 +13,9 @@ DEVICE_MOVE_SENSOR = 'device_move_sensor'
 DEVICE_SMOKE_SENSOR = 'device_smoke_sensor'
 
 DEVICE_MDC_1 = 'device_MDC_1'
-DEVICE_MCC_1 = 'device_MCC_1'
-DEVICE_ATS_1 = 'device_ATS_1'
-DEVICE_ACM_1 = 'device_ACM_1'
+DEVICE_MCC_1 = 'GW005_MCC_1'
+DEVICE_ATS_1 = 'GW005_ATS_1'
+DEVICE_ACM_1 = 'GW005_ACM_1'
 
 # rpc
 AUTO = 'setAuto'

@@ -5,6 +5,7 @@
     "mccPeriodSendTelemetry": 50,
     "mccPeriodUpdate": 5,
     "mccListRfid": [],
+    "mccListStaff": [],
     "mccDcMinThreshold": 30,
     "acmAlternativeState": 0,
     "acmAlternativeTime": 180,
