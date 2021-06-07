@@ -1,7 +1,6 @@
 {
   "shared": {
     "mccPeriodReadDataIO": 0.05,
-    "mccPeriodSendShared": 30,
     "mccPeriodSendTelemetry": 50,
     "mccPeriodUpdate": 5,
     "mccListRfid": [],
@@ -24,7 +23,11 @@
     "atsVgenMaxThreshold": 120,
     "atsVgenMinThreshold": 600,
     "atsVacStabilizeTimeout": 60,
-    "atsVgenIdleCoolingTimeout": 30
+    "atsVgenIdleCoolingTimeout": 30,
+    "atsVgenIdleWarmUpTimeout": 60,
+    "atsGenInactiveStartTime": 180,
+    "atsGenInactiveEndTime": 240,
+    "atsGenActiveDuration": 240
   },
   "client": {
     "mccCardId": "AAA",

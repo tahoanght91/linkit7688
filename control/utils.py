@@ -207,13 +207,17 @@ def classify_shared_attributes(key, value):
 
 def parse_ats_shared_attributes_to_number(key):
     switcher_ats = {
-        'atsVacThreshold': 1,
+        'atsVacMaxThreshold': 1,
         'atsVdcThreshold': 2,
         'atsVacMinThreshold': 3,
         'atsVgenMaxThreshold': 4,
         'atsVgenMinThreshold': 5,
         'atsVacStabilizeTimeout': 6,
-        'atsVgenIdleCoolingTimeout': 7
+        'atsVgenIdleCoolingTimeout': 7,
+        'atsVgenIdleWarmUpTimeout': 8,
+        'atsGenInactiveStartTime': 9,
+        'atsGenInactiveEndTime': 10,
+        'atsGenActiveDuration': 11
     }
     return switcher_ats.get(key, "Out of range!")
 
