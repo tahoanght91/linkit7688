@@ -97,9 +97,7 @@ def parse_mcc_shared_attributes_to_number(key):
         'mccPeriodReadDataIO': 1,
         'mccPeriodSendTelemetry': 2,
         'mccPeriodUpdate': 3,
-        'mccPeriodSendShared': 4,
-        'mccListRfid': 6,
-        'mccDcMinThreshold': 7
+        'mccDcMinThreshold': 4
     }
     return switcher_mcc.get(key, "Out of range!")
 

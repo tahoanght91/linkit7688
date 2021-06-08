@@ -37,7 +37,5 @@ Cau truc gui shared attributes xuong STM32 thong qua io_thread va send_shared_th
 'mccPeriodReadDataIO':1,
 'mccPeriodSendTelemetry':2,
 'mccPeriodUpdate':3,
-'mccPeriodSendShared':4
+'mccDcMinThreshold':4,
 'mccRespCardId':5 *
-'mccListRfid':6
-'mccDcMinThreshold':7
