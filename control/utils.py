@@ -88,22 +88,18 @@ def _process_command(device, command):
 
     if device == DEVICE_MCC_1:
         device = 97
-        if value == COMMAND_MCC_AUTO_OFF:
+        if value == COMMAND_MCC_OFF_BELL:
             command = 0
-        elif value == COMMAND_MCC_AUTO_ON:
-            command = 1
-        elif value == COMMAND_MCC_OFF_BELL:
-            command = 2
         elif value == COMMAND_MCC_ON_BELL:
-            command = 3
+            command = 1
         elif value == COMMAND_MCC_OFF_LAMP:
-            command = 4
+            command = 2
         elif value == COMMAND_MCC_ON_LAMP:
-            command = 5
+            command = 3
         elif value == COMMAND_MCC_OPEN_DOOR:
-            command = 6
+            command = 4
         elif value == COMMAND_MCC_CLOSE_DOOR:
-            command = 7
+            command = 5
         else:
             command = value
         result = struct.pack('BBBBB', 0xA0, 0x03, 0x21, device, command)
