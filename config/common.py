@@ -17,6 +17,9 @@ DEVICE_MCC_1 = 'GW005_MCC_1'
 DEVICE_ATS_1 = 'GW005_ATS_1'
 DEVICE_ACM_1 = 'GW005_ACM_1'
 
+# SHARED ATTRIBUTES
+ALL_SHARED_ATTRIBUTES = 'allSharedAttributes'
+
 # rpc
 AUTO = 'setAuto'
 CONTROL = 'setControl'

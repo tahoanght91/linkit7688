@@ -86,44 +86,6 @@ def _process_command(device, command):
     else:
         value = command
 
-    # if device == 'bell':
-    #     device = 1
-    #     if command == 'off':
-    #         command = 0
-    #     else:
-    #         command = 1
-    # elif device == 'fan':
-    #     device = 2
-    #     if command == 'off':
-    #         command = 0
-    #     else:
-    #         command = 1
-    # elif device == 'airc1':
-    #     device = 3
-    #     if command == 'off':
-    #         command = 0
-    #     else:
-    #         command = 1
-    # elif device == 'airc2':
-    #     device = 4
-    #     if command == 'off':
-    #         command = 0
-    #     else:
-    #         command = 1
-    # elif device == 'ats':
-    #     device = 5
-    #     if command == 'main':
-    #         command = 0
-    #     elif command == 'gen':
-    #         command = 1
-    #     else:
-    #         command = 2
-    # elif device == 'crmu':
-    #     device = 6
-    #     if command == 'off':
-    #         command = 0
-    #     else:
-    #         command = 1
     if device == DEVICE_MCC_1:
         device = 97
         if value == COMMAND_MCC_AUTO_OFF:
@@ -178,15 +140,20 @@ def _process_command(device, command):
     elif device == SHARED_ATTRIBUTES_RFID_CARD:
         device = 5
         result = struct.pack('BBBBB', 0xA0, 0x03, 0x24, device, command)
-    else:
-        response_classify = classify_shared_attributes(device, command)
-        id_shared_attributes = response_classify['idSharedAttributes']
-        if 'ats' in device and type(id_shared_attributes) is int:
-            result = struct.pack('BBBBB', 0xA0, 0x03, 0x22, id_shared_attributes, command)
-        elif 'acm' in device and type(id_shared_attributes) is int:
-            result = struct.pack('BBBBB', 0xA0, 0x03, 0x23, id_shared_attributes, command)
-        elif 'mcc' in device and type(id_shared_attributes) is int:
-            result = struct.pack('BBBBB', 0xA0, 0x03, 0x24, id_shared_attributes, command)
+    elif device == ALL_SHARED_ATTRIBUTES:
+        device = 1
+        length_command = len(command) + 4
+        prefix = '<' + str(length_command) + 'Q'
+        result = struct.pack(prefix, 0xA0, 0x03, 0x25, device, *command)
+    # else:
+    #     response_classify = classify_shared_attributes(device, command)
+    #     id_shared_attributes = response_classify['idSharedAttributes']
+    #     if 'ats' in device and type(id_shared_attributes) is int:
+    #         result = struct.pack('BBBBB', 0xA0, 0x03, 0x22, id_shared_attributes, command)
+    #     elif 'acm' in device and type(id_shared_attributes) is int:
+    #         result = struct.pack('BBBBB', 0xA0, 0x03, 0x23, id_shared_attributes, command)
+    #     elif 'mcc' in device and type(id_shared_attributes) is int:
+    #         result = struct.pack('BBBBB', 0xA0, 0x03, 0x24, id_shared_attributes, command)
 
     LOGGER.debug('Process command: device: %s, command: %s', device, command)
     return result
