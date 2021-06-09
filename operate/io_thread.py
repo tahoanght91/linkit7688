@@ -198,8 +198,8 @@ def _check_data(frame_length, data, expected_data_length):
     LOGGER.info('Enter function _check_data')
     try:
         LOGGER.info('Frame length: %d, data length: %d, expected_data_length: %d', frame_length, len(data), expected_data_length)
-        if frame_length != len(data) + 1 or frame_length != expected_data_length + 1:
-            LOGGER.info('Frame length != data length + 1 or frame length != expected_data_length + 1')
+        if frame_length != len(data) + 1 or frame_length != expected_data_length:
+            LOGGER.info('Frame length != data length + 1 or frame length != expected_data_length')
             LOGGER.info('Exit function _check_data')
             return False
         else:
