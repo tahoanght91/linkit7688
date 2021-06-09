@@ -166,7 +166,7 @@ class _OpData:
     #new
     ACM_SIZE = 18
     ATS_SIZE = 60
-    MCC_SIZE = 64
+    MCC_SIZE = 60
     CRMU_SIZE = 15
     KEY_SIZE = 3
     IO_STATUS_MCC = b'\x11'

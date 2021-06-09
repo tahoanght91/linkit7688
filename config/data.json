@@ -69,8 +69,6 @@
     "din6": 0,
     "din7": 0,
     "mccBellState": 0,
-    "mccDcIbat1": 50,
-    "mccDcVbat1": 30,
     "mccDeviceTemp": 30,
     "mccRackTemp": 60,
     "mccDcBat1Temp": 0,
