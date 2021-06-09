@@ -1,9 +1,10 @@
-from config import BYTE_ORDER
+from config import BYTE_ORDER, LOGGER
 from utility import bytes_to_int
 from .utils import _read_attribute, _read_telemetry
 
 
 def extract(byte_data):
+    LOGGER.info('Enter function extract of module MCC')
     #telemetry
     mccSmokeState = bytes_to_int(byte_data[0])
     mccFireState = bytes_to_int(byte_data[1])
@@ -20,26 +21,26 @@ def extract(byte_data):
     mccDcBat2Temp = bytes_to_int(byte_data[15:17], byteorder=BYTE_ORDER)
     mccDcBat3Temp = bytes_to_int(byte_data[17:19], byteorder=BYTE_ORDER)
     mccDcAccumulatorSate = bytes_to_int(byte_data[19:21], byteorder=BYTE_ORDER)
-    mccDcV1 = bytes_to_int(byte_data[23:25], byteorder=BYTE_ORDER)
-    mccDcI1 = bytes_to_int(byte_data[25:27], byteorder=BYTE_ORDER)
-    mccDcP1 = bytes_to_int(byte_data[27:29], byteorder=BYTE_ORDER)
-    mccDcV2 = bytes_to_int(byte_data[29:31], byteorder=BYTE_ORDER)
-    mccDcI2 = bytes_to_int(byte_data[31:33], byteorder=BYTE_ORDER)
-    mccDcP2 = bytes_to_int(byte_data[33:35], byteorder=BYTE_ORDER)
-    mccDcV3 = bytes_to_int(byte_data[35:37], byteorder=BYTE_ORDER)
-    mccDcI3 = bytes_to_int(byte_data[37:39], byteorder=BYTE_ORDER)
-    mccDcP3 = bytes_to_int(byte_data[39:41], byteorder=BYTE_ORDER)
-    mccDcV4 = bytes_to_int(byte_data[41:43], byteorder=BYTE_ORDER)
-    mccDcI4 = bytes_to_int(byte_data[43:45], byteorder=BYTE_ORDER)
-    mccDcP4 = bytes_to_int(byte_data[45:47], byteorder=BYTE_ORDER)
-    mccDcV5 = bytes_to_int(byte_data[47:49], byteorder=BYTE_ORDER)
-    mccDcI5 = bytes_to_int(byte_data[49:51], byteorder=BYTE_ORDER)
-    mccDcP5 = bytes_to_int(byte_data[51:53], byteorder=BYTE_ORDER)
+    mccDcV1 = bytes_to_int(byte_data[21:23], byteorder=BYTE_ORDER)
+    mccDcI1 = bytes_to_int(byte_data[23:25], byteorder=BYTE_ORDER)
+    mccDcP1 = bytes_to_int(byte_data[25:27], byteorder=BYTE_ORDER)
+    mccDcV2 = bytes_to_int(byte_data[27:29], byteorder=BYTE_ORDER)
+    mccDcI2 = bytes_to_int(byte_data[29:31], byteorder=BYTE_ORDER)
+    mccDcP2 = bytes_to_int(byte_data[31:33], byteorder=BYTE_ORDER)
+    mccDcV3 = bytes_to_int(byte_data[33:35], byteorder=BYTE_ORDER)
+    mccDcI3 = bytes_to_int(byte_data[35:37], byteorder=BYTE_ORDER)
+    mccDcP3 = bytes_to_int(byte_data[37:39], byteorder=BYTE_ORDER)
+    mccDcV4 = bytes_to_int(byte_data[39:41], byteorder=BYTE_ORDER)
+    mccDcI4 = bytes_to_int(byte_data[41:43], byteorder=BYTE_ORDER)
+    mccDcP4 = bytes_to_int(byte_data[43:45], byteorder=BYTE_ORDER)
+    mccDcV5 = bytes_to_int(byte_data[45:47], byteorder=BYTE_ORDER)
+    mccDcI5 = bytes_to_int(byte_data[47:49], byteorder=BYTE_ORDER)
+    mccDcP5 = bytes_to_int(byte_data[49:51], byteorder=BYTE_ORDER)
 
     # client attributes
-    mccSystemClock = bytes_to_int(byte_data[53:57], byteorder=BYTE_ORDER)
-    mccRfidConnectState = bytes_to_int(byte_data[57])
-    mccDcCabinetSate = bytes_to_int(byte_data[58])
+    mccSystemClock = bytes_to_int(byte_data[51:55], byteorder=BYTE_ORDER)
+    mccRfidConnectState = bytes_to_int(byte_data[55])
+    mccDcCabinetSate = bytes_to_int(byte_data[56])
 
     #telemetry
     _read_telemetry('mccSmokeState', mccSmokeState)
@@ -78,3 +79,4 @@ def extract(byte_data):
     _read_attribute('mccSystemClock', mccSystemClock)
     _read_attribute('mccRfidConnectState', mccRfidConnectState)
     _read_attribute('mccDcCabinetSate', mccDcCabinetSate)
+    LOGGER.info('Exit function extract of module MCC')
