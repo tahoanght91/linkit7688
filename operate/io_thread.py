@@ -66,7 +66,8 @@ def call():
 def _read_data(byte_stream):
     LOGGER.info('Receive data message')
     LOGGER.info('Type of byte_stream: %s', type(byte_stream))
-    LOGGER.info('Byte_stream after decode: %s', byte_stream)
+    byte_stream_decode = ':'.join(x.encode('hex') for x in byte_stream)
+    LOGGER.info('Byte_stream after decode: %s', byte_stream_decode)
     if len(byte_stream) < 3:
         LOGGER.debug('Message too short, length %d', len(byte_stream))
         return False
