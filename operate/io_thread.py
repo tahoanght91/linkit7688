@@ -66,18 +66,18 @@ def call():
 def _read_data(byte_stream):
     LOGGER.info('Receive data message')
     LOGGER.info('Type of byte_stream: %s', type(byte_stream))
-    LOGGER.info('Byte_stream after decode: %s', byte_stream.decode())
+    LOGGER.info('Byte_stream after decode: %s', byte_stream)
     if len(byte_stream) < 3:
         LOGGER.debug('Message too short, length %d', len(byte_stream))
         return False
     if byte_stream[0] != b'\xa0':
         LOGGER.debug('Mark byte not right, expected mark byte A0, received mark byte %s', byte_stream[0].encode('hex'))
         return False
-    if not check_check_sum(byte_stream, BYTE_ORDER):
-        LOGGER.debug('Check sum not right, expected check sum %s, received check sum %s',
-                     with_check_sum(byte_stream[:-2], BYTE_ORDER)[-2:].encode('hex'),
-                     byte_stream[-2:].encode('hex'))
-        return False
+    # if not check_check_sum(byte_stream, BYTE_ORDER):
+    #     LOGGER.debug('Check sum not right, expected check sum %s, received check sum %s',
+    #                  with_check_sum(byte_stream[:-2], BYTE_ORDER)[-2:].encode('hex'),
+    #                  byte_stream[-2:].encode('hex'))
+    #     return False
     frame_length = bytes_to_int(byte_stream[1])
     op_code = byte_stream[2]
     LOGGER.debug('Opcode %s', op_code.encode('hex'))
