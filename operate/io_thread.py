@@ -2,7 +2,7 @@ import serial
 
 import control
 from config import *
-from devices import airc, ats, atu, crmu, dc, misc, clock, acm, mcc
+from devices import ats, crmu, clock, acm, mcc
 from utility import *
 
 
