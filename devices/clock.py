@@ -13,7 +13,7 @@ def set():
     '''
     LOGGER.debug('Send time info to IO')
     ser = serial.Serial(port = IO_PORT, baudrate = BAUDRATE)
-    message_break = default_data.mccperiodReadDataIO
+    message_break = default_data.mccPeriodReadDataIO
     flip = READ_PER_WRITE
     while True:
         if flip == 0:
@@ -43,7 +43,7 @@ def extract():
     '''
     LOGGER.debug('Get time info from IO')
     ser = serial.Serial(port = IO_PORT, baudrate = BAUDRATE)
-    message_break = default_data.mccperiodReadDataIO
+    message_break = default_data.mccPeriodReadDataIO
     flip = READ_PER_WRITE
     while True:
         if flip == 0:
