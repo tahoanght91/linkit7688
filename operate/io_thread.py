@@ -83,10 +83,11 @@ def _read_data(byte_stream):
     LOGGER.debug('Opcode %s', op_code.encode('hex'))
     data = byte_stream[3:-2]
     if op_code == _OpData.IO_STATUS_MCC:  # MCC
-        LOGGER.info('MCC message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
-                    len(data), _OpData.MCC_SIZE)
+        LOGGER.info('MCC message, declared length: %d, real length: %d, expected length: %d', frame_length - 1, len(data), _OpData.MCC_SIZE)
         if _check_data(frame_length, data, _OpData.MCC_SIZE):
+            LOGGER.info('Check data successful, go to extract MCC')
             mcc.extract(data)
+            LOGGER.info('Extract MCC successful')
             return True
     # elif op_code == _OpData.IO_STATUS_ATS:  # ATS
     #     LOGGER.info('ATS message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
@@ -193,7 +194,17 @@ class _OpData:
 
 
 def _check_data(frame_length, data, expected_data_length):
-    if frame_length != len(data) + 1 or frame_length != expected_data_length + 1:
-        return False
-    else:
-        return True
+    LOGGER.info('Enter function _check_data')
+    try:
+        LOGGER.info('Frame length: %d, data length: %d, expected_data_length: %d', frame_length, len(data), expected_data_length)
+        if frame_length != len(data) + 1 or frame_length != expected_data_length + 1:
+            LOGGER.info('Frame length != data length + 1 or frame length != expected_data_length + 1')
+            LOGGER.info('Exit function _check_data')
+            return False
+        else:
+            LOGGER.info('Compare successful!')
+            LOGGER.info('Exit function _check_data')
+            return True
+    except Exception as ex:
+        LOGGER.error('Error at function _check_data with message: %s', ex.message)
+
