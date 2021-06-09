@@ -37,11 +37,11 @@ def extract(byte_data):
     mccDcV5 = bytes_to_int(byte_data[51:53], byteorder=BYTE_ORDER)
     mccDcI5 = bytes_to_int(byte_data[53:55], byteorder=BYTE_ORDER)
     mccDcP5 = bytes_to_int(byte_data[55:57], byteorder=BYTE_ORDER)
-    mccSystemClock = bytes_to_int(byte_data[57:64], byteorder=BYTE_ORDER)
+    mccSystemClock = bytes_to_int(byte_data[57:61], byteorder=BYTE_ORDER)
 
     #client attributes
-    mccRfidConnectState = bytes_to_int(byte_data[64])
-    mccDcCabinetSate = bytes_to_int(byte_data[65])
+    mccRfidConnectState = bytes_to_int(byte_data[61])
+    mccDcCabinetSate = bytes_to_int(byte_data[62])
 
     #telemetry
     _read_telemetry('mccSmokeState', mccSmokeState)
