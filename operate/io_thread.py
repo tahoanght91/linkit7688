@@ -65,6 +65,7 @@ def call():
 
 def _read_data(byte_stream):
     LOGGER.info('Receive data message')
+    print('byte_stream: ' + byte_stream.decode('utf-8'))
     if len(byte_stream) < 3:
         LOGGER.debug('Message too short, length %d', len(byte_stream))
         return False
@@ -86,24 +87,24 @@ def _read_data(byte_stream):
         if _check_data(frame_length, data, _OpData.MCC_SIZE):
             mcc.extract(data)
             return True
-    elif op_code == _OpData.IO_STATUS_ATS:  # ATS
-        LOGGER.info('ATS message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
-                    len(data), _OpData.ATS_SIZE)
-        if _check_data(frame_length, data, _OpData.ATS_SIZE):
-            ats.extract(data[1:])
-            return True
-    elif op_code == _OpData.IO_STATUS_ACM:  # ACM
-        LOGGER.info('ACM message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
-                    len(data), _OpData.ACM_SIZE)
-        if _check_data(frame_length, data, _OpData.ACM_SIZE):
-            acm.extract(data[1:])
-            return True
-    elif op_code == _OpData.IO_STATUS_CRMU:  # CRMU
-        LOGGER.info('CRMU message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
-                    len(data), _OpData.CRMU_SIZE)
-        if _check_data(frame_length, data, _OpData.CRMU_SIZE):
-            crmu.extract(data[1:])
-            return True
+    # elif op_code == _OpData.IO_STATUS_ATS:  # ATS
+    #     LOGGER.info('ATS message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
+    #                 len(data), _OpData.ATS_SIZE)
+    #     if _check_data(frame_length, data, _OpData.ATS_SIZE):
+    #         ats.extract(data[1:])
+    #         return True
+    # elif op_code == _OpData.IO_STATUS_ACM:  # ACM
+    #     LOGGER.info('ACM message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
+    #                 len(data), _OpData.ACM_SIZE)
+    #     if _check_data(frame_length, data, _OpData.ACM_SIZE):
+    #         acm.extract(data[1:])
+    #         return True
+    # elif op_code == _OpData.IO_STATUS_CRMU:  # CRMU
+    #     LOGGER.info('CRMU message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
+    #                 len(data), _OpData.CRMU_SIZE)
+    #     if _check_data(frame_length, data, _OpData.CRMU_SIZE):
+    #         crmu.extract(data[1:])
+    #         return True
     return False
 
 # def _read_data(byte_stream):
