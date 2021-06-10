@@ -4,7 +4,6 @@ import time
 from operator import itemgetter
 from config import LOGGER, shared_attributes, default_data, CLIENT, commands_lock, commands
 
-
 # def call():
 #     period = shared_attributes.get('mccPeriodUpdate', default_data.mccPeriodUpdate)
 #     while True:
@@ -78,16 +77,21 @@ def classify_shared_attributes(key, value):
 def parse_ats_shared_attributes_to_number(key):
     switcher_ats = {
         'atsVacMaxThreshold': 1,
-        'atsVdcThreshold': 2,
-        'atsVacMinThreshold': 3,
-        'atsVgenMaxThreshold': 4,
-        'atsVgenMinThreshold': 5,
-        'atsVacStabilizeTimeout': 6,
-        'atsVgenIdleCoolingTimeout': 7,
-        'atsVgenIdleWarmUpTimeout': 8,
-        'atsGenInactiveStartTime': 9,
-        'atsGenInactiveEndTime': 10,
-        'atsGenActiveDuration': 11
+        'atsVacMinThreshold': 2,
+        'atsVgenMaxThreshold': 3,
+        'atsVgenMinThreshold': 4,
+        'atsVacStabilizeTimeout': 5,
+        'atsVgenIdleCoolingTimeout': 6,
+        'atsVgenIdleWarmUpTimeout': 7,
+        'atsGenInactiveStartTime': 8,
+        'atsGenInactiveEndTime': 9,
+        'atsGenActiveDuration': 10,
+        'atsGenAutoResetMode': 11,
+        'atsGenAutoResetTimeout': 12,
+        'atsGenAutoResetMax': 13,
+        'atsGenDeactivateMode': 14,
+        'atsVacThresholdState': 15,
+        'atsVgenThresholdState': 16
     }
     return switcher_ats.get(key, "Out of range!")
 
@@ -176,4 +180,3 @@ def clear_all_list(list_dict_mcc, list_dict_acm, list_dict_ats):
     except Exception as ex:
         LOGGER.error('Error at clear_all_list function with message: %s', ex.message)
     return flag
-
