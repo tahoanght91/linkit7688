@@ -5,15 +5,17 @@ from .utils import _read_attribute, _read_telemetry
 
 def extract(byte_data):
     LOGGER.info('Enter function extract of module MCC')
+
     #telemetry
+    LOGGER.info('Start extract telemetry')
     mccSmokeState = bytes_to_int(byte_data[0])
     mccFireState = bytes_to_int(byte_data[1])
     mccMoveState = bytes_to_int(byte_data[2])
     mccDoorState = bytes_to_int(byte_data[3])
     mccFloodState = bytes_to_int(byte_data[4])
     mccDoorButton = bytes_to_int(byte_data[5])
-    din6 = bytes_to_int(byte_data[6])
-    din7 = bytes_to_int(byte_data[7])
+    mccDin6 = bytes_to_int(byte_data[6])
+    mccDin7 = bytes_to_int(byte_data[7])
     mccBellState = bytes_to_int(byte_data[8])
     mccDeviceTemp = bytes_to_int(byte_data[9:11], byteorder=BYTE_ORDER)
     mccRackTemp = bytes_to_int(byte_data[11:13], byteorder=BYTE_ORDER)
@@ -36,11 +38,14 @@ def extract(byte_data):
     mccDcV5 = bytes_to_int(byte_data[45:47], byteorder=BYTE_ORDER)
     mccDcI5 = bytes_to_int(byte_data[47:49], byteorder=BYTE_ORDER)
     mccDcP5 = bytes_to_int(byte_data[49:51], byteorder=BYTE_ORDER)
+    LOGGER.info('End extract telemetry')
 
     # client attributes
+    LOGGER.info('Start extract client attributes')
     mccSystemClock = bytes_to_int(byte_data[51:55], byteorder=BYTE_ORDER)
     mccRfidConnectState = bytes_to_int(byte_data[55])
     mccDcCabinetSate = bytes_to_int(byte_data[56])
+    LOGGER.info('End extract client attributes')
 
     #telemetry
     _read_telemetry('mccSmokeState', mccSmokeState)
@@ -50,8 +55,8 @@ def extract(byte_data):
     _read_telemetry('mccBellState', mccBellState)
     _read_telemetry('mccFloodState', mccFloodState)
     _read_telemetry('mccDoorButton', mccDoorButton)
-    _read_telemetry('din6', din6)
-    _read_telemetry('din7', din7)
+    _read_telemetry('mccDin6', mccDin6)
+    _read_telemetry('mccDin7', mccDin7)
     _read_telemetry('mccDeviceTemp', mccDeviceTemp)
     _read_telemetry('mccRackTemp', mccRackTemp)
     _read_telemetry('mccDcBat1Temp', mccDcBat1Temp)
