@@ -54,7 +54,7 @@ def call():
                     LOGGER.info('Sort the list failed')
             time.sleep(period)
     except Exception as ex:
-        LOGGER.error('Error at call function in thread shared_attributes_thread with message: ' + ex.message)
+        LOGGER.error('Error at call function in thread shared_attributes_thread with message: %s', ex.message)
 
 
 def classify_shared_attributes(key, value):
@@ -71,7 +71,7 @@ def classify_shared_attributes(key, value):
             number = parse_acm_shared_attributes_to_number(key)
             formatted = {'type': 'acm', 'idSharedAttributes': number, 'value': value}
     except Exception as ex:
-        LOGGER.error('Error at classify_shared_attributes function with message: ' + ex.message)
+        LOGGER.error('Error at classify_shared_attributes function with message: %s', ex.message)
     return formatted
 
 
@@ -115,7 +115,11 @@ def parse_acm_shared_attributes_to_number(key):
         'acmMinHumid': 9,
         'acmMaxHumid': 10,
         'acmExpectedTemp': 11,
-        'acmExpectedHumid': 12
+        'acmExpectedHumid': 12,
+        'acmT1Temp': 13,
+        'acmT2Temp': 14,
+        'acmT3Temp': 15,
+        'acmT4Temp': 16
     }
     return switcher_acm.get(key, "Out of range!")
 
@@ -129,7 +133,7 @@ def sort_list_dict(list_dict_mcc, list_dict_acm, list_dict_ats):
         new_list_acm = sorted(list_dict_acm, key=itemgetter('idSharedAttributes'))
         new_list_ats = sorted(list_dict_ats, key=itemgetter('idSharedAttributes'))
     except Exception as ex:
-        LOGGER.error('Error at sort_list_dict function with message: ' + ex.message)
+        LOGGER.error('Error at sort_list_dict function with message: %s', ex.message)
     return new_list_mcc, new_list_acm, new_list_ats
 
 
@@ -146,7 +150,7 @@ def classify_dict(response_classify):
             list_dict_acm.append(response_classify.copy())
             response = True
     except Exception as ex:
-        LOGGER.error('Error at classify_dict function with message: ' + ex.message)
+        LOGGER.error('Error at classify_dict function with message: %s', ex.message)
     return response
 
 
@@ -157,7 +161,7 @@ def get_array_value(tuple_sorted):
             for y in x:
                 array_value.append(y['value'])
     except Exception as ex:
-        LOGGER.error('Error at get_array_value function with message: ' + ex.message)
+        LOGGER.error('Error at get_array_value function with message: %s', ex.message)
     return array_value
 
 
@@ -170,6 +174,6 @@ def clear_all_list(list_dict_mcc, list_dict_acm, list_dict_ats):
         if len(list_dict_mcc) == 0 and len(list_dict_acm) == 0 and len(list_dict_ats) == 0:
             flag = True
     except Exception as ex:
-        LOGGER.error('Error at clear_all_list function with message: ' + ex.message)
+        LOGGER.error('Error at clear_all_list function with message: %s', ex.message)
     return flag
 
