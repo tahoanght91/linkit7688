@@ -53,11 +53,10 @@
     "atsContactorGenState": 0,
     "atsAcState": 0,
     "atsGenState": 0,
-    "atsVacThresholdState": 0,
-    "atsVgenThresholdState": 0,
     "atsState": 0,
     "atsErrorState": 0,
-    "atsMode": 0
+    "atsMode": 0,
+    "atsConnect": 1
   },
   "telemetry": {
     "mccSmokeState": 0,
