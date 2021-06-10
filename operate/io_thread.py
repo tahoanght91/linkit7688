@@ -96,12 +96,11 @@ def _read_data(byte_stream):
     #     if _check_data(frame_length, data, _OpData.ATS_SIZE):
     #         ats.extract(data[1:])
     #         return True
-    # elif op_code == _OpData.IO_STATUS_ACM:  # ACM
-    #     LOGGER.info('ACM message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
-    #                 len(data), _OpData.ACM_SIZE)
-    #     if _check_data(frame_length, data, _OpData.ACM_SIZE):
-    #         acm.extract(data[1:])
-    #         return True
+    elif op_code == _OpData.IO_STATUS_ACM:  # ACM
+        LOGGER.info('ACM message, declared length: %d, real length: %d, expected length: %d', frame_length - 1, len(data), _OpData.ACM_SIZE)
+        if _check_data(frame_length, data, _OpData.ACM_SIZE):
+            acm.extract(data[1:])
+            return True
     # elif op_code == _OpData.IO_STATUS_CRMU:  # CRMU
     #     LOGGER.info('CRMU message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
     #                 len(data), _OpData.CRMU_SIZE)
@@ -168,7 +167,7 @@ def _read_data(byte_stream):
 
 class _OpData:
     #new
-    ACM_SIZE = 18
+    ACM_SIZE = 27
     ATS_SIZE = 60
     MCC_SIZE = 58
     CRMU_SIZE = 15
