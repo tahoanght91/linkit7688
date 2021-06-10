@@ -32,6 +32,10 @@ def extract(byte_data):
     utils._read_telemetry('acmTempIndoor', acmTempIndoor)
     utils._read_telemetry('acmTempOutdoor', acmTempOutdoor)
     utils._read_telemetry('acmHumidIndoor', acmHumidIndoor)
+    utils._read_telemetry('acmT1Temp', acmT1Temp)
+    utils._read_telemetry('acmT2Temp', acmT2Temp)
+    utils._read_telemetry('acmT3Temp', acmT3Temp)
+    utils._read_telemetry('acmT4Temp', acmT4Temp)
 
     #client attributes
     utils._read_telemetry('acmTempError', acmTempError)
@@ -45,7 +49,4 @@ def extract(byte_data):
     utils._read_attribute('acmAirc2Error', acmAirc2Error)
     utils._read_attribute('acmFanRunState', acmFanRunState)
     utils._read_attribute('acmFanError', acmFanError)
-    utils._read_attribute('acmT1Temp', acmT1Temp)
-    utils._read_attribute('acmT2Temp', acmT2Temp)
-    utils._read_attribute('acmT3Temp', acmT3Temp)
-    utils._read_attribute('acmT4Temp', acmT4Temp)
+
