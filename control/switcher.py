@@ -44,7 +44,7 @@ def parse_mcc_command_to_number(command):
     return switcher_mcc_command.get(command, "Out of range!")
 
 
-# ACM
+# Command ACM
 def parse_acm_command_to_number(command):
     LOGGER.info('Enter parse_acm_command_to_number function')
     switcher_acm_command = {
@@ -62,4 +62,24 @@ def parse_acm_command_to_number(command):
     LOGGER.info('Command is: %s, after parse is: %d', command, switcher_acm_command.get(command))
     LOGGER.info('Exit parse_acm_command_to_number function')
     return switcher_acm_command.get(command, "Out of range!")
+
+
+# Command ATS
+def parse_ats_command_to_number(command):
+    LOGGER.info('Enter parse_ats_command_to_number function')
+    switcher_ats_command = {
+        COMMAND_ATS_ELECTRICITY_SUPPLY_OFF: 0,
+        COMMAND_ATS_ELECTRICITY_SUPPLY_ON: 1,
+        COMMAND_ATS_GENERATOR_SUPPLY_OFF: 0,
+        COMMAND_ATS_GENERATOR_SUPPLY_ON: 1,
+        COMMAND_ATS_GENERATOR_OFF: 0,
+        COMMAND_ATS_GENERATOR_ON: 1,
+        COMMAND_ATS_START_OFF: 0,
+        COMMAND_ATS_START_ON: 1,
+        COMMAND_ATS_SELF_PROPELLED_OFF: 0,
+        COMMAND_ATS_SELF_PROPELLED_ON: 1
+    }
+    LOGGER.info('Command is: %s, after parse is: %d', command, switcher_ats_command.get(command, 'Out of range!'))
+    LOGGER.info('Exit parse_ats_command_to_number function')
+    return switcher_ats_command.get(command, "Out of range!")
 
