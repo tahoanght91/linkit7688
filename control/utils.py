@@ -95,13 +95,12 @@ def _process_command(device, command):
             LOGGER.error('Error at device %s with command_int or target is not integer: command_int: %s, target: %s', str(device), str(command_int), str(target))
     elif device == DEVICE_ATS_1:
         device = 98
-        if value == COMMAND_ATS_MAIN:
-            command = 0
-        elif value == COMMAND_ATS_GEN:
-            command = 1
-        elif value == COMMAND_ATS_AUTO:
-            command = 2
-        result = struct.pack('BBBBB', 0xA0, 0x03, 0x21, device, command)
+        command_int = parse_ats_command_to_number(command)
+        target = get_target_by_command_ats(command)
+        if isinstance(command_int, int) and isinstance(target, int) and target >= 0:
+            result = struct.pack('BBBBBB', 0xA0, 0x04, 0x21, device, target, command_int)
+        else:
+            LOGGER.error('Error at device %s with command_int or target is not integer: command_int: %s, target: %s', str(device), str(command_int), str(target))
     elif device == DEVICE_ACM_1:
         device = 99
         command_int = parse_acm_command_to_number(command)
