@@ -83,3 +83,69 @@ def parse_ats_command_to_number(command):
     LOGGER.info('Exit parse_ats_command_to_number function')
     return switcher_ats_command.get(command, "Out of range!")
 
+
+# shared attributes ATS
+def parse_ats_shared_attributes_to_number(key):
+    LOGGER.info('Enter parse_ats_shared_attributes_to_number function')
+    switcher_ats = {
+        'atsVacMaxThreshold': 1,
+        'atsVacMinThreshold': 2,
+        'atsVgenMaxThreshold': 3,
+        'atsVgenMinThreshold': 4,
+        'atsVacStabilizeTimeout': 5,
+        'atsVgenIdleCoolingTimeout': 6,
+        'atsVgenIdleWarmUpTimeout': 7,
+        'atsGenInactiveStartTime': 8,
+        'atsGenInactiveEndTime': 9,
+        'atsGenActiveDuration': 10,
+        'atsGenAutoResetMode': 11,
+        'atsGenAutoResetTimeout': 12,
+        'atsGenAutoResetMax': 13,
+        'atsGenDeactivateMode': 14,
+        'atsVacThresholdState': 15,
+        'atsVgenThresholdState': 16
+    }
+    LOGGER.info('Key is: %s, after parse is: %d', key, switcher_ats.get(key, 'Out of range!'))
+    LOGGER.info('Exit parse_ats_shared_attributes_to_number function')
+    return switcher_ats.get(key, "Out of range!")
+
+
+# shared attributes MCC
+def parse_mcc_shared_attributes_to_number(key):
+    LOGGER.info('Enter parse_mcc_shared_attributes_to_number function')
+    switcher_mcc = {
+        'mccPeriodReadDataIO': 1,
+        'mccPeriodSendTelemetry': 2,
+        'mccPeriodUpdate': 3,
+        'mccDcMinThreshold': 4
+    }
+    LOGGER.info('Key is: %s, after parse is: %d', key, switcher_mcc.get(key, 'Out of range!'))
+    LOGGER.info('Exit parse_mcc_shared_attributes_to_number function')
+    return switcher_mcc.get(key, "Out of range!")
+
+
+# shared attributes ACM
+def parse_acm_shared_attributes_to_number(key):
+    LOGGER.info('Enter parse_acm_shared_attributes_to_number function')
+    switcher_acm = {
+        'acmAlternativeState': 1,
+        'acmAlternativeTime': 2,
+        'acmRunTime': 3,
+        'acmRestTime': 4,
+        'acmGenAllow': 5,
+        'acmVacThreshold': 6,
+        'acmMinTemp': 7,
+        'acmMaxTemp': 8,
+        'acmMinHumid': 9,
+        'acmMaxHumid': 10,
+        'acmExpectedTemp': 11,
+        'acmExpectedHumid': 12,
+        'acmT1Temp': 13,
+        'acmT2Temp': 14,
+        'acmT3Temp': 15,
+        'acmT4Temp': 16
+    }
+    LOGGER.info('Key is: %s, after parse is: %d', key, switcher_acm.get(key, 'Out of range!'))
+    LOGGER.info('Exit parse_acm_shared_attributes_to_number function')
+    return switcher_acm.get(key, "Out of range!")
+

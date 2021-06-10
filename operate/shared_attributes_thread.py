@@ -1,8 +1,8 @@
-import struct
 import time
-
 from operator import itemgetter
-from config import LOGGER, shared_attributes, default_data, CLIENT, commands_lock, commands
+
+from config import shared_attributes, default_data, CLIENT, commands_lock, commands
+from control.switcher import *
 
 # def call():
 #     period = shared_attributes.get('mccPeriodUpdate', default_data.mccPeriodUpdate)
@@ -19,6 +19,10 @@ from config import LOGGER, shared_attributes, default_data, CLIENT, commands_loc
 list_dict_ats = []
 list_dict_acm = []
 list_dict_mcc = []
+
+TYPE = 'type'
+ID_SHARED_ATTRIBUTES = 'idSharedAttributes'
+VALUE = 'value'
 
 
 def call():
@@ -56,73 +60,19 @@ def classify_shared_attributes(key, value):
         if 'ats' in key:
             number = parse_ats_shared_attributes_to_number(key)
             if isinstance(number, int):
-                formatted = {'type': 'ats', 'idSharedAttributes': number, 'value': value}
+                formatted = {TYPE: 'ats', ID_SHARED_ATTRIBUTES: number, VALUE: value}
         elif 'mcc' in key:
             number = parse_mcc_shared_attributes_to_number(key)
             if isinstance(number, int):
-                formatted = {'type': 'mcc', 'idSharedAttributes': number, 'value': value}
+                formatted = {TYPE: 'mcc', ID_SHARED_ATTRIBUTES: number, VALUE: value}
         elif 'acm' in key:
             number = parse_acm_shared_attributes_to_number(key)
             if isinstance(number, int):
-                formatted = {'type': 'acm', 'idSharedAttributes': number, 'value': value}
+                formatted = {TYPE: 'acm', ID_SHARED_ATTRIBUTES: number, VALUE: value}
     except Exception as ex:
         LOGGER.error('Error at classify_shared_attributes function with message: %s', ex.message)
     LOGGER.info('Exit classify_shared_attributes function')
     return formatted
-
-
-def parse_ats_shared_attributes_to_number(key):
-    switcher_ats = {
-        'atsVacMaxThreshold': 1,
-        'atsVacMinThreshold': 2,
-        'atsVgenMaxThreshold': 3,
-        'atsVgenMinThreshold': 4,
-        'atsVacStabilizeTimeout': 5,
-        'atsVgenIdleCoolingTimeout': 6,
-        'atsVgenIdleWarmUpTimeout': 7,
-        'atsGenInactiveStartTime': 8,
-        'atsGenInactiveEndTime': 9,
-        'atsGenActiveDuration': 10,
-        'atsGenAutoResetMode': 11,
-        'atsGenAutoResetTimeout': 12,
-        'atsGenAutoResetMax': 13,
-        'atsGenDeactivateMode': 14,
-        'atsVacThresholdState': 15,
-        'atsVgenThresholdState': 16
-    }
-    return switcher_ats.get(key, "Out of range!")
-
-
-def parse_mcc_shared_attributes_to_number(key):
-    switcher_mcc = {
-        'mccPeriodReadDataIO': 1,
-        'mccPeriodSendTelemetry': 2,
-        'mccPeriodUpdate': 3,
-        'mccDcMinThreshold': 4
-    }
-    return switcher_mcc.get(key, "Out of range!")
-
-
-def parse_acm_shared_attributes_to_number(key):
-    switcher_acm = {
-        'acmAlternativeState': 1,
-        'acmAlternativeTime': 2,
-        'acmRunTime': 3,
-        'acmRestTime': 4,
-        'acmGenAllow': 5,
-        'acmVacThreshold': 6,
-        'acmMinTemp': 7,
-        'acmMaxTemp': 8,
-        'acmMinHumid': 9,
-        'acmMaxHumid': 10,
-        'acmExpectedTemp': 11,
-        'acmExpectedHumid': 12,
-        'acmT1Temp': 13,
-        'acmT2Temp': 14,
-        'acmT3Temp': 15,
-        'acmT4Temp': 16
-    }
-    return switcher_acm.get(key, "Out of range!")
 
 
 def sort_list_dict(list_dict_mcc, list_dict_acm, list_dict_ats):
@@ -131,9 +81,9 @@ def sort_list_dict(list_dict_mcc, list_dict_acm, list_dict_ats):
     new_list_acm = []
     new_list_ats = []
     try:
-        new_list_mcc = sorted(list_dict_mcc, key=itemgetter('idSharedAttributes'))
-        new_list_acm = sorted(list_dict_acm, key=itemgetter('idSharedAttributes'))
-        new_list_ats = sorted(list_dict_ats, key=itemgetter('idSharedAttributes'))
+        new_list_mcc = sorted(list_dict_mcc, key=itemgetter(ID_SHARED_ATTRIBUTES))
+        new_list_acm = sorted(list_dict_acm, key=itemgetter(ID_SHARED_ATTRIBUTES))
+        new_list_ats = sorted(list_dict_ats, key=itemgetter(ID_SHARED_ATTRIBUTES))
     except Exception as ex:
         LOGGER.error('Error at sort_list_dict function with message: %s', ex.message)
     LOGGER.info('Exit sort_list_dict function')
@@ -144,13 +94,13 @@ def classify_dict(response_classify):
     LOGGER.info('Enter classify_dict function')
     response = False
     try:
-        if response_classify['type'] is 'mcc':
+        if response_classify[TYPE] is 'mcc':
             list_dict_mcc.append(response_classify.copy())
             response = True
-        elif response_classify['type'] is 'ats':
+        elif response_classify[TYPE] is 'ats':
             list_dict_ats.append(response_classify.copy())
             response = True
-        elif response_classify['type'] is 'acm':
+        elif response_classify[TYPE] is 'acm':
             list_dict_acm.append(response_classify.copy())
             response = True
     except Exception as ex:
@@ -165,7 +115,7 @@ def get_array_value(tuple_sorted):
     try:
         for x in tuple_sorted:
             for y in x:
-                array_value.append(y['value'])
+                array_value.append(y[VALUE])
     except Exception as ex:
         LOGGER.error('Error at get_array_value function with message: %s', ex.message)
     LOGGER.info('Exit get_array_value function')
