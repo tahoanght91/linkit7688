@@ -65,7 +65,6 @@ def call():
 
 def _read_data(byte_stream):
     LOGGER.info('Receive data message')
-    LOGGER.info('Type of byte_stream: %s', type(byte_stream))
     byte_stream_decode = ':'.join(x.encode('hex') for x in byte_stream)
     LOGGER.info('Byte_stream after decode: %s', byte_stream_decode)
     if len(byte_stream) < 3:
@@ -90,12 +89,11 @@ def _read_data(byte_stream):
             mcc.extract(data)
             LOGGER.info('Extract MCC successful')
             return True
-    # elif op_code == _OpData.IO_STATUS_ATS:  # ATS
-    #     LOGGER.info('ATS message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
-    #                 len(data), _OpData.ATS_SIZE)
-    #     if _check_data(frame_length, data, _OpData.ATS_SIZE):
-    #         ats.extract(data[1:])
-    #         return True
+    elif op_code == _OpData.IO_STATUS_ATS:  # ATS
+        LOGGER.info('ATS message, declared length: %d, real length: %d, expected length: %d', frame_length - 1, len(data), _OpData.ATS_SIZE)
+        if _check_data(frame_length, data, _OpData.ATS_SIZE):
+            ats.extract(data[1:])
+            return True
     elif op_code == _OpData.IO_STATUS_ACM:  # ACM
         LOGGER.info('ACM message, declared length: %d, real length: %d, expected length: %d', frame_length - 1, len(data), _OpData.ACM_SIZE)
         if _check_data(frame_length, data, _OpData.ACM_SIZE):
@@ -168,7 +166,7 @@ def _read_data(byte_stream):
 class _OpData:
     #new
     ACM_SIZE = 27
-    ATS_SIZE = 60
+    ATS_SIZE = 54
     MCC_SIZE = 58
     CRMU_SIZE = 15
     KEY_SIZE = 3
