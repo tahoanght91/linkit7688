@@ -2,6 +2,9 @@ import struct
 
 from config import *
 from config.common import *
+from config.common_method import *
+from control.switcher import *
+from control.target import *
 
 
 def _check_command(device, command):
@@ -78,13 +81,9 @@ def get_value_device(device_name, method):
 
 
 def _process_command(device, command):
+    LOGGER.info('Enter _process_command function')
     result = ''
     value = ''
-
-    if type(command) is bool:
-        value = convert_boolean_to_string(command)
-    else:
-        value = command
 
     if device == DEVICE_MCC_1:
         device = 97
@@ -93,7 +92,7 @@ def _process_command(device, command):
         if isinstance(command_int, int) and isinstance(target, int) and target >= 0:
             result = struct.pack('BBBBBB', 0xA0, 0x04, 0x21, device, target, command_int)
         else:
-            LOGGER.error('Error at device %s with command_int or target is not integer: command_int: %s, target: %s', str(device),str(command_int), str(target))
+            LOGGER.error('Error at device %s with command_int or target is not integer: command_int: %s, target: %s', str(device), str(command_int), str(target))
     elif device == DEVICE_ATS_1:
         device = 98
         if value == COMMAND_ATS_MAIN:
@@ -133,131 +132,6 @@ def _process_command(device, command):
     return result
 
 
-def parse_mcc_command_to_number(command):
-    switcher_mcc_command = {
-        COMMAND_MCC_CLOSE_DOOR: 0,
-        COMMAND_MCC_OPEN_DOOR: 1,
-        COMMAND_MCC_OFF_BELL: 0,
-        COMMAND_MCC_ON_BELL: 1,
-        COMMAND_MCC_OFF_LAMP: 0,
-        COMMAND_MCC_ON_LAMP: 1,
-        COMMAND_MCC_OFF_DOUT_REVERSED_1: 0,
-        COMMAND_MCC_ON_DOUT_REVERSED_1: 1,
-        COMMAND_MCC_OFF_DOUT_REVERSED_2: 0,
-        COMMAND_MCC_ON_DOUT_REVERSED_2: 1,
-        COMMAND_MCC_OFF_DOUT_REVERSED_3: 0,
-        COMMAND_MCC_ON_DOUT_REVERSED_3: 1,
-        COMMAND_MCC_OFF_DOUT_REVERSED_4: 0,
-        COMMAND_MCC_ON_DOUT_REVERSED_4: 1,
-        COMMAND_MCC_OFF_DOUT_REVERSED_5: 0,
-        COMMAND_MCC_ON_DOUT_REVERSED_5: 1,
-        COMMAND_MCC_OFF_DOUT_REVERSED_6: 0,
-        COMMAND_MCC_ON_DOUT_REVERSED_6: 1,
-        COMMAND_MCC_OFF_DOUT_REVERSED_7: 0,
-        COMMAND_MCC_ON_DOUT_REVERSED_7: 1,
-        COMMAND_MCC_OFF_DOUT_REVERSED_8: 0,
-        COMMAND_MCC_ON_DOUT_REVERSED_8: 1,
-        COMMAND_MCC_OFF_DOUT_REVERSED_9: 0,
-        COMMAND_MCC_ON_DOUT_REVERSED_9: 1,
-        COMMAND_MCC_OFF_DOUT_REVERSED_10: 0,
-        COMMAND_MCC_ON_DOUT_REVERSED_10: 1,
-        COMMAND_MCC_OFF_DOUT_REVERSED_11: 0,
-        COMMAND_MCC_ON_DOUT_REVERSED_11: 1,
-        COMMAND_MCC_OFF_DOUT_REVERSED_12: 0,
-        COMMAND_MCC_ON_DOUT_REVERSED_12: 1,
-        COMMAND_MCC_OFF_DOUT_REVERSED_13: 0,
-        COMMAND_MCC_ON_DOUT_REVERSED_13: 1
-    }
-    return switcher_mcc_command.get(command, "Out of range!")
-
-
-def parse_acm_command_to_number(command):
-    switcher_acm_command = {
-        COMMAND_ACM_AUTO_OFF: 0,
-        COMMAND_ACM_AUTO_ON: 1,
-        COMMAND_ACM_AIRC_1_OFF: 0,
-        COMMAND_ACM_AIRC_1_ON: 1,
-        COMMAND_ACM_AIRC_2_OFF: 0,
-        COMMAND_ACM_AIRC_2_ON: 1,
-        COMMAND_ACM_FAN_OFF: 0,
-        COMMAND_ACM_FAN_ON: 1
-    }
-    return switcher_acm_command.get(command, "Out of range!")
-
-
-def get_target_by_command_mcc(command):
-    target = -1
-    try:
-        is_string = isinstance(command, str)
-        if is_string:
-            if 'Door' in command:
-                target = 0
-            elif 'Lamp' in command:
-                target = 1
-            elif 'DoutReversed1' in command:
-                target = 2
-            elif 'DoutReversed2' in command:
-                target = 3
-            elif 'DoutReversed3' in command:
-                target = 4
-            elif 'DoutReversed4' in command:
-                target = 5
-            elif 'DoutReversed5' in command:
-                target = 6
-            elif 'DoutReversed6' in command:
-                target = 7
-            elif 'DoutReversed7' in command:
-                target = 8
-            elif 'DoutReversed8' in command:
-                target = 9
-            elif 'DoutReversed9' in command:
-                target = 10
-            elif 'DoutReversed10' in command:
-                target = 11
-            elif 'Bell' in command:
-                target = 12
-            elif 'DoutReversed11' in command:
-                target = 13
-            elif 'DoutReversed12' in command:
-                target = 14
-            elif 'DoutReversed13' in command:
-                target = 15
-        else:
-            LOGGER.error('Command is not a string: %s', str(command))
-    except Exception as ex:
-        LOGGER.error('Error at get_target_by_command function with message: %s', ex.message)
-    return target
-
-
-def get_target_by_command_acm(command):
-    target = -1
-    try:
-        is_string = isinstance(command, str)
-        if is_string:
-            if 'AutoAcm' in command:
-                target = 0
-            elif 'AcmAirc1' in command:
-                target = 1
-            elif 'AcmAirc2' in command:
-                target = 2
-            elif 'AcmFan' in command:
-                target = 3
-        else:
-            LOGGER.error('Command is not a string: %s', str(command))
-    except Exception as ex:
-        LOGGER.error('Error at get_target_by_command function with message: %s', ex.message)
-    return target
-
-
-def convert_boolean_to_string(command):
-    if command:
-        _command = 'on'
-    else:
-        _command = 'off'
-
-    return _command
-
-
 def convert_boolean_to_int(command):
     if command:
         _command = 1
@@ -268,35 +142,31 @@ def convert_boolean_to_int(command):
 
 
 def _check_command_send_rpc(device, command):
-    if device == DEVICE_ACM_1 \
-            and (command == COMMAND_ACM_AIRC_1_ON or
-                 command == COMMAND_ACM_AIRC_1_OFF or
-                 command == COMMAND_ACM_AIRC_2_ON or
-                 command == COMMAND_ACM_AIRC_2_OFF or
-                 command == COMMAND_ACM_FAN_OFF or
-                 command == COMMAND_ACM_FAN_ON or
-                 command == COMMAND_ACM_AUTO_ON or
-                 command == COMMAND_ACM_AUTO_OFF):
-        return True
-    elif device == DEVICE_ATS_1 and (command == COMMAND_ATS_MAIN or command == COMMAND_ATS_GEN or command == COMMAND_ATS_AUTO):
-        return True
-    elif device == DEVICE_MCC_1 and check_exist_command_mcc(command):
-        return True
-    else:
-        return False
+    LOGGER.info('Enter _check_command_send_rpc function')
+    result = False
+    try:
+        if device == DEVICE_ACM_1 and check_exist_command(command):
+            result = True
+        elif device == DEVICE_ATS_1 and check_exist_command(command):
+            result = True
+        elif device == DEVICE_MCC_1 and check_exist_command(command):
+            result = True
+    except Exception as ex:
+        LOGGER.error('Error at _check_command_send_rpc function with message: %s', ex.message)
+    LOGGER.info('Result of check command is: %s', result)
+    LOGGER.info('Exit _check_command_send_rpc function')
+    return result
 
 
-def check_exist_command_mcc(command):
-    list_command_mcc = [COMMAND_MCC_OPEN_DOOR, COMMAND_MCC_CLOSE_DOOR, COMMAND_MCC_ON_BELL, COMMAND_MCC_OFF_BELL,
-                        COMMAND_MCC_ON_LAMP, COMMAND_MCC_OFF_LAMP, COMMAND_MCC_OFF_DOUT_REVERSED_1, COMMAND_MCC_ON_DOUT_REVERSED_1,
-                        COMMAND_MCC_OFF_DOUT_REVERSED_2, COMMAND_MCC_ON_DOUT_REVERSED_2, COMMAND_MCC_OFF_DOUT_REVERSED_3, COMMAND_MCC_ON_DOUT_REVERSED_3,
-                        COMMAND_MCC_OFF_DOUT_REVERSED_4, COMMAND_MCC_ON_DOUT_REVERSED_4, COMMAND_MCC_OFF_DOUT_REVERSED_5, COMMAND_MCC_ON_DOUT_REVERSED_5,
-                        COMMAND_MCC_OFF_DOUT_REVERSED_6, COMMAND_MCC_ON_DOUT_REVERSED_6, COMMAND_MCC_OFF_DOUT_REVERSED_7, COMMAND_MCC_ON_DOUT_REVERSED_7,
-                        COMMAND_MCC_OFF_DOUT_REVERSED_8, COMMAND_MCC_ON_DOUT_REVERSED_8, COMMAND_MCC_OFF_DOUT_REVERSED_9, COMMAND_MCC_ON_DOUT_REVERSED_9,
-                        COMMAND_MCC_OFF_DOUT_REVERSED_10, COMMAND_MCC_ON_DOUT_REVERSED_10, COMMAND_MCC_OFF_DOUT_REVERSED_11, COMMAND_MCC_ON_DOUT_REVERSED_11,
-                        COMMAND_MCC_OFF_DOUT_REVERSED_12, COMMAND_MCC_ON_DOUT_REVERSED_12, COMMAND_MCC_OFF_DOUT_REVERSED_13, COMMAND_MCC_ON_DOUT_REVERSED_13]
-    if command in list_command_mcc:
-        return True
-    else:
-        return False
+def check_exist_command(command):
+    LOGGER.info('Enter check_exist_command function')
+    result = False
+    try:
+        if command in list_command:
+            result = True
+    except Exception as ex:
+        LOGGER.error('Error at check_exist_command function with message: %s', ex.message)
+    LOGGER.info('Result of check existence is: %s', result)
+    LOGGER.info('Exit check_exist_command function')
+    return result
 
