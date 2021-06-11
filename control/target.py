@@ -50,18 +50,16 @@ def get_target_by_command_acm(command):
     LOGGER.info('Enter get_target_by_command_acm function')
     target = -1
     try:
-        is_string = isinstance(command, str)
-        if is_string:
-            if 'AutoAcm' in command:
-                target = 0
-            elif 'Airc1Acm' in command:
-                target = 1
-            elif 'Airc2Acm' in command:
-                target = 2
-            elif 'FanAcm' in command:
-                target = 3
-            elif 'SelfPropelledAcm' in command:
-                target = 4
+        if 'AutoAcm' in command:
+            target = 0
+        elif 'Airc1Acm' in command:
+            target = 1
+        elif 'Airc2Acm' in command:
+            target = 2
+        elif 'FanAcm' in command:
+            target = 3
+        elif 'SelfPropelledAcm' in command:
+            target = 4
         else:
             LOGGER.error('Command is not a string: %s', str(command))
     except Exception as ex:
@@ -75,18 +73,16 @@ def get_target_by_command_ats(command):
     LOGGER.info('Enter get_target_by_command_ats function')
     target = -1
     try:
-        is_string = isinstance(command, str)
-        if is_string:
-            if 'ElectricitySupplyAts' in command:
-                target = 0
-            elif 'GeneratorSupplyAts' in command:
-                target = 1
-            elif 'GeneratorAts' in command:
-                target = 2
-            elif 'StartAts' in command:
-                target = 3
-            elif 'SelfPropelledAts' in command:
-                target = 4
+        if 'ElectricitySupplyAts' in command:
+            target = 0
+        elif 'GeneratorSupplyAts' in command:
+            target = 1
+        elif 'GeneratorAts' in command:
+            target = 2
+        elif 'StartAts' in command:
+            target = 3
+        elif 'SelfPropelledAts' in command:
+            target = 4
         else:
             LOGGER.error('Command is not a string: %s', str(command))
     except Exception as ex:
