@@ -83,51 +83,15 @@ def get_value_device(device_name, method):
 def _process_command(device, command):
     LOGGER.info('Enter _process_command function')
     result = ''
-    value = ''
-
-    if device == DEVICE_MCC_1:
-        device = 97
-        command_int = parse_mcc_command_to_number(command)
-        target = get_target_by_command_mcc(command)
-        if isinstance(command_int, int) and isinstance(target, int) and target >= 0:
-            result = struct.pack('BBBBBB', 0xA0, 0x04, 0x21, device, target, command_int)
-        else:
-            LOGGER.error('Error at device %s with command_int or target is not integer: command_int: %s, target: %s', str(device), str(command_int), str(target))
-    elif device == DEVICE_ATS_1:
-        device = 98
-        command_int = parse_ats_command_to_number(command)
-        target = get_target_by_command_ats(command)
-        if isinstance(command_int, int) and isinstance(target, int) and target >= 0:
-            result = struct.pack('BBBBBB', 0xA0, 0x04, 0x21, device, target, command_int)
-        else:
-            LOGGER.error('Error at device %s with command_int or target is not integer: command_int: %s, target: %s', str(device), str(command_int), str(target))
-    elif device == DEVICE_ACM_1:
-        device = 99
-        command_int = parse_acm_command_to_number(command)
-        target = get_target_by_command_acm(command)
-        if isinstance(command_int, int) and isinstance(target, int) and target >= 0:
-            result = struct.pack('BBBBBB', 0xA0, 0x04, 0x21, device, target, command_int)
-        else:
-            LOGGER.error('Error at device %s with command_int or target is not integer: command_int: %s, target: %s', str(device),str(command_int), str(target))
+    if device == DEVICE_MCC_1 or device == DEVICE_ATS_1 or device == DEVICE_ACM_1:
+        result = compose_command_rpc(device, command)
+    elif device == KEY_MCC or device == KEY_ACM or device == ATS:
+        result = compose_command_shared_attributes(device, command)
     elif device == SHARED_ATTRIBUTES_RFID_CARD:
         device = 5
-        result = struct.pack('BBBBB', 0xA0, 0x03, 0x24, device, command)
-    elif device == ALL_SHARED_ATTRIBUTES:
-        device = 1
-        length_command = len(command) + 4
-        prefix = '<' + str(length_command) + 'Q'
-        result = struct.pack(prefix, 0xA0, 0x03, 0x25, device, *command)
-    # else:
-    #     response_classify = classify_shared_attributes(device, command)
-    #     id_shared_attributes = response_classify['idSharedAttributes']
-    #     if 'ats' in device and type(id_shared_attributes) is int:
-    #         result = struct.pack('BBBBB', 0xA0, 0x03, 0x22, id_shared_attributes, command)
-    #     elif 'acm' in device and type(id_shared_attributes) is int:
-    #         result = struct.pack('BBBBB', 0xA0, 0x03, 0x23, id_shared_attributes, command)
-    #     elif 'mcc' in device and type(id_shared_attributes) is int:
-    #         result = struct.pack('BBBBB', 0xA0, 0x03, 0x24, id_shared_attributes, command)
-
+        result = struct.pack(FORMAT_RFID, 0xA0, 0x03, 0x24, device, command)
     LOGGER.debug('Process command: device: %s, command: %s', device, command)
+    LOGGER.info('Exit _process_command function')
     return result
 
 
@@ -168,4 +132,82 @@ def check_exist_command(command):
     LOGGER.info('Result of check existence is: %s', result)
     LOGGER.info('Exit check_exist_command function')
     return result
+
+
+def compose_command_rpc(device, command):
+    LOGGER.info('Enter compose_command_rpc function')
+    result = -1
+    try:
+        if device == DEVICE_MCC_1:
+            device = ID_MCC
+            command_int = parse_mcc_command_to_number(command)
+            target = get_target_by_command_mcc(command)
+            if isinstance(command_int, int) and isinstance(target, int) and target >= 0:
+                result = struct.pack(FORMAT_RPC, 0xA0, 0x04, 0x21, device, target, command_int)
+            else:
+                LOGGER.error('Error at device %s with command_int or target is not integer: command_int: %s, target: %s', str(device), str(command_int), str(target))
+        elif device == DEVICE_ATS_1:
+            device = ID_ATS
+            command_int = parse_ats_command_to_number(command)
+            target = get_target_by_command_ats(command)
+            if isinstance(command_int, int) and isinstance(target, int) and target >= 0:
+                result = struct.pack(FORMAT_RPC, 0xA0, 0x04, 0x21, device, target, command_int)
+            else:
+                LOGGER.error('Error at device %s with command_int or target is not integer: command_int: %s, target: %s', str(device), str(command_int), str(target))
+        elif device == DEVICE_ACM_1:
+            device = ID_ACM
+            command_int = parse_acm_command_to_number(command)
+            target = get_target_by_command_acm(command)
+            if isinstance(command_int, int) and isinstance(target, int) and target >= 0:
+                result = struct.pack(FORMAT_RPC, 0xA0, 0x04, 0x21, device, target, command_int)
+            else:
+                LOGGER.error('Error at device %s with command_int or target is not integer: command_int: %s, target: %s', str(device), str(command_int), str(target))
+    except Exception as ex:
+        LOGGER.error('Error at compose_command_rpc with message: %s', ex.message)
+    if isinstance(result, str):
+        byte_stream_decode = ':'.join(x.encode('hex') for x in result)
+        LOGGER.info('Command send to STM32: %s', byte_stream_decode)
+    else:
+        LOGGER.info('Command error!')
+    LOGGER.info('Exit compose_command_rpc function')
+    return result
+
+
+def compose_command_shared_attributes(device, command):
+    LOGGER.info('Enter compose_command_shared_attributes function')
+    result = -1
+    try:
+        length_command = get_length_command
+        if device == KEY_MCC:
+            device = ID_MCC
+            bytes_length = BYTES_SA_MCC
+            prefix = format_sa(length_command)
+            result = struct.pack(prefix, 0xA0, 11, 0x41, device, bytes_length, *command)
+        elif device == KEY_ACM:
+            device = ID_ACM
+            bytes_length = BYTES_SA_ACM
+            prefix = format_sa(length_command)
+            result = struct.pack(prefix, 0xA0, 33, 0x41, device, bytes_length, *command)
+        elif device == KEY_ATS:
+            device = ID_ATS
+            bytes_length = BYTES_SA_ATS
+            prefix = format_sa(length_command)
+            result = struct.pack(prefix, 0xA0, 33, 0x41, device, bytes_length, *command)
+    except Exception as ex:
+        LOGGER.error('Error at compose_command_shared_attributes function with message: %s', ex.message)
+    if isinstance(result, str):
+        byte_stream_decode = ':'.join(x.encode('hex') for x in result)
+        LOGGER.info('Command send to STM32: %s', byte_stream_decode)
+    else:
+        LOGGER.info('Command error!')
+    LOGGER.info('Exit compose_command_shared_attributes function')
+    return result
+
+
+def format_sa(length_command):
+    return ''.join([char * length_command for char in CHAR_B])
+
+
+def get_length_command(command):
+    return len(command) + 5
 
