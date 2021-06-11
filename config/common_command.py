@@ -2,7 +2,7 @@
 # ATS
 # electricity supply
 COMMAND_ATS_ELECTRICITY_SUPPLY_OFF = 'offElectricitySupplyAts'
-COMMAND_ATS_ELECTRICITY_SUPPLY_ON = 'onElectricitySupplyAts'
+COMMAND_ATS_ELECTRICITY_SUPPLY_ON = 'onElectricitySupplyAts' #
 # generator supply
 COMMAND_ATS_GENERATOR_SUPPLY_OFF = 'offGeneratorSupplyAts'
 COMMAND_ATS_GENERATOR_SUPPLY_ON = 'onGeneratorSupplyAts'
@@ -13,8 +13,8 @@ COMMAND_ATS_GENERATOR_ON = 'onGeneratorAts'
 COMMAND_ATS_START_OFF = 'offStartAts'
 COMMAND_ATS_START_ON = 'onStartAts'
 # self-propelled
-COMMAND_ATS_SELF_PROPELLED_OFF = 'offSelfPropelledAts'
-COMMAND_ATS_SELF_PROPELLED_ON = 'onSelfPropelledAts'
+COMMAND_ATS_SELF_PROPELLED_OFF = 'offSelfPropelledAts' #
+COMMAND_ATS_SELF_PROPELLED_ON = 'onSelfPropelledAts' #
 
 # MCC
 # door
@@ -74,10 +74,10 @@ COMMAND_ACM_AIRC_1_OFF = 'offAirc1Acm'
 COMMAND_ACM_AIRC_1_ON = 'onAirc1Acm'
 # air conditioner 2
 COMMAND_ACM_AIRC_2_OFF = 'offAirc2Acm'
-COMMAND_ACM_AIRC_2_ON = 'onAirc2Acm'
+COMMAND_ACM_AIRC_2_ON = 'onAirc2Acm' #
 # fan
 COMMAND_ACM_FAN_OFF = 'offFanAcm'
 COMMAND_ACM_FAN_ON = 'onFanAcm'
 # self-propelled
-COMMAND_ACM_SELF_PROPELLED_OFF = 'offSelfPropelledAcm'
-COMMAND_ACM_SELF_PROPELLED_ON = 'onSelfPropelledAcm'
+COMMAND_ACM_SELF_PROPELLED_OFF = 'offSelfPropelledAcm' #
+COMMAND_ACM_SELF_PROPELLED_ON = 'onSelfPropelledAcm' #
