@@ -2,6 +2,7 @@ import time
 from operator import itemgetter
 
 from config import shared_attributes, default_data, CLIENT, commands_lock, commands
+from config.common import *
 from control.switcher import *
 
 # def call():
@@ -20,14 +21,10 @@ list_dict_ats = []
 list_dict_acm = []
 list_dict_mcc = []
 
-TYPE = 'type'
-ID_SHARED_ATTRIBUTES = 'idSharedAttributes'
-VALUE = 'value'
-
 
 def call():
     try:
-        period = shared_attributes.get('mccPeriodUpdate', default_data.mccPeriodUpdate)
+        period = 3000
         while True:
             if CLIENT.is_connected():
                 for key, value in shared_attributes.items():
@@ -37,15 +34,22 @@ def call():
                 response_sorted = sort_list_dict(list_dict_mcc, list_dict_acm, list_dict_ats)
                 if len(response_sorted) > 0:
                     LOGGER.info('Sort the list successful')
-                    array_value = get_array_value(response_sorted)
-                    if len(array_value) > 0:
-                        LOGGER.info('Get value of array successful')
-                        commands_lock.acquire()
-                        commands['allSharedAttributes'] = array_value
-                        commands_lock.release()
-                        response_clear_list = clear_all_list(list_dict_mcc, list_dict_acm, list_dict_ats)
-                    else:
-                        LOGGER.info('Get value of array failed')
+                    for current_list in response_sorted:
+                        current_list_value = get_array_value(current_list)
+                        type = current_list[0][TYPE]
+                        if len(current_list_value) > 0:
+                            LOGGER.info('Get value of array successful')
+                            commands_lock.acquire()
+                            if type is MCC:
+                                commands[KEY_MCC] = current_list_value
+                            elif type is ACM:
+                                commands[KEY_ACM] = current_list_value
+                            elif type is ATS:
+                                commands[KEY_ATS] = current_list_value
+                            commands_lock.release()
+                        else:
+                            LOGGER.info('Get value of array failed')
+                    response_clear_list = clear_all_list(list_dict_mcc, list_dict_acm, list_dict_ats)
                 else:
                     LOGGER.info('Sort the list failed')
             time.sleep(period)
@@ -109,17 +113,29 @@ def classify_dict(response_classify):
     return response
 
 
-def get_array_value(tuple_sorted):
+# def get_array_value(tuple_sorted):
+#     LOGGER.info('Enter get_array_value function')
+#     array_value = []
+#     try:
+#         for x in tuple_sorted:
+#             for y in x:
+#                 array_value.append(y[VALUE])
+#     except Exception as ex:
+#         LOGGER.error('Error at get_array_value function with message: %s', ex.message)
+#     LOGGER.info('Exit get_array_value function')
+#     return array_value
+
+
+def get_array_value(list_sorted):
     LOGGER.info('Enter get_array_value function')
-    array_value = []
+    list_value = []
     try:
-        for x in tuple_sorted:
-            for y in x:
-                array_value.append(y[VALUE])
+        for x in list_sorted:
+            list_value.append(x[VALUE])
     except Exception as ex:
         LOGGER.error('Error at get_array_value function with message: %s', ex.message)
     LOGGER.info('Exit get_array_value function')
-    return array_value
+    return list_value
 
 
 def clear_all_list(list_dict_mcc, list_dict_acm, list_dict_ats):
