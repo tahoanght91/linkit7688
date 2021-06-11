@@ -15,7 +15,7 @@ GET_STATE_ACM_FAN = 'getStateAcmFan'
 GET_VALUE_ACM_FAN = 'getValueAcmFan'
 SET_ACM_FAN_CONTROL = 'setControlAcmFan'
 # self-propelled
-SET_ACM_SELF_PROPELLED = 'setSelfPropelledAcm'
+SET_ACM_SELF_PROPELLED = 'setControlSelfPropelledAcm'
 
 # ATS
 GET_STATE_ATS = 'getStateAts'
@@ -28,7 +28,7 @@ SET_ATS_GENERATOR_CONTROL = 'setControlAtsGenerator'
 # manual start
 SET_ATS_START_CONTROL = 'setControlAtsStart'
 # self-propelled
-SET_ATS_SELF_PROPELLED = 'setSelfPropelledAts'
+SET_ATS_SELF_PROPELLED = 'setControlSelfPropelledAts'
 # auto ats
 SET_ATS_AUTO = 'setAutoAts'
 
