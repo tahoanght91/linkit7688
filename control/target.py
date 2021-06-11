@@ -3,10 +3,12 @@ from config import LOGGER
 
 def get_target_by_command_mcc(command):
     LOGGER.info('Enter get_target_by_command_mcc function')
+    LOGGER.info('Type of command is: %s', type(command))
     target = -1
     try:
         is_string = isinstance(command, str)
         if is_string:
+            LOGGER.info('Command is string!')
             if 'DoorMcc' in command:
                 target = 0
             elif 'LampMcc' in command:
