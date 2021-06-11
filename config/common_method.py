@@ -13,11 +13,23 @@ SET_ACM_AIRC_CONTROL_2 = 'setControlAcmAirc2'
 # fan
 GET_STATE_ACM_FAN = 'getStateAcmFan'
 GET_VALUE_ACM_FAN = 'getValueAcmFan'
+SET_ACM_FAN_CONTROL = 'setControlAcmFan'
+# self-propelled
+SET_ACM_SELF_PROPELLED = 'setSelfPropelledAcm'
 
 # ATS
 GET_STATE_ATS = 'getStateAts'
-SET_ATS_CONTROL_MAIN = 'setControlAtsMain'
-SET_ATS_CONTROL_GEN = 'setControlAtsGen'
+# manual ES
+SET_ATS_ELECTRICITY_SUPPLY_CONTROL = 'setControlAtsElectricitySupply'
+# manual GS
+SET_ATS_GENERATOR_SUPPLY_CONTROL = 'setControlAtsGeneratorSupply'
+# manual Generator
+SET_ATS_GENERATOR_CONTROL = 'setControlAtsGenerator'
+# manual start
+SET_ATS_START_CONTROL = 'setControlAtsStart'
+# self-propelled
+SET_ATS_SELF_PROPELLED = 'setSelfPropelledAts'
+# auto ats
 SET_ATS_AUTO = 'setAutoAts'
 
 # module MCC
