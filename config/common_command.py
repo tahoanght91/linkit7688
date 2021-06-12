@@ -74,7 +74,7 @@ COMMAND_ACM_AIRC_1_OFF = 'offAirc1Acm'
 COMMAND_ACM_AIRC_1_ON = 'onAirc1Acm'
 # air conditioner 2
 COMMAND_ACM_AIRC_2_OFF = 'offAirc2Acm'
-COMMAND_ACM_AIRC_2_ON = 'onAirc2Acm' #
+COMMAND_ACM_AIRC_2_ON = 'onAirc2Acm'
 # fan
 COMMAND_ACM_FAN_OFF = 'offFanAcm'
 COMMAND_ACM_FAN_ON = 'onFanAcm'
