@@ -4,7 +4,7 @@ import requests
 
 from config import *
 from config.common import *
-from config.common_services import *
+from config.common_lcd_services import *
 from devices.utils import read_services
 from utility import bytes_to_int
 
