@@ -205,7 +205,7 @@ def compose_command_shared_attributes(device, command):
         LOGGER.error('Error at compose_command_shared_attributes function with message: %s', ex.message)
     if isinstance(result, str):
         byte_stream_decode = ':'.join(x.encode('hex') for x in result)
-        LOGGER.info('Command send to STM32: %s', byte_stream_decode)
+        LOGGER.info('Device: %s, command send to STM32: %s', device, byte_stream_decode)
     else:
         LOGGER.info('Command error!')
     LOGGER.info('Exit compose_command_shared_attributes function')
