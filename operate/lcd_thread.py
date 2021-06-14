@@ -19,7 +19,7 @@ def call():
         period = 1
         while True:
             if CLIENT.is_connected():
-                result = check_service(services, dct_last_trace)
+                result = check_service(lcd_services, dct_last_trace)
                 if result != '':
                     commands_lock.acquire()
                     commands[LCD_SERVICE] = result
@@ -135,6 +135,20 @@ def switcher_service(service):
     LOGGER.info('Key is: %d, after parse is: %s', service, switcher_services.get(service, 'Out of range!'))
     LOGGER.info('Exit switcher_service function')
     return switcher_services.get(service, "Out of range!")
+
+
+def delete_lcd_service(service, key_event):
+    LOGGER.info('Enter delete_lcd_service function')
+    result = False
+    try:
+        if service in lcd_services and key_event in lcd_services:
+            del lcd_services[service]
+            del lcd_services[key_event]
+            result = True
+    except Exception as ex:
+        LOGGER.error('Error at delete_lcd_services function with message: %s', ex.message)
+    LOGGER.info('Exit delete_lcd_services function')
+    return result
 
 
 def write_body_send_shared_attributes(key, value):
