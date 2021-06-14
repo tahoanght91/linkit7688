@@ -131,7 +131,7 @@ def confirm_service(service, key_event):
 def switcher_lcd_service(service):
     LOGGER.info('Enter switcher_lcd_service function')
     switcher_lcd_services = {
-        1: MENU
+        120: MENU
     }
     LOGGER.info('Key is: %d, after parse is: %s', service, switcher_lcd_services.get(service, 'Out of range!'))
     LOGGER.info('Exit switcher_lcd_service function')
