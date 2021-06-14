@@ -3,6 +3,7 @@ import serial
 import control
 from config import *
 from devices import ats, crmu, clock, acm, mcc
+from operate.lcd_thread import extract_service
 from utility import *
 
 
@@ -104,62 +105,15 @@ def _read_data(byte_stream):
         if _check_data(frame_length, data, _OpData.CRMU_SIZE):
             crmu.extract(data[1:])
             return True
+    elif op_code == _OpData.IO_STATUS_RPC:  # RPC
+        LOGGER.info('RPC message, declared length: %d, real length: %d, expected length: %d', frame_length - 1, len(data), _OpData.RPC_SIZE)
+        return True
+    elif op_code == _OpData.IO_STATUS_SERVICE:  # RPC
+        LOGGER.info('LCD message, declared length: %d, real length: %d, expected length: %d', frame_length - 1, len(data), _OpData.RPC_SIZE)
+        if _check_data(frame_length, data, _OpData.CRMU_SIZE):
+            extract_service(data[1:])
+            return True
     return False
-
-# def _read_data(byte_stream):
-#     LOGGER.info('Receive data message')
-#     if len(byte_stream) < 3:
-#         LOGGER.debug('Message too short, length %d', len(byte_stream))
-#         return False
-#     if byte_stream[0] != b'\xa0':
-#         LOGGER.debug('Mark byte not right, expected mark byte A0, received mark byte %s', byte_stream[0].encode('hex'))
-#         return False
-#     if not check_check_sum(byte_stream, BYTE_ORDER):
-#         LOGGER.debug('Check sum not right, expected check sum %s, received check sum %s',
-#                      with_check_sum(byte_stream[:-2], BYTE_ORDER)[-2:].encode('hex'),
-#                      byte_stream[-2:].encode('hex'))
-#         return False
-#     frame_length = bytes_to_int(byte_stream[1])
-#     op_code = byte_stream[2]
-#     LOGGER.debug('Opcode %s', op_code.encode('hex'))
-#     data = byte_stream[3:-2]
-#     if op_code == _OpData.IO_STATUS_MISC:  # MISC
-#         LOGGER.info('MISC message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
-#                     len(data), _OpData.MISC_SIZE)
-#         if _check_data(frame_length, data, _OpData.MISC_SIZE):
-#             misc.extract(data)
-#             return True
-#     elif op_code == _OpData.IO_STATUS_DC:  # DC
-#         LOGGER.info('DC message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
-#                     len(data), _OpData.DC_SIZE)
-#         if _check_data(frame_length, data, _OpData.DC_SIZE):
-#             dc.extract(data[1:])
-#             return True
-#     elif op_code == _OpData.IO_STATUS_ATS:  # ATS
-#         LOGGER.info('ATS message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
-#                     len(data), _OpData.ATS_SIZE)
-#         if _check_data(frame_length, data, _OpData.ATS_SIZE):
-#             ats.extract(data[1:])
-#             return True
-#     elif op_code == _OpData.IO_STATUS_AIRC:  # AIRC
-#         LOGGER.info('AIRC message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
-#                     len(data), _OpData.AIRC_SIZE)
-#         if _check_data(frame_length, data, _OpData.AIRC_SIZE):
-#             airc.extract(data[1:])
-#             return True
-#     elif op_code == _OpData.IO_STATUS_ATU:  # ATU
-#         LOGGER.info('ATU message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
-#                     len(data), _OpData.ATU_SIZE)
-#         if _check_data(frame_length, data, _OpData.ATU_SIZE):
-#             atu.extract(data[1:])
-#             return True
-#     elif op_code == _OpData.IO_STATUS_CRMU:  # CRMU
-#         LOGGER.info('CRMU message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
-#                     len(data), _OpData.CRMU_SIZE)
-#         if _check_data(frame_length, data, _OpData.CRMU_SIZE):
-#             crmu.extract(data[1:])
-#             return True
-#     return False
 
 
 class _OpData:
@@ -168,11 +122,16 @@ class _OpData:
     ATS_SIZE = 54
     MCC_SIZE = 58
     CRMU_SIZE = 19
-    KEY_SIZE = 3
+    # TODO: change size
+    RPC_SIZE = 10
+    # TODO: change size
+    SERVICE_SIZE = 4
     IO_STATUS_MCC = b'\x11'
     IO_STATUS_ATS = b'\x13'
     IO_STATUS_ACM = b'\x14'
     IO_STATUS_CRMU = b'\x16'
+    IO_STATUS_RPC = b'\x21'
+    IO_STATUS_SERVICE = b'\x32'
 
     #old
     # MISC_SIZE = 16
