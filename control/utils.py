@@ -85,7 +85,7 @@ def _process_command(device, command):
     result = ''
     if device == DEVICE_MCC_1 or device == DEVICE_ATS_1 or device == DEVICE_ACM_1:
         result = compose_command_rpc(device, command)
-    elif device == KEY_MCC or device == KEY_ACM or device == ATS:
+    elif device == KEY_MCC or device == KEY_ACM or device == KEY_ATS:
         result = compose_command_shared_attributes(device, command)
     elif device == SHARED_ATTRIBUTES_RFID_CARD:
         device = 5
@@ -182,17 +182,20 @@ def compose_command_shared_attributes(device, command):
             device = ID_MCC
             bytes_length = BYTES_SA_MCC
             prefix = format_sa(length_command)
-            result = struct.pack(prefix, 0xA0, 11, 0x41, device, bytes_length, *command)
+            length = get_length(bytes_length)
+            result = struct.pack(prefix, 0xA0, length, 0x41, device, bytes_length, *command)
         elif device == KEY_ACM:
             device = ID_ACM
             bytes_length = BYTES_SA_ACM
             prefix = format_sa(length_command)
-            result = struct.pack(prefix, 0xA0, 33, 0x41, device, bytes_length, *command)
+            length = get_length(bytes_length)
+            result = struct.pack(prefix, 0xA0, length, 0x41, device, bytes_length, *command)
         elif device == KEY_ATS:
             device = ID_ATS
             bytes_length = BYTES_SA_ATS
             prefix = format_sa(length_command)
-            result = struct.pack(prefix, 0xA0, 33, 0x41, device, bytes_length, *command)
+            length = get_length(bytes_length)
+            result = struct.pack(prefix, 0xA0, length, 0x41, device, bytes_length, *command)
     except Exception as ex:
         LOGGER.error('Error at compose_command_shared_attributes function with message: %s', ex.message)
     if isinstance(result, str):
@@ -210,4 +213,8 @@ def format_sa(length_command):
 
 def get_length_command(command):
     return len(command) + 5
+
+
+def get_length(bytes_length):
+    return bytes_length + 3
 
