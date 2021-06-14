@@ -25,7 +25,9 @@ client_attributes = {}
 update_attributes = {}
 telemetries = {}
 commands = {}
+services = {}
 
 update_attributes_lock = threading.Lock()
 telemetries_lock = threading.Lock()
 commands_lock = threading.Lock()
+services_lock = threading.Lock()
