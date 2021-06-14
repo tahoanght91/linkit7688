@@ -183,24 +183,24 @@ def compose_command_shared_attributes(device, command):
     result = -1
     try:
         length_command = get_length_command
-        if device == KEY_MCC:
-            device = ID_MCC
-            bytes_length = BYTES_SA_MCC
-            prefix = format_sa(length_command)
-            length = get_length(bytes_length)
-            result = struct.pack(prefix, 0xA0, length, 0x41, device, bytes_length, *command)
-        elif device == KEY_ACM:
+        # if device == KEY_MCC:
+        #     device = ID_MCC
+        #     bytes_length = BYTES_SA_MCC
+        #     prefix = format_sa(length_command)
+        #     length = get_length(bytes_length)
+        #     result = struct.pack(prefix, 0xA0, length, 0x41, device, bytes_length, *command)
+        if device == KEY_ACM:
             device = ID_ACM
             bytes_length = BYTES_SA_ACM
             prefix = format_sa(length_command)
             length = get_length(bytes_length)
             result = struct.pack(prefix, 0xA0, length, 0x41, device, bytes_length, *command)
-        elif device == KEY_ATS:
-            device = ID_ATS
-            bytes_length = BYTES_SA_ATS
-            prefix = format_sa(length_command)
-            length = get_length(bytes_length)
-            result = struct.pack(prefix, 0xA0, length, 0x41, device, bytes_length, *command)
+        # elif device == KEY_ATS:
+        #     device = ID_ATS
+        #     bytes_length = BYTES_SA_ATS
+        #     prefix = format_sa(length_command)
+        #     length = get_length(bytes_length)
+        #     result = struct.pack(prefix, 0xA0, length, 0x41, device, bytes_length, *command)
     except Exception as ex:
         LOGGER.error('Error at compose_command_shared_attributes function with message: %s', ex.message)
     if isinstance(result, str):
