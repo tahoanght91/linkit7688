@@ -108,7 +108,7 @@ def _read_data(byte_stream):
     elif op_code == _OpData.IO_STATUS_RPC:  # RPC
         LOGGER.info('RPC message, declared length: %d, real length: %d, expected length: %d', frame_length - 1, len(data), _OpData.RPC_SIZE)
         return True
-    elif op_code == _OpData.IO_STATUS_SERVICE:  # RPC
+    elif op_code == _OpData.IO_STATUS_LCD:  # RPC
         LOGGER.info('LCD message, declared length: %d, real length: %d, expected length: %d', frame_length - 1, len(data), _OpData.RPC_SIZE)
         if _check_data(frame_length, data, _OpData.CRMU_SIZE):
             extract_service(data[1:])
@@ -131,7 +131,7 @@ class _OpData:
     IO_STATUS_ACM = b'\x14'
     IO_STATUS_CRMU = b'\x16'
     IO_STATUS_RPC = b'\x21'
-    IO_STATUS_SERVICE = b'\x32'
+    IO_STATUS_LCD = b'\x32'
 
     #old
     # MISC_SIZE = 16
