@@ -182,7 +182,7 @@ def compose_command_shared_attributes(device, command):
     LOGGER.info('Enter compose_command_shared_attributes function')
     result = -1
     try:
-        length_command = get_length_command
+        length_command = get_length_command(command)
         # if device == KEY_MCC:
         #     device = ID_MCC
         #     bytes_length = BYTES_SA_MCC
