@@ -124,8 +124,7 @@ class _OpData:
     CRMU_SIZE = 19
     # TODO: change size
     RPC_SIZE = 10
-    # TODO: change size
-    SERVICE_SIZE = 4
+    LCD_SERVICE_SIZE = 5
     IO_STATUS_MCC = b'\x11'
     IO_STATUS_ATS = b'\x13'
     IO_STATUS_ACM = b'\x14'

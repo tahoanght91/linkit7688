@@ -61,8 +61,8 @@ def get_index_menu_lv2(dict_attributes):
 def extract_service(byte_data):
     LOGGER.info('Enter extract_service function')
     try:
-        service = bytes_to_int(byte_data[0])
-        key_code = bytes_to_int(byte_data[1])
+        service = bytes_to_int(byte_data[0:2])
+        key_code = bytes_to_int(byte_data[3])
         read_services('service', service)
         read_services('keyEvent', key_code)
         LOGGER.info('After extract command lcd from STM32, service: %d, key code: %d', service, key_code)
