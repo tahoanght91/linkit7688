@@ -3,7 +3,7 @@ import serial
 import control
 from config import *
 from devices import ats, crmu, clock, acm, mcc
-from operate.lcd_thread import extract_service
+from operate.lcd_thread import extract_lcd_service
 from utility import *
 
 
@@ -111,7 +111,7 @@ def _read_data(byte_stream):
     elif op_code == _OpData.IO_STATUS_LCD:  # RPC
         LOGGER.info('LCD message, declared length: %d, real length: %d, expected length: %d', frame_length - 1, len(data), _OpData.RPC_SIZE)
         if _check_data(frame_length, data, _OpData.CRMU_SIZE):
-            extract_service(data[1:])
+            extract_lcd_service(data[1:])
             return True
     return False
 
