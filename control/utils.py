@@ -93,10 +93,10 @@ def _process_command(device, command):
     elif device == LCD_SERVICE:
         row = 2
         col = 4
-        length = 0
+        length = 19
         lcd_command = 0
         buffer_length = 0
-        result = struct.pack(FORMAT_LCD, 0xA0, length, 0x31, lcd_command, row, col, buffer_length, command)
+        result = struct.pack(FORMAT_LCD, 0xA0, length, 0x31, lcd_command, row, command)
     LOGGER.debug('Process command: device: %s, command: %s', device, command)
     LOGGER.info('Exit _process_command function')
     return result
