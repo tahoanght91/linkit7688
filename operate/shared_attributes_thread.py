@@ -24,7 +24,7 @@ list_dict_mcc = []
 
 def call():
     try:
-        period = 3000
+        period = shared_attributes.get('mccPeriodUpdate', default_data.mccPeriodUpdate)
         while True:
             if CLIENT.is_connected():
                 for key, value in shared_attributes.items():
