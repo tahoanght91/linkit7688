@@ -28,6 +28,7 @@ ID_ATS = 98
 CHAR_B = 'B'
 FORMAT_RPC = 'BBBBBB'
 FORMAT_RFID = 'BBBBB'
+FORMAT_LCD = 'BBBBBBB'
 
 # BYTES SHARED ATTRIBUTES
 BYTES_SA_MCC = 8
@@ -53,6 +54,9 @@ GET_VALUE = 'getValue'
 
 # compare rfid card
 SHARED_ATTRIBUTES_RFID_CARD = 'mccRespCardId'
+
+# lcd service
+LCD_SERVICE = 'lcdService'
 
 # list command
 list_command = [COMMAND_MCC_OPEN_DOOR, COMMAND_MCC_CLOSE_DOOR, COMMAND_MCC_ON_BELL, COMMAND_MCC_OFF_BELL,
