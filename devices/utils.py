@@ -16,7 +16,7 @@ def _read_telemetry(key, value):
 
 
 def read_services(key, value):
-    services_lock.acquire()
-    services[key] = value
-    services_lock.release()
+    lcd_services_lock.acquire()
+    lcd_services[key] = value
+    lcd_services_lock.release()
 
