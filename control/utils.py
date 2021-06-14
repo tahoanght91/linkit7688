@@ -90,6 +90,10 @@ def _process_command(device, command):
     elif device == SHARED_ATTRIBUTES_RFID_CARD:
         device = 5
         result = struct.pack(FORMAT_RFID, 0xA0, 0x03, 0x24, device, command)
+    elif device == LCD_SERVICE:
+        row = 2
+        col = 4
+        result = struct.pack(FORMAT_LCD, 0xA0, 0x03, 0x31, row, col, command)
     LOGGER.debug('Process command: device: %s, command: %s', device, command)
     LOGGER.info('Exit _process_command function')
     return result
