@@ -96,7 +96,7 @@ def call():
         CLIENT.gw_subscribe_to_all_attributes(callback=subscription_thread._attribute_change_callback)
         CLIENT.gw_set_server_side_rpc_request_handler(handler=subscription_thread._gw_rpc_callback)
 
-        thread_list = [io_thread, telemetry_thread, update_attributes_thread]
+        thread_list = [io_thread, telemetry_thread, update_attributes_thread, shared_attributes_thread]
 
         for i, thread in enumerate(thread_list):
             thread.name = thread.__name__
