@@ -46,7 +46,7 @@ def check_status():
     mccFloodState = client_attributes.get('mccFloodState', default_data.mccFloodState)
     mccDoorButton = client_attributes.get('mccDoorButton', default_data.mccDoorButton)
     mccDin6 = client_attributes.get('mccDin6', default_data.mccDin6)
-    mccDin6 = client_attributes.get('mccDin6', default_data.mccDin6)
+    mccDin7 = client_attributes.get('mccDin7', default_data.mccDin7)
     mccBellState = client_attributes.get('mccBellState', default_data.mccBellState)
     mccDeviceTemp = client_attributes.get('mccDeviceTemp', default_data.mccDeviceTemp)
     mccRackTemp = client_attributes.get('mccRackTemp', default_data.mccRackTemp)
