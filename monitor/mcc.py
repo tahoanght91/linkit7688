@@ -28,6 +28,8 @@ Auto procedure to control:
 
 
 def check_status():
+    print('shared_attributes')
+    print(shared_attributes)
     LOGGER.info('Enter monitor:mcc:check_status')
     global door_opened_time
 
