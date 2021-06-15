@@ -5,6 +5,13 @@ from config.common import *
 door_opened_time = 0
 
 
+# Method for other thread to open door (and then automatically close after delay)
+def open_door_with_auto_close():
+    global door_opened_time
+    door_opened_time = time.time()
+    return _send_command(COMMAND_MCC_OPEN_DOOR) + ' | '
+
+
 def _send_command(command):
     commands_lock.acquire()
     commands[DEVICE_MCC_1] = command
@@ -67,7 +74,7 @@ def check_status():
     mccDcCabinetSate = client_attributes('mccDcCabinetSate', default_data.mccDcCabinetSate)
 
     # Whether we want the door to be opened or not
-    door_to_open = False
+    door_to_open = mccDoorButton == 1   # Open door when button pressed
     bell_to_ring = False
 
     if mccSmokeState == 1:
@@ -91,7 +98,7 @@ def check_status():
 
     rtn = ''
     if door_to_open and mccDoorState == 0:
-        rtn += _send_command(COMMAND_MCC_OPEN_DOOR) + ' | '
+        rtn += open_door_with_auto_close()
 
     # Close door after timeout time (started by Door button or RFID card)
     if not door_to_open and mccDoorState == 1 \
