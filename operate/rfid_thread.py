@@ -2,9 +2,8 @@ import time
 
 import requests
 
-from config import CLIENT, shared_attributes, update_attributes, LOGGER, commands_lock, commands
-from config.common import SHARED_ATTRIBUTES_RFID_CARD
-
+from config import CLIENT, shared_attributes, update_attributes, LOGGER
+from monitor import mcc
 
 URL_SEND_LOG ='https://backend.smartsite.dft.vn/api/services/app/DMTram/LogQuetThe'
 KEY_RFID = 'mccRfidCard'
@@ -26,9 +25,7 @@ def call():
                             log = write_log(rfid_card, result)
                             del update_attributes[KEY_RFID]
                             if log is not None:
-                                commands_lock.acquire()
-                                commands[SHARED_ATTRIBUTES_RFID_CARD] = result
-                                commands_lock.release()
+                                mcc.open_door_with_auto_close()
                                 send_log(log)
                             else:
                                 LOGGER.info('Log is null!')
