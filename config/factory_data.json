@@ -8,7 +8,6 @@
     "mccDcMinThreshold": 30,
     "mccDoorOpenTime": 5,
     "acmControlAuto": 1,
-    "acmAlternativeState": 0,
     "acmAlternativeTime": 180,
     "acmRunTime": 240,
     "acmRestTime": 320,

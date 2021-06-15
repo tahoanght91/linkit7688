@@ -19,7 +19,7 @@ def check_status():
     LOGGER.info('Enter monitor:acm:check_status')
     global acm_period_start
 
-    acmAlternativeState = shared_attributes.get('acmAlternativeState', default_data.acmAlternativeState)
+    # acmAlternativeState = shared_attributes.get('acmAlternativeState', default_data.acmAlternativeState)
     acmAlternativeTime = shared_attributes.get('acmAlternativeTime', default_data.acmAlternativeTime)
     acmRunTime = shared_attributes.get('acmRunTime', default_data.acmRunTime)
     acmRestTime = shared_attributes.get('acmRestTime', default_data.acmRestTime)
@@ -162,13 +162,13 @@ def check_status():
                 acm_period_start = timestamp
                 acmAirc1NextState = False
                 acmAirc2NextState = False
-    elif acmAlternativeState == 1:
-        # This happens within TempDelta, running in alternate mode
-        LOGGER.debug('Temperature not too high or lower than expected with high humidity,'
-                     ' no smoke and fire, run AIRC in alternate mode')
-        if timestamp - acm_period_start > acmAlternativeTime:
-            acm_period_start = timestamp
-            acmAirc1CurrentState = not acmAirc1CurrentState
+    # elif acmAlternativeState == 1:
+    #     # This happens within TempDelta, running in alternate mode
+    #     LOGGER.debug('Temperature not too high or lower than expected with high humidity,'
+    #                  ' no smoke and fire, run AIRC in alternate mode')
+    #     if timestamp - acm_period_start > acmAlternativeTime:
+    #         acm_period_start = timestamp
+    #         acmAirc1CurrentState = not acmAirc1CurrentState
 
     '''
     Checking next state and issue command
