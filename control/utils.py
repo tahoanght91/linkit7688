@@ -47,16 +47,21 @@ def get_value_device(device_name, method):
 
 
 def _process_set_auto(device, command):
-    if not (type(command) == bool
-            and device in [DEVICE_ATS_1, DEVICE_ACM_1]):
-        return False
-
-    value = convert_boolean_to_int(command)
-
-    if device == DEVICE_ATS_1:
-        shared_attributes['atsControlAuto'] = value
-    elif device == DEVICE_ACM_1:
-        shared_attributes['acmControlAuto'] = value
+    LOGGER.info('Enter _process_set_auto function')
+    try:
+        if not (type(command) == str and device in [DEVICE_ATS_1, DEVICE_ACM_1]):
+            return False
+        value = convert_str_command_to_int(command)
+        if value >= 0:
+            if device == DEVICE_ATS_1:
+                shared_attributes['atsControlAuto'] = value
+            elif device == DEVICE_ACM_1:
+                shared_attributes['acmControlAuto'] = value
+        else:
+            LOGGER.info('Value: %d, value is not expected', value)
+    except Exception as ex:
+        LOGGER.error('Error at _process_set_auto function with message: %s', ex.message)
+    LOGGER.info('Exit _process_set_auto function')
     return True
 
 
@@ -77,12 +82,16 @@ def _process_command(device, command):
     return result
 
 
-def convert_boolean_to_int(command):
-    if command:
+def convert_str_command_to_int(command):
+    _command = -1
+    if command is COMMAND_ACM_AUTO_ON:
         _command = 1
-    else:
+    elif command is COMMAND_ACM_AUTO_OFF:
         _command = 0
-
+    elif command is COMMAND_ATS_SELF_PROPELLED_OFF:
+        _command = 0
+    elif command is COMMAND_ATS_SELF_PROPELLED_ON:
+        _command = 1
     return _command
 
 

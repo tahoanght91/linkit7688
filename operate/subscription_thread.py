@@ -62,7 +62,7 @@ def _gw_rpc_callback(self, content):
             params = {'device': device, 'command': GET_VALUE}
 
     if AUTO in method:
-        if control.check_command_send_rpc(params):
+        if control.process_set_auto(params):
             commands_lock.acquire()
             commands[params['device']] = params['command']
             commands_lock.release()
