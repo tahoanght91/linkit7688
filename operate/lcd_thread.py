@@ -81,7 +81,7 @@ def check_lcd_service(dct_lcd_service, dct_last_trace):
         str_lcd_service = switcher_lcd_service(key_code)
         if str_lcd_service is MENU:
             index_menu_lv1 = get_index_menu_lv1(key_code, key_event)
-            if index_menu_lv1 > 0:
+            if index_menu_lv1 >= 0:
                 str_result = MENU_LEVEL_1[index_menu_lv1]
     except Exception as ex:
         LOGGER.error('Error at check_lcd_service function with message: %s', ex.message)
