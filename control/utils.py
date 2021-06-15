@@ -46,38 +46,18 @@ def get_value_device(device_name, method):
     return value
 
 
-# def _process_set_auto(device, command):
-#     if not (type(command) == bool
-#             and
-#             (device == DEVICE_MISC
-#              or device == DEVICE_AIRC_1
-#              or device == DEVICE_AIRC_2
-#              or device == DEVICE_ATS
-#              or device == DEVICE_CRMU
-#              or device == DEVICE_MCC_1
-#              or device == DEVICE_ATS_1
-#              or device == DEVICE_ACM_1)):
-#         return False
-#
-#     value = convert_boolean_to_int(command)
-#
-#     if device == DEVICE_AIRC_1:
-#         shared_attributes['aircControlAuto'] = value
-#     elif device == DEVICE_AIRC_2:
-#         shared_attributes['aircControlAuto'] = value
-#     elif device == DEVICE_MISC:
-#         shared_attributes['miscFanControlAuto'] = value
-#     elif device == DEVICE_ATS:
-#         shared_attributes['atsControlAuto'] = value
-#     elif device == DEVICE_CRMU:
-#         shared_attributes['crmuControlAuto'] = value
-#     elif device == DEVICE_MCC_1:
-#         shared_attributes['miscFanControlAuto'] = value
-#     elif device == DEVICE_ATS_1:
-#         shared_attributes['atsControlAuto'] = value
-#     elif device == DEVICE_ACM_1:
-#         shared_attributes['aircControlAuto'] = value
-#     return True
+def _process_set_auto(device, command):
+    if not (type(command) == bool
+            and device in [DEVICE_ATS_1, DEVICE_ACM_1]):
+        return False
+
+    value = convert_boolean_to_int(command)
+
+    if device == DEVICE_ATS_1:
+        shared_attributes['atsControlAuto'] = value
+    elif device == DEVICE_ACM_1:
+        shared_attributes['acmControlAuto'] = value
+    return True
 
 
 def _process_command(device, command):
