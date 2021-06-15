@@ -2,6 +2,7 @@
 # module ACM
 # auto acm
 SET_ACM_AUTO = 'setAutoAcm'
+GET_STATE_ACM_AUTO = 'getStateAcmAuto'
 # manual airc1
 GET_SATE_ACM_AIRC_1 = 'getStateAcmAirc1'
 GET_VALUE_ACM_AIRC_1 = 'getValueAcmAirc1'
@@ -15,22 +16,19 @@ GET_STATE_ACM_FAN = 'getStateAcmFan'
 GET_VALUE_ACM_FAN = 'getValueAcmFan'
 SET_ACM_FAN_CONTROL = 'setControlAcmFan'
 # self-propelled
+GET_SATE_ACM_SELF_PROPELLED = 'getStateSelfPropelledAcm'
 SET_ACM_SELF_PROPELLED = 'setControlSelfPropelledAcm'
 
 # ATS
 GET_STATE_ATS = 'getStateAts'
-# manual ES
-SET_ATS_ELECTRICITY_SUPPLY_CONTROL = 'setControlAtsElectricitySupply'
-# manual GS
-SET_ATS_GENERATOR_SUPPLY_CONTROL = 'setControlAtsGeneratorSupply'
-# manual Generator
-SET_ATS_GENERATOR_CONTROL = 'setControlAtsGenerator'
-# manual start
-SET_ATS_START_CONTROL = 'setControlAtsStart'
-# self-propelled
-SET_ATS_SELF_PROPELLED = 'setControlSelfPropelledAts'
 # auto ats
 SET_ATS_AUTO = 'setAutoAts'
+# manual main
+SET_ATS_MAIN = 'setControlAtsMain'
+# manual gen
+SET_ATS_GEN = 'setControlAtsGen'
+# manual off
+SET_ATS_OFF = 'setControlAtsOff'
 
 # module MCC
 METHOD_DOOR_MCC = 'setControlDoor'
@@ -49,4 +47,6 @@ METHOD_DR10_MCC = 'setControlDr10'
 METHOD_DR11_MCC = 'setControlDr11'
 METHOD_DR12_MCC = 'setControlDr12'
 METHOD_DR13_MCC = 'setControlDr13'
-GET_STATE_MCC_DOOR = 'getStateMccDoor'  #
+GET_STATE_MCC_DOOR = 'getStateMccDoor'
+GET_STATE_MCC_LAMP = 'getStateMccLamp'
+GET_STATE_MCC_BELL = 'getStateMccBell'

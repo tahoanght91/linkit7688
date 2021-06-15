@@ -5,10 +5,9 @@ from monitor import *
 
 
 def call():
-    period = shared_attributes.get('periodUpdate', default_data.periodUpdate)
+    period = shared_attributes.get('mccPeriodUpdate', default_data.mccPeriodUpdate)
     while True:
         mcc.check_status()
-        mdc.check_status()
         # Check if device is set in Auto mode
         if shared_attributes.get('atsControlAuto', default_data.atsControlAuto):
             # then call its auto procedure

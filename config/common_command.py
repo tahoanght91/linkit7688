@@ -1,20 +1,13 @@
 # COMMAND
 # ATS
-# electricity supply
-COMMAND_ATS_ELECTRICITY_SUPPLY_OFF = 'offElectricitySupplyAts'
-COMMAND_ATS_ELECTRICITY_SUPPLY_ON = 'onElectricitySupplyAts' #
-# generator supply
-COMMAND_ATS_GENERATOR_SUPPLY_OFF = 'offGeneratorSupplyAts'
-COMMAND_ATS_GENERATOR_SUPPLY_ON = 'onGeneratorSupplyAts'
-# generator
-COMMAND_ATS_GENERATOR_OFF = 'offGeneratorAts'
-COMMAND_ATS_GENERATOR_ON = 'onGeneratorAts'
-# start
-COMMAND_ATS_START_OFF = 'offStartAts'
-COMMAND_ATS_START_ON = 'onStartAts'
-# self-propelled
-COMMAND_ATS_SELF_PROPELLED_OFF = 'offSelfPropelledAts' #
-COMMAND_ATS_SELF_PROPELLED_ON = 'onSelfPropelledAts' #
+# auto
+COMMAND_ATS_AUTO_ON = 'onAutoAts'
+# main
+COMMAND_ATS_MAIN_ON = 'onMainAts'
+# gen
+COMMAND_ATS_GEN_ON = 'onGenAts'
+# off
+COMMAND_ATS_OFF = 'offAts'
 
 # MCC
 # door

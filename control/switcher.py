@@ -68,16 +68,10 @@ def parse_acm_command_to_number(command):
 def parse_ats_command_to_number(command):
     LOGGER.info('Enter parse_ats_command_to_number function')
     switcher_ats_command = {
-        COMMAND_ATS_ELECTRICITY_SUPPLY_OFF: 0,
-        COMMAND_ATS_ELECTRICITY_SUPPLY_ON: 1,
-        COMMAND_ATS_GENERATOR_SUPPLY_OFF: 0,
-        COMMAND_ATS_GENERATOR_SUPPLY_ON: 1,
-        COMMAND_ATS_GENERATOR_OFF: 0,
-        COMMAND_ATS_GENERATOR_ON: 1,
-        COMMAND_ATS_START_OFF: 0,
-        COMMAND_ATS_START_ON: 1,
-        COMMAND_ATS_SELF_PROPELLED_OFF: 0,
-        COMMAND_ATS_SELF_PROPELLED_ON: 1
+        COMMAND_ATS_MAIN_ON: 0,
+        COMMAND_ATS_GEN_ON: 1,
+        COMMAND_ATS_AUTO_ON: 2,
+        COMMAND_ATS_OFF: 3
     }
     LOGGER.info('Command is: %s, after parse is: %d', command, switcher_ats_command.get(command, 'Out of range!'))
     LOGGER.info('Exit parse_ats_command_to_number function')
@@ -128,7 +122,7 @@ def parse_mcc_shared_attributes_to_number(key):
 def parse_acm_shared_attributes_to_number(key):
     LOGGER.info('Enter parse_acm_shared_attributes_to_number function')
     switcher_acm = {
-        'acmAlternativeState': 1,
+        'acmControlAuto': 1,
         'acmAlternativeTime': 2,
         'acmRunTime': 3,
         'acmRestTime': 4,

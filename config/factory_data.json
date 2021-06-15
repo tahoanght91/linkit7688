@@ -6,7 +6,8 @@
     "mccListRfid": [],
     "mccListStaff": [],
     "mccDcMinThreshold": 30,
-    "acmAlternativeState": 0,
+    "mccDoorOpenTime": 5,
+    "acmControlAuto": 1,
     "acmAlternativeTime": 180,
     "acmRunTime": 240,
     "acmRestTime": 320,
@@ -31,7 +32,8 @@
     "atsVgenIdleWarmUpTimeout": 60,
     "atsGenInactiveStartTime": 180,
     "atsGenInactiveEndTime": 240,
-    "atsGenActiveDuration": 240
+    "atsGenActiveDuration": 240,
+    "atsControlAuto": 1
   },
   "client": {
     "mccRfidConnectState": 1,

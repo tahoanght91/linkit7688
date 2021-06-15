@@ -15,7 +15,7 @@ def _read_telemetry(key, value):
     telemetries_lock.release()
 
 
-def read_services(key, value):
+def read_lcd_services(key, value):
     lcd_services_lock.acquire()
     lcd_services[key] = value
     lcd_services_lock.release()
