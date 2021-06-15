@@ -31,7 +31,8 @@ def _send_command(command):
     return ''
 
 
-def apply():
+# This method is called every loop if the device is in Auto mode
+def check_status():
     global last_run, last_rest, last_test
     mode = client_attributes.get('atsMode', default_data.atsMode)
     now = time.time()

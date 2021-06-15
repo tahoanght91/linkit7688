@@ -21,10 +21,10 @@ def extract(byte_data):
 
     _read_telemetry('miscTemp', temp)
     _read_telemetry('miscHumid', humid)
-    _read_telemetry('fireState', din0)
-    _read_telemetry('smokeState', din1)
+    _read_telemetry('mccFireState', din0)
+    _read_telemetry('mccSmokeState', din1)
     _read_telemetry('moveSensor', din2)
-    _read_telemetry('floodState', din3)
+    _read_telemetry('mccFloodState', din3)
 
     _read_attribute('miscDin4', din4)
     _read_attribute('miscDin5', din5)
