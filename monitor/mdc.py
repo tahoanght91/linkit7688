@@ -1,5 +1,5 @@
 from config import *
-from config.common import DEVICE_CRMU
+from config.common import *
 
 
 def _send_command(command):
@@ -16,10 +16,10 @@ def _send_command(command):
     return ''
 
 
-def apply():
-    if (client_attributes.get('smokeState', default_data.smokeState) == 1
-            or client_attributes.get('fireState', default_data.fireState) == 1
-            or client_attributes.get('floodState', default_data.floodState) == 1):
+def check_status():
+    if (client_attributes.get('mccSmokeState', default_data.mccSmokeState) == 1
+            or client_attributes.get('mccFireState', default_data.mccFireState) == 1
+            or client_attributes.get('mccFloodState', default_data.mccFloodState) == 1):
         LOGGER.debug('Smoke or fire or flood detected, turn off the CRMU')
         return _send_command('off')
     else:

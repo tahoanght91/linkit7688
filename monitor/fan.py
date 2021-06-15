@@ -17,7 +17,7 @@ def _send_command(command):
 
 
 def apply():
-    if client_attributes.get('smokeState', default_data.fireState) == 1 or client_attributes.get('fireState', default_data.fireState) == 1:
+    if client_attributes.get('mccSmokeState', default_data.mccFireState) == 1 or client_attributes.get('mccFireState', default_data.mccFireState) == 1:
         LOGGER.debug('Smoke or fire detected, turn off fan')
         return _send_command('off')
     elif client_attributes.get('aircAirc1RunState', default_data.aircAirc1RunState) == 1 or client_attributes.get('aircAirc2RunState', default_data.aircAirc2RunState == 1):
