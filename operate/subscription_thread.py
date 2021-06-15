@@ -84,13 +84,13 @@ def _gw_rpc_callback(self, content):
             LOGGER.info('Command GET_SATE receive success: %s', state)
         else:
             LOGGER.info('Command GET_SATE fail')
-    elif GET_VALUE in method:
-        if control.check_command(params):
-            value_of_device = get_value_device(device, method)
-            CLIENT.gw_send_rpc_reply(device, request_id, value_of_device, 1)
-            LOGGER.info('Command GET_VALUE receive success: %s', value_of_device)
-        else:
-            LOGGER.info('Command GET_VALUE fail')
+    # elif GET_VALUE in method:
+    #     if control.check_command(params):
+    #         value_of_device = get_value_device(device, method)
+    #         CLIENT.gw_send_rpc_reply(device, request_id, value_of_device, 1)
+    #         LOGGER.info('Command GET_VALUE receive success: %s', value_of_device)
+    #     else:
+    #         LOGGER.info('Command GET_VALUE fail')
 
 # body: {"method": "rpcCall", "params": {"device": "airc", "command": "on"}}
 # gateway-set : {'device': 'device_airc', 'data': {'params': False, 'id': 4, 'method': 'setAircValue'}}
