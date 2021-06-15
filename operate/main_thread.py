@@ -98,7 +98,7 @@ def call():
 
         thread_list = [io_thread, telemetry_thread, update_attributes_thread,
                        shared_attributes_thread, led_thread,
-                       rfid_thread, lcd_thread, ui_thread]
+                       rfid_thread, ui_thread]
 
         for i, thread in enumerate(thread_list):
             thread.name = thread.__name__
