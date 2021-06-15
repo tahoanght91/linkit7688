@@ -37,6 +37,7 @@ def check_status():
     now = time.localtime()
 
     mccDcMinThreshold = shared_attributes.get('mccDcMinThreshold', default_data.mccDcMinThreshold)
+    # Delay time to close door, in second
     mccDoorOpenTime = shared_attributes.get('mccDoorOpenTime', default_data.mccDoorOpenTime)
 
     mccSmokeState = client_attributes.get('mccSmokeState', default_data.mccSmokeState)
