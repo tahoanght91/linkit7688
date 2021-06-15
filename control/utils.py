@@ -67,9 +67,6 @@ def _process_command(device, command):
         result = compose_command_rpc(device, command)
     elif device == KEY_MCC or device == KEY_ACM or device == KEY_ATS:
         result = compose_command_shared_attributes(device, command)
-    elif device == SHARED_ATTRIBUTES_RFID_CARD:
-        device = 5
-        result = struct.pack(FORMAT_RFID, 0xA0, 0x03, 0x24, device, command)
     elif device == LCD_SERVICE:
         row = 2
         length = 19

@@ -52,9 +52,6 @@ CONTROL = 'setControl'
 GET_STATE = 'getState'
 GET_VALUE = 'getValue'
 
-# compare rfid card
-SHARED_ATTRIBUTES_RFID_CARD = 'mccRespCardId'
-
 # lcd service
 LCD_SERVICE = 'lcdService'
 
