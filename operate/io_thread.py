@@ -118,7 +118,7 @@ def _read_data(byte_stream):
 
 class _OpData:
     #new
-    ACM_SIZE = 27
+    ACM_SIZE = 26
     ATS_SIZE = 54
     MCC_SIZE = 58
     CRMU_SIZE = 19
