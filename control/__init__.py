@@ -6,9 +6,6 @@ def process_set_auto(command):
 
 
 def check_command(command):
-    """
-    Check the eligibility of a rpc call from the server
-    """
     return utils._check_command(command.get('device', None), command.get('command', None))
 
 

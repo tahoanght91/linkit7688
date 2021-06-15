@@ -92,6 +92,5 @@ def _gw_rpc_callback(self, content):
     #     else:
     #         LOGGER.info('Command GET_VALUE fail')
 
-# body: {"method": "rpcCall", "params": {"device": "airc", "command": "on"}}
 # gateway-set : {'device': 'device_airc', 'data': {'params': False, 'id': 4, 'method': 'setAircValue'}}
 # gateway-get : {'device': 'device_airc', 'data': {'id': 4, 'method': 'getAircValue'}}

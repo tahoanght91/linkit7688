@@ -20,16 +20,71 @@ def _check_command(device, command):
 
 
 def check_state_device(device_name, method):
-    value = ''
-    if device_name == DEVICE_MCC_1 and method == GET_SATE_ACM_AIRC_1:
-        # TODO: change client attributes of airc1:
-        value = client_attributes.get('acmAirc1RunState', default_data.acmAirc1RunState)
-    elif device_name == DEVICE_ACM_1 and method == GET_STATE_ACM_AIRC_2:
-        # TODO: change client attributes of airc2:
-        value = client_attributes.get('acmAirc2RunState', default_data.acmAirc2RunState)
-    elif device_name == DEVICE_ACM_1 and method == GET_STATE_ACM_FAN:
-        # TODO: change client attributes of fan:
-        value = client_attributes.get('acmFanRunState', default_data.acmFanRunState)
+    LOGGER.info('Enter check_state_device function')
+    value = -1
+    try:
+        if device_name == DEVICE_MCC_1:
+            value = get_state_mcc(method)
+        elif device_name == DEVICE_ACM_1:
+            value = get_state_acm(method)
+        elif device_name == DEVICE_ATS_1:
+            value = get_state_ats(method)
+
+        if 0 <= value <= 1:
+            LOGGER.info('The state of device %s with method %s is: %d', device_name, method, value)
+        else:
+            LOGGER.info('Status is %d, not as expected', value)
+    except Exception as ex:
+        LOGGER.error('Error at check_state_device function with message: %s', ex.message)
+    LOGGER.info('Exit check_state_device function')
+    return value
+
+
+def get_state_ats(method):
+    LOGGER.info('Enter get_state_ats function')
+    value = -1
+    try:
+        if method == GET_STATE_ATS:
+            value = client_attributes.get('atsMode', default_data.atsMode)
+    except Exception as ex:
+        LOGGER.error('Error at get_state_ats function with message: %s', ex.message)
+    LOGGER.info('Exit get_state_ats function')
+    return value
+
+
+def get_state_acm(method):
+    LOGGER.info('Enter get_state_acm function')
+    value = -1
+    try:
+        if method == GET_STATE_ACM_AUTO:
+            value = shared_attributes.get('acmControlAuto', default_data.acmControlAuto)
+        elif method == GET_SATE_ACM_AIRC_1:
+            value = client_attributes.get('acmAirc1RunState', default_data.acmAirc1RunState)
+        elif method == GET_STATE_ACM_AIRC_2:
+            value = client_attributes.get('acmAirc2RunState', default_data.acmAirc2RunState)
+        elif method == GET_STATE_ACM_FAN:
+            value = client_attributes.get('acmFanRunState', default_data.acmFanRunState)
+        elif method == GET_SATE_ACM_SELF_PROPELLED:
+            value = 0 # TODO: change client attributes of lamp
+    except Exception as ex:
+        LOGGER.error('Error at get_state_acm function with message: %s', ex.message)
+    LOGGER.info('Exit get_state_acm function')
+    return value
+
+
+def get_state_mcc(method):
+    LOGGER.info('Enter get_state_mcc function')
+    value = -1
+    try:
+        if method == GET_STATE_MCC_DOOR:
+            value = client_attributes.get('mccDoorState', default_data.mccDoorState)
+        elif method == GET_STATE_MCC_LAMP:
+            value = 0  # TODO: change client attributes of lamp
+        elif method == GET_STATE_MCC_BELL:
+            value = client_attributes.get('mccBellState', default_data.mccBellState)
+    except Exception as ex:
+        LOGGER.error('Error at get_state_mcc function with message: %s', ex.message)
+    LOGGER.info('Exit get_sate_mcc function')
     return value
 
 

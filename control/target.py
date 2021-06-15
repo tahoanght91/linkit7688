@@ -73,16 +73,8 @@ def get_target_by_command_ats(command):
     LOGGER.info('Enter get_target_by_command_ats function')
     target = -1
     try:
-        if 'ElectricitySupplyAts' in command:
+        if 'MainAts' in command or 'AutoAts' in command or 'GenAts' in command or 'Ats' in command:
             target = 0
-        elif 'GeneratorSupplyAts' in command:
-            target = 1
-        elif 'GeneratorAts' in command:
-            target = 2
-        elif 'StartAts' in command:
-            target = 3
-        elif 'SelfPropelledAts' in command:
-            target = 4
         else:
             LOGGER.error('Command is not a string: %s', str(command))
     except Exception as ex:
