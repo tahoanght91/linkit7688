@@ -113,19 +113,6 @@ def classify_dict(response_classify):
     return response
 
 
-# def get_array_value(tuple_sorted):
-#     LOGGER.info('Enter get_array_value function')
-#     array_value = []
-#     try:
-#         for x in tuple_sorted:
-#             for y in x:
-#                 array_value.append(y[VALUE])
-#     except Exception as ex:
-#         LOGGER.error('Error at get_array_value function with message: %s', ex.message)
-#     LOGGER.info('Exit get_array_value function')
-#     return array_value
-
-
 def get_array_value(list_sorted):
     LOGGER.info('Enter get_array_value function')
     list_value = []
