@@ -136,6 +136,8 @@ def _process_command(device, command):
             result = struct.pack(FORMAT_LCD, 0xA0, length, 0x31, lcd_command, row, command)
         elif device in LIST_LED:
             result = struct.pack(FORMAT_LED, 0xA0, 0x03, 0x33, device, command)
+            byte_stream_decode = ':'.join(x.encode('hex') for x in result)
+            LOGGER.info('lcd string after decode: %s', byte_stream_decode)
         LOGGER.debug('Process command: device: %s, command: %s', device, command)
     except Exception as ex:
         LOGGER.error('Error at _process_command function with message: %s', ex.message)
