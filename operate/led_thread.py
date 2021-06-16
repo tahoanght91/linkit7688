@@ -17,46 +17,22 @@ def call():
 def get_led_value():
     dct_led = {}
     try:
-        dct_led[LED_SERVER] = 0
-        dct_led[LED_ATS] = 0
-        dct_led[LED_DC] = 0
-        dct_led[LED_ACM] = 0
+        dct_led[LED_SERVER] = 0  # TODO: need function check
+        dct_led[LED_ATS] = 0  # TODO: check key
+        dct_led[LED_DC] = client_attributes['mccDcCabinetSate']
+        dct_led[LED_ACM] = client_attributes['acmIState']
         dct_led[LED_ATU] = 0
         dct_led[LED_1] = 0
         dct_led[LED_2] = 0
         dct_led[LED_NONE] = 0
-        dct_led[LED_ALARM] = 0
-        dct_led[LED_3G] = 0
-        dct_led[LED_ETHERNET] = 0
-        dct_led[LED_CRMU] = 0
+        dct_led[LED_ALARM] = client_attributes['mccSmokeState']   # TODO: need function check
+        dct_led[LED_3G] = 0  # TODO: need function check
+        dct_led[LED_ETHERNET] = 0   # TODO: need function check
+        dct_led[LED_CRMU] = client_attributes['mccRfidConnectState']
         dct_led[LED_4] = 0
-        LOGGER.info('Get led value successful!')
     except Exception as ex:
         LOGGER.error('Error at get_led_value function with message: %s', ex.message)
     return dct_led
-
-
-# def get_led_value():
-#     LOGGER.info('Enter get_led_value function')
-#     dct_led = {}
-#     try:
-#         dct_led[LED_SERVER] = 0  # TODO: need function check
-#         dct_led[LED_ATS] = client_attributes['atsErrorState']
-#         dct_led[LED_DC] = client_attributes['mccDcCabinetSate']
-#         dct_led[LED_ACM] = client_attributes['acmIState']
-#         dct_led[LED_ATU] = 0
-#         dct_led[LED_1] = 0
-#         dct_led[LED_2] = 0
-#         dct_led[LED_NONE] = 0
-#         dct_led[LED_ALARM] = client_attributes['mccSmokeState']   # TODO: need function check
-#         dct_led[LED_3G] = 0  # TODO: need function check
-#         dct_led[LED_ETHERNET] = 0   # TODO: need function check
-#         dct_led[LED_CRMU] = client_attributes['mccRfidConnectState']
-#         dct_led[LED_4] = 0
-#     except Exception as ex:
-#         LOGGER.error('Error at get_led_value function with message: %s', ex.message)
-#     LOGGER.info('Exit get_led_value function')
-#     return dct_led
 
 
 def compose_led_command(key, value):
