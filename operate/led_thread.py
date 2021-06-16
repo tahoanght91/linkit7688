@@ -61,7 +61,6 @@ def get_led_value():
 
 
 def compose_led_command(key, value):
-    LOGGER.info('Enter compose_led_command function')
     try:
         led_id = key
         led_color = validate_value(value)
@@ -70,11 +69,9 @@ def compose_led_command(key, value):
         commands_lock.release()
     except Exception as ex:
         LOGGER.error('Error at compose_led_command with message: %s', ex.message)
-    LOGGER.info('Exit compose_led_command function')
 
 
 def validate_value(value):
-    LOGGER.info('Enter validate_value function')
     result = RED
     try:
         if value == 0:
@@ -82,5 +79,4 @@ def validate_value(value):
         return result
     except Exception as ex:
         LOGGER.error('Error at validate_value function with message: %s', ex.message)
-        LOGGER.info('Exit validate_value function')
     return result

@@ -58,7 +58,6 @@ def call():
 
 
 def classify_shared_attributes(key, value):
-    LOGGER.info('Enter classify_shared_attributes function')
     formatted = {}
     try:
         if 'ats' in key:
@@ -75,7 +74,6 @@ def classify_shared_attributes(key, value):
                 formatted = {TYPE: 'acm', ID_SHARED_ATTRIBUTES: number, VALUE: value}
     except Exception as ex:
         LOGGER.error('Error at classify_shared_attributes function with message: %s', ex.message)
-    LOGGER.info('Exit classify_shared_attributes function')
     return formatted
 
 
@@ -95,7 +93,6 @@ def sort_list_dict(list_dict_mcc, list_dict_acm, list_dict_ats):
 
 
 def classify_dict(response_classify):
-    LOGGER.info('Enter classify_dict function')
     response = False
     try:
         if response_classify[TYPE] is 'mcc':
@@ -109,7 +106,6 @@ def classify_dict(response_classify):
             response = True
     except Exception as ex:
         LOGGER.error('Error at classify_dict function with message: %s', ex.message)
-    LOGGER.info('Exit classify_dict function')
     return response
 
 

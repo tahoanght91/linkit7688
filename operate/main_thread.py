@@ -124,7 +124,10 @@ def call():
 
             try:
                 for key in default_data.data_dict:
+                    print('Key: %s', key)
                     for sub_key in default_data.data_dict[key]:
+                        print('Sub key: %s', sub_key)
+                        print('Value of sub key: %d', default_data.__dict__[sub_key])
                         default_data.data_dict[key][sub_key] = default_data.__dict__[sub_key]
                 with io.open('./config/data.tmp', 'w+', encoding='utf8') as f:
                     f.write(unicode(json.dumps(default_data.data_dict, ensure_ascii=True), 'utf8'))
