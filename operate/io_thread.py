@@ -105,11 +105,11 @@ def _read_data(byte_stream):
         if _check_data(frame_length, data, _OpData.CRMU_SIZE):
             crmu.extract(data[1:])
             return True
-    elif op_code == _OpData.IO_STATUS_RPC:  # RPC
+    elif op_code == _OpData.IO_STATUS_RPC:  # RPC response
         LOGGER.info('RPC message, declared length: %d, real length: %d, expected length: %d', frame_length - 1, len(data), _OpData.RPC_SIZE)
         return True
-    elif op_code == _OpData.IO_STATUS_LCD:  # RPC
-        LOGGER.info('LCD message, declared length: %d, real length: %d, expected length: %d', frame_length - 1, len(data), _OpData.RPC_SIZE)
+    elif op_code == _OpData.IO_STATUS_LCD:  # LCD
+        LOGGER.info('LCD message, declared length: %d, real length: %d, expected length: %d', frame_length - 1, len(data), _OpData.LCD_SIZE)
         if _check_data(frame_length, data, _OpData.LCD_SIZE):
             extract_lcd_service(data[1:])
             return True
@@ -123,9 +123,6 @@ class _OpData:
     MCC_SIZE = 58
     CRMU_SIZE = 19
     LCD_SIZE = 4
-    # TODO: change size
-    RPC_SIZE = 10
-    LCD_SERVICE_SIZE = 5
     IO_STATUS_MCC = b'\x11'
     IO_STATUS_ATS = b'\x13'
     IO_STATUS_ACM = b'\x14'
