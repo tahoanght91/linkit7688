@@ -123,18 +123,21 @@ def _process_set_auto(device, command):
 
 def _process_command(device, command):
     result = ''
-    if device == DEVICE_MCC_1 or device == DEVICE_ATS_1 or device == DEVICE_ACM_1:
-        result = compose_command_rpc(device, command)
-    elif device == KEY_MCC or device == KEY_ACM or device == KEY_ATS:
-        result = compose_command_shared_attributes(device, command)
-    elif device == LCD_SERVICE:
-        row = 2
-        length = 19
-        lcd_command = 5
-        result = struct.pack(FORMAT_LCD, 0xA0, length, 0x31, lcd_command, row, command)
-    elif device in LIST_LED:
-        result = struct.pack(FORMAT_LED, 0xA0, 0x03, 0x33, device, command)
-    LOGGER.debug('Process command: device: %s, command: %s', device, command)
+    try:
+        if device == DEVICE_MCC_1 or device == DEVICE_ATS_1 or device == DEVICE_ACM_1:
+            result = compose_command_rpc(device, command)
+        elif device == KEY_MCC or device == KEY_ACM or device == KEY_ATS:
+            result = compose_command_shared_attributes(device, command)
+        elif device == LCD_SERVICE:
+            row = 2
+            length = 19
+            lcd_command = 5
+            result = struct.pack(FORMAT_LCD, 0xA0, length, 0x31, lcd_command, row, command)
+        elif device in LIST_LED:
+            result = struct.pack(FORMAT_LED, 0xA0, 0x03, 0x33, device, command)
+        LOGGER.debug('Process command: device: %s, command: %s', device, command)
+    except Exception as ex:
+        LOGGER.error('Error at _process_command function with message: %s', ex.message)
     return result
 
 
