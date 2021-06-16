@@ -1,13 +1,10 @@
 import utility
 from . import utils
-from config import BYTE_ORDER, LOGGER
+from config import BYTE_ORDER
 
 
 def extract(byte_data):
-    LOGGER.info('Enter function extract of module ACM')
-
     # client attributes
-    LOGGER.info('Start extract client attributes')
     acmOnlineState = utility.bytes_to_int(byte_data[0])
     acmAutoMode = utility.bytes_to_int(byte_data[1])
     acmTempError = utility.bytes_to_int(byte_data[2])
@@ -19,10 +16,8 @@ def extract(byte_data):
     acmAirc2Error = utility.bytes_to_int(byte_data[8])
     acmFanRunState = utility.bytes_to_int(byte_data[9])
     acmFanError = utility.bytes_to_int(byte_data[10])
-    LOGGER.info('End extract client attributes')
 
     #telemetry
-    LOGGER.info('Start extract telemetry')
     acmTempIndoor = utility.bytes_to_int(byte_data[11:13], byteorder=BYTE_ORDER)
     acmTempOutdoor = utility.bytes_to_int(byte_data[13:15], byteorder=BYTE_ORDER)
     acmHumidIndoor = utility.bytes_to_int(byte_data[15:17], byteorder=BYTE_ORDER)
@@ -30,7 +25,6 @@ def extract(byte_data):
     acmT2Temp = utility.bytes_to_int(byte_data[19:21], byteorder=BYTE_ORDER)
     acmT3Temp = utility.bytes_to_int(byte_data[21:23], byteorder=BYTE_ORDER)
     acmT4Temp = utility.bytes_to_int(byte_data[23:25], byteorder=BYTE_ORDER)
-    LOGGER.info('End extract telemetry')
 
     #telemetry
     utils._read_telemetry('acmTempIndoor', acmTempIndoor)
@@ -53,6 +47,4 @@ def extract(byte_data):
     utils._read_attribute('acmAirc2Error', acmAirc2Error)
     utils._read_attribute('acmFanRunState', acmFanRunState)
     utils._read_attribute('acmFanError', acmFanError)
-
-    LOGGER.info('Exit function extract of module ACM')
 

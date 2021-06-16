@@ -1,20 +1,9 @@
 import time
 from operator import itemgetter
 
-from config import shared_attributes, default_data, CLIENT, commands_lock, commands
+from config import shared_attributes, CLIENT, commands_lock, commands
 from config.common import *
 from control.switcher import *
-
-# def call():
-#     period = shared_attributes.get('mccPeriodUpdate', default_data.mccPeriodUpdate)
-#     while True:
-#         if CLIENT.is_connected():
-#             for key, value in shared_attributes.items():
-#                 commands_lock.acquire()
-#                 commands[key] = value
-#                 commands_lock.release()
-#                 LOGGER.debug('Process command send shared attributes to stm32: device name: %s, value: %s', key, value)
-#         time.sleep(period)
 
 
 list_dict_ats = []
@@ -38,7 +27,6 @@ def call():
                         current_list_value = get_array_value(current_list)
                         type = current_list[0][TYPE]
                         if len(current_list_value) > 0:
-                            LOGGER.info('Get value of array successful')
                             commands_lock.acquire()
                             if type is MCC:
                                 commands[KEY_MCC] = current_list_value

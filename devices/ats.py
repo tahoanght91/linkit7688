@@ -1,13 +1,10 @@
 from utility import bytes_to_int
 from .utils import _read_attribute, _read_telemetry
-from config import BYTE_ORDER, LOGGER
+from config import BYTE_ORDER
 
 
 def extract(byte_data):
-    LOGGER.info('Enter function extract of module ATS')
-
     # client attributes
-    LOGGER.info('Start extract client attributes')
     atsVacP1State = bytes_to_int(byte_data[0])
     atsVacP2State = bytes_to_int(byte_data[1])
     atsVacP3State = bytes_to_int(byte_data[2])
@@ -22,10 +19,8 @@ def extract(byte_data):
     atsErrorState = bytes_to_int(byte_data[11])
     atsMode = bytes_to_int(byte_data[12], byteorder=BYTE_ORDER)
     atsConnect = bytes_to_int(byte_data[13])
-    LOGGER.info('End extract client attributes')
 
     #telemetry
-    LOGGER.info('Start extract telemetry')
     atsVacFreq = bytes_to_int(byte_data[14:16], byteorder=BYTE_ORDER)
     atsVgenFreq = bytes_to_int(byte_data[16:18], byteorder=BYTE_ORDER)
     atsVloadFreq = bytes_to_int(byte_data[18:20], byteorder=BYTE_ORDER)
@@ -44,7 +39,6 @@ def extract(byte_data):
     atsPac1 = bytes_to_int(byte_data[44:46], byteorder=BYTE_ORDER)
     atsPac2 = bytes_to_int(byte_data[46:48], byteorder=BYTE_ORDER)
     atsPac3 = bytes_to_int(byte_data[48:50], byteorder=BYTE_ORDER)
-    LOGGER.info('End extract telemetry')
 
     # telemetry
     _read_telemetry('atsVacFreq', atsVacFreq)
