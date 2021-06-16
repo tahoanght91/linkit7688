@@ -38,7 +38,6 @@ def parse_mcc_command_to_number(command):
         COMMAND_MCC_OFF_DOUT_REVERSED_13: 0,
         COMMAND_MCC_ON_DOUT_REVERSED_13: 1
     }
-    LOGGER.info('Command is: %s, after parse is: %d', command, switcher_mcc_command.get(command))
     return switcher_mcc_command.get(command, "Out of range!")
 
 
@@ -56,7 +55,6 @@ def parse_acm_command_to_number(command):
         COMMAND_ACM_SELF_PROPELLED_OFF: 0,
         COMMAND_ACM_SELF_PROPELLED_ON: 1
     }
-    LOGGER.info('Command is: %s, after parse is: %d', command, switcher_acm_command.get(command))
     return switcher_acm_command.get(command, "Out of range!")
 
 
@@ -68,7 +66,6 @@ def parse_ats_command_to_number(command):
         COMMAND_ATS_AUTO_ON: 2,
         COMMAND_ATS_OFF: 3
     }
-    LOGGER.info('Command is: %s, after parse is: %d', command, switcher_ats_command.get(command, 'Out of range!'))
     return switcher_ats_command.get(command, "Out of range!")
 
 
@@ -92,7 +89,6 @@ def parse_ats_shared_attributes_to_number(key):
         'atsVacThresholdState': 15,
         'atsVgenThresholdState': 16
     }
-    LOGGER.info('Key is: %s, after parse is: %d', key, switcher_ats.get(key, 'Out of range!'))
     return switcher_ats.get(key, "Out of range!")
 
 
@@ -104,7 +100,6 @@ def parse_mcc_shared_attributes_to_number(key):
         'mccPeriodUpdate': 3,
         'mccDcMinThreshold': 4
     }
-    LOGGER.info('Key is: %s, after parse is: %d', key, switcher_mcc.get(key, 'Out of range!'))
     return switcher_mcc.get(key, "Out of range!")
 
 
@@ -128,6 +123,5 @@ def parse_acm_shared_attributes_to_number(key):
         'acmT3Temp': 15,
         'acmT4Temp': 16
     }
-    LOGGER.info('Key is: %s, after parse is: %d', key, switcher_acm.get(key, 'Out of range!'))
     return switcher_acm.get(key, "Out of range!")
 

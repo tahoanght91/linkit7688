@@ -2,7 +2,6 @@ from config import LOGGER
 
 
 def get_target_by_command_mcc(command):
-    LOGGER.info('Enter get_target_by_command_mcc function')
     target = -1
     try:
         if 'DoorMcc' in command:
@@ -42,12 +41,10 @@ def get_target_by_command_mcc(command):
     except Exception as ex:
         LOGGER.error('Error at get_target_by_command function with message: %s', ex.message)
     LOGGER.info('Command is: %s, after parse is: %d', command, target)
-    LOGGER.info('Exit get_target_by_command function')
     return target
 
 
 def get_target_by_command_acm(command):
-    LOGGER.info('Enter get_target_by_command_acm function')
     target = -1
     try:
         if 'AutoAcm' in command:
@@ -65,12 +62,10 @@ def get_target_by_command_acm(command):
     except Exception as ex:
         LOGGER.error('Error at get_target_by_command function with message: %s', ex.message)
     LOGGER.info('Command is: %s, after parse is: %d', command, target)
-    LOGGER.info('Exit get_target_by_command function')
     return target
 
 
 def get_target_by_command_ats(command):
-    LOGGER.info('Enter get_target_by_command_ats function')
     target = -1
     try:
         if 'MainAts' in command or 'AutoAts' in command or 'GenAts' in command or 'Ats' in command:
@@ -80,6 +75,5 @@ def get_target_by_command_ats(command):
     except Exception as ex:
         LOGGER.error('Error at get_target_by_command_ats function with message: %s', ex.message)
     LOGGER.info('Command is: %s, after parse is: %d', command, target)
-    LOGGER.info('Exit get_target_by_command_ats function')
     return target
 

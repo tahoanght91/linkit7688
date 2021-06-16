@@ -78,7 +78,6 @@ def classify_shared_attributes(key, value):
 
 
 def sort_list_dict(list_dict_mcc, list_dict_acm, list_dict_ats):
-    LOGGER.info('Enter sort_list_dict function')
     new_list_mcc = []
     new_list_acm = []
     new_list_ats = []
@@ -88,7 +87,6 @@ def sort_list_dict(list_dict_mcc, list_dict_acm, list_dict_ats):
         new_list_ats = sorted(list_dict_ats, key=itemgetter(ID_SHARED_ATTRIBUTES))
     except Exception as ex:
         LOGGER.error('Error at sort_list_dict function with message: %s', ex.message)
-    LOGGER.info('Exit sort_list_dict function')
     return new_list_mcc, new_list_acm, new_list_ats
 
 
@@ -110,19 +108,16 @@ def classify_dict(response_classify):
 
 
 def get_array_value(list_sorted):
-    LOGGER.info('Enter get_array_value function')
     list_value = []
     try:
         for x in list_sorted:
             list_value.append(x[VALUE])
     except Exception as ex:
         LOGGER.error('Error at get_array_value function with message: %s', ex.message)
-    LOGGER.info('Exit get_array_value function')
     return list_value
 
 
 def clear_all_list(list_dict_mcc, list_dict_acm, list_dict_ats):
-    LOGGER.info('Enter clear_all_list function')
     flag = False
     try:
         del list_dict_mcc[:]
@@ -135,5 +130,4 @@ def clear_all_list(list_dict_mcc, list_dict_acm, list_dict_ats):
             LOGGER.info('Fail while clear all list')
     except Exception as ex:
         LOGGER.error('Error at clear_all_list function with message: %s', ex.message)
-    LOGGER.info('Exit clear_all_list function')
     return flag

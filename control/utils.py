@@ -122,7 +122,6 @@ def _process_set_auto(device, command):
 
 
 def _process_command(device, command):
-    LOGGER.info('Enter _process_command function')
     result = ''
     if device == DEVICE_MCC_1 or device == DEVICE_ATS_1 or device == DEVICE_ACM_1:
         result = compose_command_rpc(device, command)
@@ -136,7 +135,6 @@ def _process_command(device, command):
     elif device in LIST_LED:
         result = struct.pack(FORMAT_LED, 0xA0, 0x03, 0x33, device, command)
     LOGGER.debug('Process command: device: %s, command: %s', device, command)
-    LOGGER.info('Exit _process_command function')
     return result
 
 

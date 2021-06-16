@@ -15,7 +15,6 @@ def call():
 
 
 def get_led_value():
-    LOGGER.info('Enter get_led_value function')
     dct_led = {}
     try:
         dct_led[LED_SERVER] = 0
@@ -31,9 +30,9 @@ def get_led_value():
         dct_led[LED_ETHERNET] = 0
         dct_led[LED_CRMU] = 0
         dct_led[LED_4] = 0
+        LOGGER.info('Get led value successful!')
     except Exception as ex:
         LOGGER.error('Error at get_led_value function with message: %s', ex.message)
-    LOGGER.info('Exit get_led_value function')
     return dct_led
 
 
