@@ -168,10 +168,12 @@ def send_shared_attributes(body):
 
 def extract_lcd_service(byte_data):
     LOGGER.info('Enter extract_lcd_service function')
+    byte_data_decode = ':'.join(x.encode('hex') for x in byte_data)
+    LOGGER.info('Byte_data_decode after decode: %s', byte_data_decode)
     try:
-        key_code = bytes_to_int(byte_data[0:2])
+        key_code = bytes_to_int(byte_data[0:1])
         print ('key_code: ' + key_code)
-        key_event = bytes_to_int(byte_data[3])
+        key_event = bytes_to_int(byte_data[2])
         print ('key_event: ' + key_event)
         read_lcd_services('keyCode', key_code)
         read_lcd_services('keyEvent', key_event)
