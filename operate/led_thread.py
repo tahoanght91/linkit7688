@@ -5,7 +5,7 @@ from config.common_led import *
 
 
 def call():
-    period = shared_attributes.get('mccPeriodUpdate', default_data.mccPeriodUpdate)
+    period = 2
     while True:
         dct_led_value = get_led_value()
         if len(dct_led_value) > 0:
