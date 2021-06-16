@@ -13,7 +13,7 @@ list_dict_mcc = []
 
 def call():
     try:
-        period = 10
+        period = 60
         while True:
             if CLIENT.is_connected():
                 for key, value in shared_attributes.items():
