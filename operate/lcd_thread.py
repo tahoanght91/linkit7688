@@ -24,7 +24,7 @@ def call():
                 # TODO: warning
                 init_last_trace(lcd_services, dct_last_trace)
                 result_check_lcd = check_lcd_service(lcd_services)
-                if len(result_check_lcd) == 0:
+                if len(result_check_lcd) > 0:
                     LOGGER.info('result_check_lcd is not none: %s', result_check_lcd)
                     result_switch_lcd = switch_lcd_service(result_check_lcd['key_code'], result_check_lcd['key_event'])
                     if result_switch_lcd != '':
@@ -242,7 +242,7 @@ def check_lcd_service(dct_lcd_service):
             LOGGER.info('Key event: %d not exists in LIST_KEY_EVENT', key_event)
 
         if key_code_checked and key_event_checked:
-            result = dct_lcd_service
+            result = dct_lcd_service.copy()
             LOGGER.info('Check key code & key event successful')
         else:
             LOGGER.info('Fail while check ')
