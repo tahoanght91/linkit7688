@@ -29,7 +29,7 @@ def get_led_value():
         dct_led[LED_2] = 1
         dct_led[LED_NONE] = 1
         dct_led[LED_ALARM] = get_sate_led_alarm(telemetries, dct_last_trace_led_alarm)   # TODO: need function check
-        dct_led[LED_3G] = 0  # TODO: need function check
+        dct_led[LED_3G] = 1  # TODO: need function check
         dct_led[LED_ETHERNET] = 0   # TODO: need function check
         dct_led[LED_CRMU] = client_attributes['mccRfidConnectState']
         dct_led[LED_4] = 1
