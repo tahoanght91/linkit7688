@@ -15,6 +15,8 @@ def call():
 
 
 def get_led_value():
+    print('telemetry')
+    print(telemetries)
     dct_led = {}
     try:
         dct_led[LED_SERVER] = 0  # TODO: need function check
