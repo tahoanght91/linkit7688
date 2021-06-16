@@ -170,7 +170,9 @@ def extract_lcd_service(byte_data):
     LOGGER.info('Enter extract_lcd_service function')
     try:
         key_code = bytes_to_int(byte_data[0:2])
+        print ('key_code: ' + key_code)
         key_event = bytes_to_int(byte_data[3])
+        print ('key_event: ' + key_event)
         read_lcd_services('keyCode', key_code)
         read_lcd_services('keyEvent', key_event)
         LOGGER.info('After extract command lcd from STM32, key code: %d, key event: %d', key_code, key_event)
