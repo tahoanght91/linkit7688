@@ -18,19 +18,22 @@ dct_last_trace = {}
 def call():
     LOGGER.error('Enter call function in menu_thread')
     try:
-        period = 1
+        period = 10
         while True:
             if CLIENT.is_connected():
                 # TODO: warning
                 init_last_trace(lcd_services, dct_last_trace)
                 result_check_lcd = check_lcd_service(lcd_services)
-                if result_check_lcd is not None:
+                if len(result_check_lcd) == 0:
+                    LOGGER.info('result_check_lcd is not none: %s', result_check_lcd)
                     result_switch_lcd = switch_lcd_service(result_check_lcd['key_code'], result_check_lcd['key_event'])
                     if result_switch_lcd != '':
                         commands_lock.acquire()
                         commands[LCD_SERVICE] = result_switch_lcd
                         commands_lock.release()
                         lcd_services.clear()
+                else:
+                    LOGGER.info('result_check_lcd is none: %s', result_check_lcd)
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
