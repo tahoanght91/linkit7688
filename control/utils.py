@@ -130,7 +130,7 @@ def _process_command(device, command):
     elif device == LCD_SERVICE:
         row = 2
         length = 19
-        lcd_command = 0
+        lcd_command = 5
         result = struct.pack(FORMAT_LCD, 0xA0, length, 0x31, lcd_command, row, command)
     elif device in LIST_LED:
         result = struct.pack(FORMAT_LED, 0xA0, 0x03, 0x33, device, command)
@@ -144,10 +144,6 @@ def convert_str_command_to_int(command):
         _command = 1
     elif command is COMMAND_ACM_AUTO_OFF:
         _command = 0
-    elif command is COMMAND_ATS_SELF_PROPELLED_OFF:
-        _command = 0
-    elif command is COMMAND_ATS_SELF_PROPELLED_ON:
-        _command = 1
     return _command
 
 
