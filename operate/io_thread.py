@@ -83,6 +83,8 @@ def _read_data(byte_stream):
     op_code = byte_stream[2]
     LOGGER.debug('Opcode %s', op_code.encode('hex'))
     data = byte_stream[3:-2]
+    data_decode = ':'.join(x.encode('hex') for x in data)
+    LOGGER.info('Data_decode after decode: %s', data_decode)
     if op_code == _OpData.IO_STATUS_MCC:  # MCC
         LOGGER.info('MCC message, declared length: %d, real length: %d, expected length: %d', frame_length - 1, len(data), _OpData.MCC_SIZE)
         if _check_data(frame_length, data, _OpData.MCC_SIZE):
@@ -111,6 +113,9 @@ def _read_data(byte_stream):
     elif op_code == _OpData.IO_STATUS_LCD:  # LCD
         LOGGER.info('LCD message, declared length: %d, real length: %d, expected length: %d', frame_length - 1, len(data), _OpData.LCD_SIZE)
         if _check_data(frame_length, data, _OpData.LCD_SIZE):
+            a = data[1:]
+            a_decode = ':'.join(x.encode('hex') for x in a)
+            LOGGER.info('Data_decode after decode: %s', a_decode)
             extract_lcd_service(data[1:])
             return True
     return False
@@ -123,6 +128,7 @@ class _OpData:
     MCC_SIZE = 58
     CRMU_SIZE = 19
     LCD_SIZE = 4
+    RPC_SIZE = 10
     IO_STATUS_MCC = b'\x11'
     IO_STATUS_ATS = b'\x13'
     IO_STATUS_ACM = b'\x14'
