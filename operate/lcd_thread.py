@@ -26,7 +26,7 @@ def call():
                 result_check_lcd = check_lcd_service(lcd_services)
                 if len(result_check_lcd) > 0:
                     LOGGER.info('result_check_lcd is not none: %s', result_check_lcd)
-                    result_switch_lcd = switch_lcd_service(result_check_lcd['key_code'], result_check_lcd['key_event'])
+                    result_switch_lcd = switch_lcd_service(result_check_lcd['keyCode'], result_check_lcd['keyEvent'])
                     if result_switch_lcd != '':
                         commands_lock.acquire()
                         commands[LCD_SERVICE] = result_switch_lcd
