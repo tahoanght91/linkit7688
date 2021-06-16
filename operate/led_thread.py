@@ -25,7 +25,7 @@ def get_led_value():
         dct_led[LED_1] = 0
         dct_led[LED_2] = 0
         dct_led[LED_NONE] = 0
-        dct_led[LED_ALARM] = client_attributes['mccSmokeState']   # TODO: need function check
+        dct_led[LED_ALARM] = telemetries['mccSmokeState']   # TODO: need function check
         dct_led[LED_3G] = 0  # TODO: need function check
         dct_led[LED_ETHERNET] = 0   # TODO: need function check
         dct_led[LED_CRMU] = client_attributes['mccRfidConnectState']
