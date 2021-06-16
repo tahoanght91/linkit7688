@@ -25,8 +25,7 @@ def call():
                 init_last_trace(lcd_services, dct_last_trace)
                 result_check_lcd = check_lcd_service(lcd_services)
                 if result_check_lcd is not None:
-                    dct_result_check_lcd = dict(result_check_lcd)
-                    result_switch_lcd = switch_lcd_service(dct_result_check_lcd['key_code'], dct_result_check_lcd['key_event'])
+                    result_switch_lcd = switch_lcd_service(result_check_lcd['key_code'], result_check_lcd['key_event'])
                     if result_switch_lcd != '':
                         commands_lock.acquire()
                         commands[LCD_SERVICE] = result_switch_lcd
@@ -220,7 +219,7 @@ def init_last_trace(dct_lcd_service, dct_last_trace):
 
 def check_lcd_service(dct_lcd_service):
     LOGGER.info('Enter check_lcd_service function')
-    result = ''
+    result = {}
     key_code_checked = False
     key_event_checked = False
     try:
@@ -240,7 +239,7 @@ def check_lcd_service(dct_lcd_service):
             LOGGER.info('Key event: %d not exists in LIST_KEY_EVENT', key_event)
 
         if key_code_checked and key_event_checked:
-            result = key_code, key_event
+            result = dct_lcd_service
             LOGGER.info('Check key code & key event successful')
         else:
             LOGGER.info('Fail while check ')
