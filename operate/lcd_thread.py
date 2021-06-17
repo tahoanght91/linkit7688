@@ -18,7 +18,7 @@ LIST_KEY_CODE = [KEYCODE_MENU, KEYCODE_UP, KEYCODE_DOWN, KEYCODE_ENTER]
 def call():
     LOGGER.error('Enter call function in menu_thread')
     try:
-        period = 10
+        period = 1.5
         while True:
             if CLIENT.is_connected():
                 result_check_input = check_lcd_service(lcd_services)
@@ -144,9 +144,6 @@ def send_shared_attributes(body):
 
 
 def extract_lcd_service(byte_data):
-    LOGGER.info('Enter extract_lcd_service function')
-    byte_data_decode = ':'.join(x.encode('hex') for x in byte_data)
-    LOGGER.info('Byte_data_decode after decode: %s', byte_data_decode)
     try:
         key_code = bytes_to_int(byte_data[0:2], byteorder=BYTE_ORDER)
         key_event = bytes_to_int(byte_data[2])
@@ -155,7 +152,6 @@ def extract_lcd_service(byte_data):
         LOGGER.info('After extract command lcd from STM32, key code: %d, key event: %d', key_code, key_event)
     except Exception as ex:
         LOGGER.error('Error at extract_lcd_service function with message: %s', ex.message)
-    LOGGER.info('Exit extract_lcd_service function')
 
 
 # OK

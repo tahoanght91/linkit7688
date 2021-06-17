@@ -5,7 +5,7 @@ from config.common import *
 
 
 def call():
-    period = shared_attributes.get('mccPeriodUpdate', default_data.mccPeriodUpdate)
+    period = shared_attributes.get('mccPeriodSendTelemetry', default_data.mccPeriodSendTelemetry)
     while True:
         if CLIENT.is_connected():
             update_attributes_lock.acquire()
