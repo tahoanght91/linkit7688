@@ -130,10 +130,11 @@ def _process_command(device, command):
         elif device == KEY_MCC or device == KEY_ACM or device == KEY_ATS:
             result = compose_command_shared_attributes(device, command)
         elif device == LCD_SERVICE:
-            row = 2
+            row = 0X2
             length = 0X19
             lcd_command = 5
-            result = struct.pack(FORMAT_LCD, 0xA0, length, 0x31, lcd_command, row, command)
+            op_code = 0X31
+            result = struct.pack(FORMAT_LCD, 0xA0, length, op_code, lcd_command, row, command)
             byte_stream_decode = ':'.join(x.encode('hex') for x in result)
             LOGGER.info('lcd string after decode: %s', byte_stream_decode)
         elif device in LIST_LED:
