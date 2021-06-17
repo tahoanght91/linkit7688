@@ -130,11 +130,7 @@ def _process_command(device, command):
         elif device == KEY_MCC or device == KEY_ACM or device == KEY_ATS:
             result = compose_command_shared_attributes(device, command)
         elif device == LCD_SERVICE:
-            row = 0X2
-            length = 0X04
-            lcd_command = 5
-            op_code = 0X31
-            result = struct.pack(FORMAT_LCD, 0xA0, length, op_code, lcd_command, row, command)
+            result = compose_command_lcd(command)
             byte_stream_decode = ':'.join(x.encode('hex') for x in result)
             LOGGER.info('lcd string after decode: %s', byte_stream_decode)
         elif device in LIST_LED:
@@ -255,6 +251,21 @@ def compose_command_shared_attributes(device, command):
         LOGGER.info('Command error!')
     LOGGER.info('Exit compose_command_shared_attributes function')
     return result
+
+
+def compose_command_lcd(command):
+    arr_char = split(command)
+    prefix = format_lcd(len(arr_char))
+    result = struct.pack(FORMAT_LCD + prefix, 0xA0, 0X04, 0X31, 5, 0X2, *arr_char)
+    return result
+
+
+def split(word):
+    return [char for char in word]
+
+
+def format_lcd(length_command):
+    return ''.join([char * length_command for char in CHAR_S])
 
 
 def format_sa(length_command):

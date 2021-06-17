@@ -150,8 +150,8 @@ def extract_lcd_service(byte_data):
     try:
         key_code = bytes_to_int(byte_data[0:1], byteorder=BYTE_ORDER)
         key_event = bytes_to_int(byte_data[2])
-        read_lcd_services('keyCode', key_code)
-        read_lcd_services('keyEvent', key_event)
+        read_lcd_services('key_code', key_code)
+        read_lcd_services('key_event', key_event)
         LOGGER.info('After extract command lcd from STM32, key code: %d, key event: %d', key_code, key_event)
     except Exception as ex:
         LOGGER.error('Error at extract_lcd_service function with message: %s', ex.message)
@@ -195,8 +195,8 @@ def check_lcd_service(dct_lcd_service):
     key_event_checked = False
     input_lcd = Lcd()
     try:
-        input_lcd.key_code = dct_lcd_service['keyCode']
-        input_lcd.key_event = dct_lcd_service['keyEvent']
+        input_lcd.key_code = dct_lcd_service['key_code']
+        input_lcd.key_event = dct_lcd_service['key_event']
         key_code = input_lcd.key_code
         key_event = input_lcd.key_event
 
