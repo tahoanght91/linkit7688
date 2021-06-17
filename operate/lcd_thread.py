@@ -148,7 +148,7 @@ def extract_lcd_service(byte_data):
     byte_data_decode = ':'.join(x.encode('hex') for x in byte_data)
     LOGGER.info('Byte_data_decode after decode: %s', byte_data_decode)
     try:
-        key_code = bytes_to_int(byte_data[0:1], byteorder=BYTE_ORDER)
+        key_code = bytes_to_int(byte_data[0:2], byteorder=BYTE_ORDER)
         key_event = bytes_to_int(byte_data[2])
         read_lcd_services('key_code', key_code)
         read_lcd_services('key_event', key_event)
