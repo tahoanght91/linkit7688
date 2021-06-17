@@ -34,7 +34,7 @@ def replica_telemetry():
     "mccDcBat3Temp": 16,
     "mccDcBat4Temp": 19,
     "mccDoorButton": 0,
-    "mccDcAccumulatorSate": 0,
+    "mccDcAccuState": 0,
     "mccDcVcabinet": 0,
     "mccDcIcabinet": 0,
     "mccDcPcabinet": 0,

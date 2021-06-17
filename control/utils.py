@@ -104,21 +104,19 @@ def get_value_device(device_name, method):
 
 
 def _process_set_auto(device, command):
-    LOGGER.info('Enter _process_set_auto function')
     try:
         if not (type(command) == str and device in [DEVICE_ATS_1, DEVICE_ACM_1]):
             return False
         value = convert_str_command_to_int(command)
-        if value >= 0:
-            if device == DEVICE_ATS_1:
-                shared_attributes['atsControlAuto'] = value
-            elif device == DEVICE_ACM_1:
+        if 0 <= value <= 1:
+            if device == DEVICE_ACM_1:
                 shared_attributes['acmControlAuto'] = value
+            elif device == DEVICE_ATS_1:
+                shared_attributes['atsControlAuto'] = value
         else:
             LOGGER.info('Value: %d, value is not expected', value)
     except Exception as ex:
         LOGGER.error('Error at _process_set_auto function with message: %s', ex.message)
-    LOGGER.info('Exit _process_set_auto function')
     return True
 
 
