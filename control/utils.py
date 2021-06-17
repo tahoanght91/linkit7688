@@ -131,7 +131,7 @@ def _process_command(device, command):
             result = compose_command_shared_attributes(device, command)
         elif device == LCD_SERVICE:
             row = 2
-            length = 19
+            length = 0X19
             lcd_command = 5
             result = struct.pack(FORMAT_LCD, 0xA0, length, 0x31, lcd_command, row, command)
             byte_stream_decode = ':'.join(x.encode('hex') for x in result)

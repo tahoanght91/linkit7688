@@ -21,19 +21,23 @@ def call():
         period = 10
         while True:
             if CLIENT.is_connected():
+                commands_lock.acquire()
+                commands[LCD_SERVICE] = menu_level_1[0]
+                commands_lock.release()
+                lcd_services.clear()
                 # TODO: warning
-                init_last_trace(lcd_services, dct_last_trace)
-                result_check_lcd = check_lcd_service(lcd_services)
-                if len(result_check_lcd) > 0:
-                    LOGGER.info('result_check_lcd is not none: %s', result_check_lcd)
-                    result_switch_lcd = switch_lcd_service(result_check_lcd['keyCode'], result_check_lcd['keyEvent'])
-                    if result_switch_lcd != '':
-                        commands_lock.acquire()
-                        commands[LCD_SERVICE] = result_switch_lcd
-                        commands_lock.release()
-                        lcd_services.clear()
-                else:
-                    LOGGER.info('result_check_lcd is none: %s', result_check_lcd)
+                # init_last_trace(lcd_services, dct_last_trace)
+                # result_check_lcd = check_lcd_service(lcd_services)
+                # if len(result_check_lcd) > 0:
+                #     LOGGER.info('result_check_lcd is not none: %s', result_check_lcd)
+                #     result_switch_lcd = switch_lcd_service(result_check_lcd['keyCode'], result_check_lcd['keyEvent'])
+                #     if result_switch_lcd != '':
+                #         commands_lock.acquire()
+                #         commands[LCD_SERVICE] = result_switch_lcd
+                #         commands_lock.release()
+                #         lcd_services.clear()
+                # else:
+                #     LOGGER.info('result_check_lcd is none: %s', result_check_lcd)
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
