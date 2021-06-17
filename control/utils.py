@@ -256,7 +256,8 @@ def compose_command_shared_attributes(device, command):
 def compose_command_lcd(command):
     arr_char = split(command)
     prefix = format_lcd(len(arr_char))
-    result = struct.pack(FORMAT_LCD + prefix, 0xA0, 0X04, 0X31, 5, 0X2, *arr_char)
+    length = len(arr_char) + 3
+    result = struct.pack(FORMAT_LCD + prefix, 0xA0, length, 0X31, 5, 0X2, *arr_char)
     return result
 
 
