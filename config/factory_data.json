@@ -79,7 +79,7 @@
     "mccDcBat1Temp": 0,
     "mccDcBat2Temp": 13,
     "mccDcBat3Temp": 16,
-    "mccDcAccumulatorSate": 0,
+    "mccDcAccuState": 0,
     "mccDcV1": 10,
     "mccDcI1": 10,
     "mccDcP1": 10,
