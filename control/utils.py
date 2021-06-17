@@ -131,11 +131,10 @@ def _process_command(device, command):
             result = compose_command_shared_attributes(device, command)
         elif device == LCD_SERVICE:
             result = compose_command_lcd(command)
-            byte_stream_decode = ':'.join(x.encode('hex') for x in result)
-            LOGGER.info('lcd string after decode: %s', byte_stream_decode)
         elif device in LIST_LED:
             result = struct.pack(FORMAT_LED, 0xA0, 0x03, 0x33, device, command)
-        LOGGER.debug('Process command: device: %s, command: %s', device, command)
+        result_encode = ':'.join(x.encode('hex') for x in result)
+        LOGGER.debug('Process command: device: %s, command: %s, after decode is: %s', device, command, result_encode)
     except Exception as ex:
         LOGGER.error('Error at _process_command function with message: %s', ex.message)
     return result
