@@ -14,7 +14,7 @@ def _check_command(device, command):
         return True
     elif device == DEVICE_ACM_1 and (command == GET_STATE or command == GET_VALUE):
         return True
-    elif device == DEVICE_ATS and (command == GET_STATE or command == GET_VALUE):
+    elif device == DEVICE_ATS_1 and (command == GET_STATE or command == GET_VALUE):
         return True
     else:
         return False
