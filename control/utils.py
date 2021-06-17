@@ -131,7 +131,7 @@ def _process_command(device, command):
             result = compose_command_shared_attributes(device, command)
         elif device == LCD_SERVICE:
             row = 0X2
-            length = 0X19
+            length = 0X04
             lcd_command = 5
             op_code = 0X31
             result = struct.pack(FORMAT_LCD, 0xA0, length, op_code, lcd_command, row, command)
