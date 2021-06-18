@@ -35,7 +35,7 @@ def check_status():
     acmT3Temp = shared_attributes.get('acmT3Temp', default_data.acmT3Temp)
     acmT4Temp = shared_attributes.get('acmT4Temp', default_data.acmT4Temp)
 
-    # Telemetry
+    # Client
     # acmAutoMode = client_attributes.get('acmAutoMode', default_data.acmAutoMode)
     # acmTempError = client_attributes.get('acmTempError', default_data.acmTempError)
     # acmHumidError = client_attributes.get('acmHumidError', default_data.acmHumidError)
@@ -46,24 +46,28 @@ def check_status():
     # acmAirc2Error = client_attributes.get('acmAirc2Error', default_data.acmAirc2Error)
     acmFanRunState = client_attributes.get('acmFanRunState', default_data.acmFanRunState)
     # acmFanError = client_attributes.get('acmFanError', default_data.acmFanError)
-    acmTempIndoor = client_attributes.get('acmTempIndoor', default_data.acmTempIndoor)
-    acmTempOutdoor = client_attributes.get('acmTempOutdoor', default_data.acmTempOutdoor)
-    acmHumidIndoor = client_attributes.get('acmHumidIndoor', default_data.acmHumidIndoor)
-    # acmT1TempUser = client_attributes.get('acmT1Temp', default_data.acmT1Temp)
-    # acmT2TempUser = client_attributes.get('acmT2Temp', default_data.acmT2Temp)
-    # acmT3TempUser = client_attributes.get('acmT3Temp', default_data.acmT3Temp)
-    # acmT4TempUser = client_attributes.get('acmT4Temp', default_data.acmT4Temp)
 
-    mccSmokeState = client_attributes.get('mccSmokeState', default_data.mccSmokeState)
-    mccFireState = client_attributes.get('mccFireState', default_data.mccFireState)
+    # Telemetry
+    acmTempIndoor = telemetries.get('acmTempIndoor', default_data.acmTempIndoor)
+    acmTempOutdoor = telemetries.get('acmTempOutdoor', default_data.acmTempOutdoor)
+    acmHumidIndoor = telemetries.get('acmHumidIndoor', default_data.acmHumidIndoor)
+    # acmT1TempUser = telemetries.get('acmT1Temp', default_data.acmT1Temp)
+    # acmT2TempUser = telemetries.get('acmT2Temp', default_data.acmT2Temp)
+    # acmT3TempUser = telemetries.get('acmT3Temp', default_data.acmT3Temp)
+    # acmT4TempUser = telemetries.get('acmT4Temp', default_data.acmT4Temp)
+
+    mccSmokeState = telemetries.get('mccSmokeState', default_data.mccSmokeState)
+    mccFireState = telemetries.get('mccFireState', default_data.mccFireState)
+
     atsAcState = client_attributes.get('atsAcState', default_data.atsAcState)
 
-    atsVacP1 = client_attributes.get('atsVacP1', default_data.atsVacP1)
-    atsVacP2 = client_attributes.get('atsVacP2', default_data.atsVacP2)
-    atsVacP3 = client_attributes.get('atsVacP3', default_data.atsVacP3)
-    atsVgenP1 = client_attributes.get('atsVgenP1', default_data.atsVgenP1)
-    atsVgenP2 = client_attributes.get('atsVgenP2', default_data.atsVgenP2)
-    atsVgenP3 = client_attributes.get('atsVgenP3', default_data.atsVgenP3)
+    atsVacP1 = telemetries.get('atsVacP1', default_data.atsVacP1)
+    atsVacP2 = telemetries.get('atsVacP2', default_data.atsVacP2)
+    atsVacP3 = telemetries.get('atsVacP3', default_data.atsVacP3)
+    atsVgenP1 = telemetries.get('atsVgenP1', default_data.atsVgenP1)
+    atsVgenP2 = telemetries.get('atsVgenP2', default_data.atsVgenP2)
+    atsVgenP3 = telemetries.get('atsVgenP3', default_data.atsVgenP3)
+
     atsContactorElecState = client_attributes.get('atsContactorElecState', default_data.atsContactorElecState)
     atsContactorGenState = client_attributes.get('atsContactorGenState', default_data.atsContactorGenState)
 
