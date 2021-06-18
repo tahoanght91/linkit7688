@@ -8,7 +8,7 @@ dct_last_trace_led_alarm = {}
 
 
 def call():
-    period = 6
+    period = 20
     while True:
         dct_led_value = get_led_value()
         if len(dct_led_value) > 0:
@@ -42,9 +42,9 @@ def compose_led_command(key, value):
     try:
         led_id = key
         led_color = validate_value(value)
-        commands_lock.acquire()
-        commands[led_id] = led_color
-        commands_lock.release()
+        cmd_led_lock.acquire()
+        cmd_led[led_id] = led_color
+        cmd_led_lock.release()
     except Exception as ex:
         LOGGER.error('Error at compose_led_command with message: %s', ex.message)
 

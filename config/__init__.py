@@ -26,8 +26,18 @@ update_attributes = {}
 telemetries = {}
 commands = {}
 lcd_services = {}
+cmd_led = {}
+cmd_lcd = {}
+# cmd_rfid = {}
+cmd_sa = {}
 
 update_attributes_lock = threading.Lock()
 telemetries_lock = threading.Lock()
 commands_lock = threading.Lock()
 lcd_services_lock = threading.Lock()
+cmd_led_lock = threading.Lock()
+cmd_lcd_lock = threading.Lock()
+# cmd_rfid_lock = threading.Lock()
+cmd_sa_lock = threading.Lock()
+
+

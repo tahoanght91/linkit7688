@@ -24,9 +24,9 @@ def call():
                 result_check_input = check_lcd_service(lcd_services)
                 if result_check_input.key_code > 0 and result_check_input.key_event > 0:
                     result_switch_lcd = switch_lcd_service(result_check_input)
-                    commands_lock.acquire()
-                    commands[LCD_SERVICE] = result_switch_lcd.name
-                    commands_lock.release()
+                    cmd_lcd_lock.acquire()
+                    cmd_lcd[UPDATE_VALUE] = result_switch_lcd.name
+                    cmd_lcd_lock.release()
                     set_last_trace(result_switch_lcd)
                     lcd_services.clear()
             time.sleep(period)
@@ -34,15 +34,15 @@ def call():
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
 
-def get_menu_lv2(index):
+def get_menu_lv2(last_trace):
     name = ''
     try:
-        if index == 0:
-            name = get_menu_lv2_mcc(index)
-        elif index == 1:
-            name = get_menu_lv2_acm(index)
-        elif index == 2:
-            name = get_menu_lv2_ats(index)
+        if last_trace.index == 0:
+            name = get_menu_lv2_mcc(0)
+        elif last_trace.index == 1:
+            name = get_menu_lv2_acm(0)
+        elif last_trace.index == 2:
+            name = get_menu_lv2_ats(0)
     except Exception as ex:
         LOGGER.error('Error at get_menu_lv2 function with message: %s', ex.message)
     return name
@@ -80,9 +80,10 @@ def enter_lcd_service():
     try:
         if last_trace.category == KEYCODE_MENU:
             if last_trace.level == MENU_LEVEL_1:
-                name = get_menu_lv2(last_trace.index)
-                last_trace.name = name
+                name = get_menu_lv2(last_trace)
                 last_trace.level = MENU_LEVEL_2
+                last_trace.index = 0
+                last_trace.name = name
             # elif temp_level == MENU_LEVEL_2:
             #     pass
         else:
@@ -105,8 +106,8 @@ def navigate_lcd_service(key_code):
                 index = last_trace.index - 1
                 if index < MIN_INDEX_MENU:
                     index = MAX_INDEX_MENU
-        # elif temp_category == KEYCODE_MENU and temp_level == MENU_LEVEL_2:
-        #     pass
+        elif last_trace.category == KEYCODE_MENU and last_trace.level ==  MENU_LEVEL_2:
+            pass
             last_trace.index = index
             last_trace.name = menu_level_1[index]
     except Exception as ex:
@@ -143,6 +144,7 @@ def send_shared_attributes(body):
     return result
 
 
+# OK
 def extract_lcd_service(byte_data):
     try:
         key_code = bytes_to_int(byte_data[0:2], byteorder=BYTE_ORDER)
@@ -220,6 +222,7 @@ def check_lcd_service(dct_lcd_service):
     return input_lcd
 
 
+# OK
 def get_menu_lv2_ats(index):
     switcher_menu_ats = {
         1: 'atsVacMaxThreshold',
@@ -242,6 +245,7 @@ def get_menu_lv2_ats(index):
     return switcher_menu_ats.get(index, "Out of range!")
 
 
+# OK
 def get_menu_lv2_acm(index):
     switcher_menu_acm = {
         1: 'acmControlAuto',
@@ -264,6 +268,7 @@ def get_menu_lv2_acm(index):
     return switcher_menu_acm.get(index, "Out of range!")
 
 
+# OK
 def get_menu_lv2_mcc(index):
     switcher_menu_lv2_mcc = {
         0: 'mccPeriodReadDataIO',

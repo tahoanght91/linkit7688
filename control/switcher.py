@@ -87,7 +87,8 @@ def parse_ats_shared_attributes_to_number(key):
         'atsGenAutoResetMax': 13,
         'atsGenDeactivateMode': 14,
         'atsVacThresholdState': 15,
-        'atsVgenThresholdState': 16
+        'atsVgenThresholdState': 16,
+        'atsControlAuto': 17
     }
     return switcher_ats.get(key, "Out of range!")
 

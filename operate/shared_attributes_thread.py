@@ -1,7 +1,7 @@
 import time
 from operator import itemgetter
 
-from config import shared_attributes, CLIENT, commands_lock, commands
+from config import *
 from config.common import *
 from control.switcher import *
 
@@ -27,14 +27,14 @@ def call():
                         current_list_value = get_array_value(current_list)
                         type = current_list[0][TYPE]
                         if len(current_list_value) > 0:
-                            commands_lock.acquire()
+                            cmd_sa_lock.acquire()
                             if type is MCC:
-                                commands[KEY_MCC] = current_list_value
+                                cmd_sa[ID_MCC] = current_list_value
                             elif type is ACM:
-                                commands[KEY_ACM] = current_list_value
+                                cmd_sa[ID_ACM] = current_list_value
                             elif type is ATS:
-                                commands[KEY_ATS] = current_list_value
-                            commands_lock.release()
+                                cmd_sa[ID_ATS] = current_list_value
+                            cmd_sa_lock.release()
                         else:
                             LOGGER.info('Get value of array failed')
                     response_clear_list = clear_all_list(list_dict_mcc, list_dict_acm, list_dict_ats)
