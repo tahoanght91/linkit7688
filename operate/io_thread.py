@@ -53,7 +53,7 @@ def call():
                                 if commands[device] == command:
                                     del commands[device]
                                 commands_lock.release()
-                                LOGGER.debug("Receive ACK message")
+                                LOGGER.debug("Receive ACK rpc message")
                                 break
                             if _read_data(byte_stream):
                                 ser.write(with_check_sum(data_ack, BYTE_ORDER))
@@ -95,7 +95,7 @@ def call():
                                 if cmd_lcd[key_lcd] == content:
                                     del cmd_lcd[key_lcd]
                                 cmd_lcd_lock.release()
-                                LOGGER.debug("Receive ACK message")
+                                LOGGER.debug("Receive ACK lcd message")
                                 break
                             if _read_data(byte_stream):
                                 ser.write(with_check_sum(data_ack, BYTE_ORDER))
@@ -137,7 +137,7 @@ def call():
                                 if cmd_sa[module_id] == value:
                                     del cmd_sa[module_id]
                                 cmd_sa_lock.release()
-                                LOGGER.debug("Receive ACK message")
+                                LOGGER.debug("Receive ACK shared attributes message")
                                 break
                             if _read_data(byte_stream):
                                 ser.write(with_check_sum(data_ack, BYTE_ORDER))
@@ -179,7 +179,7 @@ def call():
                                 if cmd_led[led_id] == led_color:
                                     del cmd_led[led_id]
                                 cmd_led_lock.release()
-                                LOGGER.debug("Receive ACK message")
+                                LOGGER.debug("Receive ACK led message")
                                 break
                             if _read_data(byte_stream):
                                 ser.write(with_check_sum(data_ack, BYTE_ORDER))
