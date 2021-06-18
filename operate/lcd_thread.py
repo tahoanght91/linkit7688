@@ -63,8 +63,8 @@ def switch_lcd_service(input_lcd):
                 last_trace.value = -1
             elif key_code == KEYCODE_UP or key_code == KEYCODE_DOWN:
                 last_trace = navigate_lcd_service(key_code)
-            elif key_code == KEYCODE_ENTER:
-                last_trace = enter_lcd_service()
+            # elif key_code == KEYCODE_ENTER:
+            #     last_trace = enter_lcd_service()
 
             last_trace.key_code = input_lcd.key_code
             last_trace.key_event = input_lcd.key_event
@@ -106,10 +106,10 @@ def navigate_lcd_service(key_code):
                 index = last_trace.index - 1
                 if index < MIN_INDEX_MENU:
                     index = MAX_INDEX_MENU
-        elif last_trace.category == KEYCODE_MENU and last_trace.level ==  MENU_LEVEL_2:
-            pass
-            last_trace.index = index
-            last_trace.name = menu_level_1[index]
+        # elif last_trace.category == KEYCODE_MENU and last_trace.level ==  MENU_LEVEL_2:
+        #     pass
+        last_trace.index = index
+        last_trace.name = menu_level_1[index]
     except Exception as ex:
         LOGGER.error('Error at confirm_lcd_service function with message: %s', ex.message)
     return last_trace
