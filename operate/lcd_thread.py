@@ -9,7 +9,7 @@ from devices.utils import read_lcd_services
 from model.lcd import Lcd
 from utility import bytes_to_int
 
-URL_SEND_SA = ''
+URL_SEND_SA = 'https://backend.smartsite.dft.vn/api/services/app/DMTram/ChangeValueTemplate'
 menu_level_1 = [MCC, ACM, ATS]
 LIST_KEY_EVENT = [EVENT_NONE, EVENT_DOWN, EVENT_UP, EVENT_HOLD, EVENT_POWER]
 LIST_KEY_CODE = [KEYCODE_MENU, KEYCODE_UP, KEYCODE_DOWN, KEYCODE_ENTER]
@@ -116,22 +116,19 @@ def navigate_lcd_service(key_code):
 
 
 def write_body_send_shared_attributes(key, value):
-    LOGGER.info('Enter write_body_send_shared_attributes function')
     body = {}
     try:
         now = round(time.time() * 1000)
-        body = {"key": key, "value": value, "createdAt": now}
+        body = {"tramEntityId": device_config['device_id'], "value": value, "keyName": key, "changeAt": now}
         LOGGER.info('Content of body send shared attributes to Smartsite: %s', body)
     except Exception as ex:
         LOGGER.info('Error at write_body_send_shared_attributes function with message: %s', ex.message)
-    LOGGER.info('Exit write_body_send_shared_attributes function')
     return body
 
 
 def send_shared_attributes(body):
     result = False
     try:
-        LOGGER.info('Enter send_shared_attributes function')
         response = requests.post(url=URL_SEND_SA, json=body)
         if response.status_code == 200:
             LOGGER.info('Send shared attributes to Smartsite successful!')
@@ -140,7 +137,6 @@ def send_shared_attributes(body):
             LOGGER.info('Fail while send shared attributes to Smartsite!')
     except Exception as ex:
         LOGGER.info('Error at write_log function with message: %s', ex.message)
-    LOGGER.info('Exit the function send_log')
     return result
 
 
