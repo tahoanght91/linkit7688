@@ -62,41 +62,43 @@ def call():
                             LOGGER.info('Time out')
                             break
                         LOGGER.debug('Try sending again')
-
-        if cmd_lcd:
-            cmd_lcd_snap = []
-            cmd_lcd_lock.acquire()
-            for item in cmd_lcd.items():
-                cmd_lcd_snap.append(item)
-            cmd_lcd_lock.release()
-            for key_lcd, content in cmd_lcd_snap:
-                cmd_lcd_formatted = {'key_lcd': key_lcd, 'content': content}
-                write_stream = with_check_sum(control.process_cmd_lcd(cmd_lcd_formatted), BYTE_ORDER)
-                tries = 0
-                LOGGER.info('Send cmd lcd to IO, key_lcd %s, content %s', key_lcd, content)
-                while True:
-                    if flip == 0:
-                        flip = READ_PER_WRITE
-                        ser.write(write_stream)
-                    else:
-                        flip -= 1
-                    byte_stream = blocking_read(ser, message_break)
-                    if byte_stream:
-                        if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
-                            cmd_lcd_lock.acquire()
-                            if cmd_lcd[key_lcd] == content:
-                                del cmd_lcd[key_lcd]
-                            cmd_lcd_lock.release()
-                            LOGGER.debug("Receive ACK message")
-                            break
-                        if _read_data(byte_stream):
-                            ser.write(with_check_sum(data_ack, BYTE_ORDER))
-                    if flip == 0:
-                        tries += 1
-                        if tries > 3:
-                            LOGGER.info('Time out')
-                            break
-                        LOGGER.debug('Try sending again')
+        try:
+            if cmd_lcd:
+                cmd_lcd_snap = []
+                cmd_lcd_lock.acquire()
+                for item in cmd_lcd.items():
+                    cmd_lcd_snap.append(item)
+                cmd_lcd_lock.release()
+                for key_lcd, content in cmd_lcd_snap:
+                    cmd_lcd_formatted = {'key_lcd': key_lcd, 'content': content}
+                    write_stream = with_check_sum(control.process_cmd_lcd(cmd_lcd_formatted), BYTE_ORDER)
+                    tries = 0
+                    LOGGER.info('Send cmd lcd to IO, key_lcd %s, content %s', key_lcd, content)
+                    while True:
+                        if flip == 0:
+                            flip = READ_PER_WRITE
+                            ser.write(write_stream)
+                        else:
+                            flip -= 1
+                        byte_stream = blocking_read(ser, message_break)
+                        if byte_stream:
+                            if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
+                                cmd_lcd_lock.acquire()
+                                if cmd_lcd[key_lcd] == content:
+                                    del cmd_lcd[key_lcd]
+                                cmd_lcd_lock.release()
+                                LOGGER.debug("Receive ACK message")
+                                break
+                            if _read_data(byte_stream):
+                                ser.write(with_check_sum(data_ack, BYTE_ORDER))
+                        if flip == 0:
+                            tries += 1
+                            if tries > 3:
+                                LOGGER.info('Time out')
+                                break
+                            LOGGER.debug('Try sending again')
+        except Exception as ex:
+            LOGGER.error('Error at check send lcd cmd with message: %s', ex.message)
 
         if cmd_sa:
             cmd_sa_snap = []
