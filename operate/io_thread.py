@@ -29,44 +29,6 @@ def call():
 
         # Write command
         try:
-            if commands:
-                commands_snap = []
-                commands_lock.acquire()
-                for item in commands.items():
-                    commands_snap.append(item)
-                commands_lock.release()
-                for device, command in commands_snap:
-                    command_formatted = {'device': device, 'command': command}
-                    write_stream = with_check_sum(control.process_command(command_formatted), BYTE_ORDER)
-                    tries = 0
-                    LOGGER.info('Send command to IO, device %s, command %s', device, command)
-                    while True:
-                        if flip == 0:
-                            flip = READ_PER_WRITE
-                            ser.write(write_stream)
-                        else:
-                            flip -= 1
-                        byte_stream = blocking_read(ser, message_break)
-                        if byte_stream:
-                            if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
-                                commands_lock.acquire()
-                                if commands[device] == command:
-                                    del commands[device]
-                                commands_lock.release()
-                                LOGGER.debug("Receive ACK message")
-                                break
-                            if _read_data(byte_stream):
-                                ser.write(with_check_sum(data_ack, BYTE_ORDER))
-                        if flip == 0:
-                            tries += 1
-                            if tries > 3:
-                                LOGGER.info('Time out')
-                                break
-                            LOGGER.debug('Try sending again')
-        except Exception as ex:
-            LOGGER.error('Error send rpc command to STM32 with message: %s', ex.message)
-
-        try:
             if cmd_lcd:
                 cmd_lcd_snap = []
                 cmd_lcd_lock.acquire()
@@ -180,6 +142,43 @@ def call():
         except Exception as ex:
             LOGGER.error('Error send led command to STM32 with message: %s', ex.message)
 
+        try:
+            if commands:
+                commands_snap = []
+                commands_lock.acquire()
+                for item in commands.items():
+                    commands_snap.append(item)
+                commands_lock.release()
+                for device, command in commands_snap:
+                    command_formatted = {'device': device, 'command': command}
+                    write_stream = with_check_sum(control.process_command(command_formatted), BYTE_ORDER)
+                    tries = 0
+                    LOGGER.info('Send command to IO, device %s, command %s', device, command)
+                    while True:
+                        if flip == 0:
+                            flip = READ_PER_WRITE
+                            ser.write(write_stream)
+                        else:
+                            flip -= 1
+                        byte_stream = blocking_read(ser, message_break)
+                        if byte_stream:
+                            if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
+                                commands_lock.acquire()
+                                if commands[device] == command:
+                                    del commands[device]
+                                commands_lock.release()
+                                LOGGER.debug("Receive ACK message")
+                                break
+                            if _read_data(byte_stream):
+                                ser.write(with_check_sum(data_ack, BYTE_ORDER))
+                        if flip == 0:
+                            tries += 1
+                            if tries > 3:
+                                LOGGER.info('Time out')
+                                break
+                            LOGGER.debug('Try sending again')
+        except Exception as ex:
+            LOGGER.error('Error send rpc command to STM32 with message: %s', ex.message)
 
 
 def _read_data(byte_stream):
