@@ -8,7 +8,7 @@ dct_last_trace_led_alarm = {}
 
 
 def call():
-    period = 20
+    period = 25
     while True:
         dct_led_value = get_led_value()
         if len(dct_led_value) > 0:

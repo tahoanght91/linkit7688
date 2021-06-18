@@ -63,41 +63,6 @@ def call():
                             break
                         LOGGER.debug('Try sending again')
 
-        if cmd_led:
-            cmd_led_snap = []
-            cmd_led_lock.acquire()
-            for item in cmd_led.items():
-                cmd_led_snap.append(item)
-            cmd_led_lock.release()
-            for led_id, led_color in cmd_led_snap:
-                cmd_led_formatted = {'led_id': led_id, 'led_color': led_color}
-                write_stream = with_check_sum(control.process_cmd_led(cmd_led_formatted), BYTE_ORDER)
-                tries = 0
-                LOGGER.info('Send cmd led to IO, led_id %d, led_color %d', led_id, led_color)
-                while True:
-                    if flip == 0:
-                        flip = READ_PER_WRITE
-                        ser.write(write_stream)
-                    else:
-                        flip -= 1
-                    byte_stream = blocking_read(ser, message_break)
-                    if byte_stream:
-                        if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
-                            cmd_led_lock.acquire()
-                            if cmd_led[led_id] == led_color:
-                                del cmd_led[led_id]
-                            cmd_led_lock.release()
-                            LOGGER.debug("Receive ACK message")
-                            break
-                        if _read_data(byte_stream):
-                            ser.write(with_check_sum(data_ack, BYTE_ORDER))
-                    if flip == 0:
-                        tries += 1
-                        if tries > 3:
-                            LOGGER.info('Time out')
-                            break
-                        LOGGER.debug('Try sending again')
-
         if cmd_lcd:
             cmd_lcd_snap = []
             cmd_lcd_lock.acquire()
@@ -157,6 +122,41 @@ def call():
                             if cmd_sa[module_id] == value:
                                 del cmd_sa[module_id]
                             cmd_sa_lock.release()
+                            LOGGER.debug("Receive ACK message")
+                            break
+                        if _read_data(byte_stream):
+                            ser.write(with_check_sum(data_ack, BYTE_ORDER))
+                    if flip == 0:
+                        tries += 1
+                        if tries > 3:
+                            LOGGER.info('Time out')
+                            break
+                        LOGGER.debug('Try sending again')
+
+        if cmd_led:
+            cmd_led_snap = []
+            cmd_led_lock.acquire()
+            for item in cmd_led.items():
+                cmd_led_snap.append(item)
+            cmd_led_lock.release()
+            for led_id, led_color in cmd_led_snap:
+                cmd_led_formatted = {'led_id': led_id, 'led_color': led_color}
+                write_stream = with_check_sum(control.process_cmd_led(cmd_led_formatted), BYTE_ORDER)
+                tries = 0
+                LOGGER.info('Send cmd led to IO, led_id %d, led_color %d', led_id, led_color)
+                while True:
+                    if flip == 0:
+                        flip = READ_PER_WRITE
+                        ser.write(write_stream)
+                    else:
+                        flip -= 1
+                    byte_stream = blocking_read(ser, message_break)
+                    if byte_stream:
+                        if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
+                            cmd_led_lock.acquire()
+                            if cmd_led[led_id] == led_color:
+                                del cmd_led[led_id]
+                            cmd_led_lock.release()
                             LOGGER.debug("Receive ACK message")
                             break
                         if _read_data(byte_stream):
