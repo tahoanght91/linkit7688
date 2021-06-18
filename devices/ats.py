@@ -1,13 +1,10 @@
 from utility import bytes_to_int
 from .utils import _read_attribute, _read_telemetry
-from config import BYTE_ORDER, LOGGER
+from config import BYTE_ORDER
 
 
 def extract(byte_data):
-    LOGGER.info('Enter function extract of module ATS')
-
     # client attributes
-    LOGGER.info('Start extract client attributes')
     atsVacP1State = bytes_to_int(byte_data[0])
     atsVacP2State = bytes_to_int(byte_data[1])
     atsVacP3State = bytes_to_int(byte_data[2])
@@ -18,33 +15,30 @@ def extract(byte_data):
     atsContactorGenState = bytes_to_int(byte_data[7])
     atsAcState = bytes_to_int(byte_data[8])
     atsGenState = bytes_to_int(byte_data[9])
-    atsState = bytes_to_int(byte_data[10:12], byteorder=BYTE_ORDER)
-    atsErrorState = bytes_to_int(byte_data[12:14], byteorder=BYTE_ORDER)
-    atsMode = bytes_to_int(byte_data[14:16], byteorder=BYTE_ORDER)
-    atsConnect = bytes_to_int(byte_data[52])
-    LOGGER.info('End extract client attributes')
+    atsState = bytes_to_int(byte_data[10])
+    atsErrorState = bytes_to_int(byte_data[11])
+    atsMode = bytes_to_int(byte_data[12], byteorder=BYTE_ORDER)
+    atsConnect = bytes_to_int(byte_data[13])
 
     #telemetry
-    LOGGER.info('Start extract telemetry')
-    atsVacFreq = bytes_to_int(byte_data[16:18], byteorder=BYTE_ORDER)
-    atsVgenFreq = bytes_to_int(byte_data[18:20], byteorder=BYTE_ORDER)
-    atsVloadFreq = bytes_to_int(byte_data[20:22], byteorder=BYTE_ORDER)
-    atsVacP1 = bytes_to_int(byte_data[22:24], byteorder=BYTE_ORDER)
-    atsVacP2 = bytes_to_int(byte_data[24:26], byteorder=BYTE_ORDER)
-    atsVacP3 = bytes_to_int(byte_data[26:28], byteorder=BYTE_ORDER)
-    atsVgenP1 = bytes_to_int(byte_data[28:30], byteorder=BYTE_ORDER)
-    atsVgenP2 = bytes_to_int(byte_data[30:32], byteorder=BYTE_ORDER)
-    atsVgenP3 = bytes_to_int(byte_data[32:34], byteorder=BYTE_ORDER)
-    atsVloadP1 = bytes_to_int(byte_data[34:36], byteorder=BYTE_ORDER)
-    atsVloadP2 = bytes_to_int(byte_data[36:38], byteorder=BYTE_ORDER)
-    atsVloadP3 = bytes_to_int(byte_data[38:40], byteorder=BYTE_ORDER)
-    atsIloadP1 = bytes_to_int(byte_data[40:42], byteorder=BYTE_ORDER)
-    atsIloadP2 = bytes_to_int(byte_data[42:44], byteorder=BYTE_ORDER)
-    atsIloadP3 = bytes_to_int(byte_data[44:46], byteorder=BYTE_ORDER)
-    atsPac1 = bytes_to_int(byte_data[46:48], byteorder=BYTE_ORDER)
-    atsPac2 = bytes_to_int(byte_data[48:50], byteorder=BYTE_ORDER)
-    atsPac3 = bytes_to_int(byte_data[50:52], byteorder=BYTE_ORDER)
-    LOGGER.info('End extract telemetry')
+    atsVacFreq = bytes_to_int(byte_data[14:16], byteorder=BYTE_ORDER)
+    atsVgenFreq = bytes_to_int(byte_data[16:18], byteorder=BYTE_ORDER)
+    atsVloadFreq = bytes_to_int(byte_data[18:20], byteorder=BYTE_ORDER)
+    atsVacP1 = bytes_to_int(byte_data[20:22], byteorder=BYTE_ORDER)
+    atsVacP2 = bytes_to_int(byte_data[22:24], byteorder=BYTE_ORDER)
+    atsVacP3 = bytes_to_int(byte_data[24:26], byteorder=BYTE_ORDER)
+    atsVgenP1 = bytes_to_int(byte_data[26:28], byteorder=BYTE_ORDER)
+    atsVgenP2 = bytes_to_int(byte_data[28:30], byteorder=BYTE_ORDER)
+    atsVgenP3 = bytes_to_int(byte_data[30:32], byteorder=BYTE_ORDER)
+    atsVloadP1 = bytes_to_int(byte_data[32:34], byteorder=BYTE_ORDER)
+    atsVloadP2 = bytes_to_int(byte_data[34:36], byteorder=BYTE_ORDER)
+    atsVloadP3 = bytes_to_int(byte_data[36:38], byteorder=BYTE_ORDER)
+    atsIloadP1 = bytes_to_int(byte_data[38:40], byteorder=BYTE_ORDER)
+    atsIloadP2 = bytes_to_int(byte_data[40:42], byteorder=BYTE_ORDER)
+    atsIloadP3 = bytes_to_int(byte_data[42:44], byteorder=BYTE_ORDER)
+    atsPac1 = bytes_to_int(byte_data[44:46], byteorder=BYTE_ORDER)
+    atsPac2 = bytes_to_int(byte_data[46:48], byteorder=BYTE_ORDER)
+    atsPac3 = bytes_to_int(byte_data[48:50], byteorder=BYTE_ORDER)
 
     # telemetry
     _read_telemetry('atsVacFreq', atsVacFreq)

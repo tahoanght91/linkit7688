@@ -4,7 +4,6 @@ from config.common_command import *
 
 # Command MCC
 def parse_mcc_command_to_number(command):
-    LOGGER.info('Enter parse_mcc_command_to_number function')
     switcher_mcc_command = {
         COMMAND_MCC_CLOSE_DOOR: 0,
         COMMAND_MCC_OPEN_DOOR: 1,
@@ -39,14 +38,11 @@ def parse_mcc_command_to_number(command):
         COMMAND_MCC_OFF_DOUT_REVERSED_13: 0,
         COMMAND_MCC_ON_DOUT_REVERSED_13: 1
     }
-    LOGGER.info('Command is: %s, after parse is: %d', command, switcher_mcc_command.get(command))
-    LOGGER.info('Exit parse_mcc_command_to_number function')
     return switcher_mcc_command.get(command, "Out of range!")
 
 
 # Command ACM
 def parse_acm_command_to_number(command):
-    LOGGER.info('Enter parse_acm_command_to_number function')
     switcher_acm_command = {
         COMMAND_ACM_AUTO_OFF: 0,
         COMMAND_ACM_AUTO_ON: 1,
@@ -59,28 +55,22 @@ def parse_acm_command_to_number(command):
         COMMAND_ACM_SELF_PROPELLED_OFF: 0,
         COMMAND_ACM_SELF_PROPELLED_ON: 1
     }
-    LOGGER.info('Command is: %s, after parse is: %d', command, switcher_acm_command.get(command))
-    LOGGER.info('Exit parse_acm_command_to_number function')
     return switcher_acm_command.get(command, "Out of range!")
 
 
 # Command ATS
 def parse_ats_command_to_number(command):
-    LOGGER.info('Enter parse_ats_command_to_number function')
     switcher_ats_command = {
         COMMAND_ATS_MAIN_ON: 0,
         COMMAND_ATS_GEN_ON: 1,
         COMMAND_ATS_AUTO_ON: 2,
         COMMAND_ATS_OFF: 3
     }
-    LOGGER.info('Command is: %s, after parse is: %d', command, switcher_ats_command.get(command, 'Out of range!'))
-    LOGGER.info('Exit parse_ats_command_to_number function')
     return switcher_ats_command.get(command, "Out of range!")
 
 
 # shared attributes ATS
 def parse_ats_shared_attributes_to_number(key):
-    LOGGER.info('Enter parse_ats_shared_attributes_to_number function')
     switcher_ats = {
         'atsVacMaxThreshold': 1,
         'atsVacMinThreshold': 2,
@@ -97,30 +87,25 @@ def parse_ats_shared_attributes_to_number(key):
         'atsGenAutoResetMax': 13,
         'atsGenDeactivateMode': 14,
         'atsVacThresholdState': 15,
-        'atsVgenThresholdState': 16
+        'atsVgenThresholdState': 16,
+        'atsControlAuto': 17
     }
-    LOGGER.info('Key is: %s, after parse is: %d', key, switcher_ats.get(key, 'Out of range!'))
-    LOGGER.info('Exit parse_ats_shared_attributes_to_number function')
     return switcher_ats.get(key, "Out of range!")
 
 
 # shared attributes MCC
 def parse_mcc_shared_attributes_to_number(key):
-    LOGGER.info('Enter parse_mcc_shared_attributes_to_number function')
     switcher_mcc = {
         'mccPeriodReadDataIO': 1,
         'mccPeriodSendTelemetry': 2,
         'mccPeriodUpdate': 3,
         'mccDcMinThreshold': 4
     }
-    LOGGER.info('Key is: %s, after parse is: %d', key, switcher_mcc.get(key, 'Out of range!'))
-    LOGGER.info('Exit parse_mcc_shared_attributes_to_number function')
     return switcher_mcc.get(key, "Out of range!")
 
 
 # shared attributes ACM
 def parse_acm_shared_attributes_to_number(key):
-    LOGGER.info('Enter parse_acm_shared_attributes_to_number function')
     switcher_acm = {
         'acmControlAuto': 1,
         'acmAlternativeTime': 2,
@@ -139,7 +124,5 @@ def parse_acm_shared_attributes_to_number(key):
         'acmT3Temp': 15,
         'acmT4Temp': 16
     }
-    LOGGER.info('Key is: %s, after parse is: %d', key, switcher_acm.get(key, 'Out of range!'))
-    LOGGER.info('Exit parse_acm_shared_attributes_to_number function')
     return switcher_acm.get(key, "Out of range!")
 

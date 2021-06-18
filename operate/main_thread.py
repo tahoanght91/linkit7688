@@ -96,9 +96,9 @@ def call():
         CLIENT.gw_subscribe_to_all_attributes(callback=subscription_thread._attribute_change_callback)
         CLIENT.gw_set_server_side_rpc_request_handler(handler=subscription_thread._gw_rpc_callback)
 
-        thread_list = [io_thread, telemetry_thread, update_attributes_thread,
-                       shared_attributes_thread, led_thread,
-                       rfid_thread, ui_thread]
+        thread_list = [io_thread, update_attributes_thread, telemetry_thread,
+                       monitor_thread, led_thread, lcd_thread,
+                       ui_thread, shared_attributes_thread, rfid_thread]
 
         for i, thread in enumerate(thread_list):
             thread.name = thread.__name__
@@ -123,6 +123,7 @@ def call():
                     thread_list[i] = _init_thread(thread)
 
             try:
+                # TODO: Check copy file
                 for key in default_data.data_dict:
                     for sub_key in default_data.data_dict[key]:
                         default_data.data_dict[key][sub_key] = default_data.__dict__[sub_key]

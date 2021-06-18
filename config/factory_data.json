@@ -1,7 +1,7 @@
 {
   "shared": {
     "mccPeriodReadDataIO": 0.05,
-    "mccPeriodSendTelemetry": 50,
+    "mccPeriodSendTelemetry": 30,
     "mccPeriodUpdate": 5,
     "mccListRfid": [],
     "mccListStaff": [],
@@ -10,7 +10,7 @@
     "acmControlAuto": 1,
     "acmAlternativeTime": 180,
     "acmRunTime": 240,
-    "acmRestTime": 320,
+    "acmRestTime": 70,
     "acmGenAllow": 1,
     "acmVacThreshold": 180,
     "acmMinTemp": 16,
@@ -26,7 +26,7 @@
     "atsVacMaxThreshold": 180,
     "atsVacMinThreshold": 100,
     "atsVgenMaxThreshold": 120,
-    "atsVgenMinThreshold": 600,
+    "atsVgenMinThreshold": 80,
     "atsVacStabilizeTimeout": 60,
     "atsVgenIdleCoolingTimeout": 30,
     "atsVgenIdleWarmUpTimeout": 60,

@@ -103,8 +103,7 @@ def check_status():
         rtn += open_door_with_auto_close()
 
     # Close door after timeout time (started by Door button or RFID card)
-    if not door_to_open and mccDoorState == 1 \
-            and door_opening_elapsed > mccDoorOpenTime:
+    if not door_to_open and mccDoorState == 1 and door_opening_elapsed > mccDoorOpenTime:
         rtn += _send_command(COMMAND_MCC_CLOSE_DOOR) + ' | '
         door_opened_time = 0    # Reset door timer
 

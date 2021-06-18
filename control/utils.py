@@ -1,3 +1,4 @@
+import string
 import struct
 
 from config import *
@@ -13,7 +14,7 @@ def _check_command(device, command):
         return True
     elif device == DEVICE_ACM_1 and (command == GET_STATE or command == GET_VALUE):
         return True
-    elif device == DEVICE_ATS and (command == GET_STATE or command == GET_VALUE):
+    elif device == DEVICE_ATS_1 and (command == GET_STATE or command == GET_VALUE):
         return True
     else:
         return False
@@ -103,40 +104,33 @@ def get_value_device(device_name, method):
 
 
 def _process_set_auto(device, command):
-    LOGGER.info('Enter _process_set_auto function')
     try:
         if not (type(command) == str and device in [DEVICE_ATS_1, DEVICE_ACM_1]):
             return False
         value = convert_str_command_to_int(command)
-        if value >= 0:
-            if device == DEVICE_ATS_1:
-                shared_attributes['atsControlAuto'] = value
-            elif device == DEVICE_ACM_1:
+        if 0 <= value <= 1:
+            if device == DEVICE_ACM_1:
                 shared_attributes['acmControlAuto'] = value
+            elif device == DEVICE_ATS_1:
+                shared_attributes['atsControlAuto'] = value
         else:
             LOGGER.info('Value: %d, value is not expected', value)
     except Exception as ex:
         LOGGER.error('Error at _process_set_auto function with message: %s', ex.message)
-    LOGGER.info('Exit _process_set_auto function')
     return True
 
 
 def _process_command(device, command):
-    LOGGER.info('Enter _process_command function')
     result = ''
-    if device == DEVICE_MCC_1 or device == DEVICE_ATS_1 or device == DEVICE_ACM_1:
-        result = compose_command_rpc(device, command)
-    elif device == KEY_MCC or device == KEY_ACM or device == KEY_ATS:
-        result = compose_command_shared_attributes(device, command)
-    elif device == LCD_SERVICE:
-        row = 2
-        length = 19
-        lcd_command = 0
-        result = struct.pack(FORMAT_LCD, 0xA0, length, 0x31, lcd_command, row, command)
-    elif device in LIST_LED:
-        result = struct.pack(FORMAT_LED, 0xA0, 0x03, 0x33, device, command)
-    LOGGER.debug('Process command: device: %s, command: %s', device, command)
-    LOGGER.info('Exit _process_command function')
+    try:
+        if device == DEVICE_MCC_1 or device == DEVICE_ATS_1 or device == DEVICE_ACM_1:
+            result = compose_command_rpc(device, command)
+        else:
+            result = compose_command_lcd(device, command)
+        result_encode = ':'.join(x.encode('hex') for x in result)
+        LOGGER.debug('Process command: device: %s, command: %s, after decode is: %s', device, command, result_encode)
+    except Exception as ex:
+        LOGGER.error('Error at _process_command function with message: %s', ex.message)
     return result
 
 
@@ -146,10 +140,6 @@ def convert_str_command_to_int(command):
         _command = 1
     elif command is COMMAND_ACM_AUTO_OFF:
         _command = 0
-    elif command is COMMAND_ATS_SELF_PROPELLED_OFF:
-        _command = 0
-    elif command is COMMAND_ATS_SELF_PROPELLED_ON:
-        _command = 1
     return _command
 
 
@@ -222,48 +212,73 @@ def compose_command_rpc(device, command):
     return result
 
 
-def compose_command_shared_attributes(device, command):
-    LOGGER.info('Enter compose_command_shared_attributes function')
+def compose_command_shared_attributes(module_id, value):
     result = -1
+    bytes_length = -1
+    prefix = ''
+    length = -1
+    op_code_sa = 0x41
     try:
-        length_command = get_length_command(command)
-        if device == KEY_MCC:
-            device = ID_MCC
+        length_value = len(value)
+        length_prefix = length_value + 5
+        prefix = ''.join([char * length_prefix for char in CHAR_B])
+        if module_id == ID_MCC:
             bytes_length = BYTES_SA_MCC
-            prefix = format_sa(length_command)
-            length = get_length(bytes_length)
-            result = struct.pack(prefix, 0xA0, length, 0x41, device, bytes_length, *command)
-        elif device == KEY_ACM:
-            device = ID_ACM
+            length = length_value + bytes_length + 2
+        elif module_id == ID_ACM:
             bytes_length = BYTES_SA_ACM
-            prefix = format_sa(length_command)
-            length = get_length(bytes_length)
-            result = struct.pack(prefix, 0xA0, length, 0x41, device, bytes_length, *command)
-        elif device == KEY_ATS:
-            device = ID_ATS
+            length = length_prefix + bytes_length + 2
+        elif module_id == ID_ATS:
             bytes_length = BYTES_SA_ATS
-            prefix = format_sa(length_command)
-            length = get_length(bytes_length)
-            result = struct.pack(prefix, 0xA0, length, 0x41, device, bytes_length, *command)
+            length = length_prefix + bytes_length + 2
+        if bytes_length > 0 and prefix is not '' and length > 0:
+            result = struct.pack(prefix, 0xA0, length, op_code_sa, module_id, bytes_length, *value)
     except Exception as ex:
         LOGGER.error('Error at compose_command_shared_attributes function with message: %s', ex.message)
-    if isinstance(result, str):
-        byte_stream_decode = ':'.join(x.encode('hex') for x in result)
-        LOGGER.info('Device: %s, command send to STM32: %s', device, byte_stream_decode)
-    else:
-        LOGGER.info('Command error!')
-    LOGGER.info('Exit compose_command_shared_attributes function')
     return result
 
 
-def format_sa(length_command):
-    return ''.join([char * length_command for char in CHAR_B])
+def compose_command_lcd(key_lcd, content):
+    arr_char = [char for char in content]
+    prefix = ''.join([char * len(arr_char) for char in CHAR_S])
+    length = len(arr_char) + 3
+    op_code_lcd = 0X31
+    row = 0X02
+    result = struct.pack(FORMAT_LCD + prefix, 0xA0, length, op_code_lcd, key_lcd, row, *arr_char)
+    return result
 
 
-def get_length_command(command):
-    return len(command) + 5
+def _process_cmd_led(length_led, arr_value):
+    op_code_led = 0x33
+    length_value = len(arr_value)
+    length_prefix = length_value + 4
+    prefix = ''.join([char * length_prefix for char in CHAR_B])
+    try:
+        result = struct.pack(prefix, 0xA0, length_led, op_code_led, length_led, *arr_value)
+        result_encode = ':'.join(x.encode('hex') for x in result)
+        LOGGER.debug('Process led command: led_id: %s, led_color: %s, after decode is: %s', length_led, arr_value, result_encode)
+        return result
+    except Exception as ex:
+        LOGGER.error('Error at _process_cmd_led function with message: %s', ex.message)
 
 
-def get_length(bytes_length):
-    return bytes_length + 3
+def _process_cmd_lcd(key_lcd, content):
+    try:
+        result = compose_command_lcd(key_lcd, content)
+        result_encode = ':'.join(x.encode('hex') for x in result)
+        LOGGER.debug('Process led command: key_lcd: %s, content: %s, after decode is: %s', key_lcd, content, result_encode)
+        return result
+    except Exception as ex:
+        LOGGER.error('Error at _process_cmd_lcd function with message: %s', ex.message)
 
+
+def _process_cmd_sa(module_id, value):
+    result = ''
+    try:
+        if module_id == ID_MCC or module_id == ID_ACM or module_id == ID_ATS:
+            result = compose_command_shared_attributes(module_id, value)
+            result_encode = ':'.join(x.encode('hex') for x in result)
+            LOGGER.debug('Process sa command: key_name: %s, value: %s, after decode is: %s', module_id, value, result_encode)
+        return result
+    except Exception as ex:
+        LOGGER.error('Error at _process_cmd_lcd function with message: %s', ex.message)
