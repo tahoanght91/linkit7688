@@ -85,7 +85,7 @@ def call():
                         if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
                             cmd_led_lock.acquire()
                             if cmd_led[led_id] == led_color:
-                                del commands[led_id]
+                                del cmd_led[led_id]
                             cmd_led_lock.release()
                             LOGGER.debug("Receive ACK message")
                             break
@@ -119,7 +119,7 @@ def call():
                     if byte_stream:
                         if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
                             cmd_lcd_lock.acquire()
-                            if cmd_led[key_lcd] == content:
+                            if cmd_lcd[key_lcd] == content:
                                 del cmd_lcd[key_lcd]
                             cmd_lcd_lock.release()
                             LOGGER.debug("Receive ACK message")
