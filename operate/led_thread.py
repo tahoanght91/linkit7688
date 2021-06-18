@@ -12,8 +12,7 @@ def call():
     while True:
         dct_led_value = get_led_value()
         if len(dct_led_value) > 0:
-            for key, value in dct_led_value.items():
-                compose_led_command(key, value)
+            compose_led_command(dct_led_value.values())
         time.sleep(period)
 
 
@@ -38,12 +37,14 @@ def get_led_value():
     return dct_led
 
 
-def compose_led_command(key, value):
+def compose_led_command(values):
+    arr_led_value = []
     try:
-        led_id = key
-        led_color = validate_value(value)
+        for i in values:
+            checked_value = validate_value(i)
+            arr_led_value.append(checked_value)
         cmd_led_lock.acquire()
-        cmd_led[led_id] = led_color
+        cmd_led[LED_LENGTH] = arr_led_value
         cmd_led_lock.release()
     except Exception as ex:
         LOGGER.error('Error at compose_led_command with message: %s', ex.message)
@@ -52,7 +53,7 @@ def compose_led_command(key, value):
 def validate_value(value):
     result = RED
     try:
-        if value == 0:
+        if value == 1:
             result = GREEN
         return result
     except Exception as ex:

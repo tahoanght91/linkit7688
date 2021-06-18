@@ -53,7 +53,7 @@ def call():
                                 if commands[device] == command:
                                     del commands[device]
                                 commands_lock.release()
-                                LOGGER.debug("Receive ACK rpc message")
+                                LOGGER.debug("Receive ACK rpc message with device: %s", device)
                                 break
                             if _read_data(byte_stream):
                                 ser.write(with_check_sum(data_ack, BYTE_ORDER))
@@ -95,7 +95,7 @@ def call():
                                 if cmd_lcd[key_lcd] == content:
                                     del cmd_lcd[key_lcd]
                                 cmd_lcd_lock.release()
-                                LOGGER.debug("Receive ACK lcd message")
+                                LOGGER.debug("Receive ACK lcd with message with content: %d", content)
                                 break
                             if _read_data(byte_stream):
                                 ser.write(with_check_sum(data_ack, BYTE_ORDER))
@@ -137,7 +137,7 @@ def call():
                                 if cmd_sa[module_id] == value:
                                     del cmd_sa[module_id]
                                 cmd_sa_lock.release()
-                                LOGGER.debug("Receive ACK shared attributes message")
+                                LOGGER.debug("Receive ACK shared attributes message with module_id: %d", module_id)
                                 break
                             if _read_data(byte_stream):
                                 ser.write(with_check_sum(data_ack, BYTE_ORDER))
@@ -161,11 +161,11 @@ def call():
                 for item in cmd_led.items():
                     cmd_led_snap.append(item)
                 cmd_led_lock.release()
-                for led_id, led_color in cmd_led_snap:
-                    cmd_led_formatted = {'led_id': led_id, 'led_color': led_color}
+                for length_led, arr_value in cmd_led_snap:
+                    cmd_led_formatted = {'length_led': length_led, 'arr_value': arr_value}
                     write_stream = with_check_sum(control.process_cmd_led(cmd_led_formatted), BYTE_ORDER)
                     tries = 0
-                    LOGGER.info('Send cmd led to IO, led_id %d, led_color %d', led_id, led_color)
+                    LOGGER.info('Send cmd led to IO, length_led: %d, arr_value: %s', length_led, arr_value)
                     while True:
                         if flip == 0:
                             flip = READ_PER_WRITE
@@ -176,10 +176,10 @@ def call():
                         if byte_stream:
                             if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
                                 cmd_led_lock.acquire()
-                                if cmd_led[led_id] == led_color:
-                                    del cmd_led[led_id]
+                                if cmd_led[length_led] == arr_value:
+                                    del cmd_led[length_led]
                                 cmd_led_lock.release()
-                                LOGGER.debug("Receive ACK led message")
+                                LOGGER.debug("Receive ACK led message with length_led: %d", length_led)
                                 break
                             if _read_data(byte_stream):
                                 ser.write(with_check_sum(data_ack, BYTE_ORDER))
@@ -187,8 +187,8 @@ def call():
                             tries += 1
                             if tries > MAX_TRIES:
                                 cmd_led_lock.acquire()
-                                if cmd_led[led_id] == led_color:
-                                    del cmd_led[led_id]
+                                if cmd_led[length_led] == arr_value:
+                                    del cmd_led[length_led]
                                 cmd_led_lock.release()
                                 LOGGER.info('Time out')
                                 break

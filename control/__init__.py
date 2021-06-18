@@ -18,7 +18,7 @@ def process_command(command):
 
 
 def process_cmd_led(cmd_led):
-    return utils._process_cmd_led(cmd_led['led_id'], cmd_led['led_color'])
+    return utils._process_cmd_led(cmd_led['length_led'], cmd_led['arr_value'])
 
 
 def process_cmd_lcd(cmd_lcd):
