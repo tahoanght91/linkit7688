@@ -125,6 +125,8 @@ def _process_command(device, command):
     try:
         if device == DEVICE_MCC_1 or device == DEVICE_ATS_1 or device == DEVICE_ACM_1:
             result = compose_command_rpc(device, command)
+        else:
+            result = compose_command_lcd(device, command)
         result_encode = ':'.join(x.encode('hex') for x in result)
         LOGGER.debug('Process command: device: %s, command: %s, after decode is: %s', device, command, result_encode)
     except Exception as ex:
