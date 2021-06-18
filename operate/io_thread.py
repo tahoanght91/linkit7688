@@ -95,7 +95,7 @@ def call():
                                 if cmd_lcd[key_lcd] == content:
                                     del cmd_lcd[key_lcd]
                                 cmd_lcd_lock.release()
-                                LOGGER.debug("Receive ACK lcd with message with content: %d", content)
+                                LOGGER.debug("Receive ACK lcd with message with content: %s", content)
                                 break
                             if _read_data(byte_stream):
                                 ser.write(with_check_sum(data_ack, BYTE_ORDER))
