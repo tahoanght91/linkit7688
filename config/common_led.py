@@ -1,5 +1,5 @@
 GREEN = 1
-RED = 0
+RED = 2
 
 LED_SERVER = 0
 LED_ATS = 1
