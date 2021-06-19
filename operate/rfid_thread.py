@@ -23,13 +23,13 @@ def call():
                         result = compare_rfid_card(rfid_card, list_card)
                         if result == -1 or result == 0 or result == 1:
                             log = write_log(rfid_card, result)
-                            if result == 1:
-                                mcc.open_door_with_auto_close()
                             if log is not None:
                                 send_log(log)
                             else:
                                 LOGGER.info('Log is null!')
                             del update_attributes[KEY_RFID]
+                            if result == 1:
+                                mcc.open_door_with_auto_close()
                         else:
                             LOGGER.info('Response of compare card is not expected with result: %s', str(result))
                     else:
