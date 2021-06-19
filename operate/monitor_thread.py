@@ -5,7 +5,7 @@ from monitor import *
 
 
 def call():
-    period = shared_attributes.get('mccPeriodUpdate', default_data.mccPeriodUpdate)
+    period = 3
     while True:
         mcc.check_status()
         # Check if device is set in Auto mode

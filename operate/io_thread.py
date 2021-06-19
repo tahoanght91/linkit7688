@@ -240,7 +240,7 @@ def _read_data(byte_stream):
         LOGGER.info('CRMU message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
                     len(data), _OpData.CRMU_SIZE)
         if _check_data(frame_length, data, _OpData.CRMU_SIZE):
-            crmu.extract(data[1:])
+            crmu.extract(data)
             return True
     elif op_code == _OpData.IO_STATUS_RPC:  # RPC response
         LOGGER.info('RPC message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,

@@ -1,3 +1,4 @@
+from config import LOGGER
 from . import utils
 
 
@@ -10,7 +11,11 @@ def check_command(command):
 
 
 def check_command_send_rpc(command):
-    return utils._check_command_send_rpc(command.get('device', None), command.get('command', None))
+    try:
+        return utils._check_command_send_rpc(command.get('device', None), command.get('command', None))
+    except Exception as ex:
+        print(ex.message)
+        LOGGER.error('Error at check_command_send_rpc function with message: %s', ex.message)
 
 
 def process_command(command):

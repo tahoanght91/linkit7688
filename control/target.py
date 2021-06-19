@@ -5,7 +5,7 @@ def get_target_by_command_mcc(command):
     target = -1
     try:
         if 'DoorMcc' in command:
-            target = 0
+            target = 15
         elif 'LampMcc' in command:
             target = 1
         elif 'DoutReversed1Mcc' in command:
@@ -35,7 +35,7 @@ def get_target_by_command_mcc(command):
         elif 'DoutReversed12Mcc' in command:
             target = 14
         elif 'DoutReversed13Mcc' in command:
-            target = 15
+            target = 0
         else:
             LOGGER.error('Command is not a string: %s', str(command))
     except Exception as ex:

@@ -12,7 +12,7 @@ from utility import bytes_to_int
 URL_SEND_SA = 'https://backend.smartsite.dft.vn/api/services/app/DMTram/ChangeValueTemplate'
 menu_level_1 = [MCC, ACM, ATS]
 LIST_KEY_EVENT = [EVENT_NONE, EVENT_DOWN, EVENT_UP, EVENT_HOLD, EVENT_POWER]
-LIST_KEY_CODE = [KEYCODE_MENU, KEYCODE_UP, KEYCODE_DOWN, KEYCODE_ENTER]
+LIST_KEY_CODE = [KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26]
 
 
 def call():
@@ -25,7 +25,11 @@ def call():
                 if result_check_input.key_code > 0 and result_check_input.key_event > 0:
                     result_switch_lcd = switch_lcd_service(result_check_input)
                     cmd_lcd_lock.acquire()
-                    cmd_lcd[UPDATE_VALUE] = result_switch_lcd.name
+                    cmd_lcd[CLEAR] = 0
+                    if result_switch_lcd.value < 0:
+                        cmd_lcd[UPDATE_VALUE] = result_switch_lcd.name
+                    else:
+                        cmd_lcd[UPDATE_VALUE] = result_switch_lcd.value
                     cmd_lcd_lock.release()
                     set_last_trace(result_switch_lcd)
                     lcd_services.clear()
@@ -54,17 +58,17 @@ def switch_lcd_service(input_lcd):
         key_event = input_lcd.key_event
         key_code = input_lcd.key_code
         if key_event == EVENT_UP:
-            if key_code == KEYCODE_MENU:
+            if key_code == KEYCODE_16:
                 index = 0
-                last_trace.category = KEYCODE_MENU
+                last_trace.category = KEYCODE_16
                 last_trace.level = MENU_LEVEL_1
                 last_trace.index = index
                 last_trace.name = menu_level_1[index]
                 last_trace.value = -1
-            elif key_code == KEYCODE_UP or key_code == KEYCODE_DOWN:
+            elif key_code == KEYCODE_14 or key_code == KEYCODE_34:
                 last_trace = navigate_lcd_service(key_code)
-            # elif key_code == KEYCODE_ENTER:
-            #     last_trace = enter_lcd_service()
+            elif key_code == KEYCODE_24:
+                last_trace = enter_lcd_service()
 
             last_trace.key_code = input_lcd.key_code
             last_trace.key_event = input_lcd.key_event
@@ -78,14 +82,17 @@ def switch_lcd_service(input_lcd):
 def enter_lcd_service():
     last_trace = get_last_trace()
     try:
-        if last_trace.category == KEYCODE_MENU:
+        if last_trace.category == KEYCODE_16:
             if last_trace.level == MENU_LEVEL_1:
                 name = get_menu_lv2(last_trace)
                 last_trace.level = MENU_LEVEL_2
                 last_trace.index = 0
                 last_trace.name = name
-            # elif temp_level == MENU_LEVEL_2:
-            #     pass
+            elif last_trace.level == MENU_LEVEL_2:
+                if last_trace.value == -1:
+                    value = shared_attributes[last_trace.name]
+                    last_trace.level = MENU_LEVEL_2
+                    last_trace.value = value
         else:
             pass
     except Exception as ex:
@@ -97,12 +104,12 @@ def navigate_lcd_service(key_code):
     index = -1
     last_trace = get_last_trace()
     try:
-        if last_trace.category == KEYCODE_MENU and last_trace.level == MENU_LEVEL_1:
-            if key_code == KEYCODE_UP:
+        if last_trace.category == KEYCODE_16 and last_trace.level == MENU_LEVEL_1:
+            if key_code == KEYCODE_14:
                 index = last_trace.index + 1
                 if index > MAX_INDEX_MENU:
                     index = MIN_INDEX_MENU
-            elif key_code == KEYCODE_DOWN:
+            elif key_code == KEYCODE_34:
                 index = last_trace.index - 1
                 if index < MIN_INDEX_MENU:
                     index = MAX_INDEX_MENU

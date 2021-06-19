@@ -2,7 +2,8 @@ import time
 
 import requests
 
-from config import CLIENT, shared_attributes, update_attributes, LOGGER
+from config import *
+from config.common import RESPONSE_RFID
 from monitor import mcc
 
 URL_SEND_LOG ='https://backend.smartsite.dft.vn/api/services/app/DMTram/LogQuetThe'
@@ -10,7 +11,7 @@ KEY_RFID = 'mccRfidCard'
 
 
 def call():
-    period = 3
+    period = 5
     while True:
         if CLIENT.is_connected():
             if 'mccListRfid' in shared_attributes:
@@ -18,41 +19,34 @@ def call():
                 list_card = shared_attributes['mccListRfid']
                 LOGGER.info('Get rfid card list successful from thingsboard: %s', list_card)
                 if len(list_card) > 0:
-                    rfid_card = check_key(KEY_RFID, update_attributes)
-                    if isinstance(rfid_card, str) and rfid_card is not None:
-                        result = compare_rfid_card(rfid_card, list_card)
-                        if result == -1 or result == 0 or result == 1:
-                            log = write_log(rfid_card, result)
-                            del update_attributes[KEY_RFID]
-                            if log is not None:
-                                mcc.open_door_with_auto_close()
-                                send_log(log)
+                    if KEY_RFID in client_attributes:
+                        rfid_card = client_attributes.get(KEY_RFID)
+                        if isinstance(rfid_card, str) and rfid_card is not None:
+                            result = compare_rfid_card(rfid_card, list_card)
+                            if result == -1 or result == 0 or result == 1:
+                                log = write_log(rfid_card, result)
+                                client_attributes.pop(KEY_RFID)
+                                if result == 0 or result == 1:
+                                    commands_lock.acquire()
+                                    commands[RESPONSE_RFID] = result
+                                    commands_lock.release()
+                                    if result == 1:
+                                        mcc.open_door_with_auto_close()
+                                if log is not None:
+                                    send_log(log)
+                                else:
+                                    LOGGER.debug('Log is null!')
                             else:
-                                LOGGER.info('Log is null!')
+                                LOGGER.debug('Response of compare card is not expected with result: %s', str(result))
                         else:
-                            LOGGER.info('Response of compare card is not expected with result: %s', str(result))
+                            LOGGER.debug('Rfid card is not string or null')
                     else:
-                        LOGGER.info('Rfid card is not string or null')
+                        LOGGER.debug('Not found mccRfidCard in dictionary update_attributes')
                 else:
-                    LOGGER.info('Length of card is 0 or less than 0')
+                    LOGGER.debug('Length of card is 0 or less than 0')
             else:
-                LOGGER.info('Not found list of rfid card in shared attributes')
+                LOGGER.debug('Not found list of rfid card in shared attributes')
         time.sleep(period)
-
-
-def check_key(key, dict):
-    LOGGER.info('Enter check_key function')
-    try:
-        if key in dict.keys():
-            LOGGER.info('Key existence in client attributes')
-            LOGGER.info('Exit check_key function')
-            return key
-        else:
-            LOGGER.info('Key not existence in client attributes')
-            LOGGER.info('Exit check_key function')
-            return -1
-    except Exception as ex:
-        LOGGER.error('Error at check_key function with message: %s', ex.message)
 
 
 def compare_rfid_card(rfid_card, list_card):

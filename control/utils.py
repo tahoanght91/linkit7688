@@ -125,8 +125,8 @@ def _process_command(device, command):
     try:
         if device == DEVICE_MCC_1 or device == DEVICE_ATS_1 or device == DEVICE_ACM_1:
             result = compose_command_rpc(device, command)
-        else:
-            result = compose_command_lcd(device, command)
+        elif device == RESPONSE_RFID:
+            result = struct.pack(FORMAT_RFID, 0xA0, 0x03, 0x24, device, command)
         result_encode = ':'.join(x.encode('hex') for x in result)
         LOGGER.debug('Process command: device: %s, command: %s, after decode is: %s', device, command, result_encode)
     except Exception as ex:
@@ -224,13 +224,13 @@ def compose_command_shared_attributes(module_id, value):
         prefix = ''.join([char * length_prefix for char in CHAR_B])
         if module_id == ID_MCC:
             bytes_length = BYTES_SA_MCC
-            length = length_value + bytes_length + 2
+            length = length_value + 3
         elif module_id == ID_ACM:
             bytes_length = BYTES_SA_ACM
-            length = length_prefix + bytes_length + 2
+            length = length_value + 3
         elif module_id == ID_ATS:
             bytes_length = BYTES_SA_ATS
-            length = length_prefix + bytes_length + 2
+            length = length_value + 3
         if bytes_length > 0 and prefix is not '' and length > 0:
             result = struct.pack(prefix, 0xA0, length, op_code_sa, module_id, bytes_length, *value)
     except Exception as ex:
@@ -239,22 +239,27 @@ def compose_command_shared_attributes(module_id, value):
 
 
 def compose_command_lcd(key_lcd, content):
-    arr_char = [char for char in content]
-    prefix = ''.join([char * len(arr_char) for char in CHAR_S])
-    length = len(arr_char) + 3
     op_code_lcd = 0X31
-    row = 0X02
-    result = struct.pack(FORMAT_LCD + prefix, 0xA0, length, op_code_lcd, key_lcd, row, *arr_char)
-    return result
+    if key_lcd == CLEAR:
+        length = 2
+        result = struct.pack('BBBB', 0xA0, length, op_code_lcd, key_lcd)
+        return result
+    elif key_lcd == UPDATE_VALUE:
+        arr_char = [char for char in content]
+        prefix = ''.join([char * len(arr_char) for char in CHAR_S])
+        length = len(arr_char) + 3
+        row = 0X02
+        result = struct.pack(FORMAT_LCD + prefix, 0xA0, length, op_code_lcd, key_lcd, row, *arr_char)
+        return result
 
 
 def _process_cmd_led(length_led, arr_value):
     op_code_led = 0x33
     length_value = len(arr_value)
-    length_prefix = length_value + 4
+    length_prefix = length_value + 3
     prefix = ''.join([char * length_prefix for char in CHAR_B])
     try:
-        result = struct.pack(prefix, 0xA0, length_led, op_code_led, length_led, *arr_value)
+        result = struct.pack(prefix, 0xA0, length_led, op_code_led, *arr_value)
         result_encode = ':'.join(x.encode('hex') for x in result)
         LOGGER.debug('Process led command: led_id: %s, led_color: %s, after decode is: %s', length_led, arr_value, result_encode)
         return result
