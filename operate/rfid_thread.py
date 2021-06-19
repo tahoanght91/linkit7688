@@ -14,7 +14,6 @@ def call():
     period = 5
     while True:
         if CLIENT.is_connected():
-            LOGGER.info('client attributes: %s', client_attributes)
             if 'mccListRfid' in shared_attributes:
                 LOGGER.info('List rfid existence in shared attributes')
                 list_card = shared_attributes['mccListRfid']
@@ -27,7 +26,6 @@ def call():
                             if result == -1 or result == 0 or result == 1:
                                 log = write_log(rfid_card, result)
                                 client_attributes.pop(KEY_RFID)
-                                LOGGER.info('client attributes after pop: %s', client_attributes)
                                 if result == 0 or result == 1:
                                     commands_lock.acquire()
                                     commands[RESPONSE_RFID] = result
