@@ -10,7 +10,7 @@ KEY_RFID = 'mccRfidCard'
 
 
 def call():
-    period = 3
+    period = 0.5
     while True:
         if CLIENT.is_connected():
             if 'mccListRfid' in shared_attributes:
@@ -24,8 +24,9 @@ def call():
                         if result == -1 or result == 0 or result == 1:
                             log = write_log(rfid_card, result)
                             del update_attributes[KEY_RFID]
-                            if log is not None:
+                            if result == 1:
                                 mcc.open_door_with_auto_close()
+                            if log is not None:
                                 send_log(log)
                             else:
                                 LOGGER.info('Log is null!')
@@ -46,7 +47,7 @@ def check_key(key, dict):
         if key in dict.keys():
             LOGGER.info('Key existence in client attributes')
             LOGGER.info('Exit check_key function')
-            return key
+            return dict.get(key)
         else:
             LOGGER.info('Key not existence in client attributes')
             LOGGER.info('Exit check_key function')
