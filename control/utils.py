@@ -127,8 +127,6 @@ def _process_command(device, command):
             result = compose_command_rpc(device, command)
         elif device == RESPONSE_RFID:
             result = struct.pack(FORMAT_RFID, 0xA0, 0x03, 0x24, device, command)
-        else:
-            result = compose_command_lcd(device, command)
         result_encode = ':'.join(x.encode('hex') for x in result)
         LOGGER.debug('Process command: device: %s, command: %s, after decode is: %s', device, command, result_encode)
     except Exception as ex:
