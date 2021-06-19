@@ -13,8 +13,8 @@ BYTE_ORDER = 'little'
 HOST = device_config['host']
 ACCESS_TOKEN = device_config['access_token']
 CLIENT_ID = device_config['device_id']
-CLIENT = mqtt.TBGatewayMqttClient(host=HOST, port=1883, token=ACCESS_TOKEN)
-IO_PORT = '/dev/ttyS0'
+CLIENT = mqtt.TBGatewayMqttClient(host=HOST, port=10883, token=ACCESS_TOKEN)
+# IO_PORT = '/dev/ttyS0'
 # IO_PORT = 'COM3'
 BAUDRATE = 115200
 UPDATE_PERIOD = 7 * 24 * 60 * 60
