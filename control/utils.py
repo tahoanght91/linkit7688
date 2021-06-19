@@ -241,13 +241,18 @@ def compose_command_shared_attributes(module_id, value):
 
 
 def compose_command_lcd(key_lcd, content):
-    arr_char = [char for char in content]
-    prefix = ''.join([char * len(arr_char) for char in CHAR_S])
-    length = len(arr_char) + 3
     op_code_lcd = 0X31
-    row = 0X02
-    result = struct.pack(FORMAT_LCD + prefix, 0xA0, length, op_code_lcd, key_lcd, row, *arr_char)
-    return result
+    if key_lcd == CLEAR:
+        length = 2
+        result = struct.pack('BBBB', 0xA0, length, op_code_lcd, key_lcd)
+        return result
+    elif key_lcd == UPDATE_VALUE:
+        arr_char = [char for char in content]
+        prefix = ''.join([char * len(arr_char) for char in CHAR_S])
+        length = len(arr_char) + 3
+        row = 0X02
+        result = struct.pack(FORMAT_LCD + prefix, 0xA0, length, op_code_lcd, key_lcd, row, *arr_char)
+        return result
 
 
 def _process_cmd_led(length_led, arr_value):

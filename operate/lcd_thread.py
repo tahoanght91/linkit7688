@@ -25,6 +25,7 @@ def call():
                 if result_check_input.key_code > 0 and result_check_input.key_event > 0:
                     result_switch_lcd = switch_lcd_service(result_check_input)
                     cmd_lcd_lock.acquire()
+                    cmd_lcd[CLEAR] = 0
                     cmd_lcd[UPDATE_VALUE] = result_switch_lcd.name
                     cmd_lcd_lock.release()
                     set_last_trace(result_switch_lcd)
