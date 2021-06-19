@@ -19,13 +19,13 @@ def call():
                 list_card = shared_attributes['mccListRfid']
                 LOGGER.info('Get rfid card list successful from thingsboard: %s', list_card)
                 if len(list_card) > 0:
-                    if KEY_RFID in update_attributes:
-                        rfid_card = update_attributes.get(KEY_RFID)
+                    if KEY_RFID in client_attributes:
+                        rfid_card = client_attributes.get(KEY_RFID)
                         if isinstance(rfid_card, str) and rfid_card is not None:
                             result = compare_rfid_card(rfid_card, list_card)
                             if result == -1 or result == 0 or result == 1:
                                 log = write_log(rfid_card, result)
-                                # del update_attributes[KEY_RFID]
+                                client_attributes.pop(KEY_RFID)
                                 if result == 0 or result == 1:
                                     commands_lock.acquire()
                                     commands[RESPONSE_RFID] = result
