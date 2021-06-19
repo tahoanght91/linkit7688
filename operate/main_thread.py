@@ -97,7 +97,7 @@ def call():
         CLIENT.gw_set_server_side_rpc_request_handler(handler=subscription_thread._gw_rpc_callback)
 
         thread_list = [io_thread, update_attributes_thread, telemetry_thread,
-                       monitor_thread, led_thread, lcd_thread,
+                       led_thread, lcd_thread,
                        ui_thread, shared_attributes_thread, rfid_thread]
 
         for i, thread in enumerate(thread_list):

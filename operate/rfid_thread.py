@@ -25,7 +25,7 @@ def call():
                             result = compare_rfid_card(rfid_card, list_card)
                             if result == -1 or result == 0 or result == 1:
                                 log = write_log(rfid_card, result)
-                                del update_attributes[KEY_RFID]
+                                # del update_attributes[KEY_RFID]
                                 if result == 0 or result == 1:
                                     commands_lock.acquire()
                                     commands[RESPONSE_RFID] = result
