@@ -125,6 +125,8 @@ def _process_command(device, command):
     try:
         if device == DEVICE_MCC_1 or device == DEVICE_ATS_1 or device == DEVICE_ACM_1:
             result = compose_command_rpc(device, command)
+        elif device == RESPONSE_RFID:
+            result = struct.pack(FORMAT_RFID, 0xA0, 0x03, 0x24, device, command)
         else:
             result = compose_command_lcd(device, command)
         result_encode = ':'.join(x.encode('hex') for x in result)

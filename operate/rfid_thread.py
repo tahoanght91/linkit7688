@@ -2,7 +2,8 @@ import time
 
 import requests
 
-from config import CLIENT, shared_attributes, update_attributes, LOGGER
+from config import *
+from config.common import RESPONSE_RFID
 from monitor import mcc
 
 URL_SEND_LOG ='https://backend.smartsite.dft.vn/api/services/app/DMTram/LogQuetThe'
@@ -23,13 +24,17 @@ def call():
                         result = compare_rfid_card(rfid_card, list_card)
                         if result == -1 or result == 0 or result == 1:
                             log = write_log(rfid_card, result)
+                            del update_attributes[KEY_RFID]
+                            if result == 0 or result == 1:
+                                commands_lock.acquire()
+                                commands[RESPONSE_RFID] = result
+                                commands_lock.release()
+                                if result == 1:
+                                    mcc.open_door_with_auto_close()
                             if log is not None:
                                 send_log(log)
                             else:
                                 LOGGER.info('Log is null!')
-                            del update_attributes[KEY_RFID]
-                            if result == 1:
-                                mcc.open_door_with_auto_close()
                         else:
                             LOGGER.info('Response of compare card is not expected with result: %s', str(result))
                     else:
