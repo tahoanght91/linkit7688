@@ -105,7 +105,7 @@ def navigate_lcd_service(key_code):
     last_trace = get_last_trace()
     try:
         if last_trace.category == KEYCODE_16 and last_trace.level == MENU_LEVEL_1:
-            if key_code == KEYCODE_15:
+            if key_code == KEYCODE_14:
                 index = last_trace.index + 1
                 if index > MAX_INDEX_MENU:
                     index = MIN_INDEX_MENU
