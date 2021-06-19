@@ -226,13 +226,13 @@ def compose_command_shared_attributes(module_id, value):
         prefix = ''.join([char * length_prefix for char in CHAR_B])
         if module_id == ID_MCC:
             bytes_length = BYTES_SA_MCC
-            length = length_value + bytes_length + 2
+            length = length_value + 3
         elif module_id == ID_ACM:
             bytes_length = BYTES_SA_ACM
-            length = length_prefix + bytes_length + 2
+            length = length_value + 3
         elif module_id == ID_ATS:
             bytes_length = BYTES_SA_ATS
-            length = length_prefix + bytes_length + 2
+            length = length_value + 3
         if bytes_length > 0 and prefix is not '' and length > 0:
             result = struct.pack(prefix, 0xA0, length, op_code_sa, module_id, bytes_length, *value)
     except Exception as ex:
