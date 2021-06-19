@@ -253,7 +253,7 @@ def compose_command_lcd(key_lcd, content):
 def _process_cmd_led(length_led, arr_value):
     op_code_led = 0x33
     length_value = len(arr_value)
-    length_prefix = length_value + 4
+    length_prefix = length_value + 3
     prefix = ''.join([char * length_prefix for char in CHAR_B])
     try:
         result = struct.pack(prefix, 0xA0, length_led, op_code_led, *arr_value)
