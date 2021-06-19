@@ -20,7 +20,7 @@ def get_led_value():
     dct_led = {}
     try:
         dct_led[LED_SERVER] = get_state_led_server()
-        dct_led[LED_ATS] = client_attributes['atsErrorState']
+        dct_led[LED_ATS] = client_attributes['atsState']
         dct_led[LED_DC] = client_attributes['mccDcCabinetSate']
         dct_led[LED_ACM] = client_attributes['acmIState']
         dct_led[LED_ATU] = 0
