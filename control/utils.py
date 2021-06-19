@@ -256,7 +256,7 @@ def _process_cmd_led(length_led, arr_value):
     length_prefix = length_value + 4
     prefix = ''.join([char * length_prefix for char in CHAR_B])
     try:
-        result = struct.pack(prefix, 0xA0, length_led, op_code_led, length_led, *arr_value)
+        result = struct.pack(prefix, 0xA0, length_led, op_code_led, *arr_value)
         result_encode = ':'.join(x.encode('hex') for x in result)
         LOGGER.debug('Process led command: led_id: %s, led_color: %s, after decode is: %s', length_led, arr_value, result_encode)
         return result
