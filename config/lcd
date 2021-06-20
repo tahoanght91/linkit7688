@@ -1,0 +1,78 @@
+{
+  "lcd": {
+    "menu": {
+      "level": {
+        "lv1": [
+          {
+            "index": 0,
+            "name": "mcc",
+            "lv2": {
+              "keys": [
+                "mccPeriodReadDataIO",
+                "mccPeriodSendTelemetry",
+                "mccPeriodUpdate",
+                "mccDcMinThreshold"
+              ],
+              "maxIndex": 3,
+              "minIndex": 0
+            }
+          },
+          {
+            "index": 1,
+            "name": "acm",
+            "lv2": {
+              "keys": [
+                "acmControlAuto",
+                "acmAlternativeTime",
+                "acmRunTime",
+                "acmRestTime",
+                "acmGenAllow",
+                "acmVacThreshold",
+                "acmMinTemp",
+                "acmMaxTemp",
+                "acmMinHumid",
+                "acmMaxHumid",
+                "acmExpectedTemp",
+                "acmExpectedHumid",
+                "acmT1Temp",
+                "acmT2Temp",
+                "acmT3Temp",
+                "acmT4Temp"
+              ],
+              "maxIndex": 15,
+              "minIndex": 0
+            }
+          },
+          {
+            "index": 2,
+            "name": "ats",
+            "lv2": {
+              "keys": [
+                "atsVacMaxThreshold",
+                "atsVacMinThreshold",
+                "atsVgenMaxThreshold",
+                "atsVgenMinThreshold",
+                "atsVacStabilizeTimeout",
+                "atsVgenIdleCoolingTimeout",
+                "atsVgenIdleWarmUpTimeout",
+                "atsGenInactiveStartTime",
+                "atsGenInactiveEndTime",
+                "atsGenActiveDuration",
+                "atsGenAutoResetMode",
+                "atsGenAutoResetTimeout",
+                "atsGenAutoResetMax",
+                "atsGenDeactivateMode",
+                "atsVacThresholdState",
+                "atsVgenThresholdState"
+              ],
+              "maxIndex": 15,
+              "minIndex": 0
+            }
+          }
+        ],
+        "maxIndex": 2,
+        "minIndex": 0
+      }
+    }
+  }
+}

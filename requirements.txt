@@ -1,5 +1,0 @@
-paho-mqtt
-simplejson
-pyserial
-flask
-requests

@@ -3,7 +3,7 @@ Cau truc gui shared attributes xuong STM32 thong qua io_thread va send_shared_th
 #ACM
 'BBBBB', 0xA0, 0x03, 0x23, key, value
 *key:
-'acmAlternativeState':1,
+'acmControlAuto':1,
 'acmAlternativeTime':2,
 'acmRunTime':3,
 'acmRestTime':4,
