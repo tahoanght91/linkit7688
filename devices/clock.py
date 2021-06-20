@@ -19,7 +19,7 @@ def set():
     while True:
         if flip == 0:
             flip = READ_PER_WRITE
-            now = int(time.time())
+            now = int(time.time() + 25200)
             if BYTE_ORDER == 'little':
                 fmt = '<'
             elif BYTE_ORDER == 'big':
