@@ -212,8 +212,7 @@ def check_lcd_service(dct_lcd_service):
         if key_code_checked and key_event_checked:
             LOGGER.info('Check key code & key event successful')
         else:
-            input_lcd.key_code = -1
-            input_lcd.key_event = -1
+            lcd_services.clear()
             LOGGER.info('Fail while check ')
     except Exception as ex:
         LOGGER.error('Error at check_lcd_service function with message: %s', ex.message)
