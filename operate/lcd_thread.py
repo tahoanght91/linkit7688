@@ -201,11 +201,11 @@ def check_lcd_service(dct_lcd_service):
             key_code_checked = True
             LOGGER.info('Key code: %d, exist in LIST_KEY_CODE', input_lcd.key_code)
         else:
-            LOGGER.info('Key code: %d not exists LIST_KEY_CODE', input_lcd.key_event)
+            LOGGER.info('Key code: %d not exists LIST_KEY_CODE', input_lcd.key_code)
 
         if input_lcd.key_event in LIST_KEY_EVENT:
             key_event_checked = True
-            LOGGER.info('Key event: %d exists in LIST_KEY_EVENT', input_lcd.key_code)
+            LOGGER.info('Key event: %d exists in LIST_KEY_EVENT', input_lcd.key_event)
         else:
             LOGGER.info('Key event: %d not exists in LIST_KEY_EVENT', input_lcd.key_event)
 
