@@ -1,18 +1,10 @@
 class Lcd:
-    # def __init__(self, key_code, key_event, category, level, index, value, name):
-    #     self._key_event = key_event
-    #     self._key_code = key_code
-    #     self._category = category
-    #     self._level = level
-    #     self._index = index
-    #     self._value = value
-    #     self._name = name
-
     _key_event = -1
     _key_code = -1
     _category = -1
     _level = -1
-    _index = -1
+    _index_level1 = -1
+    _index_level2 = -1
     _value = -1
     _name = ''
 
@@ -49,12 +41,20 @@ class Lcd:
         self._level = level
 
     @property
-    def index(self):
-        return self._index
+    def index_level1(self):
+        return self._index_level1
 
-    @index.setter
-    def index(self, index):
-        self._index = index
+    @index_level1.setter
+    def index_level1(self, index_level1):
+        self._index_level1 = index_level1
+
+    @property
+    def index_level2(self):
+        return self._index_level2
+
+    @index_level2.setter
+    def index_level2(self, index_level2):
+        self._index_level2 = index_level2
 
     @property
     def value(self):
