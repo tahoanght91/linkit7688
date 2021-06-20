@@ -18,7 +18,7 @@ LIST_KEY_CODE = [KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26]
 def call():
     LOGGER.error('Enter call function in menu_thread')
     try:
-        period = 1.5
+        period = 3
         while True:
             if CLIENT.is_connected():
                 result_check_input = check_lcd_service(lcd_services)
@@ -198,20 +198,18 @@ def check_lcd_service(dct_lcd_service):
     try:
         input_lcd.key_code = dct_lcd_service['key_code']
         input_lcd.key_event = dct_lcd_service['key_event']
-        key_code = input_lcd.key_code
-        key_event = input_lcd.key_event
 
         if input_lcd.key_code in LIST_KEY_CODE:
             key_code_checked = True
-            LOGGER.info('Key code: %d, exist in LIST_KEY_CODE', key_code)
+            LOGGER.info('Key code: %d, exist in LIST_KEY_CODE', input_lcd.key_code)
         else:
-            LOGGER.info('Key code: %d not exists LIST_KEY_CODE', key_code)
+            LOGGER.info('Key code: %d not exists LIST_KEY_CODE', input_lcd.key_event)
 
         if input_lcd.key_event in LIST_KEY_EVENT:
             key_event_checked = True
-            LOGGER.info('Key event: %d exists in LIST_KEY_EVENT', key_event)
+            LOGGER.info('Key event: %d exists in LIST_KEY_EVENT', input_lcd.key_code)
         else:
-            LOGGER.info('Key event: %d not exists in LIST_KEY_EVENT', key_event)
+            LOGGER.info('Key event: %d not exists in LIST_KEY_EVENT', input_lcd.key_event)
 
         if key_code_checked and key_event_checked:
             LOGGER.info('Check key code & key event successful')

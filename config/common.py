@@ -59,7 +59,7 @@ GET_VALUE = 'getValue'
 
 # lcd service
 UPDATE_VALUE = 5
-CLEAR = 2
+CLEAR = 6
 
 # list command
 list_command = [COMMAND_MCC_OPEN_DOOR, COMMAND_MCC_CLOSE_DOOR, COMMAND_MCC_ON_BELL, COMMAND_MCC_OFF_BELL,
