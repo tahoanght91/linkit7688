@@ -12,20 +12,20 @@ from utility import bytes_to_int
 URL_SEND_SA = 'https://backend.smartsite.dft.vn/api/services/app/DMTram/ChangeValueTemplate'
 menu_level_1 = [MCC, ACM, ATS]
 LIST_KEY_EVENT = [EVENT_NONE, EVENT_DOWN, EVENT_UP, EVENT_HOLD, EVENT_POWER]
-LIST_KEY_CODE = [KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26]
+LIST_KEY_CODE = [KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26, KEYCODE_24]
+json_file = open('config/lcd.json')
+dct_lcd = json.load(json_file)
 
 
 def call():
-    LOGGER.error('Enter call function in menu_thread')
     try:
-        period = 1.5
+        period = 3
         while True:
             if CLIENT.is_connected():
                 result_check_input = check_lcd_service(lcd_services)
                 if result_check_input.key_code > 0 and result_check_input.key_event > 0:
                     result_switch_lcd = switch_lcd_service(result_check_input)
                     cmd_lcd_lock.acquire()
-                    cmd_lcd[CLEAR] = 0
                     if result_switch_lcd.value < 0:
                         cmd_lcd[UPDATE_VALUE] = result_switch_lcd.name
                     else:
@@ -38,20 +38,6 @@ def call():
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
 
-def get_menu_lv2(last_trace):
-    name = ''
-    try:
-        if last_trace.index == 0:
-            name = get_menu_lv2_mcc(0)
-        elif last_trace.index == 1:
-            name = get_menu_lv2_acm(0)
-        elif last_trace.index == 2:
-            name = get_menu_lv2_ats(0)
-    except Exception as ex:
-        LOGGER.error('Error at get_menu_lv2 function with message: %s', ex.message)
-    return name
-
-
 def switch_lcd_service(input_lcd):
     last_trace = Lcd()
     try:
@@ -59,16 +45,20 @@ def switch_lcd_service(input_lcd):
         key_code = input_lcd.key_code
         if key_event == EVENT_UP:
             if key_code == KEYCODE_16:
-                index = 0
-                last_trace.category = KEYCODE_16
-                last_trace.level = MENU_LEVEL_1
-                last_trace.index = index
-                last_trace.name = menu_level_1[index]
+                last_trace.category = dct_lcd['lcd']['category']['menu']['id']
+                last_trace.level = dct_lcd['lcd']['category']['menu']['level']['levelId']
+                last_trace.index_level1 = dct_lcd['lcd']['category']['menu']['level']['lv1'][0]['index']
+                last_trace.name = dct_lcd['lcd']['category']['menu']['level']['lv1'][0]['name']
                 last_trace.value = -1
+                last_trace.index_level2 = -1
             elif key_code == KEYCODE_14 or key_code == KEYCODE_34:
                 last_trace = navigate_lcd_service(key_code)
             elif key_code == KEYCODE_24:
                 last_trace = enter_lcd_service()
+            elif key_event == EVENT_DOWN:
+                pass
+            elif key_event == EVENT_HOLD:
+                pass
 
             last_trace.key_code = input_lcd.key_code
             last_trace.key_event = input_lcd.key_event
@@ -84,10 +74,9 @@ def enter_lcd_service():
     try:
         if last_trace.category == KEYCODE_16:
             if last_trace.level == MENU_LEVEL_1:
-                name = get_menu_lv2(last_trace)
-                last_trace.level = MENU_LEVEL_2
-                last_trace.index = 0
-                last_trace.name = name
+                last_trace.name = dct_lcd['lcd']['category']['menu']['level']['lv1'][last_trace.index_level1]['lv2']['keys'][0]
+                last_trace.level = dct_lcd['lcd']['category']['menu']['level']['lv1'][last_trace.index_level1]['lv2']['levelId']
+                last_trace.index_level2 = dct_lcd['lcd']['category']['menu']['level']['lv1'][last_trace.index_level1]['lv2']['keys'].index(last_trace.name)
             elif last_trace.level == MENU_LEVEL_2:
                 if last_trace.value == -1:
                     value = shared_attributes[last_trace.name]
@@ -106,17 +95,26 @@ def navigate_lcd_service(key_code):
     try:
         if last_trace.category == KEYCODE_16 and last_trace.level == MENU_LEVEL_1:
             if key_code == KEYCODE_14:
-                index = last_trace.index + 1
-                if index > MAX_INDEX_MENU:
-                    index = MIN_INDEX_MENU
+                index = last_trace.index_level1 + 1
+                if index > dct_lcd['lcd']['category']['menu']['level']['maxIndex']:
+                    index = dct_lcd['lcd']['category']['menu']['level']['minIndex']
             elif key_code == KEYCODE_34:
-                index = last_trace.index - 1
-                if index < MIN_INDEX_MENU:
-                    index = MAX_INDEX_MENU
-        # elif last_trace.category == KEYCODE_MENU and last_trace.level ==  MENU_LEVEL_2:
-        #     pass
-        last_trace.index = index
-        last_trace.name = menu_level_1[index]
+                index = last_trace.index_level1 - 1
+                if index < dct_lcd['lcd']['category']['menu']['level']['minIndex']:
+                    index = dct_lcd['lcd']['category']['menu']['level']['maxIndex']
+            last_trace.index_level1 = index
+            last_trace.name = dct_lcd['lcd']['category']['menu']['level']['lv1'][index]['name']
+        elif last_trace.category == KEYCODE_16 and last_trace.level == MENU_LEVEL_2:
+            if key_code == KEYCODE_14:
+                index = last_trace.index_level2 + 1
+                if index > dct_lcd['lcd']['category']['menu']['level']['lv1'][last_trace.index_level1]['lv2']['maxIndex']:
+                    index = dct_lcd['lcd']['category']['menu']['level']['lv1'][last_trace.index_level1]['lv2']['minIndex']
+            elif key_code == KEYCODE_34:
+                index = last_trace.index_level2 - 1
+                if index < dct_lcd['lcd']['category']['menu']['level']['lv1'][last_trace.index_level1]['lv2']['minIndex']:
+                    index = dct_lcd['lcd']['category']['menu']['level']['lv1'][last_trace.index_level1]['lv2']['maxIndex']
+            last_trace.index_level2 = index
+            last_trace.name = dct_lcd['lcd']['category']['menu']['level']['lv1'][last_trace.index_level1]['lv2']['keys'][index]
     except Exception as ex:
         LOGGER.error('Error at confirm_lcd_service function with message: %s', ex.message)
     return last_trace
@@ -169,7 +167,8 @@ def get_last_trace():
         lcd_last_trace.key_event = dct_last_trace['key_event']
         lcd_last_trace.category = dct_last_trace['category']
         lcd_last_trace.level = dct_last_trace['level']
-        lcd_last_trace.index = dct_last_trace['index']
+        lcd_last_trace.index_level1 = dct_last_trace['index_level1']
+        lcd_last_trace.index_level2 = dct_last_trace['index_level2']
         lcd_last_trace.value = dct_last_trace['value']
         lcd_last_trace.name = dct_last_trace['name']
     except Exception as ex:
@@ -191,92 +190,31 @@ def set_last_trace(input_lcd):
 
 # OK
 def check_lcd_service(dct_lcd_service):
-    LOGGER.info('Enter check_lcd_service function')
     key_code_checked = False
     key_event_checked = False
     input_lcd = Lcd()
     try:
         input_lcd.key_code = dct_lcd_service['key_code']
         input_lcd.key_event = dct_lcd_service['key_event']
-        key_code = input_lcd.key_code
-        key_event = input_lcd.key_event
 
         if input_lcd.key_code in LIST_KEY_CODE:
             key_code_checked = True
-            LOGGER.info('Key code: %d, exist in LIST_KEY_CODE', key_code)
+            LOGGER.info('Key code: %d, exist in LIST_KEY_CODE', input_lcd.key_code)
         else:
-            LOGGER.info('Key code: %d not exists LIST_KEY_CODE', key_code)
+            LOGGER.info('Key code: %d not exists LIST_KEY_CODE', input_lcd.key_code)
 
         if input_lcd.key_event in LIST_KEY_EVENT:
             key_event_checked = True
-            LOGGER.info('Key event: %d exists in LIST_KEY_EVENT', key_event)
+            LOGGER.info('Key event: %d exists in LIST_KEY_EVENT', input_lcd.key_event)
         else:
-            LOGGER.info('Key event: %d not exists in LIST_KEY_EVENT', key_event)
+            LOGGER.info('Key event: %d not exists in LIST_KEY_EVENT', input_lcd.key_event)
 
         if key_code_checked and key_event_checked:
             LOGGER.info('Check key code & key event successful')
         else:
-            input_lcd.key_code = -1
-            input_lcd.key_event = -1
+            lcd_services.clear()
             LOGGER.info('Fail while check ')
     except Exception as ex:
         LOGGER.error('Error at check_lcd_service function with message: %s', ex.message)
-    LOGGER.info('Exit check_lcd_service function')
     return input_lcd
 
-
-# OK
-def get_menu_lv2_ats(index):
-    switcher_menu_ats = {
-        1: 'atsVacMaxThreshold',
-        2: 'atsVacMinThreshold',
-        3: 'atsVgenMaxThreshold',
-        4: 'atsVgenMinThreshold',
-        5: 'atsVacStabilizeTimeout',
-        6: 'atsVgenIdleCoolingTimeout',
-        7: 'atsVgenIdleWarmUpTimeout',
-        8: 'atsGenInactiveStartTime',
-        9: 'atsGenInactiveEndTime',
-        10: 'atsGenActiveDuration',
-        11: 'atsGenAutoResetMode',
-        12: 'atsGenAutoResetTimeout',
-        13: 'atsGenAutoResetMax',
-        14: 'atsGenDeactivateMode',
-        15: 'atsVacThresholdState',
-        16: 'atsVgenThresholdState'
-    }
-    return switcher_menu_ats.get(index, "Out of range!")
-
-
-# OK
-def get_menu_lv2_acm(index):
-    switcher_menu_acm = {
-        1: 'acmControlAuto',
-        2: 'acmAlternativeTime',
-        3: 'acmRunTime',
-        4: 'acmRestTime',
-        5: 'acmGenAllow',
-        6: 'acmVacThreshold',
-        7: 'acmMinTemp',
-        8: 'acmMaxTemp',
-        9: 'acmMinHumid',
-        10: 'acmMaxHumid',
-        11: 'acmExpectedTemp',
-        12: 'acmExpectedTemp',
-        13: 'acmT1Temp',
-        14: 'acmT2Temp',
-        15: 'acmT3Temp',
-        16: 'acmT4Temp'
-    }
-    return switcher_menu_acm.get(index, "Out of range!")
-
-
-# OK
-def get_menu_lv2_mcc(index):
-    switcher_menu_lv2_mcc = {
-        0: 'mccPeriodReadDataIO',
-        1: 'mccPeriodSendTelemetry',
-        2: 'mccPeriodUpdate',
-        3: 'mccDcMinThreshold'
-    }
-    return switcher_menu_lv2_mcc.get(index, "Out of range!")

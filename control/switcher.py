@@ -1,12 +1,11 @@
-from config import LOGGER
 from config.common_command import *
 
 
 # Command MCC
 def parse_mcc_command_to_number(command):
     switcher_mcc_command = {
-        COMMAND_MCC_CLOSE_DOOR: 0,
-        COMMAND_MCC_OPEN_DOOR: 1,
+        COMMAND_MCC_OPEN_DOOR: 0,
+        COMMAND_MCC_CLOSE_DOOR: 1,
         COMMAND_MCC_OFF_BELL: 0,
         COMMAND_MCC_ON_BELL: 1,
         COMMAND_MCC_OFF_LAMP: 0,

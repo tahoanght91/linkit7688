@@ -5,7 +5,7 @@ def get_target_by_command_mcc(command):
     target = -1
     try:
         if 'DoorMcc' in command:
-            target = 15
+            target = 13
         elif 'LampMcc' in command:
             target = 1
         elif 'DoutReversed1Mcc' in command:
@@ -31,7 +31,7 @@ def get_target_by_command_mcc(command):
         elif 'BellMcc' in command:
             target = 12
         elif 'DoutReversed11Mcc' in command:
-            target = 13
+            target = 15
         elif 'DoutReversed12Mcc' in command:
             target = 14
         elif 'DoutReversed13Mcc' in command:

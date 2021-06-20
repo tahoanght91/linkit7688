@@ -14,10 +14,10 @@ def call():
     message_break = shared_attributes.get('mccPeriodReadDataIO', default_data.mccPeriodReadDataIO)  # time read data from IO
     flip = READ_PER_WRITE
 
-    original_cycle = int(time.time() / 60)
+    original_cycle = int((time.time()) / 60)
     while True:
         # Update time clock to IO
-        current_cycle = int(time.time() / 60)
+        current_cycle = int((time.time()) / 60)
         if not (current_cycle - original_cycle) and not (current_cycle - original_cycle) % 2:
             LOGGER.info("Send clock set")
             clock.set()
