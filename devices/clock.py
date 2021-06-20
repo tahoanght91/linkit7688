@@ -7,6 +7,7 @@ import struct
 from config import *
 from utility import bytes_to_int, with_check_sum, check_check_sum, blocking_read
 
+
 def set():
     '''
     Set the clock of the IO sync with the clock of the CORE
@@ -31,11 +32,12 @@ def set():
             flip -= 1
         response = blocking_read(ser, message_break)
         if response == with_check_sum(b'\xa0\x01\x02', BYTE_ORDER):
-            LOGGER.debug('Receive ACK message')
+            LOGGER.debug('Receive ACK clock message')
             break
         if flip == 0:
             LOGGER.debug('Time out, try again')
     ser.close()
+
 
 def extract():
     '''
@@ -58,6 +60,7 @@ def extract():
         if flip == 0:
             LOGGER.debug('Failed, try again')
     ser.close()
+
 
 def _handle(byte_stream):
     '''
