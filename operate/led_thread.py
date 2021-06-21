@@ -2,13 +2,14 @@ import time
 
 from config import *
 from config.common_led import *
-
+from operate.telemetry_thread import replica_telemetry
 
 dct_last_trace_led_alarm = {}
 
 
 def call():
-    period = 25
+    period = shared_attributes.get('mccPeriodSendTelemetry', default_data.mccPeriodSendTelemetry)
+    # demo = replica_telemetry()
     while True:
         dct_led_value = get_led_value()
         if len(dct_led_value) > 0:
@@ -18,6 +19,7 @@ def call():
 
 def get_led_value():
     dct_led = {}
+    # telemetries = demo
     try:
         dct_led[LED_SERVER] = get_state_led_server()
         dct_led[LED_ATS] = client_attributes['atsState']
@@ -27,9 +29,9 @@ def get_led_value():
         dct_led[LED_1] = 0
         dct_led[LED_2] = 0
         dct_led[LED_NONE] = 0
-        dct_led[LED_ALARM] = get_sate_led_alarm(telemetries, dct_last_trace_led_alarm)   # TODO: need function check
-        dct_led[LED_3G] = 0  # TODO: need function check
-        dct_led[LED_ETHERNET] = 1   # TODO: need function check
+        dct_led[LED_ALARM] = get_sate_led_alarm(telemetries, dct_last_trace_led_alarm)
+        dct_led[LED_3G] = 1  # TODO: need function check
+        dct_led[LED_ETHERNET] = 1  # TODO: need function check
         dct_led[LED_CRMU] = client_attributes['mccRfidConnectState']
         dct_led[LED_4] = 0
     except Exception as ex:
@@ -68,17 +70,12 @@ def set_last_trace_led_alarm(key, value):
 def get_sate_led_alarm(dct_telemetry, dct_last_trace):
     result = -1
     try:
-        if len(dct_telemetry) == 0:
-            if len(dct_last_trace) == 0:
-                result = client_attributes.get('mccSmokeState', default_data.mccSmokeState)
-            else:
-                result = dct_last_trace['mccSmokeState']
-        elif len(dct_telemetry) > 0:
-            if 'mccSmokeState' in dct_telemetry:
-                result = dct_telemetry['mccSmokeState']
-            else:
-                result = dct_last_trace['mccSmokeState']
-        set_last_trace_led_alarm('mccSmokeState', result)
+        new_list_telemetries = dict(filter(lambda elem: elem[0].lower().find('state') != -1, dct_telemetry.items()))
+        if len(new_list_telemetries) == 0:
+            result = GREEN
+        elif len(new_list_telemetries) > 0:
+            check = any(elem != 0 for elem in new_list_telemetries.values())
+            result = RED if check else GREEN
     except Exception as ex:
         LOGGER.error('Error at get_sate_led_alarm function with message: %s', ex.message)
     return result
