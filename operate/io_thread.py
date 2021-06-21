@@ -216,15 +216,7 @@ def _read_data(byte_stream):
     op_code = byte_stream[2]
     LOGGER.debug('Opcode %s', op_code.encode('hex'))
     data = byte_stream[3:-2]
-    if op_code == _OpData.IO_STATUS_MCC:  # MCC
-        LOGGER.info('MCC message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
-                    len(data), _OpData.MCC_SIZE)
-        if _check_data(frame_length, data, _OpData.MCC_SIZE):
-            LOGGER.info('Check data successful, go to extract MCC')
-            mcc.extract(data)
-            LOGGER.info('Extract MCC successful')
-            return True
-    elif op_code == _OpData.IO_STATUS_ATS:  # ATS
+    if op_code == _OpData.IO_STATUS_ATS:  # ATS
         LOGGER.info('ATS message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
                     len(data), _OpData.ATS_SIZE)
         if _check_data(frame_length, data, _OpData.ATS_SIZE):
@@ -235,6 +227,14 @@ def _read_data(byte_stream):
                     len(data), _OpData.ACM_SIZE)
         if _check_data(frame_length, data, _OpData.ACM_SIZE):
             acm.extract(data[1:])
+            return True
+    elif op_code == _OpData.IO_STATUS_MCC:  # MCC
+        LOGGER.info('MCC message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
+                    len(data), _OpData.MCC_SIZE)
+        if _check_data(frame_length, data, _OpData.MCC_SIZE):
+            LOGGER.info('Check data successful, go to extract MCC')
+            mcc.extract(data)
+            LOGGER.info('Extract MCC successful')
             return True
     elif op_code == _OpData.IO_STATUS_CRMU:  # CRMU
         LOGGER.info('CRMU message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
