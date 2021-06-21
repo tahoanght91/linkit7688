@@ -29,7 +29,7 @@ def get_led_value():
         dct_led[LED_1] = 0
         dct_led[LED_2] = 0
         dct_led[LED_NONE] = 0
-        dct_led[LED_ALARM] = get_sate_led_alarm(telemetries, dct_last_trace_led_alarm)
+        dct_led[LED_ALARM] = get_sate_led_alarm(telemetries)
         dct_led[LED_3G] = 1  # TODO: need function check
         dct_led[LED_ETHERNET] = 1  # TODO: need function check
         dct_led[LED_CRMU] = client_attributes['mccRfidConnectState']
@@ -67,7 +67,7 @@ def set_last_trace_led_alarm(key, value):
     dct_last_trace_led_alarm[key] = value
 
 
-def get_sate_led_alarm(dct_telemetry, dct_last_trace):
+def get_sate_led_alarm(dct_telemetry):
     result = -1
     try:
         new_list_telemetries = dict(filter(lambda elem: elem[0].lower().find('state') != -1, dct_telemetry.items()))
