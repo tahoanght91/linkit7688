@@ -63,7 +63,7 @@ def extract(byte_data):
 
     #client attributes
     _read_attribute('atsVacP1State', atsVacP1State)
-    _read_telemetry('atsVacP2State', atsVacP2State)
+    _read_attribute('atsVacP2State', atsVacP2State)
     _read_attribute('atsVacP3State', atsVacP3State)
     _read_attribute('atsVgenP1State', atsVgenP1State)
     _read_attribute('atsVgenP2State', atsVgenP2State)
