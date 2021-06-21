@@ -73,7 +73,7 @@ def replica_telemetry():
 
 
 def format_telemetry(dict_telemetry):
-    list_telemetry = {DEVICE_MCC_1: [{}], DEVICE_ATS_1: [{}], DEVICE_ACM_1: [{}]}
+    list_telemetry = {DEVICE_MCC: [{}], DEVICE_ATS: [{}], DEVICE_ACM: [{}]}
     telemetry_mcc_1 = {}
     telemetry_ats_1 = {}
     telemetry_acm_1 = {}
@@ -88,10 +88,10 @@ def format_telemetry(dict_telemetry):
             telemetry_acm_1[key] = value
 
     if telemetry_mcc_1:
-        list_telemetry[DEVICE_MCC_1] = [telemetry_mcc_1]
+        list_telemetry[DEVICE_MCC] = [telemetry_mcc_1]
     if telemetry_ats_1:
-        list_telemetry[DEVICE_ATS_1] = [telemetry_ats_1]
+        list_telemetry[DEVICE_ATS] = [telemetry_ats_1]
     if telemetry_acm_1:
-        list_telemetry[DEVICE_ACM_1] = [telemetry_acm_1]
+        list_telemetry[DEVICE_ACM] = [telemetry_acm_1]
 
     return list_telemetry

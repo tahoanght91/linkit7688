@@ -10,11 +10,11 @@ from control.target import *
 
 
 def _check_command(device, command):
-    if device == DEVICE_MCC_1 and (command == GET_STATE or command == GET_VALUE):
+    if device == DEVICE_MCC and (command == GET_STATE or command == GET_VALUE):
         return True
-    elif device == DEVICE_ACM_1 and (command == GET_STATE or command == GET_VALUE):
+    elif device == DEVICE_ACM and (command == GET_STATE or command == GET_VALUE):
         return True
-    elif device == DEVICE_ATS_1 and (command == GET_STATE or command == GET_VALUE):
+    elif device == DEVICE_ATS and (command == GET_STATE or command == GET_VALUE):
         return True
     else:
         return False
@@ -24,11 +24,11 @@ def check_state_device(device_name, method):
     LOGGER.info('Enter check_state_device function')
     value = -1
     try:
-        if device_name == DEVICE_MCC_1:
+        if device_name == DEVICE_MCC:
             value = get_state_mcc(method)
-        elif device_name == DEVICE_ACM_1:
+        elif device_name == DEVICE_ACM:
             value = get_state_acm(method)
-        elif device_name == DEVICE_ATS_1:
+        elif device_name == DEVICE_ATS:
             value = get_state_ats(method)
 
         if 0 <= value <= 1:
@@ -91,13 +91,13 @@ def get_state_mcc(method):
 
 def get_value_device(device_name, method):
     value = ''
-    if device_name == DEVICE_ACM_1 and method == GET_VALUE_ACM_AIRC_1:
+    if device_name == DEVICE_ACM and method == GET_VALUE_ACM_AIRC_1:
         # TODO: change telemetry of airc1:
         value = telemetries.get('acmTempIndoor', default_data.acmTempIndoor)
-    elif device_name == DEVICE_ACM_1 and method == GET_VALUE_ACM_AIRC_2:
+    elif device_name == DEVICE_ACM and method == GET_VALUE_ACM_AIRC_2:
         # TODO: change telemetry of airc2:
         value = telemetries.get('acmTempOutdoor', default_data.acmTempOutdoor)
-    elif device_name == DEVICE_MCC_1 and method == GET_STATE_MCC_DOOR:
+    elif device_name == DEVICE_MCC and method == GET_STATE_MCC_DOOR:
         # TODO: change telemetry of airc2:
         value = telemetries.get('mccDoorState', default_data.mccDoorState)
     return value
@@ -105,13 +105,13 @@ def get_value_device(device_name, method):
 
 def _process_set_auto(device, command):
     try:
-        if not (type(command) == str and device in [DEVICE_ATS_1, DEVICE_ACM_1]):
+        if not (type(command) == str and device in [DEVICE_ATS, DEVICE_ACM]):
             return False
         value = convert_str_command_to_int(command)
         if 0 <= value <= 1:
-            if device == DEVICE_ACM_1:
+            if device == DEVICE_ACM:
                 shared_attributes['acmControlAuto'] = value
-            elif device == DEVICE_ATS_1:
+            elif device == DEVICE_ATS:
                 shared_attributes['atsControlAuto'] = value
         else:
             LOGGER.info('Value: %d, value is not expected', value)
@@ -123,7 +123,7 @@ def _process_set_auto(device, command):
 def _process_command(device, command):
     result = ''
     try:
-        if device == DEVICE_MCC_1 or device == DEVICE_ATS_1 or device == DEVICE_ACM_1:
+        if device == DEVICE_MCC or device == DEVICE_ATS or device == DEVICE_ACM:
             result = compose_command_rpc(device, command)
         elif device == RESPONSE_RFID:
             result = struct.pack(FORMAT_RFID, 0xA0, 0x03, 0x24, device, command)
@@ -147,11 +147,11 @@ def _check_command_send_rpc(device, command):
     LOGGER.info('Enter _check_command_send_rpc function')
     result = False
     try:
-        if device == DEVICE_ACM_1 and check_exist_command(command):
+        if device == DEVICE_ACM and check_exist_command(command):
             result = True
-        elif device == DEVICE_ATS_1 and check_exist_command(command):
+        elif device == DEVICE_ATS and check_exist_command(command):
             result = True
-        elif device == DEVICE_MCC_1 and check_exist_command(command):
+        elif device == DEVICE_MCC and check_exist_command(command):
             result = True
     except Exception as ex:
         LOGGER.error('Error at _check_command_send_rpc function with message: %s', ex.message)
@@ -177,7 +177,7 @@ def compose_command_rpc(device, command):
     LOGGER.info('Enter compose_command_rpc function')
     result = -1
     try:
-        if device == DEVICE_MCC_1:
+        if device == DEVICE_MCC:
             device = ID_MCC
             command_int = parse_mcc_command_to_number(command)
             target = get_target_by_command_mcc(command)
@@ -185,7 +185,7 @@ def compose_command_rpc(device, command):
                 result = struct.pack(FORMAT_RPC, 0xA0, 0x04, 0x21, device, target, command_int)
             else:
                 LOGGER.error('Error at device %s with command_int or target is not integer: command_int: %s, target: %s', str(device), str(command_int), str(target))
-        elif device == DEVICE_ATS_1:
+        elif device == DEVICE_ATS:
             device = ID_ATS
             command_int = parse_ats_command_to_number(command)
             target = get_target_by_command_ats(command)
@@ -193,7 +193,7 @@ def compose_command_rpc(device, command):
                 result = struct.pack(FORMAT_RPC, 0xA0, 0x04, 0x21, device, target, command_int)
             else:
                 LOGGER.error('Error at device %s with command_int or target is not integer: command_int: %s, target: %s', str(device), str(command_int), str(target))
-        elif device == DEVICE_ACM_1:
+        elif device == DEVICE_ACM:
             device = ID_ACM
             command_int = parse_acm_command_to_number(command)
             target = get_target_by_command_acm(command)

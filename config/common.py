@@ -3,10 +3,6 @@ from config.common_command import *
 
 DEVICE_ATS = 'device_ats'
 
-DEVICE_MCC_1 = 'GW005_MCC_1'
-DEVICE_ATS_1 = 'GW005_ATS_1'
-DEVICE_ACM_1 = 'GW005_ACM_1'
-
 # response rfid
 RESPONSE_RFID = 5
 

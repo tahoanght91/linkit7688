@@ -96,7 +96,7 @@ def fake_shared_attributes():
 
 
 def format_client_attributes(dict_attributes):
-    list_client_attributes = {DEVICE_MCC_1: {}, DEVICE_ATS_1: {}, DEVICE_ACM_1: {}}
+    list_client_attributes = {DEVICE_MCC: {}, DEVICE_ATS: {}, DEVICE_ACM: {}}
     client_attributes_mcc_1 = {}
     client_attributes_ats_1 = {}
     client_attributes_acm_1 = {}
@@ -111,11 +111,11 @@ def format_client_attributes(dict_attributes):
             client_attributes_acm_1[key] = value
 
     if client_attributes_ats_1:
-        list_client_attributes[DEVICE_ATS_1] = client_attributes_ats_1
+        list_client_attributes[DEVICE_ATS] = client_attributes_ats_1
     if client_attributes_acm_1:
-        list_client_attributes[DEVICE_ACM_1] = client_attributes_acm_1
+        list_client_attributes[DEVICE_ACM] = client_attributes_acm_1
     if client_attributes_mcc_1:
-        list_client_attributes[DEVICE_MCC_1] = client_attributes_mcc_1
+        list_client_attributes[DEVICE_MCC] = client_attributes_mcc_1
 
     return list_client_attributes
 
