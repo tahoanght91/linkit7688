@@ -1,5 +1,5 @@
 /etc/init.d/7688 stop
-cp config/devices.json /IoT
+cp /IoT/linkit7688/config/devices.json /IoT
 rm -rf linkit7688
 git clone https://github.com/huyfr/linkit7688.git
 cd linkit7688
