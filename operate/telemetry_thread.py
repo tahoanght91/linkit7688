@@ -13,6 +13,10 @@ def call():
             for key, value in telemetry.items():
                 CLIENT.gw_send_telemetry(key, value)
             LOGGER.info('Sent telemetry data')
+            log_info = []
+            for key, value in telemetries.items():
+                log_info.append('\t{:>20s}: {:>20s}'.format(str(key), str(value)))
+            LOGGER.info('\n'.join(log_info))
             telemetries_lock.acquire()
             telemetries.clear()
             telemetries_lock.release()
