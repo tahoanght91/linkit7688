@@ -1,8 +1,6 @@
 # device_name
 from config.common_command import *
 
-DEVICE_ATS = 'device_ats'
-
 # response rfid
 RESPONSE_RFID = 5
 
