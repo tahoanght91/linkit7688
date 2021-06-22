@@ -220,13 +220,13 @@ def _read_data(byte_stream):
         LOGGER.info('ATS message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
                     len(data), _OpData.ATS_SIZE)
         if _check_data(frame_length, data, _OpData.ATS_SIZE):
-            ats.extract(data[1:])
+            ats.extract(data)
             return True
     elif op_code == _OpData.IO_STATUS_ACM:  # ACM
         LOGGER.info('ACM message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
                     len(data), _OpData.ACM_SIZE)
         if _check_data(frame_length, data, _OpData.ACM_SIZE):
-            acm.extract(data[1:])
+            acm.extract(data)
             return True
     elif op_code == _OpData.IO_STATUS_MCC:  # MCC
         LOGGER.info('MCC message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
