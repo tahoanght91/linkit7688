@@ -96,7 +96,7 @@ def call():
         CLIENT.gw_subscribe_to_all_attributes(callback=subscription_thread._attribute_change_callback)
         CLIENT.gw_set_server_side_rpc_request_handler(handler=subscription_thread._gw_rpc_callback)
 
-        thread_list = [io_thread, update_attributes_thread, telemetry_thread, led_thread, lcd_thread, shared_attributes_thread, rfid_thread]
+        thread_list = [io_thread, update_attributes_thread, telemetry_thread, led_thread, monitor_thread, lcd_thread, shared_attributes_thread, rfid_thread]
 
         # enable when test flow read value
         # thread_list = [io_thread, update_attributes_thread, telemetry_thread]
@@ -143,9 +143,9 @@ def call():
                 CLIENT.disconnect()
                 LOGGER.info('Retrieve update from server')
                 try:
-                    subprocess.check_call(
-                        'cd /IoT && git clone https://github.com/MeryKitty/linkit7688 && mv ./linkit ./linkit_old && mv ./linkit7688 ./linkit',
-                        stdout=subprocess.STDOUT, stderr=subprocess.STDOUT)
+                    # subprocess.check_call(
+                    #     'cd /IoT && git clone https://github.com/MeryKitty/linkit7688 && mv ./linkit ./linkit_old && mv ./linkit7688 ./linkit',
+                    #     stdout=subprocess.STDOUT, stderr=subprocess.STDOUT)
                     LOGGER.info('Successfully update the program, reboot the system')
                     CLIENT.gw_disconnect_device(DEVICE_MCC)
                     CLIENT.gw_disconnect_device(DEVICE_ATS)
