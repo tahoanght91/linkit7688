@@ -16,13 +16,14 @@ LIST_KEY_CODE = [KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26, KEYCODE_24]
 json_file = open('config/lcd.json')
 dct_lcd = json.load(json_file)
 
-
 def call():
     try:
         period = 3
         while True:
             if CLIENT.is_connected():
                 result_check_input = check_lcd_service(lcd_services)
+                result_check_input.key_code = KEYCODE_24
+                result_check_input.key_event = EVENT_UP
                 if result_check_input.key_code > 0 and result_check_input.key_event > 0:
                     result_switch_lcd = switch_lcd_service(result_check_input)
                     cmd_lcd_lock.acquire()
@@ -79,9 +80,16 @@ def enter_lcd_service():
                 last_trace.index_level2 = dct_lcd['lcd']['category']['menu']['level']['lv1'][last_trace.index_level1]['lv2']['keys'].index(last_trace.name)
             elif last_trace.level == MENU_LEVEL_2:
                 if last_trace.value == -1:
-                    value = shared_attributes[last_trace.name]
-                    last_trace.level = MENU_LEVEL_2
+                    value = shared_attributes[last_trace.name] if last_trace.name in shared_attributes.keys() else 0
+                    last_trace.level = MENU_LEVEL_3
                     last_trace.value = value
+            elif last_trace.level == MENU_LEVEL_3:
+                # body = write_body_send_shared_attributes(last_trace.name, last_trace.value)
+                # result = send_shared_attributes(body)
+                result = True
+                if result:
+                    last_trace.value = -1
+                    last_trace.level = MENU_LEVEL_2
         else:
             pass
     except Exception as ex:
@@ -115,6 +123,12 @@ def navigate_lcd_service(key_code):
                     index = dct_lcd['lcd']['category']['menu']['level']['lv1'][last_trace.index_level1]['lv2']['maxIndex']
             last_trace.index_level2 = index
             last_trace.name = dct_lcd['lcd']['category']['menu']['level']['lv1'][last_trace.index_level1]['lv2']['keys'][index]
+        elif last_trace.category == KEYCODE_16 and last_trace.level == MENU_LEVEL_3:
+            if key_code == KEYCODE_14:
+                index = last_trace.value + 1
+            elif key_code == KEYCODE_34:
+                index = last_trace.value - 1
+            last_trace.value = index
     except Exception as ex:
         LOGGER.error('Error at confirm_lcd_service function with message: %s', ex.message)
     return last_trace
