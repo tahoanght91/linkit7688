@@ -9,7 +9,7 @@ from devices.utils import read_lcd_services
 from model.lcd import Lcd
 from utility import bytes_to_int
 
-URL_SEND_SA = 'https://backend.smartsite.dft.vn/api/services/app/DMTram/ChangeValueTemplate'
+URL_SEND_SA = 'http://123.30.214.139:8517/api/services/app/DMTram/ChangeValueTemplate'
 menu_level_1 = [MCC, ACM, ATS]
 LIST_KEY_EVENT = [EVENT_NONE, EVENT_DOWN, EVENT_UP, EVENT_HOLD, EVENT_POWER]
 LIST_KEY_CODE = [KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26, KEYCODE_24]
@@ -22,8 +22,8 @@ def call():
         while True:
             if CLIENT.is_connected():
                 result_check_input = check_lcd_service(lcd_services)
-                result_check_input.key_code = KEYCODE_24
-                result_check_input.key_event = EVENT_UP
+                # result_check_input.key_code = KEYCODE_16
+                # result_check_input.key_event = EVENT_UP
                 if result_check_input.key_code > 0 and result_check_input.key_event > 0:
                     result_switch_lcd = switch_lcd_service(result_check_input)
                     cmd_lcd_lock.acquire()
