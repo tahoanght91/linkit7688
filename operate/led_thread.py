@@ -22,9 +22,9 @@ def get_led_value():
     # telemetries = demo
     try:
         dct_led[LED_SERVER] = get_state_led_server()
-        dct_led[LED_ATS] = client_attributes['atsState']
+        dct_led[LED_ATS] = client_attributes['atsConnect']
         dct_led[LED_DC] = client_attributes['mccDcCabinetSate']
-        dct_led[LED_ACM] = client_attributes['acmIState']
+        dct_led[LED_ACM] = client_attributes['acmOnlineState']
         dct_led[LED_ATU] = 0
         dct_led[LED_1] = 0
         dct_led[LED_2] = 0
@@ -55,7 +55,7 @@ def compose_led_command(values):
 def validate_value(value):
     result = RED
     try:
-        if value == 1:
+        if value >= 1:
             result = GREEN
         return result
     except Exception as ex:
