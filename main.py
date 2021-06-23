@@ -14,7 +14,7 @@ from operate import main_thread
 def main():
     root = logging.getLogger('App')
     root.setLevel(logging.DEBUG)
-    size_bytes = 200000  # bytes
+    size_bytes = 1500000  # bytes
     handler = RotatingFileHandler('app.log', mode='a', maxBytes=size_bytes, backupCount=1, encoding=None, delay=False)
     formatter = logging.Formatter('%(asctime)s - %(filename)s:%(lineno)s - %(funcName)s() - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
