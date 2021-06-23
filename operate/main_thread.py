@@ -125,16 +125,16 @@ def call():
                     LOGGER.debug('Thread %s died, restarting', thread.getName())
                     thread_list[i] = _init_thread(thread)
 
-            # try:
-            #     # TODO: Check copy file
-            #     for key in default_data.data_dict:
-            #         for sub_key in default_data.data_dict[key]:
-            #             default_data.data_dict[key][sub_key] = default_data.__dict__[sub_key]
-            #     with io.open('/IoT/linkit7688/config/data.tmp', 'w+', encoding='utf8') as f:
-            #         f.write(unicode(json.dumps(default_data.data_dict, ensure_ascii=True), 'utf8'))
-            #     os.system('rm /IoT/linkit7688/config/data.json && mv /IoT/linkit7688/config/data.tmp /IoT/linkit7688/config/data.json')
-            # except Exception as e:
-            #     LOGGER.error('Cannot persist data, error %s', str(e))
+            try:
+                # TODO: Check copy file
+                for key in default_data.data_dict:
+                    for sub_key in default_data.data_dict[key]:
+                        default_data.data_dict[key][sub_key] = default_data.__dict__[sub_key]
+                with io.open('/IoT/linkit7688/config/data.tmp', 'w+', encoding='utf8') as f:
+                    f.write(unicode(json.dumps(default_data.data_dict, ensure_ascii=True), 'utf8'))
+                os.system('rm /IoT/linkit7688/config/data.json && mv /IoT/linkit7688/config/data.tmp /IoT/linkit7688/config/data.json')
+            except Exception as e:
+                LOGGER.error('Cannot persist data, error %s', str(e))
 
             current_update_cycle = math.floor(time.time() / UPDATE_PERIOD)
             if current_update_cycle > original_update_cycle and CLIENT.is_connected():
