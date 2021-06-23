@@ -4,6 +4,8 @@ import time
 import math
 import subprocess
 
+import requests
+
 from config import *
 from config.common import *
 from config.default_data import data_dict
@@ -136,24 +138,32 @@ def call():
 
             current_update_cycle = math.floor(time.time() / UPDATE_PERIOD)
             if current_update_cycle > original_update_cycle and CLIENT.is_connected():
-                LOGGER.info('Update system, disconnect with server')
-                CLIENT.gw_disconnect_device(DEVICE_MCC)
-                CLIENT.gw_disconnect_device(DEVICE_ATS)
-                CLIENT.gw_disconnect_device(DEVICE_ACM)
-                CLIENT.disconnect()
-                LOGGER.info('Retrieve update from server')
+                latest_version = -1
+                current_version = -1
+                link_update = ''
+                link_version = ''
                 try:
-                    # subprocess.check_call(
-                    #     'cd /IoT && git clone https://github.com/MeryKitty/linkit7688 && mv ./linkit ./linkit_old && mv ./linkit7688 ./linkit',
-                    #     stdout=subprocess.STDOUT, stderr=subprocess.STDOUT)
-                    LOGGER.info('Successfully update the program, reboot the system')
-                    CLIENT.gw_disconnect_device(DEVICE_MCC)
-                    CLIENT.gw_disconnect_device(DEVICE_ATS)
-                    CLIENT.gw_disconnect_device(DEVICE_ACM)
-                    CLIENT.disconnect()
-                    os.system('reboot')
-                except subprocess.CalledProcessError as e:
-                    LOGGER.error('Cannot update repository, error %s', str(e))
+                    link_update = shared_attributes['mccLinkUpdate']
+                    link_version = shared_attributes['mccLinkVersion']
+                    if link_version is not '':
+                        response_get_version = requests.get(link_version)
+                        if response_get_version.status_code == 200:
+                            latest_version = json.loads(response_get_version.content)['version']
+                    version_file = open('./version.json', )
+                    current_version = json.load(version_file)['version']
+                    if latest_version > 0 and current_version > 0:
+                        if latest_version > current_version:
+                            LOGGER.info('Get new version: %s from server: %s', str(latest_version), link_version)
+                            LOGGER.info('Update system, disconnect with server')
+                            CLIENT.gw_disconnect_device(DEVICE_MCC)
+                            CLIENT.gw_disconnect_device(DEVICE_ATS)
+                            CLIENT.gw_disconnect_device(DEVICE_ACM)
+                            CLIENT.disconnect()
+                            subprocess.check_call('cd /IoT && ./update.sh && echo update successful!', stdout=subprocess.STDOUT, stderr=subprocess.STDOUT)
+                        else:
+                            pass
+                except Exception as ex:
+                    LOGGER.error('Cannot update repository, error %s', ex.message)
             time.sleep(period)
     except KeyboardInterrupt:
         CLIENT.gw_disconnect_device(DEVICE_MCC)
