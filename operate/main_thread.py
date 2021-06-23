@@ -4,6 +4,8 @@ import time
 import math
 import subprocess
 
+import requests
+
 from config import *
 from config.common import *
 from config.default_data import data_dict
@@ -96,7 +98,7 @@ def call():
         CLIENT.gw_subscribe_to_all_attributes(callback=subscription_thread._attribute_change_callback)
         CLIENT.gw_set_server_side_rpc_request_handler(handler=subscription_thread._gw_rpc_callback)
 
-        thread_list = [io_thread, update_attributes_thread, telemetry_thread, led_thread, monitor_thread, lcd_thread, shared_attributes_thread, rfid_thread]
+        thread_list = [io_thread, update_attributes_thread, telemetry_thread, led_thread, lcd_thread, shared_attributes_thread, rfid_thread]
 
         # enable when test flow read value
         # thread_list = [io_thread, update_attributes_thread, telemetry_thread]
@@ -123,37 +125,45 @@ def call():
                     LOGGER.debug('Thread %s died, restarting', thread.getName())
                     thread_list[i] = _init_thread(thread)
 
-            try:
-                # TODO: Check copy file
-                for key in default_data.data_dict:
-                    for sub_key in default_data.data_dict[key]:
-                        default_data.data_dict[key][sub_key] = default_data.__dict__[sub_key]
-                with io.open('./config/data.tmp', 'w+', encoding='utf8') as f:
-                    f.write(unicode(json.dumps(default_data.data_dict, ensure_ascii=True), 'utf8'))
-                os.system('rm ./config/data.json && mv ./config/data.tmp ./config/data.json')
-            except Exception as e:
-                LOGGER.error('Cannot persist data, error %s', str(e))
+            # try:
+            #     # TODO: Check copy file
+            #     for key in default_data.data_dict:
+            #         for sub_key in default_data.data_dict[key]:
+            #             default_data.data_dict[key][sub_key] = default_data.__dict__[sub_key]
+            #     with io.open('/IoT/linkit7688/config/data.tmp', 'w+', encoding='utf8') as f:
+            #         f.write(unicode(json.dumps(default_data.data_dict, ensure_ascii=True), 'utf8'))
+            #     os.system('rm /IoT/linkit7688/config/data.json && mv /IoT/linkit7688/config/data.tmp /IoT/linkit7688/config/data.json')
+            # except Exception as e:
+            #     LOGGER.error('Cannot persist data, error %s', str(e))
 
             current_update_cycle = math.floor(time.time() / UPDATE_PERIOD)
             if current_update_cycle > original_update_cycle and CLIENT.is_connected():
-                LOGGER.info('Update system, disconnect with server')
-                CLIENT.gw_disconnect_device(DEVICE_MCC)
-                CLIENT.gw_disconnect_device(DEVICE_ATS)
-                CLIENT.gw_disconnect_device(DEVICE_ACM)
-                CLIENT.disconnect()
-                LOGGER.info('Retrieve update from server')
+                latest_version = -1
+                current_version = -1
+                link_update = ''
+                link_version = ''
                 try:
-                    # subprocess.check_call(
-                    #     'cd /IoT && git clone https://github.com/MeryKitty/linkit7688 && mv ./linkit ./linkit_old && mv ./linkit7688 ./linkit',
-                    #     stdout=subprocess.STDOUT, stderr=subprocess.STDOUT)
-                    LOGGER.info('Successfully update the program, reboot the system')
-                    CLIENT.gw_disconnect_device(DEVICE_MCC)
-                    CLIENT.gw_disconnect_device(DEVICE_ATS)
-                    CLIENT.gw_disconnect_device(DEVICE_ACM)
-                    CLIENT.disconnect()
-                    os.system('reboot')
-                except subprocess.CalledProcessError as e:
-                    LOGGER.error('Cannot update repository, error %s', str(e))
+                    link_update = shared_attributes['mccLinkUpdate']
+                    link_version = shared_attributes['mccLinkVersion']
+                    if link_version is not '':
+                        response_get_version = requests.get(link_version)
+                        if response_get_version.status_code == 200:
+                            latest_version = json.loads(response_get_version.content)['version']
+                    version_file = open('./version.json', )
+                    current_version = json.load(version_file)['version']
+                    if latest_version > 0 and current_version > 0:
+                        if latest_version > current_version:
+                            LOGGER.info('Get new version: %s from server: %s', str(latest_version), link_version)
+                            LOGGER.info('Update system, disconnect with server')
+                            CLIENT.gw_disconnect_device(DEVICE_MCC)
+                            CLIENT.gw_disconnect_device(DEVICE_ATS)
+                            CLIENT.gw_disconnect_device(DEVICE_ACM)
+                            CLIENT.disconnect()
+                            subprocess.check_call('cd /IoT && ./update.sh && echo update successful!', stdout=subprocess.STDOUT, stderr=subprocess.STDOUT)
+                        else:
+                            pass
+                except Exception as ex:
+                    LOGGER.error('Cannot update repository, error %s', ex.message)
             time.sleep(period)
     except KeyboardInterrupt:
         CLIENT.gw_disconnect_device(DEVICE_MCC)

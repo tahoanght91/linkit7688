@@ -70,7 +70,7 @@ def write_log(rfid_card, status):
     try:
         LOGGER.info('Enter write_log function')
         now = round(time.time() * 1000)
-        body = {"rfidCard": rfid_card, "status": status, "createdAt": now}
+        body = {"gatewayId": CLIENT_ID, "rfidCard": rfid_card, "status": status, "createdAt": now}
         LOGGER.info('Content of log: %s', body)
         LOGGER.info('Exit the function write_log')
         return body

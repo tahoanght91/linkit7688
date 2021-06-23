@@ -277,7 +277,7 @@ def _process_cmd_lcd(key_lcd, content):
     try:
         result = compose_command_lcd(key_lcd, content)
         result_encode = ':'.join(x.encode('hex') for x in result)
-        LOGGER.debug('Process led command: key_lcd: %s, content: %s, after decode is: %s', key_lcd, content, result_encode)
+        LOGGER.debug('Process lcd command: key_lcd: %s, content: %s, after decode is: %s', key_lcd, content, result_encode)
         return result
     except Exception as ex:
         LOGGER.error('Error at _process_cmd_lcd function with message: %s', ex.message)

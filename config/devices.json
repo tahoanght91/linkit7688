@@ -1,8 +1,8 @@
 {
     "host": "123.30.214.139",
-    "access_token": "0vLZuywq1nNvBDPr50v6",
-    "device_id": "25035880-c8ee-11eb-a306-478ca383135e",
-    "mcc": "GW005_MCC_1",
-    "acm": "GW005_ACM_1",
-    "ats": "GW005_ATS_1"
+    "access_token": "hgtQcIFDMwa5gjivW89c",
+    "device_id": "cd1b3a60-d320-11eb-b011-d7c39066a397",
+    "mcc": "GW-1_MCC",
+    "acm": "GW-1-ACM",
+    "ats": "GW-1-ATS"
 }
