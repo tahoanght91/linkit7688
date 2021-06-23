@@ -5,6 +5,8 @@
     "mccPeriodUpdate": 5,
     "mccListRfid": [],
     "mccListStaff": [],
+    "mccLinkUpdate": "",
+    "mccLinkVersion": "",
     "mccDcMinThreshold": 30,
     "mccDoorOpenTime": 5,
     "acmControlAuto": 1,

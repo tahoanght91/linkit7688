@@ -159,7 +159,8 @@ def call():
                             CLIENT.gw_disconnect_device(DEVICE_ATS)
                             CLIENT.gw_disconnect_device(DEVICE_ACM)
                             CLIENT.disconnect()
-                            subprocess.check_call('cd /IoT && ./update.sh && echo update successful!', stdout=subprocess.STDOUT, stderr=subprocess.STDOUT)
+                            command = 'cd /IoT && ./update.sh && echo update successful!'
+                            subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
                         else:
                             pass
                 except Exception as ex:
