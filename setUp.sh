@@ -1,3 +1,5 @@
+opkg update
+opkg install unzip
 chmod +x *.sh
 cp setIp.sh /IoT
 cp update.sh /IoT
