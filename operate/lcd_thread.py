@@ -13,7 +13,7 @@ from utility import bytes_to_int
 URL_SEND_SA = 'http://123.30.214.139:8517/api/services/app/DMTram/ChangeValueTemplate'
 menu_level_1 = [MCC, ACM, ATS]
 LIST_KEY_EVENT = [EVENT_NONE, EVENT_DOWN, EVENT_UP, EVENT_HOLD, EVENT_POWER]
-LIST_KEY_CODE = [KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26, KEYCODE_24]
+LIST_KEY_CODE = [KEYCODE_11, KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26, KEYCODE_24]
 json_file = open('config/lcd.json')
 dct_lcd = json.load(json_file)
 
@@ -23,19 +23,24 @@ def call():
         while True:
             if CLIENT.is_connected():
                 result_check_input = check_lcd_service(lcd_services)
-                # result_check_input.key_code = KEYCODE_16
+                # result_check_input.key_code = KEYCODE_11
                 # result_check_input.key_event = EVENT_UP
                 if result_check_input.key_code > 0 and result_check_input.key_event > 0:
-                    result_switch_lcd = switch_lcd_service(result_check_input)
-                    cmd_lcd_lock.acquire()
-                    if result_switch_lcd.value < 0:
-                        cmd_lcd[UPDATE_VALUE] = result_switch_lcd.name
-                        # cmd_sa_formatted = {'key_lcd': UPDATE_VALUE, 'content': result_switch_lcd.name}
+                    if result_check_input.key_code == KEYCODE_11:
+                        cmd_lcd[CLEAR] = ''
+                        # cmd_sa_formatted = {'key_lcd': CLEAR, 'content': ''}
                         # process_cmd_lcd(cmd_sa_formatted)
                     else:
-                        cmd_lcd[UPDATE_VALUE] = result_switch_lcd.value
-                        # cmd_sa_formatted = {'key_lcd': UPDATE_VALUE, 'content': result_switch_lcd.value}
-                        # process_cmd_lcd(cmd_sa_formatted)
+                        result_switch_lcd = switch_lcd_service(result_check_input)
+                        cmd_lcd_lock.acquire()
+                        if result_switch_lcd.value < 0:
+                            cmd_lcd[UPDATE_VALUE] = result_switch_lcd.name
+                            # cmd_sa_formatted = {'key_lcd': UPDATE_VALUE, 'content': result_switch_lcd.name}
+                            # process_cmd_lcd(cmd_sa_formatted)
+                        else:
+                            cmd_lcd[UPDATE_VALUE] = result_switch_lcd.value
+                            # cmd_sa_formatted = {'key_lcd': UPDATE_VALUE, 'content': result_switch_lcd.value}
+                            # process_cmd_lcd(cmd_sa_formatted)
                     cmd_lcd_lock.release()
                     set_last_trace(result_switch_lcd)
                     lcd_services.clear()
@@ -85,7 +90,7 @@ def enter_lcd_service():
                 last_trace.index_level2 = dct_lcd['lcd']['category']['menu']['level']['lv1'][last_trace.index_level1]['lv2']['keys'].index(last_trace.name)
             elif last_trace.level == MENU_LEVEL_2:
                 if last_trace.value == -1:
-                    value = shared_attributes[last_trace.name] if last_trace.name in shared_attributes.keys() else 0
+                    value = shared_attributes.get(last_trace.name, default_data[last_trace.name])
                     last_trace.level = MENU_LEVEL_3
                     last_trace.value = value
             elif last_trace.level == MENU_LEVEL_3:
