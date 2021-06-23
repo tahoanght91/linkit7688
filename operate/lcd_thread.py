@@ -5,6 +5,7 @@ import requests
 from config import *
 from config.common import *
 from config.common_lcd_services import *
+from control import process_cmd_sa, process_cmd_lcd
 from devices.utils import read_lcd_services
 from model.lcd import Lcd
 from utility import bytes_to_int
@@ -29,8 +30,12 @@ def call():
                     cmd_lcd_lock.acquire()
                     if result_switch_lcd.value < 0:
                         cmd_lcd[UPDATE_VALUE] = result_switch_lcd.name
+                        # cmd_sa_formatted = {'key_lcd': UPDATE_VALUE, 'content': result_switch_lcd.name}
+                        # process_cmd_lcd(cmd_sa_formatted)
                     else:
                         cmd_lcd[UPDATE_VALUE] = result_switch_lcd.value
+                        # cmd_sa_formatted = {'key_lcd': UPDATE_VALUE, 'content': result_switch_lcd.value}
+                        # process_cmd_lcd(cmd_sa_formatted)
                     cmd_lcd_lock.release()
                     set_last_trace(result_switch_lcd)
                     lcd_services.clear()

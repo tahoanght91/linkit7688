@@ -241,16 +241,14 @@ def compose_command_shared_attributes(module_id, value):
 def compose_command_lcd(key_lcd, content):
     op_code_lcd = 0X31
     try:
-        str_content = content.encode('ascii', 'ignore')
+        convert_str = str(content)
+        str_content = convert_str.encode('ascii', 'ignore')
         if key_lcd == UPDATE_VALUE:
             arr_char = [char for char in str_content]
             prefix = ''.join([char * len(arr_char) for char in CHAR_S])
             length = len(arr_char) + 3
-            row = 0x03
+            row = 3
             result = struct.pack(FORMAT_LCD + prefix, 0xA0, length, op_code_lcd, key_lcd, row, *arr_char)
-
-            # uncomment when test string in lcd
-            # result = struct.pack(FORMAT_LCD + 'sss', 0xA0, length, op_code_lcd, key_lcd, row, *['m', 'c', 'c'])
             return result
         elif key_lcd == CLEAR:
             length = 2
