@@ -1,30 +1,49 @@
 import utility
 from . import utils
-from config import BYTE_ORDER
+from config import BYTE_ORDER, LOGGER
 
 
 def extract(byte_data):
     # client attributes
     acmOnlineState = utility.bytes_to_int(byte_data[0])
+    LOGGER.info(byte_data[0])
     acmAutoMode = utility.bytes_to_int(byte_data[1])
+    LOGGER.info(byte_data[1])
     acmTempError = utility.bytes_to_int(byte_data[2])
+    LOGGER.info(byte_data[2])
     acmHumidError = utility.bytes_to_int(byte_data[3])
+    LOGGER.info(byte_data[3])
     acmIState = utility.bytes_to_int(byte_data[4])
+    LOGGER.info(byte_data[4])
     acmAirc1RunState = utility.bytes_to_int(byte_data[5])
+    LOGGER.info(byte_data[5])
     acmAirc2RunState = utility.bytes_to_int(byte_data[6])
+    LOGGER.info(byte_data[6])
     acmAirc1Error = utility.bytes_to_int(byte_data[7])
+    LOGGER.info(byte_data[7])
     acmAirc2Error = utility.bytes_to_int(byte_data[8])
+    LOGGER.info(byte_data[8])
     acmFanRunState = utility.bytes_to_int(byte_data[9])
+    LOGGER.info(byte_data[9])
     acmFanError = utility.bytes_to_int(byte_data[10])
+    LOGGER.info(byte_data[10])
+
 
     #telemetry
     acmTempIndoor = utility.bytes_to_int(byte_data[11:13], byteorder=BYTE_ORDER)
+    LOGGER.info(byte_data[11:13])
     acmTempOutdoor = utility.bytes_to_int(byte_data[13:15], byteorder=BYTE_ORDER)
+    LOGGER.info(byte_data[13:15])
     acmHumidIndoor = utility.bytes_to_int(byte_data[15:17], byteorder=BYTE_ORDER)
+    LOGGER.info(byte_data[15:17])
     acmT1Temp = utility.bytes_to_int(byte_data[17:19], byteorder=BYTE_ORDER)
+    LOGGER.info(byte_data[17:19])
     acmT2Temp = utility.bytes_to_int(byte_data[19:21], byteorder=BYTE_ORDER)
+    LOGGER.info(byte_data[19:21])
     acmT3Temp = utility.bytes_to_int(byte_data[21:23], byteorder=BYTE_ORDER)
+    LOGGER.info(byte_data[21:23])
     acmT4Temp = utility.bytes_to_int(byte_data[23:25], byteorder=BYTE_ORDER)
+    LOGGER.info(byte_data[23:25])
 
     #telemetry
     utils._read_telemetry('acmTempIndoor', acmTempIndoor)
