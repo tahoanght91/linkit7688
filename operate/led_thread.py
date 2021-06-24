@@ -2,14 +2,12 @@ import time
 
 from config import *
 from config.common_led import *
-from operate.telemetry_thread import replica_telemetry
 
 dct_last_trace_led_alarm = {}
 
 
 def call():
     period = shared_attributes.get('mccPeriodSendTelemetry', default_data.mccPeriodSendTelemetry)
-    # demo = replica_telemetry()
     while True:
         dct_led_value = get_led_value()
         if len(dct_led_value) > 0:
@@ -19,7 +17,6 @@ def call():
 
 def get_led_value():
     dct_led = {}
-    # telemetries = demo
     try:
         dct_led[LED_SERVER] = get_state_led_server()
         dct_led[LED_ATS] = client_attributes['atsConnect']
@@ -72,10 +69,10 @@ def get_sate_led_alarm(dct_telemetry):
     try:
         new_list_telemetries = dict(filter(lambda elem: elem[0].lower().find('state') != -1, dct_telemetry.items()))
         if len(new_list_telemetries) == 0:
-            result = GREEN
+            result = 1
         elif len(new_list_telemetries) > 0:
             check = any(elem != 0 for elem in new_list_telemetries.values())
-            result = RED if check else GREEN
+            result = 0 if check else 1
     except Exception as ex:
         LOGGER.error('Error at get_sate_led_alarm function with message: %s', ex.message)
     return result
