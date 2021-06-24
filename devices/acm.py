@@ -1,6 +1,6 @@
 import utility
 from . import utils
-from config import BYTE_ORDER, LOGGER
+from config import BYTE_ORDER
 
 
 def extract(byte_data):
@@ -18,22 +18,22 @@ def extract(byte_data):
     acmFanError = utility.bytes_to_int(byte_data[10])
 
     #telemetry
-    acmTempIndoor = utility.bytes_to_int(byte_data[10:12], byteorder=BYTE_ORDER)
-    acmTempOutdoor = utility.bytes_to_int(byte_data[12:14], byteorder=BYTE_ORDER)
-    acmHumidIndoor = utility.bytes_to_int(byte_data[14:16], byteorder=BYTE_ORDER)
-    acmT1Temp = utility.bytes_to_int(byte_data[16:18], byteorder=BYTE_ORDER)
-    acmT2Temp = utility.bytes_to_int(byte_data[18:20], byteorder=BYTE_ORDER)
-    acmT3Temp = utility.bytes_to_int(byte_data[20:22], byteorder=BYTE_ORDER)
-    acmT4Temp = utility.bytes_to_int(byte_data[22:24], byteorder=BYTE_ORDER)
+    acmTempIndoor = utility.bytes_to_int(byte_data[11:13], byteorder=BYTE_ORDER)
+    acmTempOutdoor = utility.bytes_to_int(byte_data[13:15], byteorder=BYTE_ORDER)
+    # acmHumidIndoor = utility.bytes_to_int(byte_data[13:14], byteorder=BYTE_ORDER)
+    # acmT1Temp = utility.bytes_to_int(byte_data[14:15], byteorder=BYTE_ORDER)
+    # acmT2Temp = utility.bytes_to_int(byte_data[15:16], byteorder=BYTE_ORDER)
+    # acmT3Temp = utility.bytes_to_int(byte_data[16:17], byteorder=BYTE_ORDER)
+    # acmT4Temp = utility.bytes_to_int(byte_data[22:24], byteorder=BYTE_ORDER)
 
     #telemetry
     utils._read_telemetry('acmTempIndoor', acmTempIndoor)
     utils._read_telemetry('acmTempOutdoor', acmTempOutdoor)
-    utils._read_telemetry('acmHumidIndoor', acmHumidIndoor)
-    utils._read_telemetry('acmT1Temp', acmT1Temp)
-    utils._read_telemetry('acmT2Temp', acmT2Temp)
-    utils._read_telemetry('acmT3Temp', acmT3Temp)
-    utils._read_telemetry('acmT4Temp', acmT4Temp)
+    # utils._read_telemetry('acmHumidIndoor', acmHumidIndoor)
+    # utils._read_telemetry('acmT1Temp', acmT1Temp)
+    # utils._read_telemetry('acmT2Temp', acmT2Temp)
+    # utils._read_telemetry('acmT3Temp', acmT3Temp)
+    # utils._read_telemetry('acmT4Temp', acmT4Temp)
 
     #client attributes
     utils._read_telemetry('acmTempError', acmTempError)
