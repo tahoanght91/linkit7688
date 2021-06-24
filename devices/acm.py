@@ -4,8 +4,6 @@ from config import BYTE_ORDER, LOGGER
 
 
 def extract(byte_data):
-    byte_stream_decode = ':'.join(x.encode('hex') for x in byte_data)
-    LOGGER.info('Byte data ACM after decode: %s', byte_stream_decode)
     # client attributes
     acmOnlineState = utility.bytes_to_int(byte_data[0])
     acmAutoMode = utility.bytes_to_int(byte_data[1])
@@ -19,15 +17,14 @@ def extract(byte_data):
     acmFanRunState = utility.bytes_to_int(byte_data[9])
     acmFanError = utility.bytes_to_int(byte_data[10])
 
-
     #telemetry
-    acmTempIndoor = utility.bytes_to_int(byte_data[11:13], byteorder=BYTE_ORDER)
-    acmTempOutdoor = utility.bytes_to_int(byte_data[13:15], byteorder=BYTE_ORDER)
-    acmHumidIndoor = utility.bytes_to_int(byte_data[15:17], byteorder=BYTE_ORDER)
-    acmT1Temp = utility.bytes_to_int(byte_data[17:19], byteorder=BYTE_ORDER)
-    acmT2Temp = utility.bytes_to_int(byte_data[19:21], byteorder=BYTE_ORDER)
-    acmT3Temp = utility.bytes_to_int(byte_data[21:23], byteorder=BYTE_ORDER)
-    acmT4Temp = utility.bytes_to_int(byte_data[23:25], byteorder=BYTE_ORDER)
+    acmTempIndoor = utility.bytes_to_int(byte_data[10:12], byteorder=BYTE_ORDER)
+    acmTempOutdoor = utility.bytes_to_int(byte_data[12:14], byteorder=BYTE_ORDER)
+    acmHumidIndoor = utility.bytes_to_int(byte_data[14:16], byteorder=BYTE_ORDER)
+    acmT1Temp = utility.bytes_to_int(byte_data[16:18], byteorder=BYTE_ORDER)
+    acmT2Temp = utility.bytes_to_int(byte_data[18:20], byteorder=BYTE_ORDER)
+    acmT3Temp = utility.bytes_to_int(byte_data[20:22], byteorder=BYTE_ORDER)
+    acmT4Temp = utility.bytes_to_int(byte_data[22:24], byteorder=BYTE_ORDER)
 
     #telemetry
     utils._read_telemetry('acmTempIndoor', acmTempIndoor)
