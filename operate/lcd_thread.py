@@ -39,7 +39,7 @@ def call():
                         result_switch_lcd = switch_lcd_service(result_check_input)
                         cmd_lcd_lock.acquire()
                         if result_switch_lcd.value < 0:
-                            cmd_lcd[UPDATE_VALUE] = result_switch_lcd.name
+                            cmd_lcd[UPDATE_VALUE] = str(result_switch_lcd.name)
                             # cmd_sa_formatted = {'key_lcd': UPDATE_VALUE, 'content': result_switch_lcd.name}
                             # process_cmd_lcd(cmd_sa_formatted)
                         else:
