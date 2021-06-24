@@ -241,13 +241,20 @@ def compose_command_shared_attributes(module_id, value):
 def compose_command_lcd(key_lcd, content):
     op_code_lcd = 0X31
     try:
+        check_str = isinstance(content, str)
         convert_str = str(content)
         str_content = convert_str.encode('ascii', 'ignore')
         if key_lcd == UPDATE_VALUE:
             arr_char = [char for char in str_content]
+            if len(arr_char) > 16:
+                arr_char = [item for index, item in enumerate(arr_char) if index <= 15]
+            elif len(arr_char) < 16:
+                need_add_space = 16 - len(arr_char)
+                posfix = ''.join([char * need_add_space for char in CHAR_SPACE])
+                arr_char.extend([char for char in posfix])
             prefix = ''.join([char * len(arr_char) for char in CHAR_S])
             length = len(arr_char) + 3
-            row = 3
+            row = 3 if check_str else 4
             result = struct.pack(FORMAT_LCD + prefix, 0xA0, length, op_code_lcd, key_lcd, row, *arr_char)
             return result
         elif key_lcd == CLEAR:

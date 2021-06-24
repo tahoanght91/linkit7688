@@ -5,6 +5,7 @@ import requests
 from config import *
 from config.common import *
 from config.common_lcd_services import *
+from config.default_data import data_dict
 from control import process_cmd_sa, process_cmd_lcd
 from devices.utils import read_lcd_services
 from model.lcd import Lcd
@@ -16,6 +17,10 @@ LIST_KEY_EVENT = [EVENT_NONE, EVENT_DOWN, EVENT_UP, EVENT_HOLD, EVENT_POWER]
 LIST_KEY_CODE = [KEYCODE_11, KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26, KEYCODE_24]
 json_file = open('config/lcd.json')
 dct_lcd = json.load(json_file)
+dct_lcd_menu = dct_lcd['lcd']['category']['menu']
+dct_lcd_menu_level = dct_lcd_menu['level']
+dct_lcd_menu_level_lv1 = dct_lcd_menu_level['lv1']
+
 
 def call():
     try:
@@ -56,10 +61,10 @@ def switch_lcd_service(input_lcd):
         key_code = input_lcd.key_code
         if key_event == EVENT_UP:
             if key_code == KEYCODE_16:
-                last_trace.category = dct_lcd['lcd']['category']['menu']['id']
-                last_trace.level = dct_lcd['lcd']['category']['menu']['level']['levelId']
-                last_trace.index_level1 = dct_lcd['lcd']['category']['menu']['level']['lv1'][0]['index']
-                last_trace.name = dct_lcd['lcd']['category']['menu']['level']['lv1'][0]['name']
+                last_trace.category = dct_lcd_menu['id']
+                last_trace.level = dct_lcd_menu_level['levelId']
+                last_trace.index_level1 = dct_lcd_menu_level_lv1[0]['index']
+                last_trace.name = dct_lcd_menu_level_lv1[0]['name']
                 last_trace.value = -1
                 last_trace.index_level2 = -1
             elif key_code == KEYCODE_14 or key_code == KEYCODE_34:
@@ -85,18 +90,17 @@ def enter_lcd_service():
     try:
         if last_trace.category == KEYCODE_16:
             if last_trace.level == MENU_LEVEL_1:
-                last_trace.name = dct_lcd['lcd']['category']['menu']['level']['lv1'][last_trace.index_level1]['lv2']['keys'][0]
-                last_trace.level = dct_lcd['lcd']['category']['menu']['level']['lv1'][last_trace.index_level1]['lv2']['levelId']
-                last_trace.index_level2 = dct_lcd['lcd']['category']['menu']['level']['lv1'][last_trace.index_level1]['lv2']['keys'].index(last_trace.name)
+                last_trace.name = dct_lcd_menu_level_lv1[last_trace.index_level1]['lv2']['keys'][0]
+                last_trace.level = dct_lcd_menu_level_lv1[last_trace.index_level1]['lv2']['levelId']
+                last_trace.index_level2 = dct_lcd_menu_level_lv1[last_trace.index_level1]['lv2']['keys'].index(last_trace.name)
             elif last_trace.level == MENU_LEVEL_2:
                 if last_trace.value == -1:
-                    value = shared_attributes.get(last_trace.name, default_data[last_trace.name])
+                    value = shared_attributes.get(last_trace.name, default_data.data_dict['shared'][last_trace.name])
                     last_trace.level = MENU_LEVEL_3
                     last_trace.value = value
             elif last_trace.level == MENU_LEVEL_3:
-                # body = write_body_send_shared_attributes(last_trace.name, last_trace.value)
-                # result = send_shared_attributes(body)
-                result = True
+                body = write_body_send_shared_attributes(last_trace.name, last_trace.value)
+                result = send_shared_attributes(body)
                 if result:
                     last_trace.value = -1
                     last_trace.level = MENU_LEVEL_2
@@ -114,25 +118,25 @@ def navigate_lcd_service(key_code):
         if last_trace.category == KEYCODE_16 and last_trace.level == MENU_LEVEL_1:
             if key_code == KEYCODE_14:
                 index = last_trace.index_level1 + 1
-                if index > dct_lcd['lcd']['category']['menu']['level']['maxIndex']:
-                    index = dct_lcd['lcd']['category']['menu']['level']['minIndex']
+                if index > dct_lcd_menu_level['maxIndex']:
+                    index = dct_lcd_menu_level['minIndex']
             elif key_code == KEYCODE_34:
                 index = last_trace.index_level1 - 1
-                if index < dct_lcd['lcd']['category']['menu']['level']['minIndex']:
-                    index = dct_lcd['lcd']['category']['menu']['level']['maxIndex']
+                if index < dct_lcd_menu_level['minIndex']:
+                    index = dct_lcd_menu_level['maxIndex']
             last_trace.index_level1 = index
-            last_trace.name = dct_lcd['lcd']['category']['menu']['level']['lv1'][index]['name']
+            last_trace.name = dct_lcd_menu_level_lv1[index]['name']
         elif last_trace.category == KEYCODE_16 and last_trace.level == MENU_LEVEL_2:
             if key_code == KEYCODE_14:
                 index = last_trace.index_level2 + 1
-                if index > dct_lcd['lcd']['category']['menu']['level']['lv1'][last_trace.index_level1]['lv2']['maxIndex']:
-                    index = dct_lcd['lcd']['category']['menu']['level']['lv1'][last_trace.index_level1]['lv2']['minIndex']
+                if index > dct_lcd_menu_level_lv1[last_trace.index_level1]['lv2']['maxIndex']:
+                    index = dct_lcd_menu_level_lv1[last_trace.index_level1]['lv2']['minIndex']
             elif key_code == KEYCODE_34:
                 index = last_trace.index_level2 - 1
-                if index < dct_lcd['lcd']['category']['menu']['level']['lv1'][last_trace.index_level1]['lv2']['minIndex']:
-                    index = dct_lcd['lcd']['category']['menu']['level']['lv1'][last_trace.index_level1]['lv2']['maxIndex']
+                if index < dct_lcd_menu_level_lv1[last_trace.index_level1]['lv2']['minIndex']:
+                    index = dct_lcd_menu_level_lv1[last_trace.index_level1]['lv2']['maxIndex']
             last_trace.index_level2 = index
-            last_trace.name = dct_lcd['lcd']['category']['menu']['level']['lv1'][last_trace.index_level1]['lv2']['keys'][index]
+            last_trace.name = dct_lcd_menu_level_lv1[last_trace.index_level1]['lv2']['keys'][index]
         elif last_trace.category == KEYCODE_16 and last_trace.level == MENU_LEVEL_3:
             if key_code == KEYCODE_14:
                 index = last_trace.value + 1
@@ -148,7 +152,7 @@ def write_body_send_shared_attributes(key, value):
     body = {}
     try:
         now = round(time.time() * 1000)
-        body = {"tramEntityId": device_config['device_id'], "value": value, "keyName": key, "changeAt": now}
+        body = {"tramEntityId": str(device_config['device_id']), "value": str(value), "keyName": str(key), "changeAt": now}
         LOGGER.info('Content of body send shared attributes to Smartsite: %s', body)
     except Exception as ex:
         LOGGER.info('Error at write_body_send_shared_attributes function with message: %s', ex.message)
