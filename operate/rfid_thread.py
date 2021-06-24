@@ -11,7 +11,7 @@ KEY_RFID = 'mccRfidCard'
 
 
 def call():
-    period = 5
+    period = 3
     while True:
         if CLIENT.is_connected():
             if 'mccListRfid' in shared_attributes:
