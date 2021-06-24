@@ -151,7 +151,7 @@ def navigate_lcd_service(key_code):
 def write_body_send_shared_attributes(key, value):
     body = {}
     try:
-        now = round(time.time() * 1000)
+        now = long(time.time() * 1000)
         body = {"tramEntityId": str(device_config['device_id']), "value": str(value), "keyName": str(key), "changeAt": now}
         LOGGER.info('Content of body send shared attributes to Smartsite: %s', body)
     except Exception as ex:
