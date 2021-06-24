@@ -171,14 +171,12 @@ def call():
         CLIENT.gw_disconnect_device(DEVICE_ATS)
         CLIENT.gw_disconnect_device(DEVICE_ACM)
         CLIENT.disconnect()
-        sys.exit(1)
     except Exception as e:
         LOGGER.error('Fatal error %s, terminate immediately', str(e))
         CLIENT.gw_disconnect_device(DEVICE_MCC)
         CLIENT.gw_disconnect_device(DEVICE_ATS)
         CLIENT.gw_disconnect_device(DEVICE_ACM)
         CLIENT.disconnect()
-        sys.exit(1)
 
 
 def _init_thread(target):
