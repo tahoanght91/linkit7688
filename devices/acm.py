@@ -21,10 +21,10 @@ def extract(byte_data):
     acmTempIndoor = utility.bytes_to_int(byte_data[11:13], byteorder='big')
     acmTempOutdoor = utility.bytes_to_int(byte_data[13:15], byteorder='big')
     acmHumidIndoor = utility.bytes_to_int(byte_data[15:17], byteorder='big')
-    acmT1Temp = utility.bytes_to_int(byte_data[17:19], byteorder='big')
-    acmT2Temp = utility.bytes_to_int(byte_data[19:21], byteorder='big')
-    acmT3Temp = utility.bytes_to_int(byte_data[21:23], byteorder='big')
-    acmT4Temp = utility.bytes_to_int(byte_data[23:25], byteorder='big')
+    acmT2Temp = utility.bytes_to_int(byte_data[17:19], byteorder='big')
+    acmT1Temp = utility.bytes_to_int(byte_data[19:21], byteorder='big')
+    acmT4Temp = utility.bytes_to_int(byte_data[21:23], byteorder='big')
+    acmT3Temp = utility.bytes_to_int(byte_data[23:25], byteorder='big')
 
     #telemetry
     utils._read_telemetry('acmTempIndoor', acmTempIndoor)
