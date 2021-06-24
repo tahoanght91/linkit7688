@@ -18,8 +18,8 @@ def extract(byte_data):
     acmFanError = utility.bytes_to_int(byte_data[10])
 
     #telemetry
-    acmTempIndoor = utility.bytes_to_int(byte_data[11:13])
-    acmTempOutdoor = utility.bytes_to_int(byte_data[13:15])
+    acmTempIndoor = utility.bytes_to_int(byte_data[11:13], byteorder='big')
+    acmTempOutdoor = utility.bytes_to_int(byte_data[13:15], byteorder='big')
     # acmHumidIndoor = utility.bytes_to_int(byte_data[13:14], byteorder=BYTE_ORDER)
     # acmT1Temp = utility.bytes_to_int(byte_data[14:15], byteorder=BYTE_ORDER)
     # acmT2Temp = utility.bytes_to_int(byte_data[15:16], byteorder=BYTE_ORDER)
