@@ -101,7 +101,7 @@ def call():
         thread_list = [io_thread, update_attributes_thread, telemetry_thread, led_thread, lcd_thread, shared_attributes_thread, rfid_thread]
 
         # enable when test flow read value
-        # thread_list = [io_thread, update_attributes_thread, telemetry_thread]
+        # thread_list = [io_thread, shared_attributes_thread]
 
         for i, thread in enumerate(thread_list):
             thread.name = thread.__name__
