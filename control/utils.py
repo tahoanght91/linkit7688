@@ -243,7 +243,8 @@ def compose_command_lcd(key_lcd, content):
     try:
         # check_str = isinstance(content, str)
         convert_str = str(content)
-        str_content = convert_str.encode('ascii', 'ignore')
+        str_align_center_line = convert_str.encode('ascii', 'ignore')
+        str_content = str_align_center_line.center(16, " ")
         if str_content:
             if key_lcd == UPDATE_VALUE:
                 arr_char = [char for char in str_content]
