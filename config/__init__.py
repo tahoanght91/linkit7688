@@ -21,7 +21,7 @@ IO_PORT = '/dev/ttyS0'
 # IO_PORT = 'COM3'
 BAUDRATE = 115200
 # uncomment when test auto update firmware
-UPDATE_PERIOD = 300
+UPDATE_PERIOD = 600
 READ_PER_WRITE = 20
 MAX_TRIES = 2
 
