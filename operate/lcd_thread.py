@@ -32,7 +32,7 @@ def call():
                 # result_check_input.key_event = EVENT_UP
                 if result_check_input.key_code > 0 and result_check_input.key_event > 0:
                     if result_check_input.key_code == KEYCODE_11:
-                        cmd_lcd[CLEAR] = ''
+                        cmd_lcd[UPDATE_VALUE] = ''
                         # cmd_sa_formatted = {'key_lcd': CLEAR, 'content': ''}
                         # process_cmd_lcd(cmd_sa_formatted)
                     else:
