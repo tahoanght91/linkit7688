@@ -9,51 +9,14 @@ from control.switcher import *
 list_dict_ats = []
 list_dict_acm = []
 list_dict_mcc = []
-shared = {
-    "mccPeriodReadDataIO": 0.05,
-    "mccPeriodSendTelemetry": 30,
-    "mccPeriodUpdate": 5,
-    "mccListRfid": [],
-    "mccListStaff": [],
-    "mccLinkUpdate": "",
-    "mccLinkVersion": "",
-    "mccDcMinThreshold": 30,
-    "mccDoorOpenTime": 5,
-    "acmControlAuto": 1,
-    "acmAlternativeTime": 180,
-    "acmRunTime": 240,
-    "acmRestTime": 70,
-    "acmGenAllow": 1,
-    "acmVacThreshold": 180,
-    "acmMinTemp": 16,
-    "acmMaxTemp": 60,
-    "acmMinHumid": 10,
-    "acmMaxHumid": 70,
-    "acmExpectedTemp": 25,
-    "acmExpectedHumid": 45,
-    "acmT1Temp": 13,
-    "acmT2Temp": 14,
-    "acmT3Temp": 15,
-    "acmT4Temp": 16,
-    "atsVacMaxThreshold": 180,
-    "atsVacMinThreshold": 100,
-    "atsVgenMaxThreshold": 120,
-    "atsVgenMinThreshold": 80,
-    "atsVacStabilizeTimeout": 60,
-    "atsVgenIdleCoolingTimeout": 30,
-    "atsVgenIdleWarmUpTimeout": 60,
-    "atsGenInactiveStartTime": 180,
-    "atsGenInactiveEndTime": 240,
-    "atsGenActiveDuration": 240,
-    "atsControlAuto": 1
-  }
+
 
 def call():
     try:
         period = 60
         while True:
             if CLIENT.is_connected():
-                for key, value in shared.items():
+                for key, value in shared_attributes.items():
                     response_classify_sa = classify_shared_attributes(key, value)
                     if response_classify_sa is not None:
                         classify_dict(response_classify_sa)
