@@ -1,6 +1,6 @@
 /etc/init.d/7688 stop
 cp /IoT/linkit7688/config/devices.json /IoT
-if curl -LO https://github.com/huyfr/linkit7688/archive/refs/heads/huyfr.zip
+if curl -LO https://github.com/huyfr/linkit7688/archive/refs/heads/huyfr.zip --max-time 5
 then
   mv /IoT/linkit7688 /
   unzip huyfr
