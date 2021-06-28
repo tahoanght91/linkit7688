@@ -67,7 +67,7 @@ def check_alarm():
             cmd_sa_formatted = {'key_lcd': UPDATE_VALUE, 'content': text}
             process_cmd_lcd(cmd_sa_formatted, SHOW_ALARM)
     except Exception as ex:
-        LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
+        LOGGER.error('Error at call function in check_alarm with message: %s', ex.message)
 
 
 def switch_lcd_service(input_lcd):
@@ -189,7 +189,6 @@ def send_shared_attributes(body):
     return result
 
 
-# OK
 def extract_lcd_service(byte_data):
     try:
         key_code = bytes_to_int(byte_data[0:2], byteorder=BYTE_ORDER)
@@ -201,7 +200,6 @@ def extract_lcd_service(byte_data):
         LOGGER.error('Error at extract_lcd_service function with message: %s', ex.message)
 
 
-# OK
 def get_last_trace():
     lcd_last_trace = Lcd()
     try:
@@ -220,7 +218,6 @@ def get_last_trace():
     return lcd_last_trace
 
 
-# OK
 def set_last_trace(input_lcd):
     try:
         dct_last_trace = input_lcd.__dict__
@@ -232,7 +229,6 @@ def set_last_trace(input_lcd):
         LOGGER.error('Error at set_last_trace function with message: %s', ex.message)
 
 
-# OK
 def check_lcd_service(dct_lcd_service):
     key_code_checked = False
     key_event_checked = False
