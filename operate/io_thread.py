@@ -2,6 +2,7 @@ import serial
 
 import control
 from config import *
+from config.common import SHOW_NORMAL
 from devices import ats, crmu, clock, acm, mcc
 from operate.lcd_thread import extract_lcd_service
 from utility import *
@@ -80,7 +81,7 @@ def call():
                 cmd_lcd_lock.release()
                 for key_lcd, content in cmd_lcd_snap:
                     cmd_lcd_formatted = {'key_lcd': key_lcd, 'content': content}
-                    write_stream = with_check_sum(control.process_cmd_lcd(cmd_lcd_formatted), BYTE_ORDER)
+                    write_stream = with_check_sum(control.process_cmd_lcd(cmd_lcd_formatted, SHOW_NORMAL), BYTE_ORDER)
                     tries = 0
                     LOGGER.info('Send cmd lcd to IO, key_lcd %s, content %s', key_lcd, content)
                     while True:
