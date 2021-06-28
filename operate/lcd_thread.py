@@ -60,7 +60,7 @@ def call():
 
 def check_alarm():
     try:
-        check = shared_attributes.get('mccSmokeState', default_data.mccSmokeState)
+        check = telemetries.get('mccSmokeState', default_data.mccSmokeState)
         if check == 1:
             text = 'Canh bao Khoi!'
             LOGGER.info(text)
