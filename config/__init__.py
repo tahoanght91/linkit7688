@@ -23,7 +23,7 @@ BAUDRATE = 115200
 # uncomment when test auto update firmware
 UPDATE_PERIOD = 600
 READ_PER_WRITE = 20
-READ_PER_WRITE_LCD = 3
+READ_PER_WRITE_LCD = 2
 MAX_TRIES = 2
 
 shared_attributes = {}
