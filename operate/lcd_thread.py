@@ -26,9 +26,13 @@ def call():
     try:
         period = 3
         while True:
+            sh = shared_attributes
+            sh2 = default_data
             if CLIENT.is_connected():
+                # check canh bao
+                check_alarm()
                 result_check_input = check_lcd_service(lcd_services)
-                # result_check_input.key_code = KEYCODE_11
+                # result_check_input.key_code = KEYCODE_16
                 # result_check_input.key_event = EVENT_UP
                 if result_check_input.key_code > 0 and result_check_input.key_event > 0:
                     if result_check_input.key_code == KEYCODE_11:
@@ -173,7 +177,6 @@ def send_shared_attributes(body):
     return result
 
 
-# OK
 def extract_lcd_service(byte_data):
     try:
         key_code = bytes_to_int(byte_data[0:2], byteorder=BYTE_ORDER)
@@ -185,7 +188,6 @@ def extract_lcd_service(byte_data):
         LOGGER.error('Error at extract_lcd_service function with message: %s', ex.message)
 
 
-# OK
 def get_last_trace():
     lcd_last_trace = Lcd()
     try:
@@ -204,7 +206,6 @@ def get_last_trace():
     return lcd_last_trace
 
 
-# OK
 def set_last_trace(input_lcd):
     try:
         dct_last_trace = input_lcd.__dict__
@@ -216,7 +217,6 @@ def set_last_trace(input_lcd):
         LOGGER.error('Error at set_last_trace function with message: %s', ex.message)
 
 
-# OK
 def check_lcd_service(dct_lcd_service):
     key_code_checked = False
     key_event_checked = False

@@ -1,7 +1,8 @@
 /etc/init.d/7688 stop
 cp /IoT/linkit7688/config/devices.json /IoT
-if curl -LO https://github.com/huyfr/linkit7688/archive/refs/heads/huyfr.zip
+if curl -LO https://github.com/huyfr/linkit7688/archive/refs/heads/huyfr.zip --max-time 5
 then
+  echo 'Download new version successful!'
   mv /IoT/linkit7688 /
   unzip huyfr
   mv /IoT/linkit7688-huyfr linkit7688
