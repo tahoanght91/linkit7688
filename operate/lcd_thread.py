@@ -61,30 +61,41 @@ def check_alarm():
         #     'mccFloodState': 1,
         #     'acmTempIndoor': 45
         # }
+
+        check = False
         if telemetries.get('mccSmokeState') == 1:
             LOGGER.info('CANH BAO KHOI')
             cmd_lcd[UPDATE_VALUE] = 'Canh bao Khoi' + SALT_DOLLAR_SIGN + str(ROW_4)
-
+            check = True
         if telemetries.get('mccFireState') == 1:
             LOGGER.info('CANH BAO CHAY')
             cmd_lcd[UPDATE_VALUE] = 'Canh bao CHAY' + SALT_DOLLAR_SIGN + str(ROW_4)
+            check = True
 
         if telemetries.get('mccMoveState') == 1:
             LOGGER.info('CANH BAO CHUYEN DONG')
             cmd_lcd[UPDATE_VALUE] = 'Canh Bao C.Dong' + SALT_DOLLAR_SIGN + str(ROW_4)
+            check = True
 
         if telemetries.get('mccDoorState') == 1:
             LOGGER.info('CANH BAO CUA')
             cmd_lcd[UPDATE_VALUE] = 'Canh bao Cua' + SALT_DOLLAR_SIGN + str(ROW_4)
+            check = True
 
         if telemetries.get('mccFloodState') == 1:
             LOGGER.info('CANH BAO NGAP')
             cmd_lcd[UPDATE_VALUE] = 'Canh bao Ngap' + SALT_DOLLAR_SIGN + str(ROW_4)
+            check = True
 
         maxTem = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
         if telemetries.get('acmTempIndoor') > maxTem:
             LOGGER.info('CANH BAO NHIET')
             cmd_lcd[UPDATE_VALUE] = 'Canh bao Nhiet' + SALT_DOLLAR_SIGN + str(ROW_4)
+            check = True
+
+        if not check:
+            cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_4)
+
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
