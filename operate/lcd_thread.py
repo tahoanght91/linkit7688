@@ -26,36 +26,40 @@ def call():
     try:
         period = 3
         while True:
-            sh = shared_attributes
-            sh2 = default_data
             if CLIENT.is_connected():
-                # check canh bao
                 check_alarm()
                 result_check_input = check_lcd_service(lcd_services)
                 # result_check_input.key_code = KEYCODE_16
                 # result_check_input.key_event = EVENT_UP
                 if result_check_input.key_code > 0 and result_check_input.key_event > 0:
                     if result_check_input.key_code == KEYCODE_11:
-                        cmd_lcd[UPDATE_VALUE] = ''
+                        cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_3)
                         # cmd_sa_formatted = {'key_lcd': CLEAR, 'content': ''}
                         # process_cmd_lcd(cmd_sa_formatted)
                     else:
                         result_switch_lcd = switch_lcd_service(result_check_input)
                         cmd_lcd_lock.acquire()
                         if result_switch_lcd.value < 0:
-                            cmd_lcd[UPDATE_VALUE] = result_switch_lcd.name
-                            # cmd_sa_formatted = {'key_lcd': UPDATE_VALUE, 'content': result_switch_lcd.name}
-                            # process_cmd_lcd(cmd_sa_formatted)
+                            cmd_lcd[UPDATE_VALUE] = result_switch_lcd.name + SALT_DOLLAR_SIGN + str(ROW_3)
                         else:
-                            cmd_lcd[UPDATE_VALUE] = result_switch_lcd.value
-                            # cmd_sa_formatted = {'key_lcd': UPDATE_VALUE, 'content': result_switch_lcd.value}
-                            # process_cmd_lcd(cmd_sa_formatted)
+                            cmd_lcd[UPDATE_VALUE] = str(result_switch_lcd.value) + SALT_DOLLAR_SIGN + ROW_3
                     cmd_lcd_lock.release()
                     set_last_trace(result_switch_lcd)
                     lcd_services.clear()
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
+
+
+def check_alarm():
+    try:
+        check = telemetries.get('mccSmokeState', default_data.mccSmokeState)
+        if check == 1:
+            LOGGER.info('CANH BAO KHOI')
+            cmd_lcd[UPDATE_VALUE] = 'Canh bao Khoi' + SALT_DOLLAR_SIGN + str(ROW_4)
+    except Exception as ex:
+        LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
+
 
 
 def switch_lcd_service(input_lcd):

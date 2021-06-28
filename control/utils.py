@@ -3,6 +3,7 @@ import struct
 
 from config import *
 from config.common import *
+from config.common_lcd_services import SALT_DOLLAR_SIGN
 from config.common_led import LIST_LED
 from config.common_method import *
 from control.switcher import *
@@ -244,7 +245,8 @@ def compose_command_lcd(key_lcd, content):
         # check_str = isinstance(content, str)
         convert_str = str(content)
         str_align_center_line = convert_str.encode('ascii', 'ignore')
-        str_content = str_align_center_line.center(16, " ")
+        str_split = str_align_center_line.split(SALT_DOLLAR_SIGN)
+        str_content = str_split[0].center(16, " ")
         if str_content:
             if key_lcd == UPDATE_VALUE:
                 arr_char = [char for char in str_content]
@@ -256,8 +258,7 @@ def compose_command_lcd(key_lcd, content):
                     arr_char.extend([char for char in posfix])
                 prefix = ''.join([char * len(arr_char) for char in CHAR_S])
                 length = len(arr_char) + 3
-                # row = 3 if check_str else 4
-                row = 3
+                row = int(str_split[1])
                 result = struct.pack(FORMAT_LCD + prefix, 0xA0, length, op_code_lcd, key_lcd, row, *arr_char)
                 return result
             elif key_lcd == CLEAR:
@@ -267,7 +268,7 @@ def compose_command_lcd(key_lcd, content):
                 arr_char = [char for char in str_empty]
                 prefix = ''.join([char * len(arr_char) for char in CHAR_S])
                 length = len(arr_char) + 3
-                row = 3
+                row = int(str_split[1])
                 result = struct.pack(FORMAT_LCD + prefix, 0xA0, length, op_code_lcd, key_lcd, row, *arr_char)
                 return result
         else:
@@ -278,6 +279,7 @@ def compose_command_lcd(key_lcd, content):
             row = 3
             result = struct.pack(FORMAT_LCD + prefix, 0xA0, length, op_code_lcd, key_lcd, row, *arr_char)
             return result
+
     except Exception as ex:
         LOGGER.error('Error at compose_command_lcd function with message: %s', ex.message)
 
