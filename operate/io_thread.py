@@ -13,6 +13,7 @@ def call():
     control_ack = b'\xa0\x01\x21'
     message_break = shared_attributes.get('mccPeriodReadDataIO', default_data.mccPeriodReadDataIO)  # time read data from IO
     flip = READ_PER_WRITE
+    flip_lcd = READ_PER_WRITE_LCD
 
     original_cycle = int((time.time()) / 60)
     while True:
@@ -83,11 +84,11 @@ def call():
                     tries = 0
                     LOGGER.info('Send cmd lcd to IO, key_lcd %s, content %s', key_lcd, content)
                     while True:
-                        if flip == 0:
-                            flip = READ_PER_WRITE_LCD
+                        if flip_lcd == 0:
+                            flip_lcd = READ_PER_WRITE_LCD
                             ser.write(write_stream)
                         else:
-                            flip -= 1
+                            flip_lcd -= 1
                         byte_stream = blocking_read(ser, message_break)
                         if byte_stream:
                             if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
@@ -99,7 +100,7 @@ def call():
                                 break
                             if _read_data(byte_stream):
                                 ser.write(with_check_sum(data_ack, BYTE_ORDER))
-                        if flip == 0:
+                        if flip_lcd == 0:
                             tries += 1
                             if tries > MAX_TRIES:
                                 cmd_lcd_lock.acquire()
