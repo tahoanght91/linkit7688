@@ -51,15 +51,23 @@ def call():
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
 
+# def check_alarm():
+#     try:
+#         check = telemetries.get('mccSmokeState', default_data.mccSmokeState)
+#         if check == 1:
+#             LOGGER.info('CANH BAO KHOI')
+#             cmd_lcd[UPDATE_VALUE] = 'Canh bao Khoi' + SALT_DOLLAR_SIGN + str(ROW_4)
+#     except Exception as ex:
+#         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
+
+
 def check_alarm():
     try:
-        check = telemetries.get('mccSmokeState', default_data.mccSmokeState)
-        if check == 1:
-            LOGGER.info('CANH BAO KHOI')
-            cmd_lcd[UPDATE_VALUE] = 'Canh bao Khoi' + SALT_DOLLAR_SIGN + str(ROW_4)
+        LOGGER.info('Enter check_alarm fucntion')
+        cmd_lcd[UPDATE_VALUE] = 'Canh bao Khoi' + SALT_DOLLAR_SIGN + str(ROW_4)
+        LOGGER.info('Exit check_alarm fucntion')
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
-
 
 
 def switch_lcd_service(input_lcd):
