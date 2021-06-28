@@ -238,7 +238,7 @@ def compose_command_shared_attributes(module_id, value):
     return result
 
 
-def compose_command_lcd(key_lcd, content, key_type):
+def compose_command_lcd(key_lcd, content):
     op_code_lcd = 0X31
     try:
         # check_str = isinstance(content, str)
@@ -256,7 +256,8 @@ def compose_command_lcd(key_lcd, content, key_type):
                     arr_char.extend([char for char in posfix])
                 prefix = ''.join([char * len(arr_char) for char in CHAR_S])
                 length = len(arr_char) + 3
-                row = 4 if key_type == SHOW_ALARM else 3
+                # row = 3 if check_str else 4
+                row = 3
                 result = struct.pack(FORMAT_LCD + prefix, 0xA0, length, op_code_lcd, key_lcd, row, *arr_char)
                 return result
             elif key_lcd == CLEAR:
@@ -296,9 +297,9 @@ def _process_cmd_led(length_led, arr_value):
         LOGGER.error('Error at _process_cmd_led function with message: %s', ex.message)
 
 
-def _process_cmd_lcd(key_lcd, content, key_type):
+def _process_cmd_lcd(key_lcd, content):
     try:
-        result = compose_command_lcd(key_lcd, content, key_type)
+        result = compose_command_lcd(key_lcd, content)
         result_encode = ':'.join(x.encode('hex') for x in result)
         LOGGER.debug('Process lcd command: key_lcd: %s, content: %s, after decode is: %s', key_lcd, content, result_encode)
         return result
