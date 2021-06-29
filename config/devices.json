@@ -1,8 +1,8 @@
 {
-    "host": "tb2.dft.vn",
-    "access_token": "vATe0u4fFAbLjSDa2keC",
-    "device_id": "b71833f0-d8e1-11eb-85c6-37b6d3dfd84e",
-    "mcc": "KDC-MCC",
-    "acm": "KDC-ACM",
-    "ats": "KDC-ATS"
+    "host": "123.30.214.139",
+    "access_token": "",
+    "device_id": "",
+    "mcc": "-MCC",
+    "acm": "-ACM",
+    "ats": "-ATS"
 }
