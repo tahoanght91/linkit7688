@@ -63,56 +63,92 @@ def check_alarm():
         #     'mccFloodState': 0,
         #     'acmTempIndoor': 60,
         # }
-
-        mid_brigde = dict()
         last_alarm = get_last_alarm()
         if telemetries:
-            mid_brigde = telemetries
-        else:
-            mid_brigde = last_alarm.__dict__
+            if telemetries.get('mccMoveState') == 1:
+                LOGGER.info('CANH BAO CHUYEN DONG')
+                cmd_lcd[UPDATE_VALUE] = 'CB Chuyen Dong!' + SALT_DOLLAR_SIGN + str(ROW_3)
+                last_saved_alarm.mccMoveState = 1
+            else:
+                last_saved_alarm.mccMoveState = 0
 
-        if mid_brigde.get('mccMoveState') == 1:
-            LOGGER.info('CANH BAO CHUYEN DONG')
-            cmd_lcd[UPDATE_VALUE] = 'CB Chuyen Dong!' + SALT_DOLLAR_SIGN + str(ROW_4)
-            last_saved_alarm.mccMoveState = 1
-        else:
-            last_saved_alarm.mccMoveState = 0
+            if telemetries.get('mccDoorState') == 1:
+                LOGGER.info('CANH BAO CUA')
+                cmd_lcd[UPDATE_VALUE] = 'Canh bao Cua!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                last_saved_alarm.mccDoorState = 1
+            else:
+                last_saved_alarm.mccDoorState = 0
 
-        if mid_brigde.get('mccDoorState') == 1:
-            LOGGER.info('CANH BAO CUA')
-            cmd_lcd[UPDATE_VALUE] = 'Canh bao Cua!' + SALT_DOLLAR_SIGN + str(ROW_4)
-            last_saved_alarm.mccDoorState = 1
-        else:
-            last_saved_alarm.mccDoorState = 0
+            if telemetries.get('mccFloodState') == 1:
+                LOGGER.info('CANH BAO NGAP')
+                cmd_lcd[UPDATE_VALUE] = 'Canh bao Ngap!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                last_saved_alarm.mccFloodState = 1
+            else:
+                last_saved_alarm.mccFloodState = 0
 
-        if mid_brigde.get('mccFloodState') == 1:
-            LOGGER.info('CANH BAO NGAP')
-            cmd_lcd[UPDATE_VALUE] = 'Canh bao Ngap!' + SALT_DOLLAR_SIGN + str(ROW_4)
-            last_saved_alarm.mccFloodState = 1
-        else:
-            last_saved_alarm.mccFloodState = 0
+            max_Tem = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
+            if telemetries.get('acmTempIndoor') > max_Tem:
+                LOGGER.info('CANH BAO NHIET')
+                cmd_lcd[UPDATE_VALUE] = 'Canh bao Nhiet!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                last_saved_alarm.acmTempIndoor = 1
+            else:
+                last_saved_alarm.acmTempIndoor = 0
 
-        max_Tem = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
-        if mid_brigde.get('acmTempIndoor') > max_Tem:
-            LOGGER.info('CANH BAO NHIET')
-            cmd_lcd[UPDATE_VALUE] = 'Canh bao Nhiet!' + SALT_DOLLAR_SIGN + str(ROW_4)
-            last_saved_alarm.acmTempIndoor = 1
-        else:
-            last_saved_alarm.acmTempIndoor = 0
+            if telemetries.get('mccSmokeState') == 1:
+                LOGGER.info('CANH BAO KHOI')
+                cmd_lcd[UPDATE_VALUE] = 'Canh bao Khoi!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                last_saved_alarm.mccSmokeState = 1
+            else:
+                last_saved_alarm.mccSmokeState = 0
 
-        if mid_brigde.get('mccSmokeState') == 1:
-            LOGGER.info('CANH BAO KHOI')
-            cmd_lcd[UPDATE_VALUE] = 'Canh bao Khoi!' + SALT_DOLLAR_SIGN + str(ROW_4)
-            last_saved_alarm.mccSmokeState = 1
+            if telemetries.get('mccFireState') == 1:
+                LOGGER.info('CANH BAO CHAY')
+                cmd_lcd[UPDATE_VALUE] = 'Canh bao CHAY!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                last_saved_alarm.mccFireState = 1
+            else:
+                last_saved_alarm.mccFireState = 0
         else:
-            last_saved_alarm.mccSmokeState = 0
+            if last_alarm.mccMoveState == 1:
+                LOGGER.info('CANH BAO CHUYEN DONG')
+                cmd_lcd[UPDATE_VALUE] = 'CB Chuyen Dong!' + SALT_DOLLAR_SIGN + str(ROW_3)
+                last_saved_alarm.mccMoveState = 1
+            else:
+                last_saved_alarm.mccMoveState = 0
 
-        if mid_brigde.get('mccFireState') == 1:
-            LOGGER.info('CANH BAO CHAY')
-            cmd_lcd[UPDATE_VALUE] = 'Canh bao CHAY!' + SALT_DOLLAR_SIGN + str(ROW_4)
-            last_saved_alarm.mccFireState = 1
-        else:
-            last_saved_alarm.mccFireState = 0
+            if last_alarm.mccDoorState == 1:
+                LOGGER.info('CANH BAO CUA')
+                cmd_lcd[UPDATE_VALUE] = 'Canh bao Cua!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                last_saved_alarm.mccDoorState = 1
+            else:
+                last_saved_alarm.mccDoorState = 0
+
+            if last_alarm.mccFloodState == 1:
+                LOGGER.info('CANH BAO NGAP')
+                cmd_lcd[UPDATE_VALUE] = 'Canh bao Ngap!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                last_saved_alarm.mccFloodState = 1
+            else:
+                last_saved_alarm.mccFloodState = 0
+
+            if last_alarm.acmTempIndoor == 1:
+                LOGGER.info('CANH BAO NHIET')
+                cmd_lcd[UPDATE_VALUE] = 'Canh bao Nhiet!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                last_saved_alarm.acmTempIndoor = 1
+            else:
+                last_saved_alarm.acmTempIndoor = 0
+
+            if last_alarm.mccSmokeState == 1:
+                LOGGER.info('CANH BAO KHOI')
+                cmd_lcd[UPDATE_VALUE] = 'Canh bao Khoi!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                last_saved_alarm.mccSmokeState = 1
+            else:
+                last_saved_alarm.mccSmokeState = 0
+
+            if last_alarm.mccFireState == 1:
+                LOGGER.info('CANH BAO CHAY')
+                cmd_lcd[UPDATE_VALUE] = 'Canh bao CHAY!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                last_saved_alarm.mccFireState = 1
+            else:
+                last_saved_alarm.mccFireState = 0
 
         a = last_saved_alarm.__dict__.values()
         check = any(elem != 0 for elem in a)
