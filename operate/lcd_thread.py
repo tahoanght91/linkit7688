@@ -67,7 +67,7 @@ def check_alarm():
         if telemetries:
             if telemetries.get('mccMoveState') == 1:
                 LOGGER.info('CANH BAO CHUYEN DONG')
-                cmd_lcd[UPDATE_VALUE] = 'CB Chuyen Dong!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                cmd_lcd[UPDATE_VALUE] = 'CB Chuyen Dong!' + SALT_DOLLAR_SIGN + str(ROW_3)
                 last_saved_alarm.mccMoveState = 1
             else:
                 last_saved_alarm.mccMoveState = 0
@@ -110,7 +110,7 @@ def check_alarm():
         else:
             if last_alarm.mccMoveState == 1:
                 LOGGER.info('CANH BAO CHUYEN DONG')
-                cmd_lcd[UPDATE_VALUE] = 'CB Chuyen Dong!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                cmd_lcd[UPDATE_VALUE] = 'CB Chuyen Dong!' + SALT_DOLLAR_SIGN + str(ROW_3)
                 last_saved_alarm.mccMoveState = 1
             else:
                 last_saved_alarm.mccMoveState = 0
