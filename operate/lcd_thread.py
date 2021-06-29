@@ -28,7 +28,7 @@ def call():
         period = 3
         while True:
             if CLIENT.is_connected():
-                check_alarm()
+                # check_alarm()
                 result_check_input = check_lcd_service(lcd_services)
                 # result_check_input.key_code = KEYCODE_16
                 # result_check_input.key_event = EVENT_UP
@@ -336,8 +336,10 @@ def set_last_alarm(input_lcd):
 
 
 def show_temp_humi(data):
+    LOGGER.info('Enter show_temp_humi function')
     temp = data[0]
     humidity = data[1]
 
     cmd_lcd[UPDATE_VALUE] = str(humidity) + '*C' + SALT_DOLLAR_SIGN + str(ROW_3)
     cmd_lcd[UPDATE_VALUE] = str(temp) + '%' + SALT_DOLLAR_SIGN + str(ROW_4)
+    LOGGER.info('Exit show_temp_humi function')
