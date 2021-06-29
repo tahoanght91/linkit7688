@@ -1,8 +1,8 @@
 {
-    "host": "123.30.214.139",
-    "access_token": "hgtQcIFDMwa5gjivW89c",
-    "device_id": "cd1b3a60-d320-11eb-b011-d7c39066a397",
-    "mcc": "GW-1_MCC",
-    "acm": "GW-1-ACM",
-    "ats": "GW-1-ATS"
+    "host": "tb2.dft.vn",
+    "access_token": "vATe0u4fFAbLjSDa2keC",
+    "device_id": "b71833f0-d8e1-11eb-85c6-37b6d3dfd84e",
+    "mcc": "KDC-MCC",
+    "acm": "KDC-ACM",
+    "ats": "KDC-ATS"
 }
