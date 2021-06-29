@@ -8,6 +8,7 @@ from config.common_lcd_services import *
 from config.default_data import data_dict
 from control import process_cmd_sa, process_cmd_lcd
 from devices.utils import read_lcd_services
+from model.alarm_lcd import Alarm_lcd
 from model.lcd import Lcd
 from utility import bytes_to_int
 
@@ -42,7 +43,7 @@ def call():
                         if result_switch_lcd.value < 0:
                             cmd_lcd[UPDATE_VALUE] = result_switch_lcd.name + SALT_DOLLAR_SIGN + str(ROW_3)
                         else:
-                            cmd_lcd[UPDATE_VALUE] = str(result_switch_lcd.value) + SALT_DOLLAR_SIGN + ROW_3
+                            cmd_lcd[UPDATE_VALUE] = str(result_switch_lcd.value) + SALT_DOLLAR_SIGN + str(ROW_3)
                     cmd_lcd_lock.release()
                     set_last_trace(result_switch_lcd)
                     lcd_services.clear()
@@ -52,53 +53,66 @@ def call():
 
 
 def check_alarm():
+    last_saved_alarm = Alarm_lcd()
     try:
-        # telemetries = {
-        #     'mccSmokeState': 1,
-        #     'mccFireState': 1,
-        #     'mccMoveState': 1,
-        #     'mccDoorState': 1,
-        #     'mccFloodState': 1,
-        #     'acmTempIndoor': 45
-        # }
-
-        check = False
+        last_alarm = get_last_alarm()
         if telemetries.get('mccSmokeState') == 1:
-            LOGGER.info('CANH BAO KHOI')
-            cmd_lcd[UPDATE_VALUE] = 'Canh bao Khoi' + SALT_DOLLAR_SIGN + str(ROW_4)
-            check = True
+            if telemetries.get('mccSmokeState') != last_alarm.mccSmokeState:
+                LOGGER.info('CANH BAO KHOI')
+                cmd_lcd[UPDATE_VALUE] = 'Canh bao Khoi!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                last_saved_alarm.mccSmokeState = 1
+        else:
+            last_saved_alarm.mccSmokeState = 0
+
         if telemetries.get('mccFireState') == 1:
-            LOGGER.info('CANH BAO CHAY')
-            cmd_lcd[UPDATE_VALUE] = 'Canh bao CHAY' + SALT_DOLLAR_SIGN + str(ROW_4)
-            check = True
+            if telemetries.get('mccFireState') != last_alarm.mccFireState:
+                LOGGER.info('CANH BAO CHAY')
+                cmd_lcd[UPDATE_VALUE] = 'Canh bao CHAY!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                last_saved_alarm.mccFireState = 1
+        else:
+            last_saved_alarm.mccFireState = 0
 
         if telemetries.get('mccMoveState') == 1:
-            LOGGER.info('CANH BAO CHUYEN DONG')
-            cmd_lcd[UPDATE_VALUE] = 'Canh Bao C.Dong' + SALT_DOLLAR_SIGN + str(ROW_4)
-            check = True
+            if telemetries.get('mccMoveState') != last_alarm.mccMoveState:
+                LOGGER.info('CANH BAO CHUYEN DONG')
+                cmd_lcd[UPDATE_VALUE] = 'CB Chuyen Dong!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                last_saved_alarm.mccMoveState = 1
+        else:
+            last_saved_alarm.mccMoveState = 0
 
         if telemetries.get('mccDoorState') == 1:
-            LOGGER.info('CANH BAO CUA')
-            cmd_lcd[UPDATE_VALUE] = 'Canh bao Cua' + SALT_DOLLAR_SIGN + str(ROW_4)
-            check = True
+            if telemetries.get('mccDoorState') != last_alarm.mccDoorState:
+                LOGGER.info('CANH BAO CUA')
+                cmd_lcd[UPDATE_VALUE] = 'Canh bao Cua!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                last_saved_alarm.mccDoorState = 1
+        else:
+            last_saved_alarm.mccDoorState = 0
 
         if telemetries.get('mccFloodState') == 1:
-            LOGGER.info('CANH BAO NGAP')
-            cmd_lcd[UPDATE_VALUE] = 'Canh bao Ngap' + SALT_DOLLAR_SIGN + str(ROW_4)
-            check = True
+            if telemetries.get('mccFloodState') != last_alarm.mccFloodState:
+                LOGGER.info('CANH BAO NGAP')
+                cmd_lcd[UPDATE_VALUE] = 'Canh bao Ngap!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                last_saved_alarm.mccFloodState = 1
+        else:
+            last_saved_alarm.mccFloodState = 0
 
-        maxTem = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
-        if telemetries.get('acmTempIndoor') > maxTem:
-            LOGGER.info('CANH BAO NHIET')
-            cmd_lcd[UPDATE_VALUE] = 'Canh bao Nhiet' + SALT_DOLLAR_SIGN + str(ROW_4)
-            check = True
+        max_Tem = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
+        if telemetries.get('acmTempIndoor') > max_Tem:
+            if telemetries.get('acmTempIndoor') != last_alarm.acmTempIndoor:
+                LOGGER.info('CANH BAO NHIET')
+                cmd_lcd[UPDATE_VALUE] = 'Canh bao Nhiet!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                last_saved_alarm.acmTempIndoor = 1
+        else:
+            last_saved_alarm.acmTempIndoor = 0
 
+        a = last_saved_alarm.__dict__.values()
+        check = any(elem != 0 for elem in a)
         if not check:
             cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_4)
 
+        set_last_alarm(last_saved_alarm)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
-
 
 
 def switch_lcd_service(input_lcd):
@@ -292,6 +306,34 @@ def check_lcd_service(dct_lcd_service):
     except Exception as ex:
         LOGGER.error('Error at check_lcd_service function with message: %s', ex.message)
     return input_lcd
+
+
+def get_last_alarm():
+    last_alarm_trace = Alarm_lcd()
+    try:
+        json_file = open('./last_trace_alarm_lcd.json', )
+        dct_last_trace = json.load(json_file)
+        last_alarm_trace.mccDoorState = dct_last_trace['mccDoorState']
+        last_alarm_trace.mccFloodState = dct_last_trace['mccFloodState']
+        last_alarm_trace.mccSmokeState = dct_last_trace['mccSmokeState']
+        last_alarm_trace.mccFireState = dct_last_trace['mccFireState']
+        last_alarm_trace.mccMoveState = dct_last_trace['mccMoveState']
+        last_alarm_trace.acmTempIndoor = dct_last_trace['acmTempIndoor']
+    except Exception as ex:
+        LOGGER.error('Error at get_last_trace with message: %s', ex.message)
+    return last_alarm_trace
+
+
+def set_last_alarm(input_lcd):
+    try:
+        dct_last_trace = input_lcd.__dict__
+        json_last_trace = json.dumps(dct_last_trace)
+        with io.open('./last_trace_alarm_lcd.json', 'wb') as last_trace_file:
+            last_trace_file.write(json_last_trace)
+        LOGGER.info('Command information just send: %s', dct_last_trace)
+    except Exception as ex:
+        LOGGER.error('Error at set_last_trace function with message: %s', ex.message)
+
 
 def show_temp_humi(data):
     temp = data[0]
