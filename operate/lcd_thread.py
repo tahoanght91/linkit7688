@@ -117,6 +117,7 @@ def check_alarm():
 
 def switch_lcd_service(input_lcd):
     last_trace = Lcd()
+    data = ['30', '70']
     try:
         key_event = input_lcd.key_event
         key_code = input_lcd.key_code
@@ -132,6 +133,9 @@ def switch_lcd_service(input_lcd):
                 last_trace = navigate_lcd_service(key_code)
             elif key_code == KEYCODE_24:
                 last_trace = enter_lcd_service()
+            elif key_code == KEYCODE_13:
+                show_temp_humi(data)
+        
             elif key_event == EVENT_DOWN:
                 pass
             elif key_event == EVENT_HOLD:
@@ -329,3 +333,11 @@ def set_last_alarm(input_lcd):
         LOGGER.info('Command information just send: %s', dct_last_trace)
     except Exception as ex:
         LOGGER.error('Error at set_last_trace function with message: %s', ex.message)
+
+
+def show_temp_humi(data):
+    temp = data[0]
+    humidity = data[1]
+
+    cmd_lcd[UPDATE_VALUE] = str(humidity) + '*C' + SALT_DOLLAR_SIGN + str(ROW_3)
+    cmd_lcd[UPDATE_VALUE] = str(temp) + '%' + SALT_DOLLAR_SIGN + str(ROW_4)
