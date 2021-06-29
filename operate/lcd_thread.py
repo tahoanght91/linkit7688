@@ -108,29 +108,37 @@ def check_alarm():
             else:
                 last_saved_alarm.mccFireState = 0
         else:
+            LOGGER.info('Empty Telemetries!!!!!!!!!!!!!!!!!!!!!!!!!')
             if last_alarm.mccMoveState == 1:
                 LOGGER.info('CANH BAO CHUYEN DONG')
                 cmd_lcd[UPDATE_VALUE] = 'CB Chuyen Dong!' + SALT_DOLLAR_SIGN + str(ROW_3)
+                last_saved_alarm.mccMoveState = 1
 
             if last_alarm.mccDoorState == 1:
                 LOGGER.info('CANH BAO CUA')
                 cmd_lcd[UPDATE_VALUE] = 'Canh bao Cua!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                last_saved_alarm.mccDoorState = 1
 
             if last_alarm.mccFloodState == 1:
                 LOGGER.info('CANH BAO NGAP')
                 cmd_lcd[UPDATE_VALUE] = 'Canh bao Ngap!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                last_saved_alarm.mccFloodState = 1
 
             if last_alarm.acmTempIndoor == 1:
                 LOGGER.info('CANH BAO NHIET')
                 cmd_lcd[UPDATE_VALUE] = 'Canh bao Nhiet!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                last_saved_alarm.acmTempIndoor = 1
 
             if last_alarm.mccSmokeState == 1:
                 LOGGER.info('CANH BAO KHOI')
                 cmd_lcd[UPDATE_VALUE] = 'Canh bao Khoi!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                last_saved_alarm.mccSmokeState = 1
 
             if last_alarm.mccFireState == 1:
                 LOGGER.info('CANH BAO CHAY')
                 cmd_lcd[UPDATE_VALUE] = 'Canh bao CHAY!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                last_saved_alarm.mccFireState = 1
+
 
         a = last_saved_alarm.__dict__.values()
         check = any(elem != 0 for elem in a)
