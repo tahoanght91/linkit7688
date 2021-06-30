@@ -6,3 +6,5 @@ test.py
 !config/factory_data.json
 venv
 config/data.json
+app.log
+app.log.1
