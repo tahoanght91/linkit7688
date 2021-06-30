@@ -22,6 +22,7 @@ dct_lcd = json.load(json_file)
 dct_lcd_menu = dct_lcd['lcd']['category']['menu']
 dct_lcd_menu_level = dct_lcd_menu['level']
 dct_lcd_menu_level_lv1 = dct_lcd_menu_level['lv1']
+last_alarm_update = Alarm_lcd()
 
 
 def call():
@@ -57,99 +58,102 @@ def call():
 
 
 def check_alarm():
-    last_saved_alarm = Alarm_lcd()
     try:
         # telemetries = {
         #     'mccSmokeState': 0,
-        #     'mccFireState': 0,
-        #     'mccMoveState': 1,
+        #     'mccFireState': 1,
+        #     'mccMoveState': 0,
         #     'mccDoorState': 0,
         #     'mccFloodState': 0,
-        #     'acmTempIndoor': 60,
+        #     'acmTempIndoor': 30,
         # }
-        last_alarm = get_last_alarm()
         if telemetries:
             if telemetries.get('mccMoveState') == 1:
                 LOGGER.info('CANH BAO CHUYEN DONG')
                 cmd_lcd[UPDATE_VALUE] = 'CB Chuyen Dong!' + SALT_DOLLAR_SIGN + str(ROW_3)
-                last_saved_alarm.mccMoveState = 1
+                last_alarm_update.mccMoveState = 1
             else:
-                last_saved_alarm.mccMoveState = 0
+                cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_3)
+                last_alarm_update.mccMoveState = 0
 
             if telemetries.get('mccDoorState') == 1:
                 LOGGER.info('CANH BAO CUA')
                 cmd_lcd[UPDATE_VALUE] = 'Canh bao Cua!' + SALT_DOLLAR_SIGN + str(ROW_4)
-                last_saved_alarm.mccDoorState = 1
+                last_alarm_update.mccDoorState = 1
             else:
-                last_saved_alarm.mccDoorState = 0
+                last_alarm_update.mccDoorState = 0
 
             if telemetries.get('mccFloodState') == 1:
                 LOGGER.info('CANH BAO NGAP')
                 cmd_lcd[UPDATE_VALUE] = 'Canh bao Ngap!' + SALT_DOLLAR_SIGN + str(ROW_4)
-                last_saved_alarm.mccFloodState = 1
+                last_alarm_update.mccFloodState = 1
             else:
-                last_saved_alarm.mccFloodState = 0
+                last_alarm_update.mccFloodState = 0
 
             max_Tem = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
             if telemetries.get('acmTempIndoor') > max_Tem:
                 LOGGER.info('CANH BAO NHIET')
                 cmd_lcd[UPDATE_VALUE] = 'Canh bao Nhiet!' + SALT_DOLLAR_SIGN + str(ROW_4)
-                last_saved_alarm.acmTempIndoor = 1
+                last_alarm_update.acmTempIndoor = 1
             else:
-                last_saved_alarm.acmTempIndoor = 0
+                last_alarm_update.acmTempIndoor = 0
 
             if telemetries.get('mccSmokeState') == 1:
                 LOGGER.info('CANH BAO KHOI')
                 cmd_lcd[UPDATE_VALUE] = 'Canh bao Khoi!' + SALT_DOLLAR_SIGN + str(ROW_4)
-                last_saved_alarm.mccSmokeState = 1
+                last_alarm_update.mccSmokeState = 1
             else:
-                last_saved_alarm.mccSmokeState = 0
+                last_alarm_update.mccSmokeState = 0
 
             if telemetries.get('mccFireState') == 1:
                 LOGGER.info('CANH BAO CHAY')
                 cmd_lcd[UPDATE_VALUE] = 'Canh bao CHAY!' + SALT_DOLLAR_SIGN + str(ROW_4)
-                last_saved_alarm.mccFireState = 1
+                last_alarm_update.mccFireState = 1
             else:
-                last_saved_alarm.mccFireState = 0
+                last_alarm_update.mccFireState = 0
         else:
             LOGGER.info('Empty Telemetries!!!!!!!!!!!!!!!!!!!!!!!!!')
-            if last_alarm.mccMoveState == 1:
+            if last_alarm_update.mccMoveState == 1:
                 LOGGER.info('CANH BAO CHUYEN DONG')
                 cmd_lcd[UPDATE_VALUE] = 'CB Chuyen Dong!' + SALT_DOLLAR_SIGN + str(ROW_3)
-                last_saved_alarm.mccMoveState = 1
+                last_alarm_update.mccMoveState = 1
+            else:
+                cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_3)
+                last_alarm_update.mccMoveState = 0
 
-            if last_alarm.mccDoorState == 1:
+            if last_alarm_update.mccDoorState == 1:
                 LOGGER.info('CANH BAO CUA')
                 cmd_lcd[UPDATE_VALUE] = 'Canh bao Cua!' + SALT_DOLLAR_SIGN + str(ROW_4)
-                last_saved_alarm.mccDoorState = 1
 
-            if last_alarm.mccFloodState == 1:
+            if last_alarm_update.mccFloodState == 1:
                 LOGGER.info('CANH BAO NGAP')
                 cmd_lcd[UPDATE_VALUE] = 'Canh bao Ngap!' + SALT_DOLLAR_SIGN + str(ROW_4)
-                last_saved_alarm.mccFloodState = 1
 
-            if last_alarm.acmTempIndoor == 1:
+            if last_alarm_update.acmTempIndoor == 1:
                 LOGGER.info('CANH BAO NHIET')
                 cmd_lcd[UPDATE_VALUE] = 'Canh bao Nhiet!' + SALT_DOLLAR_SIGN + str(ROW_4)
-                last_saved_alarm.acmTempIndoor = 1
 
-            if last_alarm.mccSmokeState == 1:
+            if last_alarm_update.mccSmokeState == 1:
                 LOGGER.info('CANH BAO KHOI')
                 cmd_lcd[UPDATE_VALUE] = 'Canh bao Khoi!' + SALT_DOLLAR_SIGN + str(ROW_4)
-                last_saved_alarm.mccSmokeState = 1
 
-            if last_alarm.mccFireState == 1:
+            if last_alarm_update.mccFireState == 1:
                 LOGGER.info('CANH BAO CHAY')
                 cmd_lcd[UPDATE_VALUE] = 'Canh bao CHAY!' + SALT_DOLLAR_SIGN + str(ROW_4)
-                last_saved_alarm.mccFireState = 1
 
+<<<<<<< HEAD
         a = last_saved_alarm.__dict__.values()
         check = any(elem != 0 for elem in a)
+=======
+
+        a = vars(last_alarm_update)
+        check = any(elem != 0 for elem in a.values())
+>>>>>>> huyfr
         if not check:
             LOGGER.info('Xoa row 44444444444444444444444444444444444444')
             cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_4)
 
-        set_last_alarm(last_saved_alarm)
+        LOGGER.info('List muon luu lai lich su: %s', a)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
@@ -352,12 +356,14 @@ def get_last_alarm():
     try:
         json_file = open('./last_trace_alarm_lcd.json', )
         dct_last_trace = json.load(json_file)
+        LOGGER.info('after convert from json: %s', dct_last_trace)
         last_alarm_trace.mccDoorState = dct_last_trace['mccDoorState']
         last_alarm_trace.mccFloodState = dct_last_trace['mccFloodState']
         last_alarm_trace.mccSmokeState = dct_last_trace['mccSmokeState']
         last_alarm_trace.mccFireState = dct_last_trace['mccFireState']
         last_alarm_trace.mccMoveState = dct_last_trace['mccMoveState']
         last_alarm_trace.acmTempIndoor = dct_last_trace['acmTempIndoor']
+        LOGGER.info('List last alarm: %s', last_alarm_trace)
     except Exception as ex:
         LOGGER.error('Error at get_last_trace with message: %s', ex.message)
     return last_alarm_trace
