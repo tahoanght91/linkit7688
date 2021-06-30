@@ -29,24 +29,24 @@ def call():
         while True:
             if CLIENT.is_connected():
                 check_alarm()
-                result_check_input = check_lcd_service(lcd_services)
-                # result_check_input.key_code = KEYCODE_16
-                # result_check_input.key_event = EVENT_UP
-                if result_check_input.key_code > 0 and result_check_input.key_event > 0:
-                    if result_check_input.key_code == KEYCODE_11:
-                        cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_3)
-                        # cmd_sa_formatted = {'key_lcd': CLEAR, 'content': ''}
-                        # process_cmd_lcd(cmd_sa_formatted)
-                    else:
-                        result_switch_lcd = switch_lcd_service(result_check_input)
-                        cmd_lcd_lock.acquire()
-                        if result_switch_lcd.value < 0:
-                            cmd_lcd[UPDATE_VALUE] = result_switch_lcd.name + SALT_DOLLAR_SIGN + str(ROW_3)
-                        else:
-                            cmd_lcd[UPDATE_VALUE] = str(result_switch_lcd.value) + SALT_DOLLAR_SIGN + str(ROW_3)
-                    cmd_lcd_lock.release()
-                    set_last_trace(result_switch_lcd)
-                    lcd_services.clear()
+                # result_check_input = check_lcd_service(lcd_services)
+                # # result_check_input.key_code = KEYCODE_16
+                # # result_check_input.key_event = EVENT_UP
+                # if result_check_input.key_code > 0 and result_check_input.key_event > 0:
+                #     if result_check_input.key_code == KEYCODE_11:
+                #         cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_3)
+                #         # cmd_sa_formatted = {'key_lcd': CLEAR, 'content': ''}
+                #         # process_cmd_lcd(cmd_sa_formatted)
+                #     else:
+                #         result_switch_lcd = switch_lcd_service(result_check_input)
+                #         cmd_lcd_lock.acquire()
+                #         if result_switch_lcd.value < 0:
+                #             cmd_lcd[UPDATE_VALUE] = result_switch_lcd.name + SALT_DOLLAR_SIGN + str(ROW_3)
+                #         else:
+                #             cmd_lcd[UPDATE_VALUE] = str(result_switch_lcd.value) + SALT_DOLLAR_SIGN + str(ROW_3)
+                #     cmd_lcd_lock.release()
+                #     set_last_trace(result_switch_lcd)
+                #     lcd_services.clear()
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
@@ -57,11 +57,11 @@ def check_alarm():
     try:
         # telemetries = {
         #     'mccSmokeState': 0,
-        #     'mccFireState': 0,
-        #     'mccMoveState': 1,
+        #     'mccFireState': 1,
+        #     'mccMoveState': 0,
         #     'mccDoorState': 0,
         #     'mccFloodState': 0,
-        #     'acmTempIndoor': 60,
+        #     'acmTempIndoor': 30,
         # }
         last_alarm = get_last_alarm()
         if telemetries:
@@ -70,6 +70,7 @@ def check_alarm():
                 cmd_lcd[UPDATE_VALUE] = 'CB Chuyen Dong!' + SALT_DOLLAR_SIGN + str(ROW_3)
                 last_saved_alarm.mccMoveState = 1
             else:
+                cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_3)
                 last_saved_alarm.mccMoveState = 0
 
             if telemetries.get('mccDoorState') == 1:
@@ -113,6 +114,9 @@ def check_alarm():
                 LOGGER.info('CANH BAO CHUYEN DONG')
                 cmd_lcd[UPDATE_VALUE] = 'CB Chuyen Dong!' + SALT_DOLLAR_SIGN + str(ROW_3)
                 last_saved_alarm.mccMoveState = 1
+            else:
+                cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_3)
+                last_saved_alarm.mccMoveState = 0
 
             if last_alarm.mccDoorState == 1:
                 LOGGER.info('CANH BAO CUA')
@@ -145,7 +149,7 @@ def check_alarm():
         if not check:
             LOGGER.info('Xoa row 44444444444444444444444444444444444444')
             cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_4)
-
+        LOGGER.info(last_saved_alarm)
         set_last_alarm(last_saved_alarm)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
@@ -348,12 +352,14 @@ def get_last_alarm():
     try:
         json_file = open('./last_trace_alarm_lcd.json', )
         dct_last_trace = json.load(json_file)
+        LOGGER.info('after convert from json: %s', dct_last_trace)
         last_alarm_trace.mccDoorState = dct_last_trace['mccDoorState']
         last_alarm_trace.mccFloodState = dct_last_trace['mccFloodState']
         last_alarm_trace.mccSmokeState = dct_last_trace['mccSmokeState']
         last_alarm_trace.mccFireState = dct_last_trace['mccFireState']
         last_alarm_trace.mccMoveState = dct_last_trace['mccMoveState']
         last_alarm_trace.acmTempIndoor = dct_last_trace['acmTempIndoor']
+        LOGGER.info('List last alarm: %s', last_alarm_trace)
     except Exception as ex:
         LOGGER.error('Error at get_last_trace with message: %s', ex.message)
     return last_alarm_trace
