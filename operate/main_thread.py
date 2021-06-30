@@ -71,7 +71,7 @@ def call():
 
         if CLIENT.is_connected():
             LOGGER.debug('Set IO time')
-            clock.set()
+            # clock.set()
             LOGGER.debug('Get original attributes')
             #shared_attributes
             device_shared_attributes_name = format_client_attributes(data_dict['shared'])

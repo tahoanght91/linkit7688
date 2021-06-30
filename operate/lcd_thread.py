@@ -1,3 +1,4 @@
+from os import altsep
 import time
 
 import requests
@@ -30,7 +31,7 @@ def call():
             if CLIENT.is_connected():
                 check_alarm()
                 result_check_input = check_lcd_service(lcd_services)
-                # result_check_input.key_code = KEYCODE_16
+                # result_check_input.key_code = KEYCODE_13
                 # result_check_input.key_event = EVENT_UP
                 if result_check_input.key_code > 0 and result_check_input.key_event > 0:
                     if result_check_input.key_code == KEYCODE_11:
@@ -40,10 +41,13 @@ def call():
                     else:
                         result_switch_lcd = switch_lcd_service(result_check_input)
                         cmd_lcd_lock.acquire()
-                        if result_switch_lcd.value < 0:
-                            cmd_lcd[UPDATE_VALUE] = result_switch_lcd.name + SALT_DOLLAR_SIGN + str(ROW_3)
-                        else:
-                            cmd_lcd[UPDATE_VALUE] = str(result_switch_lcd.value) + SALT_DOLLAR_SIGN + str(ROW_3)
+
+                        # if result_switch_lcd.value < 0:
+                        #     cmd_lcd[UPDATE_VALUE] = result_switch_lcd.name + SALT_DOLLAR_SIGN + str(ROW_3)
+                        #     show_temp_humi(30, 70)
+                        # else:
+                        #     cmd_lcd[UPDATE_VALUE] = str(result_switch_lcd.value) + SALT_DOLLAR_SIGN + str(ROW_3)
+
                     cmd_lcd_lock.release()
                     set_last_trace(result_switch_lcd)
                     lcd_services.clear()
@@ -139,7 +143,6 @@ def check_alarm():
                 cmd_lcd[UPDATE_VALUE] = 'Canh bao CHAY!' + SALT_DOLLAR_SIGN + str(ROW_4)
                 last_saved_alarm.mccFireState = 1
 
-
         a = last_saved_alarm.__dict__.values()
         check = any(elem != 0 for elem in a)
         if not check:
@@ -153,7 +156,6 @@ def check_alarm():
 
 def switch_lcd_service(input_lcd):
     last_trace = Lcd()
-    # data = ['30', '70']
     try:
         key_event = input_lcd.key_event
         key_code = input_lcd.key_code
@@ -169,8 +171,8 @@ def switch_lcd_service(input_lcd):
                 last_trace = navigate_lcd_service(key_code)
             elif key_code == KEYCODE_24:
                 last_trace = enter_lcd_service()
-            # elif key_code == KEYCODE_13:
-            #     show_temp_humi(data)
+            elif key_code == KEYCODE_13:
+                show_temp_humi(30, 70)
             elif key_event == EVENT_DOWN:
                 pass
             elif key_event == EVENT_HOLD:
@@ -192,7 +194,8 @@ def enter_lcd_service():
             if last_trace.level == MENU_LEVEL_1:
                 last_trace.name = dct_lcd_menu_level_lv1[last_trace.index_level1]['lv2']['keys'][0]
                 last_trace.level = dct_lcd_menu_level_lv1[last_trace.index_level1]['lv2']['levelId']
-                last_trace.index_level2 = dct_lcd_menu_level_lv1[last_trace.index_level1]['lv2']['keys'].index(last_trace.name)
+                last_trace.index_level2 = dct_lcd_menu_level_lv1[last_trace.index_level1]['lv2']['keys'].index(
+                    last_trace.name)
             elif last_trace.level == MENU_LEVEL_2:
                 if last_trace.value == -1:
                     value = shared_attributes.get(last_trace.name, default_data.data_dict['shared'][last_trace.name])
@@ -252,7 +255,8 @@ def write_body_send_shared_attributes(key, value):
     body = {}
     try:
         now = int(time.time() * 1000)
-        body = {"tramEntityId": str(device_config['device_id']), "value": str(value), "keyName": str(key), "changeAt": now}
+        body = {"tramEntityId": str(device_config['device_id']), "value": str(value), "keyName": str(key),
+                "changeAt": now}
         LOGGER.info('Content of body send shared attributes to Smartsite: %s', body)
     except Exception as ex:
         LOGGER.info('Error at write_body_send_shared_attributes function with message: %s', ex.message)
@@ -287,7 +291,7 @@ def extract_lcd_service(byte_data):
 def get_last_trace():
     lcd_last_trace = Lcd()
     try:
-        json_file = open('./last_trace_lcd.json',)
+        json_file = open('./last_trace_lcd.json', )
         dct_last_trace = json.load(json_file)
         lcd_last_trace.key_code = dct_last_trace['key_code']
         lcd_last_trace.key_event = dct_last_trace['key_event']
@@ -370,11 +374,27 @@ def set_last_alarm(input_lcd):
         LOGGER.error('Error at set_last_trace function with message: %s', ex.message)
 
 
-# def show_temp_humi(data):
-#     LOGGER.info('Enter show_temp_humi function')
-#     temp = data[0]
-#     humidity = data[1]
-#
-#     cmd_lcd[UPDATE_VALUE] = str(humidity) + '*C' + SALT_DOLLAR_SIGN + str(ROW_3)
-#     cmd_lcd[UPDATE_VALUE] = str(temp) + '%' + SALT_DOLLAR_SIGN + str(ROW_4)
-#     LOGGER.info('Exit show_temp_humi function')
+def show_temp_humi(temp, humidity):
+    cmd_lcd_dict = {}
+    cmd_lcd_dict[0] = creat_cmd_rule(str(temp) + '*C', ROW_3)
+    cmd_lcd_dict[1] = creat_cmd_rule(str(humidity) + '%', ROW_4)
+    multi_cmd_lcd_enable()
+    LOGGER.info('Enter show_temp_humi function')
+    for i in cmd_lcd_dict:
+        add_cmd_lcd(cmd_lcd_dict[i])
+    LOGGER.info('Exit show_temp_humi function')
+
+
+def multi_cmd_lcd_enable():
+    multi_cmd_lcd_flag[0] = True
+
+def multi_cmd_lcd_disable():
+    multi_cmd_lcd_flag[0] = False
+
+def add_cmd_lcd(cmd):
+    multi_cmd_lcd.append(cmd)
+
+def creat_cmd_rule(string, row):
+    cmd = str(string) + SALT_DOLLAR_SIGN + str(row)
+
+    return cmd
