@@ -24,6 +24,7 @@ dct_lcd_menu = dct_lcd['lcd']['category']['menu']
 dct_lcd_menu_level = dct_lcd_menu['level']
 dct_lcd_menu_level_lv1 = dct_lcd_menu_level['lv1']
 last_alarm_update = Alarm_lcd()
+BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 
 
 def call():
@@ -31,6 +32,7 @@ def call():
         period = 3
         while True:
             if CLIENT.is_connected():
+                check_alarm()
                 result_check_input = check_lcd_service(lcd_services)
                 if result_check_input.key_code > 0 and result_check_input.key_event > 0:
                     if result_check_input.key_code == KEYCODE_11:
@@ -57,7 +59,7 @@ def check_alarm():
     cmd_lcd_dict = {}
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-    cmd_lcd_dict[0] = creat_cmd_rule(dt_string, ROW_3)
+    cmd_lcd_dict[0] = creat_cmd_rule(BAN_TIN_CANH_BAO, ROW_1)
     try:
         max_Tem = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
         LOGGER.info('Check Telemetries: %s', telemetries)
@@ -82,7 +84,10 @@ def check_alarm():
                 cmd_lcd_dict[1] = creat_cmd_rule('CB Chuyen Dong!', ROW_2)
             else:
                 cmd_lcd_dict[1] = creat_cmd_rule('An Toan!', ROW_2)
-
+            cmd_lcd_dict[2] = creat_cmd_rule(dt_string, ROW_3)
+        else:
+            cmd_lcd_dict[2] = creat_cmd_rule('Khong co CB!', ROW_3)
+        LOGGER.info('Get list txt row: %s', cmd_lcd_dict)
         multi_cmd_lcd_enable()
         LOGGER.info('Enter show alarm function')
         for i in cmd_lcd_dict:
