@@ -3,6 +3,7 @@ import time
 
 import requests
 
+from datetime import datetime
 from config import *
 from config.common import *
 from config.common_lcd_services import *
@@ -16,7 +17,7 @@ from utility import bytes_to_int
 URL_SEND_SA = 'http://123.30.214.139:8517/api/services/app/DMTram/ChangeValueTemplate'
 menu_level_1 = [MCC, ACM, ATS]
 LIST_KEY_EVENT = [EVENT_NONE, EVENT_DOWN, EVENT_UP, EVENT_HOLD, EVENT_POWER]
-LIST_KEY_CODE = [KEYCODE_11, KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26, KEYCODE_24, KEYCODE_13]
+LIST_KEY_CODE = [KEYCODE_11, KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26, KEYCODE_24, KEYCODE_13, KEYCODE_12]
 json_file = open('config/lcd.json')
 dct_lcd = json.load(json_file)
 dct_lcd_menu = dct_lcd['lcd']['category']['menu']
@@ -30,7 +31,6 @@ def call():
         period = 3
         while True:
             if CLIENT.is_connected():
-                check_alarm()
                 result_check_input = check_lcd_service(lcd_services)
                 if result_check_input.key_code > 0 and result_check_input.key_event > 0:
                     if result_check_input.key_code == KEYCODE_11:
@@ -54,95 +54,40 @@ def call():
 
 
 def check_alarm():
+    cmd_lcd_dict = {}
+    now = datetime.now()
+    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+    cmd_lcd_dict[0] = creat_cmd_rule(dt_string, ROW_3)
     try:
-        # telemetries = {
-        #     'mccSmokeState': 0,
-        #     'mccFireState': 1,
-        #     'mccMoveState': 0,
-        #     'mccDoorState': 0,
-        #     'mccFloodState': 0,
-        #     'acmTempIndoor': 30,
-        # }
+        max_Tem = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
+        LOGGER.info('Check Telemetries: %s', telemetries)
         if telemetries:
-            if telemetries.get('mccMoveState') == 1:
-                LOGGER.info('CANH BAO CHUYEN DONG')
-                cmd_lcd[UPDATE_VALUE] = 'CB Chuyen Dong!' + SALT_DOLLAR_SIGN + str(ROW_3)
-                last_alarm_update.mccMoveState = 1
-            else:
-                cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_3)
-                last_alarm_update.mccMoveState = 0
-
-            if telemetries.get('mccDoorState') == 1:
-                LOGGER.info('CANH BAO CUA')
-                cmd_lcd[UPDATE_VALUE] = 'Canh bao Cua!' + SALT_DOLLAR_SIGN + str(ROW_4)
-                last_alarm_update.mccDoorState = 1
-            else:
-                last_alarm_update.mccDoorState = 0
-
-            if telemetries.get('mccFloodState') == 1:
-                LOGGER.info('CANH BAO NGAP')
-                cmd_lcd[UPDATE_VALUE] = 'Canh bao Ngap!' + SALT_DOLLAR_SIGN + str(ROW_4)
-                last_alarm_update.mccFloodState = 1
-            else:
-                last_alarm_update.mccFloodState = 0
-
-            max_Tem = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
-            if telemetries.get('acmTempIndoor') > max_Tem:
-                LOGGER.info('CANH BAO NHIET')
-                cmd_lcd[UPDATE_VALUE] = 'Canh bao Nhiet!' + SALT_DOLLAR_SIGN + str(ROW_4)
-                last_alarm_update.acmTempIndoor = 1
-            else:
-                last_alarm_update.acmTempIndoor = 0
-
-            if telemetries.get('mccSmokeState') == 1:
-                LOGGER.info('CANH BAO KHOI')
-                cmd_lcd[UPDATE_VALUE] = 'Canh bao Khoi!' + SALT_DOLLAR_SIGN + str(ROW_4)
-                last_alarm_update.mccSmokeState = 1
-            else:
-                last_alarm_update.mccSmokeState = 0
-
             if telemetries.get('mccFireState') == 1:
                 LOGGER.info('CANH BAO CHAY')
-                cmd_lcd[UPDATE_VALUE] = 'Canh bao CHAY!' + SALT_DOLLAR_SIGN + str(ROW_4)
-                last_alarm_update.mccFireState = 1
-            else:
-                last_alarm_update.mccFireState = 0
-        else:
-            LOGGER.info('Empty Telemetries!!!!!!!!!!!!!!!!!!!!!!!!!')
-            if last_alarm_update.mccMoveState == 1:
-                LOGGER.info('CANH BAO CHUYEN DONG')
-                cmd_lcd[UPDATE_VALUE] = 'CB Chuyen Dong!' + SALT_DOLLAR_SIGN + str(ROW_3)
-                last_alarm_update.mccMoveState = 1
-            else:
-                cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_3)
-                last_alarm_update.mccMoveState = 0
-
-            if last_alarm_update.mccDoorState == 1:
-                LOGGER.info('CANH BAO CUA')
-                cmd_lcd[UPDATE_VALUE] = 'Canh bao Cua!' + SALT_DOLLAR_SIGN + str(ROW_4)
-
-            if last_alarm_update.mccFloodState == 1:
-                LOGGER.info('CANH BAO NGAP')
-                cmd_lcd[UPDATE_VALUE] = 'Canh bao Ngap!' + SALT_DOLLAR_SIGN + str(ROW_4)
-
-            if last_alarm_update.acmTempIndoor == 1:
-                LOGGER.info('CANH BAO NHIET')
-                cmd_lcd[UPDATE_VALUE] = 'Canh bao Nhiet!' + SALT_DOLLAR_SIGN + str(ROW_4)
-
-            if last_alarm_update.mccSmokeState == 1:
+                cmd_lcd_dict[1] = creat_cmd_rule('Canh bao CHAY!', ROW_2)
+            elif telemetries.get('mccSmokeState') == 1:
                 LOGGER.info('CANH BAO KHOI')
-                cmd_lcd[UPDATE_VALUE] = 'Canh bao Khoi!' + SALT_DOLLAR_SIGN + str(ROW_4)
+                cmd_lcd_dict[1] = creat_cmd_rule('Canh bao Khoi!', ROW_2)
+            elif telemetries.get('acmTempIndoor') > max_Tem:
+                LOGGER.info('CANH BAO NHIET')
+                cmd_lcd_dict[1] = creat_cmd_rule('Canh bao Nhiet!', ROW_2)
+            elif telemetries.get('mccFloodState') == 1:
+                LOGGER.info('CANH BAO NGAP')
+                cmd_lcd_dict[1] = creat_cmd_rule('Canh bao Ngap!', ROW_2)
+            elif telemetries.get('mccDoorState') == 1:
+                LOGGER.info('CANH BAO CUA')
+                cmd_lcd_dict[1] = creat_cmd_rule('Canh bao Cua!', ROW_2)
+            elif telemetries.get('mccMoveState') == 1:
+                LOGGER.info('CANH BAO CHUYEN DONG')
+                cmd_lcd_dict[1] = creat_cmd_rule('CB Chuyen Dong!', ROW_2)
+            else:
+                cmd_lcd_dict[1] = creat_cmd_rule('An Toan!', ROW_2)
 
-            if last_alarm_update.mccFireState == 1:
-                LOGGER.info('CANH BAO CHAY')
-                cmd_lcd[UPDATE_VALUE] = 'Canh bao CHAY!' + SALT_DOLLAR_SIGN + str(ROW_4)
-        a = vars(last_alarm_update)
-        check = any(elem != 0 for elem in a.values())
-        if not check:
-            LOGGER.info('Xoa row 44444444444444444444444444444444444444')
-            cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_4)
-
-        LOGGER.info('List muon luu lai lich su: %s', a)
+        multi_cmd_lcd_enable()
+        LOGGER.info('Enter show alarm function')
+        for i in cmd_lcd_dict:
+            add_cmd_lcd(cmd_lcd_dict[i])
+        LOGGER.info('Exit show alarm function')
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
@@ -166,6 +111,8 @@ def switch_lcd_service(input_lcd):
                 last_trace = enter_lcd_service()
             elif key_code == KEYCODE_13:
                 show_temp_humi(30, 70)
+            elif key_code == KEYCODE_12:
+                check_alarm()
             elif key_event == EVENT_DOWN:
                 pass
             elif key_event == EVENT_HOLD:
