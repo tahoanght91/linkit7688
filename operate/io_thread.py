@@ -21,7 +21,7 @@ def call():
         current_cycle = int((time.time()) / 60)
         if not (current_cycle - original_cycle) and not (current_cycle - original_cycle) % 2:
             LOGGER.info("Send clock set")
-            clock.set()
+            # clock.set()
 
         # Read data
         byte_stream = blocking_read(ser, message_break)
@@ -100,7 +100,6 @@ def call():
                                             del cmd_lcd[key_lcd]
                                         cmd_lcd_lock.release()
                                         LOGGER.debug("Receive ACK lcd with message with content: %s", content)
-                                        multi_cmd_lcd_flag[0] = False
                                         break
                                     if _read_data(byte_stream):
                                         ser.write(with_check_sum(data_ack, BYTE_ORDER))
@@ -114,6 +113,7 @@ def call():
                                         LOGGER.info('Time out')
                                         break
                                     LOGGER.debug('Try sending again')
+                multi_cmd_lcd_flag[0] = False
             else:
                 if cmd_lcd:
                     cmd_lcd_snap = []
