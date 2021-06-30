@@ -11,7 +11,10 @@ def call():
         if CLIENT.is_connected():
             telemetry = format_telemetry(telemetries)
             for key, value in telemetry.items():
-                CLIENT.gw_send_telemetry(key, value)
+                response = CLIENT.gw_send_telemetry(key, value)
+                if response.rc() != 0:
+                    CLIENT.disconnect()
+                    LOGGER.info('rc is 4')
             LOGGER.info('Sent telemetry data')
             log_info = []
             for key, value in telemetries.items():
