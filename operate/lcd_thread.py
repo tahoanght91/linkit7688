@@ -32,13 +32,9 @@ def call():
             if CLIENT.is_connected():
                 check_alarm()
                 result_check_input = check_lcd_service(lcd_services)
-                # result_check_input.key_code = KEYCODE_13
-                # result_check_input.key_event = EVENT_UP
                 if result_check_input.key_code > 0 and result_check_input.key_event > 0:
                     if result_check_input.key_code == KEYCODE_11:
                         cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_3)
-                        # cmd_sa_formatted = {'key_lcd': CLEAR, 'content': ''}
-                        # process_cmd_lcd(cmd_sa_formatted)
                     else:
                         result_switch_lcd = switch_lcd_service(result_check_input)
                         cmd_lcd_lock.acquire()
@@ -140,15 +136,8 @@ def check_alarm():
             if last_alarm_update.mccFireState == 1:
                 LOGGER.info('CANH BAO CHAY')
                 cmd_lcd[UPDATE_VALUE] = 'Canh bao CHAY!' + SALT_DOLLAR_SIGN + str(ROW_4)
-
-<<<<<<< HEAD
-        a = last_saved_alarm.__dict__.values()
-        check = any(elem != 0 for elem in a)
-=======
-
         a = vars(last_alarm_update)
         check = any(elem != 0 for elem in a.values())
->>>>>>> huyfr
         if not check:
             LOGGER.info('Xoa row 44444444444444444444444444444444444444')
             cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_4)
@@ -394,13 +383,16 @@ def show_temp_humi(temp, humidity):
 def multi_cmd_lcd_enable():
     multi_cmd_lcd_flag[0] = True
 
+
 def multi_cmd_lcd_disable():
     multi_cmd_lcd_flag[0] = False
+
 
 def add_cmd_lcd(cmd):
     multi_cmd_lcd.append(cmd)
 
+
 def creat_cmd_rule(string, row):
     cmd = str(string) + SALT_DOLLAR_SIGN + str(row)
-
     return cmd
+
