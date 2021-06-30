@@ -12,9 +12,9 @@ def call():
             telemetry = format_telemetry(telemetries)
             for key, value in telemetry.items():
                 response = CLIENT.gw_send_telemetry(key, value)
+                LOGGER.info('RC of send telemetry to Thingsboard is: %s', str(response.rc()))
                 if response.rc() != 0:
                     CLIENT.disconnect()
-                    LOGGER.info('rc is 4')
             LOGGER.info('Sent telemetry data')
             log_info = []
             for key, value in telemetries.items():
