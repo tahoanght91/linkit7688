@@ -17,7 +17,7 @@ from utility import bytes_to_int
 URL_SEND_SA = 'http://123.30.214.139:8517/api/services/app/DMTram/ChangeValueTemplate'
 menu_level_1 = [MCC, ACM, ATS]
 LIST_KEY_EVENT = [EVENT_NONE, EVENT_DOWN, EVENT_UP, EVENT_HOLD, EVENT_POWER]
-LIST_KEY_CODE = [KEYCODE_11, KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26, KEYCODE_24, KEYCODE_13]
+LIST_KEY_CODE = [KEYCODE_11, KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26, KEYCODE_24, KEYCODE_13, KEYCODE_12]
 json_file = open('config/lcd.json')
 dct_lcd = json.load(json_file)
 dct_lcd_menu = dct_lcd['lcd']['category']['menu']
@@ -31,7 +31,6 @@ def call():
         period = 3
         while True:
             if CLIENT.is_connected():
-                check_alarm()
                 result_check_input = check_lcd_service(lcd_services)
                 if result_check_input.key_code > 0 and result_check_input.key_event > 0:
                     if result_check_input.key_code == KEYCODE_11:
@@ -112,6 +111,8 @@ def switch_lcd_service(input_lcd):
                 last_trace = enter_lcd_service()
             elif key_code == KEYCODE_13:
                 show_temp_humi(30, 70)
+            elif key_code == KEYCODE_12:
+                check_alarm()
             elif key_event == EVENT_DOWN:
                 pass
             elif key_event == EVENT_HOLD:
