@@ -30,26 +30,21 @@ BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 def call():
     try:
         period = 3
+        button = Button()
+        display = Display()
+        bt = '0'
+        display.clear_display()
+        stt_bt = 1
         while True:
             if CLIENT.is_connected():
-                check_alarm()
-                result_check_input = check_lcd_service(lcd_services)
-                if result_check_input.key_code > 0 and result_check_input.key_event > 0:
-                    if result_check_input.key_code == KEYCODE_11:
-                        cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_3)
-                    else:
-                        result_switch_lcd = switch_lcd_service(result_check_input)
-                        cmd_lcd_lock.acquire()
-
-                        # if result_switch_lcd.value < 0:
-                        #     cmd_lcd[UPDATE_VALUE] = result_switch_lcd.name + SALT_DOLLAR_SIGN + str(ROW_3)
-                        #     show_temp_humi(30, 70)
-                        # else:
-                        #     cmd_lcd[UPDATE_VALUE] = str(result_switch_lcd.value) + SALT_DOLLAR_SIGN + str(ROW_3)
-
-                    cmd_lcd_lock.release()
-                    set_last_trace(result_switch_lcd)
-                    lcd_services.clear()
+                display.menu(bt)
+                if stt_bt == 1:
+                    lcd_services['key_code'] = KEYCODE_12
+                    lcd_services['key_event'] = EVENT_UP
+                    stt_bt=0
+                bt = button.check_button(lcd_services)
+                display.clear_display()
+                
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
@@ -115,7 +110,7 @@ def switch_lcd_service(input_lcd):
             elif key_code == KEYCODE_24:
                 last_trace = enter_lcd_service()
             elif key_code == KEYCODE_13:
-                show_temp_humi(30, 70)
+                pass
             elif key_code == KEYCODE_12:
                 check_alarm()
             elif key_event == EVENT_DOWN:
@@ -321,15 +316,15 @@ def set_last_alarm(input_lcd):
         LOGGER.error('Error at set_last_trace function with message: %s', ex.message)
 
 
-def show_temp_humi(temp, humidity):
-    cmd_lcd_dict = {}
-    cmd_lcd_dict[0] = creat_cmd_rule(str(temp) + '*C', ROW_3)
-    cmd_lcd_dict[1] = creat_cmd_rule(str(humidity) + '%', ROW_4)
-    multi_cmd_lcd_enable()
-    LOGGER.info('Enter show_temp_humi function')
-    for i in cmd_lcd_dict:
-        add_cmd_lcd(cmd_lcd_dict[i])
-    LOGGER.info('Exit show_temp_humi function')
+# def show_temp_humi(temp, humidity):
+#     cmd_lcd_dict = {}
+#     cmd_lcd_dict[0] = creat_cmd_rule(str(temp) + '*C', ROW_3)
+#     cmd_lcd_dict[1] = creat_cmd_rule(str(humidity) + '%', ROW_4)
+#     multi_cmd_lcd_enable()
+#     LOGGER.info('Enter show_temp_humi function')
+#     for i in cmd_lcd_dict:
+#         add_cmd_lcd(cmd_lcd_dict[i])
+#     LOGGER.info('Exit show_temp_humi function')
 
 
 def multi_cmd_lcd_enable():
@@ -348,3 +343,106 @@ def creat_cmd_rule(string, row):
     cmd = str(string) + SALT_DOLLAR_SIGN + str(row)
     return cmd
 
+class Display:
+    def __init__(self):
+        self.last_menu = '0'
+    
+    def clear_display(self):
+        lcd_services.clear()
+
+    def print_test (self, string):
+        cmd_lcd_dict = {}
+        cmd_lcd_dict[0] = creat_cmd_rule(str(string), ROW_3)
+        multi_cmd_lcd_enable()
+        LOGGER.info('Enter print_test function')
+        for i in cmd_lcd_dict:
+            add_cmd_lcd(cmd_lcd_dict[i])
+        LOGGER.info('Exit print_test function')
+
+    def main_display(self):
+        self.print_test('1. Main display')
+
+    def warning_display(self):
+        self.print_test('2. Warning display')
+
+    def security_sensor_info_display(self):
+        self.print_test('3. Secure sensor')
+
+    def air_info_display(self):
+        self.print_test('4. Air condition')
+    
+    def ats_display(self):
+        self.print_test('5. ATS')
+    
+    def setting_display(self):
+        self.print_test('6. Setting')
+    
+    def rfid_display(self):
+        self.print_test('7. RFID')
+
+    def menu(self, number_menu):
+        if number_menu in MENU:
+            self.last_menu = MENU[number_menu]
+            return getattr(self, 'case_' + str(MENU[number_menu]))()
+        else:
+            return getattr(self, 'case_' + str(self.last_menu))()
+    def case_0(self):
+        return self.main_display()
+    def case_1(self):
+        return self.warning_display()
+    def case_2(self):
+        return self.security_sensor_info_display()  
+    def case_3(self):
+        return self.air_info_display()
+    def case_4(self):
+        return self.ats_display()
+    def case_5(self):
+        return self.setting_display()
+    def case_6(self):
+        return self.rfid_display()
+
+class Button():
+    def __init__(self):
+        pass
+
+    def check_button(self, dct_lcd_service):
+        # key_code_checked = False
+        # key_event_checked = False
+        # input_lcd = Lcd()
+        # try:
+        #     input_lcd.key_code = dct_lcd_service['key_code']
+        #     input_lcd.key_event = dct_lcd_service['key_event']
+
+        #     if input_lcd.key_code in LIST_KEYCODE:
+        #         key_code_checked = True
+        #         LOGGER.info('Key code: %d, exist in LIST_KEY_CODE', input_lcd.key_code)
+        #     else:
+        #         LOGGER.info('Key code: %d not exists LIST_KEY_CODE', input_lcd.key_code)
+
+        #     if input_lcd.key_event in LIST_EVENT_BT:
+        #         key_event_checked = True
+        #         LOGGER.info('Key event: %d exists in LIST_KEY_EVENT', input_lcd.key_event)
+        #     else:
+        #         LOGGER.info('Key event: %d not exists in LIST_KEY_EVENT', input_lcd.key_event)
+
+        #     if key_code_checked and key_event_checked:
+        #         LOGGER.info('Check key code & key event successful')
+        #     else:
+        #         lcd_services.clear()
+        #         LOGGER.info('Fail while check ')
+
+        key_code = dct_lcd_service['key_code']
+        key_event = dct_lcd_service['key_event']
+
+        for i in range(len(LIST_KEYCODE)):
+            if key_code == LIST_KEYCODE[i]:
+                index_key = i+1
+                break
+
+        if key_event == EVENT_UP:
+            event = EVENT_UP_BT
+        elif key_event == EVENT_HOLD:
+            event = EVENT_HOLD_BT
+        button = event*index_key
+
+        return str(button)
