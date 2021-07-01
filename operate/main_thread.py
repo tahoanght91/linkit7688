@@ -1,5 +1,4 @@
 import os
-import sys
 import time
 import math
 import subprocess
@@ -7,7 +6,6 @@ import subprocess
 import requests
 
 from config import *
-from config.common import *
 from config.default_data import data_dict
 from devices import clock
 from . import subscription_thread, monitor_thread, io_thread, telemetry_thread, update_attributes_thread, ui_thread, \
@@ -20,6 +18,10 @@ semaphore = threading.Semaphore(0)
 def _connect_callback(client, userdata, flags, rc, *extra_params):
     LOGGER.info('Connection successful')
     semaphore.release()
+
+
+def _disconnect_callback():
+    CLIENT.disconnect()
 
 
 def _on_receive_shared_attributes_callback(content, exception):
@@ -101,7 +103,7 @@ def call():
         thread_list = [io_thread, update_attributes_thread, telemetry_thread, led_thread, lcd_thread, shared_attributes_thread, rfid_thread]
 
         # enable when test flow read value
-        # thread_list = [io_thread, shared_attributes_thread]
+        # thread_list = [io_thread, telemetry_thread]
 
         for i, thread in enumerate(thread_list):
             thread.name = thread.__name__
@@ -155,11 +157,7 @@ def call():
                         if latest_version > current_version:
                             LOGGER.info('Get new version: %s from server: %s', str(latest_version), link_version)
                             LOGGER.info('Update system, disconnect with server')
-                            CLIENT.gw_disconnect_device(DEVICE_MCC)
-                            CLIENT.gw_disconnect_device(DEVICE_ATS)
-                            CLIENT.gw_disconnect_device(DEVICE_ACM)
-                            CLIENT.disconnect()
-                            command = 'cd /IoT && ./update.sh && echo update successful!'
+                            command = 'cd /IoT && ./update.sh'
                             subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
                         else:
                             pass

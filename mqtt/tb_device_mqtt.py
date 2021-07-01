@@ -83,6 +83,7 @@ class TBDeviceMqttClient:
         self.__is_connected = False
         self.__device_on_server_side_rpc_response = None
         self.__connect_callback = None
+        # self.__disconnect_callback = None
         self.__device_max_sub_id = 0
         self.__device_client_rpc_number = 0
         self.__device_sub_dict = {}
@@ -110,6 +111,7 @@ class TBDeviceMqttClient:
         log.setLevel("DEBUG")
         log.debug("Disconnected client: %s, user data: %s, result code: %s", str(client), str(userdata), str(result_code))
         log.setLevel(prev_level)
+        # self.__disconnect_callback()
 
     def _on_connect(self, client, userdata, flags, result_code, *extra_params):
         result_codes = {
@@ -137,6 +139,24 @@ class TBDeviceMqttClient:
 
     def is_connected(self):
         return self.__is_connected
+
+    # def connect(self, disconnect_callback=None, callback=None, min_reconnect_delay=1, timeout=120, tls=False, ca_certs=None, cert_file=None, key_file=None, keepalive=120):
+    #     if tls:
+    #         try:
+    #             self._client.tls_set(ca_certs=ca_certs,
+    #                                  certfile=cert_file,
+    #                                  keyfile=key_file,
+    #                                  cert_reqs=ssl.CERT_REQUIRED,
+    #                                  tls_version=ssl.PROTOCOL_TLSv1_2,
+    #                                  ciphers=None)
+    #             self._client.tls_insecure_set(False)
+    #         except ValueError:
+    #             pass
+    #     self._client.connect(self.__host, self.__port, keepalive=keepalive)
+    #     self.reconnect_delay_set(min_reconnect_delay, timeout)
+    #     self._client.loop_start()
+    #     self.__connect_callback = callback
+    #     self.__disconnect_callback = disconnect_callback
 
     def connect(self, callback=None, min_reconnect_delay=1, timeout=120, tls=False, ca_certs=None, cert_file=None, key_file=None, keepalive=120):
         if tls:

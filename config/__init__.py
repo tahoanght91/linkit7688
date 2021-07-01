@@ -36,6 +36,9 @@ cmd_led = {}
 cmd_lcd = {}
 cmd_sa = {}
 
+multi_cmd_lcd_flag = [False]
+multi_cmd_lcd = []
+
 update_attributes_lock = threading.Lock()
 telemetries_lock = threading.Lock()
 commands_lock = threading.Lock()

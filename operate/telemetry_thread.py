@@ -1,8 +1,6 @@
 import time
-from random import randint
 
 from config import *
-from config.common import *
 
 
 def call():
@@ -11,7 +9,10 @@ def call():
         if CLIENT.is_connected():
             telemetry = format_telemetry(telemetries)
             for key, value in telemetry.items():
-                CLIENT.gw_send_telemetry(key, value)
+                response = CLIENT.gw_send_telemetry(key, value)
+                LOGGER.info('RC of send telemetry to Thingsboard is: %s', str(response.rc()))
+                if response.rc() != 0:
+                    CLIENT.disconnect()
             LOGGER.info('Sent telemetry data')
             log_info = []
             for key, value in telemetries.items():
