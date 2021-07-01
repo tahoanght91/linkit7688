@@ -63,12 +63,14 @@ def init_show_alarm():
         cmd_lcd[UPDATE_VALUE] = creat_cmd_rule(BAN_TIN_CANH_BAO, ROW_1)
         if telemetries:
             cmd_lcd_ok = check_alarm(telemetries)
+            LOGGER.info('List cmd lcd: %s', cmd_lcd_ok)
             if cmd_lcd_ok:
                 LOGGER.info('Get list txt row: %s', cmd_lcd_ok)
                 multi_cmd_lcd_enable()
                 LOGGER.info('Enter show alarm function')
                 for i in cmd_lcd_ok:
                     add_cmd_lcd(cmd_lcd_ok[i])
+                LOGGER.info('CMD Multil LCD: %s', multi_cmd_lcd)
                 LOGGER.info('Exit show alarm function')
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
