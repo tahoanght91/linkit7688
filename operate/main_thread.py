@@ -66,14 +66,14 @@ def call():
     try:
         LOGGER.info('Start main thread')
         try:
-            CLIENT.connect(callback=_connect_callback, disconnect_callback=_disconnect_callback)
+            CLIENT.connect(callback=_connect_callback)
             semaphore.acquire()
         except Exception as e:
             LOGGER.info('Fail to connect to server')
 
         if CLIENT.is_connected():
             LOGGER.debug('Set IO time')
-            # clock.set()
+            clock.set()
             LOGGER.debug('Get original attributes')
             #shared_attributes
             device_shared_attributes_name = format_client_attributes(data_dict['shared'])
@@ -102,8 +102,8 @@ def call():
 
         thread_list = [io_thread, update_attributes_thread, telemetry_thread, led_thread, lcd_thread, shared_attributes_thread, rfid_thread]
 
-        # enable when test flow read value
-        # thread_list = [io_thread, telemetry_thread]
+        # enable when test in IDE
+        # thread_list = [update_attributes_thread, telemetry_thread, led_thread, lcd_thread, shared_attributes_thread, rfid_thread]
 
         for i, thread in enumerate(thread_list):
             thread.name = thread.__name__
@@ -117,7 +117,7 @@ def call():
             if not CLIENT.is_connected():
                 LOGGER.info('Disconnected from server, try reconnecting')
                 try:
-                    CLIENT.connect(callback=_connect_callback, disconnect_callback=_disconnect_callback)
+                    CLIENT.connect(callback=_connect_callback)
                     semaphore.acquire()
                 except:
                     LOGGER.info('Fail to connect to server')

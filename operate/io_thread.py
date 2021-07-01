@@ -21,7 +21,7 @@ def call():
         current_cycle = int((time.time()) / 60)
         if not (current_cycle - original_cycle) and not (current_cycle - original_cycle) % 2:
             LOGGER.info("Send clock set")
-            # clock.set()
+            clock.set()
 
         # Read data
         byte_stream = blocking_read(ser, message_break)
@@ -114,6 +114,9 @@ def call():
                                         break
                                     LOGGER.debug('Try sending again')
                 multi_cmd_lcd_flag[0] = False
+                if len(multi_cmd_lcd) > 0:
+                    multi_cmd_lcd.clear()
+                LOGGER.info('List cmd all show: %s', multi_cmd_lcd)
             else:
                 if cmd_lcd:
                     cmd_lcd_snap = []
