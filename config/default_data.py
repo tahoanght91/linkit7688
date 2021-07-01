@@ -5,7 +5,7 @@ import json
 if not os.path.exists('./config/data.json'):
     os.system('cp ./config/factory_data.json ./config/data.json')
 
-with io.open('./config/data.json', encoding = 'utf8') as f:
+with io.open('./config/data.json', encoding='utf8') as f:
     data_dict = json.load(f)
     globals().update(data_dict['shared'])
     globals().update(data_dict['client'])

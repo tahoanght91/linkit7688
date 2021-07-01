@@ -1,9 +1,10 @@
 import time
 import struct
+
+
 # from numba import jit
 
-
-def bytes_to_int(data, byteorder = None):
+def bytes_to_int(data, byteorder=None):
     if len(data) == 1:
         return struct.unpack('B', data)[0]
     if byteorder == 'little':
@@ -17,11 +18,14 @@ def bytes_to_int(data, byteorder = None):
     elif len(data) == 4:
         return struct.unpack(fmt + 'I', data)[0]
 
+
 def with_check_sum(byte_stream, byteorder):
     return byte_stream + _check_sum(byte_stream, byteorder)
 
+
 def check_check_sum(byte_stream, byteorder):
     return _check_sum(byte_stream[:-2], byteorder) == byte_stream[-2:]
+
 
 def blocking_read(ser, message_break):
     initial_break = message_break
@@ -35,6 +39,7 @@ def blocking_read(ser, message_break):
             result += ser.read(data_left)
         else:
             return result
+
 
 def _check_sum(byte_stream, byteorder):
     '''

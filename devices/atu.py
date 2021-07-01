@@ -3,7 +3,6 @@ from .utils import _read_attribute, _read_telemetry
 from config import BYTE_ORDER
 
 
-# fixed ATU to 36 byte
 def extract(byte_data):
     '''
     Extract the data from an ATU message sent from the IO
@@ -17,7 +16,6 @@ def extract(byte_data):
     atu_3x = bytes_to_int(byte_data[24:28], byteorder=BYTE_ORDER)
     atu_3y = bytes_to_int(byte_data[28:32], byteorder=BYTE_ORDER)
     atu_3z = bytes_to_int(byte_data[32:36], byteorder=BYTE_ORDER)
-
     online_status = bytes_to_int(byte_data[36])
 
     _read_telemetry('atuAtu1X', atu_1x)

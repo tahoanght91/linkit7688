@@ -1,5 +1,8 @@
 {
-    "host": "tb2.dft.vn",
-    "access_token": "SwBhhKR03Gp8YQERtQCz",
-    "device_id": "999660f0-9d17-11eb-b930-57776e941a7e"
+    "host": "123.30.214.139",
+    "access_token": "hgtQcIFDMwa5gjivW89c",
+    "device_id": "cd1b3a60-d320-11eb-b011-d7c39066a397",
+    "mcc": "GW_1_MCC",
+    "acm": "GW_1-ACM",
+    "ats": "GW_1-ATS"
 }

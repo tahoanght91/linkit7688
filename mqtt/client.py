@@ -4,9 +4,9 @@ import time
 import Queue
 import uuid
 from json import loads, dumps
-from jsonschema import Draft7Validator
+# from jsonschema import Draft7Validator
 import ssl
-from jsonschema import ValidationError
+# from jsonschema import ValidationError
 import threading
 
 KV_SCHEMA = {
@@ -47,7 +47,7 @@ DEVICE_TS_KV_SCHEMA = {
 }
 DEVICE_TS_OR_KV_SCHEMA = {
     "type": "array",
-    "items":    {
+    "items": {
         "anyOf":
             [
                 TS_KV_SCHEMA,
@@ -55,11 +55,11 @@ DEVICE_TS_OR_KV_SCHEMA = {
             ]
     }
 }
-RPC_VALIDATOR = Draft7Validator(SCHEMA_FOR_CLIENT_RPC)
-KV_VALIDATOR = Draft7Validator(KV_SCHEMA)
-TS_KV_VALIDATOR = Draft7Validator(TS_KV_SCHEMA)
-DEVICE_TS_KV_VALIDATOR = Draft7Validator(DEVICE_TS_KV_SCHEMA)
-DEVICE_TS_OR_KV_VALIDATOR = Draft7Validator(DEVICE_TS_OR_KV_SCHEMA)
+# RPC_VALIDATOR = Draft7Validator(SCHEMA_FOR_CLIENT_RPC)
+# KV_VALIDATOR = Draft7Validator(KV_SCHEMA)
+# TS_KV_VALIDATOR = Draft7Validator(TS_KV_SCHEMA)
+# DEVICE_TS_KV_VALIDATOR = Draft7Validator(DEVICE_TS_KV_SCHEMA)
+# DEVICE_TS_OR_KV_VALIDATOR = Draft7Validator(DEVICE_TS_OR_KV_SCHEMA)
 
 RPC_RESPONSE_TOPIC = 'v1/devices/me/rpc/response/'
 RPC_REQUEST_TOPIC = 'v1/devices/me/rpc/request/'
@@ -69,11 +69,22 @@ ATTRIBUTES_TOPIC_RESPONSE = 'v1/devices/me/attributes/response/'
 TELEMETRY_TOPIC = 'v1/devices/me/telemetry'
 log = logging.getLogger('MQTT client')
 
+GATEWAY_TELEMETRY_TOPIC = 'v1/gateway/telemetry'
+GATEWAY_ATTRIBUTES_TOPIC = 'v1/gateway/attributes'
+GATEWAY_ATTRIBUTES_TOPIC_REQUEST = 'v1/gateway/attributes/request'
+GATEWAY_ATTRIBUTES_TOPIC_RESPONSE = 'v1/gateway/attributes/response'
+GATEWAY_SHARED_ATTRIBUTES_TOPIC_RESPONSE = 'v1/gateway/attributes'
+GATEWAY_RPC_TOPIC = 'v1/gateway/rpc'
+GATEWAY_CONNECT = 'v1/gateway/connect'
+
+
 class TBTimeoutException(Exception):
     pass
 
+
 class TBQoSException(Exception):
     pass
+
 
 class TBPublishInfo():
     TB_ERR_AGAIN = -1
@@ -109,10 +120,10 @@ class TBPublishInfo():
 
 
 class TBDeviceMqttClient:
-    def __init__(self, host, token=None, client_id = None):
+    def __init__(self, host, token=None, client_id=None):
         if client_id is None:
             client_id = str(uuid.uuid4())
-        self._client = paho.Client(client_id = client_id)
+        self._client = paho.Client(client_id=client_id)
         self.__host = host
         if token == "":
             log.warning("token is not set, connection without tls wont be established")
@@ -120,6 +131,7 @@ class TBDeviceMqttClient:
             self._client.username_pw_set(token)
         self._lock = threading.Lock()
         self._attr_request_dict = {}
+        self._attr_key_request_dict = {}
         self.__timeout_queue = Queue.Queue()
         self.__timeout_thread = None
         self.__is_connected = False
@@ -137,6 +149,9 @@ class TBDeviceMqttClient:
         self._client.on_message = self._on_message
         # TODO: enable configuration available here:
         # https://pypi.org/project/paho-mqtt/#option-functions
+
+        self._gw_subscriptions = {}
+        self.__connected_devices = set("*")
 
     def _on_log(self, client, userdata, level, buf):
         log.debug(buf)
@@ -159,22 +174,40 @@ class TBDeviceMqttClient:
         if rc == 0:
             self.__is_connected = True
             log.info("connection SUCCESS")
-            self._client.subscribe(ATTRIBUTES_TOPIC, qos=1)
+            # self._client.subscribe(ATTRIBUTES_TOPIC, qos=1)
+            self._gw_subscriptions[int(self._client.subscribe(GATEWAY_SHARED_ATTRIBUTES_TOPIC_RESPONSE, qos=1)[
+                                           1])] = GATEWAY_SHARED_ATTRIBUTES_TOPIC_RESPONSE
             self._client.subscribe(ATTRIBUTES_TOPIC + "/response/+", 1)
             self._client.subscribe(RPC_REQUEST_TOPIC + '+')
             self._client.subscribe(RPC_RESPONSE_TOPIC + '+', qos=1)
         else:
             if rc in result_codes:
-                log.error("connection FAIL with error {rc} {explanation}".format(rc=rc,
-                                                                                 explanation=result_codes[rc]))
+                log.error("connection FAIL with error {rc} {explanation}".format(rc=rc, explanation=result_codes[rc]))
             else:
                 log.error("connection FAIL with unknown error")
+
+    def _on_subscribe(self, client, userdata, mid, granted_qos):
+        subscription = self._gw_subscriptions.get(mid)
+        if subscription is not None:
+            if mid == 128:
+                log.error("Service subscription to topic %s - failed.", subscription)
+                del self._gw_subscriptions[mid]
+            else:
+                log.debug("Service subscription to topic %s - successfully completed.", subscription)
+                del self._gw_subscriptions[mid]
+
+    def _on_unsubscribe(self, *args):
+        log.debug(args)
+
+    def get_subscriptions_in_progress(self):
+        return True if self._gw_subscriptions else False
 
     def _on_disconnect(self, client, userdata, rc):
         log.debug("MQTT client disconnected")
         self.__is_connected = False
 
-    def connect(self, callback=None, min_reconnect_delay=1, timeout=120, tls=False, port=1883, ca_certs=None, cert_file=None, key_file=None):
+    def connect(self, callback=None, min_reconnect_delay=1, timeout=120, tls=False, port=1883, ca_certs=None,
+                cert_file=None, key_file=None):
         if tls:
             self._client.tls_set(ca_certs=ca_certs,
                                  certfile=cert_file,
@@ -210,13 +243,13 @@ class TBDeviceMqttClient:
         log.debug(message.topic)
         return content
 
-    @staticmethod
-    def validate(validator, data):
-        try:
-            validator.validate(data)
-        except ValidationError as e:
-            log.error(e)
-            raise e
+    # @staticmethod
+    # def validate(validator, data):
+    #     try:
+    #         validator.validate(data)
+    #     except ValidationError as e:
+    #         log.error(e)
+    #         raise e
 
     def _on_decoded_message(self, content, message):
         if message.topic.startswith(RPC_REQUEST_TOPIC):
@@ -246,9 +279,37 @@ class TBDeviceMqttClient:
                             self.__device_sub_dict[key][x](content, None)
         elif message.topic.startswith(ATTRIBUTES_TOPIC_RESPONSE):
             with self._lock:
-                req_id = int(message.topic[len(ATTRIBUTES_TOPIC+"/response/"):])
+                req_id = int(message.topic[len(ATTRIBUTES_TOPIC + "/response/"):])
                 # pop callback and use it
                 self._attr_request_dict.pop(req_id)(content, None)
+        elif message.topic.startswith(GATEWAY_ATTRIBUTES_TOPIC_RESPONSE):
+            response = loads(message.payload)
+            req_id = int(response["id"])
+            # pop callback and use it
+            key = self._attr_key_request_dict.pop(req_id)
+            self._attr_request_dict.pop(req_id)(result=response, key=key, exception=None)
+        elif message.topic == GATEWAY_SHARED_ATTRIBUTES_TOPIC_RESPONSE:
+            with self._lock:
+                # callbacks for everything
+                if self.__device_sub_dict.get("*|*"):
+                    for callback in self.__device_sub_dict["*|*"]:
+                        self.__device_sub_dict["*|*"][callback](content)
+                # callbacks for device. in this case callback executes for all attributes in message
+                target = content["device"] + "|*"
+                if self.__device_sub_dict.get(target):
+                    for callback in self.__device_sub_dict[target]:
+                        self.__device_sub_dict[target][callback](content)
+                # callback for atr. in this case callback executes for all attributes in message
+                targets = [content["device"] + "|" + attribute for attribute in content["data"]]
+                for target in targets:
+                    if self.__device_sub_dict.get(target):
+                        for sub_id in self.__device_sub_dict[target]:
+                            self.__device_sub_dict[target][sub_id](content)
+        elif message.topic.startswith(GATEWAY_RPC_TOPIC):
+            response = message
+            request_id = message.topic[len(RPC_REQUEST_TOPIC):len(message.topic)]
+            if self.__device_on_server_side_rpc_response:
+                self.__device_on_server_side_rpc_response(request_id, content)
 
     def max_inflight_messages_set(self, inflight):
         """Set the maximum number of messages with QoS>0 that can be part way through their network flow at once.
@@ -282,9 +343,7 @@ class TBDeviceMqttClient:
             self.__device_client_rpc_dict.update({self.__device_client_rpc_number: callback})
             rpc_request_id = self.__device_client_rpc_number
         payload = {"method": method, "params": params}
-        self._client.publish(RPC_REQUEST_TOPIC + str(rpc_request_id),
-                             dumps(payload),
-                             qos=1)
+        self._client.publish(RPC_REQUEST_TOPIC + str(rpc_request_id), dumps(payload), qos=1)
 
     def set_server_side_rpc_request_handler(self, handler):
         self.__device_on_server_side_rpc_response = handler
@@ -298,14 +357,14 @@ class TBDeviceMqttClient:
             return TBPublishInfo(self._client.publish(topic, data, qos))
 
     def send_telemetry(self, telemetry, quality_of_service=1):
-        if type(telemetry) is not list:
-            telemetry = [telemetry]
-        self.validate(DEVICE_TS_OR_KV_VALIDATOR, telemetry)
-        return self.publish_data(telemetry, TELEMETRY_TOPIC, quality_of_service)
+        # if type(telemetry) is not list:
+        #     telemetry = [telemetry]
+        # self.validate(DEVICE_TS_OR_KV_VALIDATOR, telemetry)
+        return self.publish_data(telemetry, GATEWAY_TELEMETRY_TOPIC, quality_of_service)
 
     def send_attributes(self, attributes, quality_of_service=1):
-        self.validate(KV_VALIDATOR, attributes)
-        return self.publish_data(attributes, ATTRIBUTES_TOPIC, quality_of_service)
+        # self.validate(KV_VALIDATOR, attributes)
+        return self.publish_data(attributes, GATEWAY_ATTRIBUTES_TOPIC, quality_of_service)
 
     def unsubscribe_from_attribute(self, subscription_id):
         with self._lock:
@@ -400,3 +459,17 @@ class TBDeviceMqttClient:
 
     def is_connected(self):
         return self.__is_connected
+
+    def request_gateway_attributes(self, shared_key, device_name, callback=None):
+        if shared_key is None:
+            log.error("There are no shared key to request")
+            return False
+        msg = {}
+        attr_request_number = self._add_attr_request_callback(callback)
+        self._attr_key_request_dict.update({self.__attr_request_number: shared_key})
+        if shared_key:
+            msg.update({"id": attr_request_number, "device": device_name, "client": False, "key": shared_key})
+        ts_in_millis = int(round(time.time() * 1000))
+        topic = self._client.publish(topic=GATEWAY_ATTRIBUTES_TOPIC_REQUEST, payload=dumps(msg), qos=1)
+        self._add_timeout(attr_request_number, ts_in_millis + 30000)
+        return topic

@@ -7,18 +7,19 @@ import struct
 from config import *
 from utility import bytes_to_int, with_check_sum, check_check_sum, blocking_read
 
+
 def set():
     '''
     Set the clock of the IO sync with the clock of the CORE
     '''
     LOGGER.debug('Send time info to IO')
     ser = serial.Serial(port = IO_PORT, baudrate = BAUDRATE)
-    message_break = default_data.periodReadDataIO
+    message_break = default_data.mccPeriodReadDataIO
     flip = READ_PER_WRITE
     while True:
         if flip == 0:
             flip = READ_PER_WRITE
-            now = int(time.time())
+            now = int(time.time() + 25200)
             if BYTE_ORDER == 'little':
                 fmt = '<'
             elif BYTE_ORDER == 'big':
@@ -31,11 +32,12 @@ def set():
             flip -= 1
         response = blocking_read(ser, message_break)
         if response == with_check_sum(b'\xa0\x01\x02', BYTE_ORDER):
-            LOGGER.debug('Receive ACK message')
+            LOGGER.debug('Receive ACK clock message')
             break
         if flip == 0:
             LOGGER.debug('Time out, try again')
     ser.close()
+
 
 def extract():
     '''
@@ -43,7 +45,7 @@ def extract():
     '''
     LOGGER.debug('Get time info from IO')
     ser = serial.Serial(port = IO_PORT, baudrate = BAUDRATE)
-    message_break = default_data.periodReadDataIO
+    message_break = default_data.mccPeriodReadDataIO
     flip = READ_PER_WRITE
     while True:
         if flip == 0:
@@ -58,6 +60,7 @@ def extract():
         if flip == 0:
             LOGGER.debug('Failed, try again')
     ser.close()
+
 
 def _handle(byte_stream):
     '''

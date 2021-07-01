@@ -3,17 +3,17 @@ import time
 from config import *
 from monitor import *
 
+
 def call():
-    period = shared_attributes.get('periodUpdate', default_data.periodUpdate)
+    period = 3
     while True:
-        if shared_attributes.get('bellAuto', default_data.bellAuto):
-            bell.apply()
-        if shared_attributes.get('atsControlAuto', default_data.atsControlAuto):
-            ats.apply()
-        if shared_attributes.get('miscFanControlAuto', default_data.miscFanControlAuto):
-            fan.apply()
-        if shared_attributes.get('aircControlAuto', default_data.aircControlAuto):
-            airc.apply()
-        if shared_attributes.get('crmuControlAuto', default_data.crmuControlAuto):
-            crmu.apply()
+        # mcc.check_status()
+        # Check if device is set in Auto mode
+        # if shared_attributes.get('atsControlAuto', default_data.atsControlAuto):
+        #     # then call its auto procedure
+        #     ats.check_status()
+        # Check if device is set in Auto mode
+        if shared_attributes.get('acmControlAuto', default_data.acmControlAuto):
+            # then call its auto procedure
+            acm.check_status()
         time.sleep(period)
