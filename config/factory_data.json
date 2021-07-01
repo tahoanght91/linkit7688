@@ -1,10 +1,12 @@
 {
   "shared": {
     "mccPeriodReadDataIO": 0.05,
-    "mccPeriodSendTelemetry": 30,
+    "mccPeriodSendTelemetry": 5,
     "mccPeriodUpdate": 5,
     "mccListRfid": [],
     "mccListStaff": [],
+    "mccLinkUpdate": "",
+    "mccLinkVersion": "",
     "mccDcMinThreshold": 30,
     "mccDoorOpenTime": 5,
     "acmControlAuto": 1,

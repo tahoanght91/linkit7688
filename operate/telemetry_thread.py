@@ -1,8 +1,6 @@
 import time
-from random import randint
 
 from config import *
-from config.common import *
 
 
 def call():
@@ -11,8 +9,15 @@ def call():
         if CLIENT.is_connected():
             telemetry = format_telemetry(telemetries)
             for key, value in telemetry.items():
-                CLIENT.gw_send_telemetry(key, value)
+                response = CLIENT.gw_send_telemetry(key, value)
+                LOGGER.info('RC of send telemetry to Thingsboard is: %s', str(response.rc()))
+                if response.rc() != 0:
+                    CLIENT.disconnect()
             LOGGER.info('Sent telemetry data')
+            log_info = []
+            for key, value in telemetries.items():
+                log_info.append('\t{:>20s}: {:>20s}'.format(str(key), str(value)))
+            LOGGER.info('\n'.join(log_info))
             telemetries_lock.acquire()
             telemetries.clear()
             telemetries_lock.release()
@@ -69,7 +74,7 @@ def replica_telemetry():
 
 
 def format_telemetry(dict_telemetry):
-    list_telemetry = {DEVICE_MCC_1: [{}], DEVICE_ATS_1: [{}], DEVICE_ACM_1: [{}]}
+    list_telemetry = {DEVICE_MCC: [{}], DEVICE_ATS: [{}], DEVICE_ACM: [{}]}
     telemetry_mcc_1 = {}
     telemetry_ats_1 = {}
     telemetry_acm_1 = {}
@@ -84,10 +89,10 @@ def format_telemetry(dict_telemetry):
             telemetry_acm_1[key] = value
 
     if telemetry_mcc_1:
-        list_telemetry[DEVICE_MCC_1] = [telemetry_mcc_1]
+        list_telemetry[DEVICE_MCC] = [telemetry_mcc_1]
     if telemetry_ats_1:
-        list_telemetry[DEVICE_ATS_1] = [telemetry_ats_1]
+        list_telemetry[DEVICE_ATS] = [telemetry_ats_1]
     if telemetry_acm_1:
-        list_telemetry[DEVICE_ACM_1] = [telemetry_acm_1]
+        list_telemetry[DEVICE_ACM] = [telemetry_acm_1]
 
     return list_telemetry

@@ -1,0 +1,16 @@
+#!/bin/sh /etc/rc.common
+
+START=10
+STOP=15
+
+start() {
+        echo start service 7688
+        cd /IoT/linkit7688 && python main.py &
+        echo start service 7688 successful
+}
+
+stop() {
+        echo stop service 7688
+        killall python
+        echo stop service 7688 successful
+}

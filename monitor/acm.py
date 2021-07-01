@@ -9,9 +9,9 @@ acm_period_start = 0
 
 def _send_command(command):
     commands_lock.acquire()
-    commands[DEVICE_ACM_1] = command
+    commands[DEVICE_ACM] = command
     commands_lock.release()
-    return DEVICE_ACM_1 + ':' + command
+    return DEVICE_ACM + ':' + command
 
 
 # This method is called every loop if the device is in Auto mode

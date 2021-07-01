@@ -14,9 +14,9 @@ def open_door_with_auto_close():
 
 def _send_command(command):
     commands_lock.acquire()
-    commands[DEVICE_MCC_1] = command
+    commands[DEVICE_MCC] = command
     commands_lock.release()
-    return DEVICE_MCC_1 + ':' + command
+    return DEVICE_MCC + ':' + command
 
 
 '''

@@ -13,12 +13,17 @@ BYTE_ORDER = 'little'
 HOST = device_config['host']
 ACCESS_TOKEN = device_config['access_token']
 CLIENT_ID = device_config['device_id']
+DEVICE_MCC = device_config['mcc']
+DEVICE_ACM = device_config['acm']
+DEVICE_ATS = device_config['ats']
 CLIENT = mqtt.TBGatewayMqttClient(host=HOST, port=10883, token=ACCESS_TOKEN)
 IO_PORT = '/dev/ttyS0'
 # IO_PORT = 'COM3'
 BAUDRATE = 115200
-UPDATE_PERIOD = 7 * 24 * 60 * 60
-READ_PER_WRITE = 20
+# uncomment when test auto update firmware
+UPDATE_PERIOD = 600
+READ_PER_WRITE = 1
+READ_PER_WRITE_LCD = 1
 MAX_TRIES = 2
 
 shared_attributes = {}
@@ -29,8 +34,10 @@ commands = {}
 lcd_services = {}
 cmd_led = {}
 cmd_lcd = {}
-# cmd_rfid = {}
 cmd_sa = {}
+
+multi_cmd_lcd_flag = [False]
+multi_cmd_lcd = []
 
 update_attributes_lock = threading.Lock()
 telemetries_lock = threading.Lock()
@@ -38,7 +45,6 @@ commands_lock = threading.Lock()
 lcd_services_lock = threading.Lock()
 cmd_led_lock = threading.Lock()
 cmd_lcd_lock = threading.Lock()
-# cmd_rfid_lock = threading.Lock()
 cmd_sa_lock = threading.Lock()
 
 

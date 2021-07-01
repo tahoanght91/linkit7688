@@ -1,24 +1,6 @@
 # device_name
 from config.common_command import *
 
-DEVICE_AIRC = 'device_airc'
-DEVICE_AIRC_1 = 'device_airc1'
-DEVICE_AIRC_2 = 'device_airc2'
-DEVICE_MISC = 'device_misc'
-DEVICE_CRMU = 'device_crmu'
-DEVICE_ATU = 'device_atu'
-DEVICE_DC = 'device_dc'
-DEVICE_ATS = 'device_ats'
-DEVICE_FIRE_SENSOR = 'device_fire_sensor'
-DEVICE_FLOOD_SENSOR = 'device_flood_sensor'
-DEVICE_MOVE_SENSOR = 'device_move_sensor'
-DEVICE_SMOKE_SENSOR = 'device_smoke_sensor'
-
-DEVICE_MDC_1 = 'device_MDC_1'
-DEVICE_MCC_1 = 'GW005_MCC_1'
-DEVICE_ATS_1 = 'GW005_ATS_1'
-DEVICE_ACM_1 = 'GW005_ACM_1'
-
 # response rfid
 RESPONSE_RFID = 5
 
@@ -30,6 +12,7 @@ ID_ATS = 98
 # FORMAT RPC
 CHAR_B = 'B'
 CHAR_S = 's'
+CHAR_SPACE = ' '
 FORMAT_RPC = 'BBBBBB'
 FORMAT_RFID = 'BBBBB'
 FORMAT_LCD = 'BBBBB'
