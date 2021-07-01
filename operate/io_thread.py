@@ -2,6 +2,8 @@ import serial
 
 import control
 from config import *
+from config.common import UPDATE_VALUE
+from control.utils import split_row_by_salt
 from devices import ats, crmu, clock, acm, mcc
 from operate.lcd_thread import extract_lcd_service
 from utility import *
@@ -74,10 +76,18 @@ def call():
         try:
             if cmd_lcd:
                 cmd_lcd_snap = []
-                cmd_lcd_lock.acquire()
-                for item in cmd_lcd.items():
-                    cmd_lcd_snap.append(item)
-                cmd_lcd_lock.release()
+                if UPDATE_VALUE in cmd_lcd:
+                    arr_content = split_row_by_salt(cmd_lcd[UPDATE_VALUE])
+                    if len(arr_content) > 0:
+                        cmd_lcd_lock.acquire()
+                        for item in arr_content:
+                            cmd_lcd_snap.append(item)
+                        cmd_lcd_lock.release()
+                    else:
+                        cmd_lcd_lock.acquire()
+                        for item in cmd_lcd.items():
+                            cmd_lcd_snap.append(item)
+                        cmd_lcd_lock.release()
                 for key_lcd, content in cmd_lcd_snap:
                     cmd_lcd_formatted = {'key_lcd': key_lcd, 'content': content}
                     write_stream = with_check_sum(control.process_cmd_lcd(cmd_lcd_formatted), BYTE_ORDER)
