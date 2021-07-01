@@ -42,13 +42,8 @@ def call():
         while True:
             display.menu(bt)
             bt = button.check_button(lcd_services)
-<<<<<<< HEAD
-            # display.clear_display()
-                
-=======
             display.clear_display()
 
->>>>>>> huyfr
             # LOGGER.info('Check list all cmd multi 1: %s', multi_cmd_lcd)
             # result_check_input = check_lcd_service(lcd_services)
             # if result_check_input.key_code > 0 and result_check_input.key_event > 0:
@@ -359,100 +354,6 @@ def set_last_alarm(input_lcd):
         LOGGER.error('Error at set_last_trace function with message: %s', ex.message)
 
 
-def multi_cmd_lcd_enable():
-    multi_cmd_lcd_flag[0] = True
-
-def multi_cmd_lcd_disable():
-    multi_cmd_lcd_flag[0] = False
-
-def add_cmd_lcd(cmd):
-    multi_cmd_lcd.append(cmd)
-
-def creat_cmd_rule(string, row):
-    cmd = str(string) + SALT_DOLLAR_SIGN + str(row)
-    return cmd
-
-<<<<<<< HEAD
-=======
-class Display:
-    def __init__(self):
-        self.last_menu = '0'
-
-    def clear_display(self):
-        lcd_services.clear()
-
-    def print_test (self, string):
-        cmd_lcd_dict = {}
-        cmd_lcd_dict[0] = creat_cmd_rule(str(string), ROW_3)
-        multi_cmd_lcd_enable()
-        LOGGER.info('Enter print_test function')
-        for i in cmd_lcd_dict:
-            add_cmd_lcd(cmd_lcd_dict[i])
-        LOGGER.info('Exit print_test function')
-
-    def main_display(self):
-        self.print_test('1. Main display')
-
-    def warning_display(self):
-        self.print_test('2. Warning display')
-
-    def security_sensor_info_display(self):
-        self.print_test('3. Secure sensor')
-
-    def air_info_display(self):
-        self.print_test('4. Air condition')
-
-    def ats_display(self):
-        self.print_test('5. ATS')
-
-    def setting_display(self):
-        self.print_test('6. Setting')
-
-    def rfid_display(self):
-        self.print_test('7. RFID')
-
-    def menu(self, number_menu):
-        if number_menu in MENU:
-            self.last_menu = MENU[number_menu]
-            return getattr(self, 'case_' + str(MENU[number_menu]))()
-        else:
-            return getattr(self, 'case_' + str(self.last_menu))()
-    def case_0(self):
-        return self.main_display()
-    def case_1(self):
-        return self.warning_display()
-    def case_2(self):
-        return self.security_sensor_info_display()
-    def case_3(self):
-        return self.air_info_display()
-    def case_4(self):
-        return self.ats_display()
-    def case_5(self):
-        return self.setting_display()
-    def case_6(self):
-        return self.rfid_display()
-
-class Button():
-    def __init__(self):
-        pass
-
-    def check_button(self, dct_lcd_service):
-        key_code = dct_lcd_service['key_code']
-        key_event = dct_lcd_service['key_event']
-
-        for i in range(len(LIST_KEYCODE)):
-            if key_code == LIST_KEYCODE[i]:
-                index_key = i+1
-                break
-
-        if key_event == EVENT_UP:
-            event = EVENT_UP_BT
-        elif key_event == EVENT_HOLD:
-            event = EVENT_HOLD_BT
-        button = event*index_key
-
-        return str(button)
->>>>>>> huyfr
 # def call():
 #     try:
 #         period = 3
