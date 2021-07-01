@@ -1,3 +1,4 @@
+from os import altsep
 import time
 
 import requests
@@ -18,7 +19,7 @@ URL_SEND_SA = 'http://123.30.214.139:8517/api/services/app/DMTram/ChangeValueTem
 URL_NV = 'https://123.30.214.139:8517/api/services/app/DMNhanVienRaVaoTram/GetNhanVienRaVaoTram'
 menu_level_1 = [MCC, ACM, ATS]
 LIST_KEY_EVENT = [EVENT_NONE, EVENT_DOWN, EVENT_UP, EVENT_HOLD, EVENT_POWER]
-LIST_KEY_CODE = [KEYCODE_11, KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26, KEYCODE_24, KEYCODE_13]
+LIST_KEY_CODE = [KEYCODE_11, KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26, KEYCODE_24, KEYCODE_13, KEYCODE_12]
 json_file = open('config/lcd.json')
 dct_lcd = json.load(json_file)
 dct_lcd_menu = dct_lcd['lcd']['category']['menu']
@@ -31,28 +32,33 @@ BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 def call():
     try:
         period = 3
-        # last_trace = get_last_trace()
-
+        button = Button()
+        display = Display()
+        bt = '0'
+        display.clear_display()
         while True:
-            get_screen_main()
-            # check_history_keypad(last_trace)
-            result_check_input = check_lcd_service(lcd_services)
-            if result_check_input.key_code > 0 and result_check_input.key_event > 0:
-                if result_check_input.key_code == KEYCODE_11:
-                    cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_3)
-                else:
-                    result_switch_lcd = switch_lcd_service(result_check_input)
-                    cmd_lcd_lock.acquire()
+            display.menu(bt)
+            bt = button.check_button(lcd_services)
+            display.clear_display()
 
-                    # if result_switch_lcd.value < 0:
-                    #     cmd_lcd[UPDATE_VALUE] = result_switch_lcd.name + SALT_DOLLAR_SIGN + str(ROW_3)
-                    #     show_temp_humi(30, 70)
-                    # else:
-                    #     cmd_lcd[UPDATE_VALUE] = str(result_switch_lcd.value) + SALT_DOLLAR_SIGN + str(ROW_3)
+            # LOGGER.info('Check list all cmd multi 1: %s', multi_cmd_lcd)
+            # result_check_input = check_lcd_service(lcd_services)
+            # if result_check_input.key_code > 0 and result_check_input.key_event > 0:
+            #     if result_check_input.key_code == KEYCODE_11:
+            #         cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_3)
+            #     else:
+            #         result_switch_lcd = switch_lcd_service(result_check_input)
+            #         cmd_lcd_lock.acquire()
 
-                cmd_lcd_lock.release()
-                set_last_trace(result_switch_lcd)
-                lcd_services.clear()
+            #         # if result_switch_lcd.value < 0:
+            #         #     cmd_lcd[UPDATE_VALUE] = result_switch_lcd.name + SALT_DOLLAR_SIGN + str(ROW_3)
+            #         #     show_temp_humi(30, 70)
+            #         # else:
+            #         #     cmd_lcd[UPDATE_VALUE] = str(result_switch_lcd.value) + SALT_DOLLAR_SIGN + str(ROW_3)
+
+            #     cmd_lcd_lock.release()
+            #     set_last_trace(result_switch_lcd)
+            #     lcd_services.clear()
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
@@ -64,35 +70,48 @@ def check_history_keypad(last_trace):
 
 
 def init_show_alarm():
-    cmd_lcd[UPDATE_VALUE] = creat_cmd_rule(BAN_TIN_CANH_BAO, ROW_1)
-    check_alarm()
+    try:
+        cmd_lcd[UPDATE_VALUE] = creat_cmd_rule(BAN_TIN_CANH_BAO, ROW_1)
+        LOGGER.info('List telemitries: %s', telemetries)
+
+        if telemetries:
+            cmd_lcd_ok = check_alarm(telemetries)
+            LOGGER.info('List cmd lcd: %s', cmd_lcd_ok)
+            if cmd_lcd_ok:
+                LOGGER.info('Get list txt row: %s', cmd_lcd_ok)
+                multi_cmd_lcd_enable()
+                for i in cmd_lcd_ok:
+                    add_cmd_lcd(cmd_lcd_ok[i])
+                LOGGER.info('CMD Multil LCD: %s', multi_cmd_lcd)
+    except Exception as ex:
+        LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
 
-def check_alarm():
+def check_alarm(tel_lcd):
     cmd_lcd_dict = {}
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
     try:
         max_Tem = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
-        LOGGER.info('Check Telemetries: %s', telemetries)
-        if telemetries:
-            if telemetries.get('mccFireState') == 1:
+        LOGGER.info('Check list: %s', tel_lcd)
+        if tel_lcd:
+            if tel_lcd.get('mccFireState') == 1:
                 LOGGER.info('CANH BAO CHAY')
                 cmd_lcd_dict[1] = creat_cmd_rule('Canh bao CHAY!', ROW_2)
                 cmd_lcd_dict[2] = creat_cmd_rule(dt_string, ROW_3)
-            elif telemetries.get('mccSmokeState') == 1:
+            elif tel_lcd.get('mccSmokeState') == 1:
                 LOGGER.info('CANH BAO KHOI')
                 cmd_lcd_dict[1] = creat_cmd_rule('Canh bao Khoi!', ROW_2)
                 cmd_lcd_dict[2] = creat_cmd_rule(dt_string, ROW_3)
-            elif telemetries.get('acmTempIndoor') > max_Tem:
+            elif tel_lcd.get('acmTempIndoor') > max_Tem:
                 LOGGER.info('CANH BAO NHIET')
                 cmd_lcd_dict[1] = creat_cmd_rule('Canh bao Nhiet!', ROW_2)
                 cmd_lcd_dict[2] = creat_cmd_rule(dt_string, ROW_3)
-            elif telemetries.get('mccFloodState') == 1:
+            elif tel_lcd.get('mccFloodState') == 1:
                 LOGGER.info('CANH BAO NGAP')
                 cmd_lcd_dict[1] = creat_cmd_rule('Canh bao Ngap!', ROW_2)
                 cmd_lcd_dict[2] = creat_cmd_rule(dt_string, ROW_3)
-            elif telemetries.get('mccDoorState') == 1:
+            elif tel_lcd.get('mccDoorState') == 1:
                 LOGGER.info('CANH BAO CUA')
                 cmd_lcd_dict[1] = creat_cmd_rule('Canh bao Cua!', ROW_2)
                 cmd_lcd_dict[2] = creat_cmd_rule(dt_string, ROW_3)
@@ -103,15 +122,9 @@ def check_alarm():
             else:
                 cmd_lcd_dict[1] = creat_cmd_rule('An Toan!', ROW_2)
                 cmd_lcd_dict[2] = creat_cmd_rule(' ', ROW_3)
-
-        LOGGER.info('Get list txt row: %s', cmd_lcd_dict)
-        multi_cmd_lcd_enable()
-        LOGGER.info('Enter show alarm function')
-        for i in cmd_lcd_dict:
-            add_cmd_lcd(cmd_lcd_dict[i])
-        LOGGER.info('Exit show alarm function')
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
+    return cmd_lcd_dict
 
 
 def switch_lcd_service(input_lcd):
@@ -132,7 +145,7 @@ def switch_lcd_service(input_lcd):
             elif key_code == KEYCODE_24:
                 last_trace = enter_lcd_service()
             elif key_code == KEYCODE_13:
-                show_temp_humi(30, 70)
+                pass
             elif key_code == KEYCODE_12:
                 init_show_alarm()
             elif key_event == EVENT_DOWN:
@@ -312,7 +325,7 @@ def check_lcd_service(dct_lcd_service):
 def get_last_alarm():
     last_alarm_trace = Alarm_lcd()
     try:
-        json_file = open('./last_time.json', )
+        json_file = open('./last_trace_alarm_lcd.json', )
         dct_last_trace = json.load(json_file)
         LOGGER.info('after convert from json: %s', dct_last_trace)
         last_alarm_trace.mccDoorState = dct_last_trace['mccDoorState']
@@ -331,22 +344,22 @@ def set_last_alarm(input_lcd):
     try:
         dct_last_trace = input_lcd.__dict__
         json_last_trace = json.dumps(dct_last_trace)
-        with io.open('./last_time.json', 'wb') as last_trace_file:
+        with io.open('./last_trace_alarm_lcd.json', 'wb') as last_trace_file:
             last_trace_file.write(json_last_trace)
         LOGGER.info('Command information just send: %s', dct_last_trace)
     except Exception as ex:
         LOGGER.error('Error at set_last_trace function with message: %s', ex.message)
 
 
-def show_temp_humi(temp, humidity):
-    cmd_lcd_dict = {}
-    cmd_lcd_dict[0] = creat_cmd_rule(str(temp) + '*C', ROW_3)
-    cmd_lcd_dict[1] = creat_cmd_rule(str(humidity) + '%', ROW_4)
-    multi_cmd_lcd_enable()
-    LOGGER.info('Enter show_temp_humi function')
-    for i in cmd_lcd_dict:
-        add_cmd_lcd(cmd_lcd_dict[i])
-    LOGGER.info('Exit show_temp_humi function')
+# def show_temp_humi(temp, humidity):
+#     cmd_lcd_dict = {}
+#     cmd_lcd_dict[0] = creat_cmd_rule(str(temp) + '*C', ROW_3)
+#     cmd_lcd_dict[1] = creat_cmd_rule(str(humidity) + '%', ROW_4)
+#     multi_cmd_lcd_enable()
+#     LOGGER.info('Enter show_temp_humi function')
+#     for i in cmd_lcd_dict:
+#         add_cmd_lcd(cmd_lcd_dict[i])
+#     LOGGER.info('Exit show_temp_humi function')
 
 
 def multi_cmd_lcd_enable():
@@ -365,7 +378,84 @@ def creat_cmd_rule(string, row):
     cmd = str(string) + SALT_DOLLAR_SIGN + str(row)
     return cmd
 
+class Display:
+    def __init__(self):
+        self.last_menu = '0'
 
+    def clear_display(self):
+        lcd_services.clear()
+
+    def print_test (self, string):
+        cmd_lcd_dict = {}
+        cmd_lcd_dict[0] = creat_cmd_rule(str(string), ROW_3)
+        multi_cmd_lcd_enable()
+        LOGGER.info('Enter print_test function')
+        for i in cmd_lcd_dict:
+            add_cmd_lcd(cmd_lcd_dict[i])
+        LOGGER.info('Exit print_test function')
+
+    def main_display(self):
+        self.print_test('1. Main display')
+
+    def warning_display(self):
+        self.print_test('2. Warning display')
+
+    def security_sensor_info_display(self):
+        self.print_test('3. Secure sensor')
+
+    def air_info_display(self):
+        self.print_test('4. Air condition')
+
+    def ats_display(self):
+        self.print_test('5. ATS')
+
+    def setting_display(self):
+        self.print_test('6. Setting')
+
+    def rfid_display(self):
+        self.print_test('7. RFID')
+
+    def menu(self, number_menu):
+        if number_menu in MENU:
+            self.last_menu = MENU[number_menu]
+            return getattr(self, 'case_' + str(MENU[number_menu]))()
+        else:
+            return getattr(self, 'case_' + str(self.last_menu))()
+    def case_0(self):
+        return self.main_display()
+    def case_1(self):
+        return self.warning_display()
+    def case_2(self):
+        return self.security_sensor_info_display()
+    def case_3(self):
+        return self.air_info_display()
+    def case_4(self):
+        return self.ats_display()
+    def case_5(self):
+        return self.setting_display()
+    def case_6(self):
+        return self.rfid_display()
+
+class Button():
+    def __init__(self):
+        pass
+
+    def check_button(self, dct_lcd_service):
+        key_code = dct_lcd_service['key_code']
+        key_event = dct_lcd_service['key_event']
+
+        for i in range(len(LIST_KEYCODE)):
+            if key_code == LIST_KEYCODE[i]:
+                index_key = i+1
+                break
+
+        if key_event == EVENT_UP:
+            event = EVENT_UP_BT
+        elif key_event == EVENT_HOLD:
+            event = EVENT_HOLD_BT
+        button = event*index_key
+
+        return str(button)
 # def call():
 #     try:
 #         period = 3
