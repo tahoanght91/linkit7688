@@ -20,10 +20,6 @@ def _connect_callback(client, userdata, flags, rc, *extra_params):
     semaphore.release()
 
 
-def _disconnect_callback():
-    CLIENT.disconnect()
-
-
 def _on_receive_shared_attributes_callback(content, exception):
     if exception is None:
         LOGGER.debug(content)
@@ -68,8 +64,8 @@ def call():
         try:
             CLIENT.connect(callback=_connect_callback)
             semaphore.acquire()
-        except Exception as e:
-            LOGGER.info('Fail to connect to server')
+        except Exception as ex:
+            LOGGER.info('Fail to connect to server with message: %s', ex.message)
 
         if CLIENT.is_connected():
             LOGGER.debug('Set IO time')
@@ -141,9 +137,6 @@ def call():
             current_update_cycle = math.floor(time.time() / UPDATE_PERIOD)
             if current_update_cycle > original_update_cycle and CLIENT.is_connected():
                 latest_version = -1
-                current_version = -1
-                link_update = ''
-                link_version = ''
                 try:
                     link_update = shared_attributes['mccLinkUpdate']
                     link_version = shared_attributes['mccLinkVersion']
