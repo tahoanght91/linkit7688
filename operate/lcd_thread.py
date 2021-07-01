@@ -30,6 +30,7 @@ BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 def call():
     try:
         period = 3
+        multi_cmd_lcd.clear()
         while True:
             result_check_input = check_lcd_service(lcd_services)
             if result_check_input.key_code > 0 and result_check_input.key_event > 0:
@@ -77,6 +78,7 @@ def init_show_alarm():
 
 
 def check_alarm(tel_lcd):
+    multi_cmd_lcd = []
     cmd_lcd_dict = {}
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
@@ -111,11 +113,9 @@ def check_alarm(tel_lcd):
             else:
                 cmd_lcd_dict[1] = creat_cmd_rule('An Toan!', ROW_2)
                 cmd_lcd_dict[2] = creat_cmd_rule(' ', ROW_3)
-
-
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
-    return  cmd_lcd_dict
+    return cmd_lcd_dict
 
 
 def switch_lcd_service(input_lcd):
