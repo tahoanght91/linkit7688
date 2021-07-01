@@ -32,15 +32,15 @@ BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 def call():
     try:
         period = 3
-        button = Button()
-        display = Display()
-        bt = '0'
-        display.clear_display()
+        # button = Button()
+        # display = Display()
+        # bt = '0'
+        # display.clear_display()
         while True:
-            display.menu(bt)
-            bt = button.check_button(lcd_services)
-            display.clear_display()
-
+            # display.menu(bt)
+            # bt = button.check_button(lcd_services)
+            # display.clear_display()
+            get_screen_main()
             # LOGGER.info('Check list all cmd multi 1: %s', multi_cmd_lcd)
             # result_check_input = check_lcd_service(lcd_services)
             # if result_check_input.key_code > 0 and result_check_input.key_event > 0:
@@ -321,6 +321,7 @@ def check_lcd_service(dct_lcd_service):
         LOGGER.error('Error at check_lcd_service function with message: %s', ex.message)
     return input_lcd
 
+
 #
 # def get_last_alarm():
 #     last_alarm_trace = Alarm_lcd()
@@ -378,6 +379,7 @@ def creat_cmd_rule(string, row):
     cmd = str(string) + SALT_DOLLAR_SIGN + str(row)
     return cmd
 
+
 class Display:
     def __init__(self):
         self.last_menu = '0'
@@ -385,7 +387,7 @@ class Display:
     def clear_display(self):
         lcd_services.clear()
 
-    def print_test (self, string):
+    def print_test(self, string):
         cmd_lcd_dict = {}
         cmd_lcd_dict[0] = creat_cmd_rule(str(string), ROW_3)
         multi_cmd_lcd_enable()
@@ -421,20 +423,28 @@ class Display:
             return getattr(self, 'case_' + str(MENU[number_menu]))()
         else:
             return getattr(self, 'case_' + str(self.last_menu))()
+
     def case_0(self):
         return self.main_display()
+
     def case_1(self):
         return self.warning_display()
+
     def case_2(self):
         return self.security_sensor_info_display()
+
     def case_3(self):
         return self.air_info_display()
+
     def case_4(self):
         return self.ats_display()
+
     def case_5(self):
         return self.setting_display()
+
     def case_6(self):
         return self.rfid_display()
+
 
 class Button():
     def __init__(self):
@@ -446,16 +456,18 @@ class Button():
 
         for i in range(len(LIST_KEYCODE)):
             if key_code == LIST_KEYCODE[i]:
-                index_key = i+1
+                index_key = i + 1
                 break
 
         if key_event == EVENT_UP:
             event = EVENT_UP_BT
         elif key_event == EVENT_HOLD:
             event = EVENT_HOLD_BT
-        button = event*index_key
+        button = event * index_key
 
         return str(button)
+
+
 # def call():
 #     try:
 #         period = 3
@@ -487,7 +499,7 @@ def get_temp_tram():
             check = any(elem != 0 for elem in new_list_telemetries.values())
             warning = '!!!' if check else ''
             LOGGER.info('Warning: %s', warning)
-        if (acmTempInOld != acmTempIn and acmTempIn != None) or (acmTempOutOld != acmTempOut and acmTempOut != None) or (acmHumidInOld != acmHumidIn and acmHumidIn != None) or warningOld != warning:
+        if (acmTempInOld != acmTempIn or acmTempOutOld != acmTempOut or acmHumidInOld != acmHumidIn or warningOld != warning) and (acmTempIn is not None and acmTempOut is not None and acmHumidIn is not None):
             Recheck = {"acmTempIndoor": acmTempIn, "acmTempOutdoor": acmTempOut, "acmHumidIndoor": acmHumidIn,
                        "isWarning": warning}
             write_to_json(Recheck, './last_temp.json')
@@ -566,7 +578,6 @@ def get_screen_main():
         get_datetime_now()
     except Exception as ex:
         LOGGER.error('Error at get_screen_main function with message: %s', ex.message)
-
 
 # def show_temp_humi(data):
 #     LOGGER.info('Enter show_temp_humi function')
