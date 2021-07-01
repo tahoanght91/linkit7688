@@ -32,10 +32,6 @@ def call():
         period = 3
         while True:
             LOGGER.info('Check list all cmd multi 1: %s', multi_cmd_lcd)
-            if len(multi_cmd_lcd) > 0:
-                multi_cmd_lcd.clear()
-                LOGGER.info('Check list all cmd multi 2: %s', multi_cmd_lcd)
-
             result_check_input = check_lcd_service(lcd_services)
             if result_check_input.key_code > 0 and result_check_input.key_event > 0:
                 if result_check_input.key_code == KEYCODE_11:
@@ -72,17 +68,14 @@ def init_show_alarm():
             if cmd_lcd_ok:
                 LOGGER.info('Get list txt row: %s', cmd_lcd_ok)
                 multi_cmd_lcd_enable()
-                LOGGER.info('Enter show alarm function')
                 for i in cmd_lcd_ok:
                     add_cmd_lcd(cmd_lcd_ok[i])
                 LOGGER.info('CMD Multil LCD: %s', multi_cmd_lcd)
-                LOGGER.info('Exit show alarm function')
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
 
 def check_alarm(tel_lcd):
-    multi_cmd_lcd = []
     cmd_lcd_dict = {}
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
