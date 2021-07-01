@@ -62,6 +62,8 @@ def check_history_keypad(last_trace):
 def init_show_alarm():
     try:
         cmd_lcd[UPDATE_VALUE] = creat_cmd_rule(BAN_TIN_CANH_BAO, ROW_1)
+        LOGGER.info('List telemitries: %s', telemetries)
+
         if telemetries:
             cmd_lcd_ok = check_alarm(telemetries)
             LOGGER.info('List cmd lcd: %s', cmd_lcd_ok)
@@ -81,7 +83,7 @@ def check_alarm(tel_lcd):
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
     try:
         max_Tem = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
-        LOGGER.info('Check Telemetries: %s', tel_lcd)
+        LOGGER.info('Check list: %s', tel_lcd)
         if tel_lcd:
             if tel_lcd.get('mccFireState') == 1:
                 LOGGER.info('CANH BAO CHAY')
