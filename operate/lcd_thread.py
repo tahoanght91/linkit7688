@@ -30,7 +30,6 @@ BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 def call():
     try:
         period = 3
-        multi_cmd_lcd.clear()
         while True:
             result_check_input = check_lcd_service(lcd_services)
             if result_check_input.key_code > 0 and result_check_input.key_event > 0:
@@ -49,6 +48,7 @@ def call():
                 cmd_lcd_lock.release()
                 set_last_trace(result_switch_lcd)
                 lcd_services.clear()
+            multi_cmd_lcd.clear()
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
