@@ -19,11 +19,11 @@ def check_status():
     LOGGER.info('Enter monitor:acm:check_status')
     global acm_period_start
 
-    # Time to run in alternative mode (not used), convert from minute to second
-    # acmAlternativeTime = 60 * shared_attributes.get('acmAlternativeTime', default_data.acmAlternativeTime)
-    # Time to run/rest air-conditioner if T is lower than T2, , convert from minute to second
-    acmRunTime = 60 * shared_attributes.get('acmRunTime', default_data.acmRunTime)
-    acmRestTime = 60 * shared_attributes.get('acmRestTime', default_data.acmRestTime)
+    # Time to run in alternative mode (not used), convert from hour to second
+    acmAlternativeTime = 3600 * shared_attributes.get('acmAlternativeTime', default_data.acmAlternativeTime)
+    # Time to run/rest air-conditioner if T is lower than T2, , convert from hour to second
+    acmRunTime = 3600 * shared_attributes.get('acmRunTime', default_data.acmRunTime)
+    acmRestTime = 3600 * shared_attributes.get('acmRestTime', default_data.acmRestTime)
     acmGenAllow = shared_attributes.get('acmGenAllow', default_data.acmGenAllow)
     acmVacThreshold = shared_attributes.get('acmVacThreshold', default_data.acmVacThreshold)
     # acmMinHumid = shared_attributes.get('acmMinHumid', default_data.acmMinHumid)
