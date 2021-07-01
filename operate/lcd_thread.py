@@ -12,10 +12,12 @@ from control import process_cmd_sa, process_cmd_lcd
 from devices.utils import read_lcd_services
 from model.alarm_lcd import Alarm_lcd
 from model.lcd import Lcd
+from operate.rfid_thread import KEY_RFID
 from utility import bytes_to_int
 from model import menu
 
 URL_SEND_SA = 'http://123.30.214.139:8517/api/services/app/DMTram/ChangeValueTemplate'
+URL_NV = 'https://123.30.214.139:8517/api/services/app/DMNhanVienRaVaoTram/GetNhanVienRaVaoTram'
 menu_level_1 = [MCC, ACM, ATS]
 LIST_KEY_EVENT = [EVENT_NONE, EVENT_DOWN, EVENT_UP, EVENT_HOLD, EVENT_POWER]
 LIST_KEY_CODE = [KEYCODE_11, KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26, KEYCODE_24, KEYCODE_13, KEYCODE_12]
@@ -40,8 +42,13 @@ def call():
         while True:
             display.menu(bt)
             bt = button.check_button(lcd_services)
+<<<<<<< HEAD
             # display.clear_display()
                 
+=======
+            display.clear_display()
+
+>>>>>>> huyfr
             # LOGGER.info('Check list all cmd multi 1: %s', multi_cmd_lcd)
             # result_check_input = check_lcd_service(lcd_services)
             # if result_check_input.key_code > 0 and result_check_input.key_event > 0:
@@ -116,7 +123,7 @@ def check_alarm(tel_lcd):
                 LOGGER.info('CANH BAO CUA')
                 cmd_lcd_dict[1] = creat_cmd_rule('Canh bao Cua!', ROW_2)
                 cmd_lcd_dict[2] = creat_cmd_rule(dt_string, ROW_3)
-            elif tel_lcd.get('mccMoveState') == 1:
+            elif telemetries.get('mccMoveState') == 1:
                 LOGGER.info('CANH BAO CHUYEN DONG')
                 cmd_lcd_dict[1] = creat_cmd_rule('CB Chuyen Dong!', ROW_2)
                 cmd_lcd_dict[2] = creat_cmd_rule(dt_string, ROW_3)
@@ -322,23 +329,23 @@ def check_lcd_service(dct_lcd_service):
         LOGGER.error('Error at check_lcd_service function with message: %s', ex.message)
     return input_lcd
 
-
-def get_last_alarm():
-    last_alarm_trace = Alarm_lcd()
-    try:
-        json_file = open('./last_trace_alarm_lcd.json', )
-        dct_last_trace = json.load(json_file)
-        LOGGER.info('after convert from json: %s', dct_last_trace)
-        last_alarm_trace.mccDoorState = dct_last_trace['mccDoorState']
-        last_alarm_trace.mccFloodState = dct_last_trace['mccFloodState']
-        last_alarm_trace.mccSmokeState = dct_last_trace['mccSmokeState']
-        last_alarm_trace.mccFireState = dct_last_trace['mccFireState']
-        last_alarm_trace.mccMoveState = dct_last_trace['mccMoveState']
-        last_alarm_trace.acmTempIndoor = dct_last_trace['acmTempIndoor']
-        LOGGER.info('List last alarm: %s', last_alarm_trace)
-    except Exception as ex:
-        LOGGER.error('Error at get_last_trace with message: %s', ex.message)
-    return last_alarm_trace
+#
+# def get_last_alarm():
+#     last_alarm_trace = Alarm_lcd()
+#     try:
+#         json_file = open('./last_trace_alarm_lcd.json', )
+#         dct_last_trace = json.load(json_file)
+#         LOGGER.info('after convert from json: %s', dct_last_trace)
+#         last_alarm_trace.mccDoorState = dct_last_trace['mccDoorState']
+#         last_alarm_trace.mccFloodState = dct_last_trace['mccFloodState']
+#         last_alarm_trace.mccSmokeState = dct_last_trace['mccSmokeState']
+#         last_alarm_trace.mccFireState = dct_last_trace['mccFireState']
+#         last_alarm_trace.mccMoveState = dct_last_trace['mccMoveState']
+#         last_alarm_trace.acmTempIndoor = dct_last_trace['acmTempIndoor']
+#         LOGGER.info('List last alarm: %s', last_alarm_trace)
+#     except Exception as ex:
+#         LOGGER.error('Error at get_last_trace with message: %s', ex.message)
+#     return last_alarm_trace
 
 
 def set_last_alarm(input_lcd):
@@ -365,6 +372,87 @@ def creat_cmd_rule(string, row):
     cmd = str(string) + SALT_DOLLAR_SIGN + str(row)
     return cmd
 
+<<<<<<< HEAD
+=======
+class Display:
+    def __init__(self):
+        self.last_menu = '0'
+
+    def clear_display(self):
+        lcd_services.clear()
+
+    def print_test (self, string):
+        cmd_lcd_dict = {}
+        cmd_lcd_dict[0] = creat_cmd_rule(str(string), ROW_3)
+        multi_cmd_lcd_enable()
+        LOGGER.info('Enter print_test function')
+        for i in cmd_lcd_dict:
+            add_cmd_lcd(cmd_lcd_dict[i])
+        LOGGER.info('Exit print_test function')
+
+    def main_display(self):
+        self.print_test('1. Main display')
+
+    def warning_display(self):
+        self.print_test('2. Warning display')
+
+    def security_sensor_info_display(self):
+        self.print_test('3. Secure sensor')
+
+    def air_info_display(self):
+        self.print_test('4. Air condition')
+
+    def ats_display(self):
+        self.print_test('5. ATS')
+
+    def setting_display(self):
+        self.print_test('6. Setting')
+
+    def rfid_display(self):
+        self.print_test('7. RFID')
+
+    def menu(self, number_menu):
+        if number_menu in MENU:
+            self.last_menu = MENU[number_menu]
+            return getattr(self, 'case_' + str(MENU[number_menu]))()
+        else:
+            return getattr(self, 'case_' + str(self.last_menu))()
+    def case_0(self):
+        return self.main_display()
+    def case_1(self):
+        return self.warning_display()
+    def case_2(self):
+        return self.security_sensor_info_display()
+    def case_3(self):
+        return self.air_info_display()
+    def case_4(self):
+        return self.ats_display()
+    def case_5(self):
+        return self.setting_display()
+    def case_6(self):
+        return self.rfid_display()
+
+class Button():
+    def __init__(self):
+        pass
+
+    def check_button(self, dct_lcd_service):
+        key_code = dct_lcd_service['key_code']
+        key_event = dct_lcd_service['key_event']
+
+        for i in range(len(LIST_KEYCODE)):
+            if key_code == LIST_KEYCODE[i]:
+                index_key = i+1
+                break
+
+        if key_event == EVENT_UP:
+            event = EVENT_UP_BT
+        elif key_event == EVENT_HOLD:
+            event = EVENT_HOLD_BT
+        button = event*index_key
+
+        return str(button)
+>>>>>>> huyfr
 # def call():
 #     try:
 #         period = 3
@@ -379,6 +467,108 @@ def creat_cmd_rule(string, row):
 #                     else:
 #                         result_switch_lcd = switch_lcd_service(result_check_input)
 #                         cmd_lcd_lock.acquire()
+def get_temp_tram():
+    try:
+        warning = ''
+        json_file = open('./last_temp.json', )
+        temp = json.load(json_file)
+        acmTempInOld = temp['acmTempIndoor']
+        acmTempOutOld = temp['acmTempOutdoor']
+        acmHumidInOld = temp['acmHumidIndoor']
+        warningOld = temp['isWarning']
+        acmTempIn = telemetries.get('acmTempIndoor')
+        acmTempOut = telemetries.get('acmTempOutdoor')
+        acmHumidIn = telemetries.get('acmHumidIndoor')
+        new_list_telemetries = dict(filter(lambda elem: elem[0].lower().find('state') != -1, telemetries.items()))
+        if len(new_list_telemetries) > 0:
+            check = any(elem != 0 for elem in new_list_telemetries.values())
+            warning = '!!!' if check else ''
+            LOGGER.info('Warning: %s', warning)
+        if (acmTempInOld != acmTempIn and acmTempIn != None) or (acmTempOutOld != acmTempOut and acmTempOut != None) or (acmHumidInOld != acmHumidIn and acmHumidIn != None) or warningOld != warning:
+            Recheck = {"acmTempIndoor": acmTempIn, "acmTempOutdoor": acmTempOut, "acmHumidIndoor": acmHumidIn,
+                       "isWarning": warning}
+            write_to_json(Recheck, './last_temp.json')
+            show = str(acmTempIn) + ' ' + str(acmTempOut) + ' ' + str(
+                acmHumidIn) + ' ' + warning + SALT_DOLLAR_SIGN + str(ROW_3)
+            cmd_lcd[UPDATE_VALUE] = show
+            LOGGER.info('acmTempIndoor, acmTempOutdoor, acmHumidIndoor: %s', show)
+    except Exception as ex:
+        LOGGER.error('Error at get_temp_tram function with message: %s', ex.message)
+
+
+def get_user_tram():
+    try:
+        json_file = open('./last_rfid_card_code.json', )
+        card_code = json.load(json_file)
+        if KEY_RFID in client_attributes:
+            rfid_card = client_attributes.get(KEY_RFID)
+            staffCode = rfid_card
+            if card_code != rfid_card:
+                LOGGER.info('Ma nhan vien cu,moi: %s', card_code, rfid_card)
+                write_to_json(rfid_card, './last_rfid_card_code.json')
+                param = {'input': rfid_card}
+                response = requests.get(url=URL_NV, params=param)
+                if response.status_code == 200:
+                    LOGGER.info('Send log request to Smartsite successful!')
+                    staff = json.loads(response.content)['result']
+                    if staff is not None:
+                        staffCode = json.loads(response.content)['result']['maNhanVien']
+                show = str(staffCode) + SALT_DOLLAR_SIGN + str(ROW_4)
+                cmd_lcd[UPDATE_VALUE] = show
+                LOGGER.info('Ma nhan vien: %s', show)
+    except Exception as ex:
+        LOGGER.error('Error at get_user_tram function with message: %s', ex.message)
+
+
+def get_datetime_now():
+    try:
+        json_file = open('./last_time.json', )
+        timeOld = json.load(json_file)
+        timeNew = datetime.now().strftime("%M")
+        if timeNew != timeOld:
+            write_to_json(timeNew, './last_time.json')
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y %H:%M")
+            show = str(dt_string) + SALT_DOLLAR_SIGN + str(ROW_2)
+            cmd_lcd[UPDATE_VALUE] = show
+            LOGGER.info('DateTime now: %s', show)
+    except Exception as ex:
+        LOGGER.error('Error at get_datetime_now function with message: %s', ex.message)
+
+
+def get_title_main():
+    try:
+        show = 'MAKE IN MOBIFONE' + SALT_DOLLAR_SIGN + str(ROW_1)
+        cmd_lcd[UPDATE_VALUE] = show
+        LOGGER.info('Title: %s', show)
+    except Exception as ex:
+        LOGGER.error('Error at set_title_main function with message: %s', ex.message)
+
+
+def write_to_json(body, fileUrl):
+    try:
+        json_last_trace = json.dumps(body)
+        with io.open(fileUrl, 'wb') as last_trace_file:
+            last_trace_file.write(json_last_trace)
+        LOGGER.info('Command information just send: %s', body)
+    except Exception as ex:
+        LOGGER.error('Error at write_to_json function with message: %s', ex.message)
+
+
+def get_screen_main():
+    try:
+        get_title_main()
+        get_user_tram()
+        get_temp_tram()
+        get_datetime_now()
+    except Exception as ex:
+        LOGGER.error('Error at get_screen_main function with message: %s', ex.message)
+
+
+# def show_temp_humi(data):
+#     LOGGER.info('Enter show_temp_humi function')
+#     temp = data[0]
+#     humidity = data[1]
 #
 #                         # if result_switch_lcd.value < 0:
 #                         #     cmd_lcd[UPDATE_VALUE] = result_switch_lcd.name + SALT_DOLLAR_SIGN + str(ROW_3)
