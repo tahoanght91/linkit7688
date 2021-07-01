@@ -66,7 +66,7 @@ def call():
     try:
         LOGGER.info('Start main thread')
         try:
-            CLIENT.connect(callback=_connect_callback, disconnect_callback=_disconnect_callback)
+            CLIENT.connect(callback=_connect_callback)
             semaphore.acquire()
         except Exception as e:
             LOGGER.info('Fail to connect to server')
@@ -117,7 +117,7 @@ def call():
             if not CLIENT.is_connected():
                 LOGGER.info('Disconnected from server, try reconnecting')
                 try:
-                    CLIENT.connect(callback=_connect_callback, disconnect_callback=_disconnect_callback)
+                    CLIENT.connect(callback=_connect_callback)
                     semaphore.acquire()
                 except:
                     LOGGER.info('Fail to connect to server')
