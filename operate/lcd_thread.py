@@ -321,23 +321,23 @@ def check_lcd_service(dct_lcd_service):
         LOGGER.error('Error at check_lcd_service function with message: %s', ex.message)
     return input_lcd
 
-
-def get_last_alarm():
-    last_alarm_trace = Alarm_lcd()
-    try:
-        json_file = open('./last_trace_alarm_lcd.json', )
-        dct_last_trace = json.load(json_file)
-        LOGGER.info('after convert from json: %s', dct_last_trace)
-        last_alarm_trace.mccDoorState = dct_last_trace['mccDoorState']
-        last_alarm_trace.mccFloodState = dct_last_trace['mccFloodState']
-        last_alarm_trace.mccSmokeState = dct_last_trace['mccSmokeState']
-        last_alarm_trace.mccFireState = dct_last_trace['mccFireState']
-        last_alarm_trace.mccMoveState = dct_last_trace['mccMoveState']
-        last_alarm_trace.acmTempIndoor = dct_last_trace['acmTempIndoor']
-        LOGGER.info('List last alarm: %s', last_alarm_trace)
-    except Exception as ex:
-        LOGGER.error('Error at get_last_trace with message: %s', ex.message)
-    return last_alarm_trace
+#
+# def get_last_alarm():
+#     last_alarm_trace = Alarm_lcd()
+#     try:
+#         json_file = open('./last_trace_alarm_lcd.json', )
+#         dct_last_trace = json.load(json_file)
+#         LOGGER.info('after convert from json: %s', dct_last_trace)
+#         last_alarm_trace.mccDoorState = dct_last_trace['mccDoorState']
+#         last_alarm_trace.mccFloodState = dct_last_trace['mccFloodState']
+#         last_alarm_trace.mccSmokeState = dct_last_trace['mccSmokeState']
+#         last_alarm_trace.mccFireState = dct_last_trace['mccFireState']
+#         last_alarm_trace.mccMoveState = dct_last_trace['mccMoveState']
+#         last_alarm_trace.acmTempIndoor = dct_last_trace['acmTempIndoor']
+#         LOGGER.info('List last alarm: %s', last_alarm_trace)
+#     except Exception as ex:
+#         LOGGER.error('Error at get_last_trace with message: %s', ex.message)
+#     return last_alarm_trace
 
 
 def set_last_alarm(input_lcd):
@@ -486,15 +486,15 @@ def get_temp_tram():
         if len(new_list_telemetries) > 0:
             check = any(elem != 0 for elem in new_list_telemetries.values())
             warning = '!!!' if check else ''
-            LOGGER.info('Warning', warning)
-        if acmTempInOld != acmTempIn or acmTempOutOld != acmTempOut or acmHumidInOld != acmHumidIn or warningOld != warning:
+            LOGGER.info('Warning: %s', warning)
+        if (acmTempInOld != acmTempIn and acmTempIn != None) or (acmTempOutOld != acmTempOut and acmTempOut != None) or (acmHumidInOld != acmHumidIn and acmHumidIn != None) or warningOld != warning:
             Recheck = {"acmTempIndoor": acmTempIn, "acmTempOutdoor": acmTempOut, "acmHumidIndoor": acmHumidIn,
                        "isWarning": warning}
             write_to_json(Recheck, './last_temp.json')
             show = str(acmTempIn) + ' ' + str(acmTempOut) + ' ' + str(
                 acmHumidIn) + ' ' + warning + SALT_DOLLAR_SIGN + str(ROW_3)
             cmd_lcd[UPDATE_VALUE] = show
-            LOGGER.info('acmTempIndoor, acmTempOutdoor, acmHumidIndoor :', show)
+            LOGGER.info('acmTempIndoor, acmTempOutdoor, acmHumidIndoor: %s', show)
     except Exception as ex:
         LOGGER.error('Error at get_temp_tram function with message: %s', ex.message)
 
@@ -507,7 +507,7 @@ def get_user_tram():
             rfid_card = client_attributes.get(KEY_RFID)
             staffCode = rfid_card
             if card_code != rfid_card:
-                LOGGER.info('Ma nhan vien cu,moi:', card_code, rfid_card)
+                LOGGER.info('Ma nhan vien cu,moi: %s', card_code, rfid_card)
                 write_to_json(rfid_card, './last_rfid_card_code.json')
                 param = {'input': rfid_card}
                 response = requests.get(url=URL_NV, params=param)
@@ -518,7 +518,7 @@ def get_user_tram():
                         staffCode = json.loads(response.content)['result']['maNhanVien']
                 show = str(staffCode) + SALT_DOLLAR_SIGN + str(ROW_4)
                 cmd_lcd[UPDATE_VALUE] = show
-                LOGGER.info('Ma nhan vien:', show)
+                LOGGER.info('Ma nhan vien: %s', show)
     except Exception as ex:
         LOGGER.error('Error at get_user_tram function with message: %s', ex.message)
 
@@ -534,7 +534,7 @@ def get_datetime_now():
             dt_string = now.strftime("%d/%m/%Y %H:%M")
             show = str(dt_string) + SALT_DOLLAR_SIGN + str(ROW_2)
             cmd_lcd[UPDATE_VALUE] = show
-            LOGGER.info('DateTime now:', show)
+            LOGGER.info('DateTime now: %s', show)
     except Exception as ex:
         LOGGER.error('Error at get_datetime_now function with message: %s', ex.message)
 
@@ -543,7 +543,7 @@ def get_title_main():
     try:
         show = 'MAKE IN MOBIFONE' + SALT_DOLLAR_SIGN + str(ROW_1)
         cmd_lcd[UPDATE_VALUE] = show
-        LOGGER.info('Title:', show)
+        LOGGER.info('Title: %s', show)
     except Exception as ex:
         LOGGER.error('Error at set_title_main function with message: %s', ex.message)
 
