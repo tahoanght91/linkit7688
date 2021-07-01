@@ -1,15 +1,18 @@
 from config import *
+from config.common import UPDATE_VALUE, END_CMD
 from config.common_lcd_services import *
 
-UPDATE_VALUE = 5
+
 def add_cmd_lcd(dict_cmd):
     cmd = ''
     for i in dict_cmd:
         cmd += dict_cmd[i]
     commands[UPDATE_VALUE] += cmd
 
+
 def creat_cmd_rule(dict_cmd, string, row):
     dict_cmd[str(row)] = str(string) + SALT_DOLLAR_SIGN + str(row) + END_CMD
+
 
 class Display:
     def __init__(self):

@@ -43,6 +43,7 @@ GET_VALUE = 'getValue'
 # lcd service
 UPDATE_VALUE = 5
 CLEAR = 6
+END_CMD = '$@'
 
 # list command
 list_command = [COMMAND_MCC_OPEN_DOOR, COMMAND_MCC_CLOSE_DOOR, COMMAND_MCC_ON_BELL, COMMAND_MCC_OFF_BELL,
