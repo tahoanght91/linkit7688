@@ -79,11 +79,9 @@ def check_status():
     # Decide whether to run air or fan
     air_enabled = True
 
-    acmAirc1NextState = acmAirc1CurrentState = acmAirc1RunState == 1
-    acmAirc2NextState = acmAirc2CurrentState = acmAirc2RunState == 1
-    # Fan should always on except for forbidden cases
-    acmFanCurrentState = acmFanRunState == 1
-    acmFanNextState = True
+    acmAirc1NextState = acmAirc1CurrentState = (acmAirc1RunState == 1)
+    acmAirc2NextState = acmAirc2CurrentState = (acmAirc2RunState == 1)
+    acmFanCurrentState = acmFanNextState = (acmFanRunState == 1)
 
     '''
     Running Permission
@@ -123,25 +121,28 @@ def check_status():
         acmFanNextState = False
         acm_period_start = 0    # Reset period timer
     elif acmTempIndoor > acmT1Temp:
-        # Temperature driven: T > T1 ~ run both Air if enabled, Fan always on if enabled
-        LOGGER.debug('# Temperature driven: T > T1 ~ run both Air if enabled, Fan always on if enabled')
+        # Temperature driven: T > T1 ~ run both Air if enabled
+        LOGGER.debug('# Temperature driven: T > T1 ~ run both Air if enabled')
         acmAirc1NextState = air_enabled
         acmAirc2NextState = air_enabled
+        acmFanNextState = False
         acm_period_start = 0    # Reset period timer
     elif acmT2Temp < acmTempIndoor < acmT1Temp - TempDelta:
-        # Temperature driven: T1 - TempDelta > T > T2 ~ run only one Air if enabled, Fan always on if enabled
+        # Temperature driven: T1 - TempDelta > T > T2 ~ run only one Air if enabled
         LOGGER.debug('# Temperature driven: T1 - TempDelta > T > T2'
-                     ' => run only one Air if enabled, Fan always on if enabled')
+                     ' => run only one Air if enabled')
         acmAirc1NextState = air_enabled
         acmAirc2NextState = False
+        acmFanNextState = False
         acm_period_start = 0    # Reset period timer
     elif acmTempIndoor < acmT2Temp - TempDelta:
         # Fan should already be enabled
         if acmTempOutdoor > acmT4Temp + TempDelta:
-            # If temp_outdoor > T4 + delta => always one Air (and Fan)
-            LOGGER.debug('# If temp_outdoor > T4 + delta => always one Air (and Fan)')
+            # If temp_outdoor > T4 + delta => always one Air
+            LOGGER.debug('# If temp_outdoor > T4 + delta => always one Air')
             acmAirc1NextState = air_enabled
             acmAirc2NextState = False
+            acmFanNextState = False
         elif acmTempOutdoor < acmT4Temp:
             # If temp_outdoor < T4 => Air off for t1 (Fan only), after t1 if temp_indoor > T3 => Air in t2 time
             LOGGER.debug('# If temp_outdoor < T4 => Air off for t1 (Fan only), after t1 if temp_indoor > T3'
@@ -158,6 +159,7 @@ def check_status():
                 acm_period_start = timestamp
                 acmAirc1NextState = air_enabled
                 acmAirc2NextState = False
+                acmFanNextState = False
             elif (acmAirc1CurrentState or acmAirc2CurrentState) and \
                     period_elapsed > acmRunTime and \
                     acmTempIndoor < acmT3Temp:
@@ -167,6 +169,7 @@ def check_status():
                 acm_period_start = timestamp
                 acmAirc1NextState = False
                 acmAirc2NextState = False
+                acmFanNextState = True
     # elif acmAlternativeState == 1:
     #     # This happens within TempDelta, running in alternate mode
     #     LOGGER.debug('Temperature not too high or lower than expected with high humidity,'
