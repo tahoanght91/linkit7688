@@ -14,6 +14,7 @@ from model.alarm_lcd import Alarm_lcd
 from model.lcd import Lcd
 from operate.rfid_thread import KEY_RFID
 from utility import bytes_to_int
+from model import menu
 
 URL_SEND_SA = 'http://123.30.214.139:8517/api/services/app/DMTram/ChangeValueTemplate'
 URL_NV = 'https://123.30.214.139:8517/api/services/app/DMNhanVienRaVaoTram/GetNhanVienRaVaoTram'
@@ -32,15 +33,22 @@ BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 def call():
     try:
         period = 3
-        button = Button()
-        display = Display()
+        button = menu.Button()
+        display = menu.Display()
         bt = '0'
         display.clear_display()
+        lcd_services['key_code'] = KEYCODE_12
+        lcd_services['key_event'] = EVENT_UP
         while True:
             display.menu(bt)
             bt = button.check_button(lcd_services)
+<<<<<<< HEAD
+            # display.clear_display()
+                
+=======
             display.clear_display()
 
+>>>>>>> huyfr
             # LOGGER.info('Check list all cmd multi 1: %s', multi_cmd_lcd)
             # result_check_input = check_lcd_service(lcd_services)
             # if result_check_input.key_code > 0 and result_check_input.key_event > 0:
@@ -351,33 +359,21 @@ def set_last_alarm(input_lcd):
         LOGGER.error('Error at set_last_trace function with message: %s', ex.message)
 
 
-# def show_temp_humi(temp, humidity):
-#     cmd_lcd_dict = {}
-#     cmd_lcd_dict[0] = creat_cmd_rule(str(temp) + '*C', ROW_3)
-#     cmd_lcd_dict[1] = creat_cmd_rule(str(humidity) + '%', ROW_4)
-#     multi_cmd_lcd_enable()
-#     LOGGER.info('Enter show_temp_humi function')
-#     for i in cmd_lcd_dict:
-#         add_cmd_lcd(cmd_lcd_dict[i])
-#     LOGGER.info('Exit show_temp_humi function')
-
-
 def multi_cmd_lcd_enable():
     multi_cmd_lcd_flag[0] = True
-
 
 def multi_cmd_lcd_disable():
     multi_cmd_lcd_flag[0] = False
 
-
 def add_cmd_lcd(cmd):
     multi_cmd_lcd.append(cmd)
-
 
 def creat_cmd_rule(string, row):
     cmd = str(string) + SALT_DOLLAR_SIGN + str(row)
     return cmd
 
+<<<<<<< HEAD
+=======
 class Display:
     def __init__(self):
         self.last_menu = '0'
@@ -456,6 +452,7 @@ class Button():
         button = event*index_key
 
         return str(button)
+>>>>>>> huyfr
 # def call():
 #     try:
 #         period = 3
