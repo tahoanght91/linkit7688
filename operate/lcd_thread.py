@@ -32,10 +32,6 @@ def call():
         period = 3
         while True:
             LOGGER.info('Check list all cmd multi 1: %s', multi_cmd_lcd)
-            if len(multi_cmd_lcd) > 0:
-                multi_cmd_lcd.clear()
-                LOGGER.info('Check list all cmd multi 2: %s', multi_cmd_lcd)
-
             result_check_input = check_lcd_service(lcd_services)
             if result_check_input.key_code > 0 and result_check_input.key_event > 0:
                 if result_check_input.key_code == KEYCODE_11:
@@ -66,29 +62,28 @@ def check_history_keypad(last_trace):
 def init_show_alarm():
     try:
         cmd_lcd[UPDATE_VALUE] = creat_cmd_rule(BAN_TIN_CANH_BAO, ROW_1)
+        LOGGER.info('List telemitries: %s', telemetries)
+
         if telemetries:
             cmd_lcd_ok = check_alarm(telemetries)
             LOGGER.info('List cmd lcd: %s', cmd_lcd_ok)
             if cmd_lcd_ok:
                 LOGGER.info('Get list txt row: %s', cmd_lcd_ok)
                 multi_cmd_lcd_enable()
-                LOGGER.info('Enter show alarm function')
                 for i in cmd_lcd_ok:
                     add_cmd_lcd(cmd_lcd_ok[i])
                 LOGGER.info('CMD Multil LCD: %s', multi_cmd_lcd)
-                LOGGER.info('Exit show alarm function')
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
 
 def check_alarm(tel_lcd):
-    multi_cmd_lcd = []
     cmd_lcd_dict = {}
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
     try:
         max_Tem = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
-        LOGGER.info('Check Telemetries: %s', tel_lcd)
+        LOGGER.info('Check list: %s', tel_lcd)
         if tel_lcd:
             if tel_lcd.get('mccFireState') == 1:
                 LOGGER.info('CANH BAO CHAY')

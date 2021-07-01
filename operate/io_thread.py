@@ -114,6 +114,9 @@ def call():
                                         break
                                     LOGGER.debug('Try sending again')
                 multi_cmd_lcd_flag[0] = False
+                if len(multi_cmd_lcd) > 0:
+                    multi_cmd_lcd.clear()
+                LOGGER.info('List cmd all show: %s', multi_cmd_lcd)
             else:
                 if cmd_lcd:
                     cmd_lcd_snap = []
