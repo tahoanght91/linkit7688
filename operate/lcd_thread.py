@@ -30,78 +30,23 @@ BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 def call():
     try:
         period = 3
-        button = menu.Button()
-        display = menu.Display()
-        bt = '0'
-        display.clear_display()
-        lcd_services['key_code'] = KEYCODE_12
-        lcd_services['key_event'] = EVENT_UP
+        # button = menu.Button()
+        # display = menu.Display()
+        # bt = '0'
+        # display.clear_display()
+        # lcd_services['key_code'] = KEYCODE_12
+        # lcd_services['key_event'] = EVENT_UP
         while True:
-            display.menu(bt)
-            bt = button.check_button(lcd_services)
-            display.clear_display()
+            init_show_alarm()
+            # display.menu(bt)
+            # bt = button.check_button(lcd_services)
+            # display.clear_display()
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
 
-# def init_show_alarm():
-#     try:
-#         cmd_lcd[UPDATE_VALUE] = creat_cmd_rule(BAN_TIN_CANH_BAO, ROW_1)
-#         LOGGER.info('List telemitries: %s', telemetries)
-#
-#         if telemetries:
-#             cmd_lcd_ok = check_alarm(telemetries)
-#             LOGGER.info('List cmd lcd: %s', cmd_lcd_ok)
-#             if cmd_lcd_ok:
-#                 LOGGER.info('Get list txt row: %s', cmd_lcd_ok)
-#                 for i in cmd_lcd_ok:
-#                     add_cmd_lcd(cmd_lcd_ok[i])
-#                 LOGGER.info('CMD Multil LCD: %s', add_cmd_lcd)
-#     except Exception as ex:
-#         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
-
-
-# def check_alarm(tel_lcd):
-#     cmd_lcd_dict = {}
-#     now = datetime.now()
-#     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-#     try:
-#         max_Tem = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
-#         LOGGER.info('Check list: %s', tel_lcd)
-#         if tel_lcd:
-#             if tel_lcd.get('mccFireState') == 1:
-#                 LOGGER.info('CANH BAO CHAY')
-#                 cmd_lcd_dict[1] = creat_cmd_rule('Canh bao CHAY!', ROW_2)
-#                 cmd_lcd_dict[2] = creat_cmd_rule(dt_string, ROW_3)
-#             elif tel_lcd.get('mccSmokeState') == 1:
-#                 LOGGER.info('CANH BAO KHOI')
-#                 cmd_lcd_dict[1] = creat_cmd_rule('Canh bao Khoi!', ROW_2)
-#                 cmd_lcd_dict[2] = creat_cmd_rule(dt_string, ROW_3)
-#             elif tel_lcd.get('acmTempIndoor') > max_Tem:
-#                 LOGGER.info('CANH BAO NHIET')
-#                 cmd_lcd_dict[1] = creat_cmd_rule('Canh bao Nhiet!', ROW_2)
-#                 cmd_lcd_dict[2] = creat_cmd_rule(dt_string, ROW_3)
-#             elif tel_lcd.get('mccFloodState') == 1:
-#                 LOGGER.info('CANH BAO NGAP')
-#                 cmd_lcd_dict[1] = creat_cmd_rule('Canh bao Ngap!', ROW_2)
-#                 cmd_lcd_dict[2] = creat_cmd_rule(dt_string, ROW_3)
-#             elif tel_lcd.get('mccDoorState') == 1:
-#                 LOGGER.info('CANH BAO CUA')
-#                 cmd_lcd_dict[1] = creat_cmd_rule('Canh bao Cua!', ROW_2)
-#                 cmd_lcd_dict[2] = creat_cmd_rule(dt_string, ROW_3)
-#             elif telemetries.get('mccMoveState') == 1:
-#                 LOGGER.info('CANH BAO CHUYEN DONG')
-#                 cmd_lcd_dict[1] = creat_cmd_rule('CB Chuyen Dong!', ROW_2)
-#                 cmd_lcd_dict[2] = creat_cmd_rule(dt_string, ROW_3)
-#             else:
-#                 cmd_lcd_dict[1] = creat_cmd_rule('An Toan!', ROW_2)
-#                 cmd_lcd_dict[2] = creat_cmd_rule(' ', ROW_3)
-#     except Exception as ex:
-#         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
-#     return cmd_lcd_dict
-
-
+# HuyTQ
 def switch_lcd_service(input_lcd):
     last_trace = Lcd()
     try:
@@ -296,50 +241,8 @@ def check_lcd_service(dct_lcd_service):
         LOGGER.error('Error at check_lcd_service function with message: %s', ex.message)
     return input_lcd
 
-#
-# def get_last_alarm():
-#     last_alarm_trace = Alarm_lcd()
-#     try:
-#         json_file = open('./last_trace_alarm_lcd.json', )
-#         dct_last_trace = json.load(json_file)
-#         LOGGER.info('after convert from json: %s', dct_last_trace)
-#         last_alarm_trace.mccDoorState = dct_last_trace['mccDoorState']
-#         last_alarm_trace.mccFloodState = dct_last_trace['mccFloodState']
-#         last_alarm_trace.mccSmokeState = dct_last_trace['mccSmokeState']
-#         last_alarm_trace.mccFireState = dct_last_trace['mccFireState']
-#         last_alarm_trace.mccMoveState = dct_last_trace['mccMoveState']
-#         last_alarm_trace.acmTempIndoor = dct_last_trace['acmTempIndoor']
-#         LOGGER.info('List last alarm: %s', last_alarm_trace)
-#     except Exception as ex:
-#         LOGGER.error('Error at get_last_trace with message: %s', ex.message)
-#     return last_alarm_trace
 
-
-def set_last_alarm(input_lcd):
-    try:
-        dct_last_trace = input_lcd.__dict__
-        json_last_trace = json.dumps(dct_last_trace)
-        with io.open('./last_trace_alarm_lcd.json', 'wb') as last_trace_file:
-            last_trace_file.write(json_last_trace)
-        LOGGER.info('Command information just send: %s', dct_last_trace)
-    except Exception as ex:
-        LOGGER.error('Error at set_last_trace function with message: %s', ex.message)
-
-
-# def call():
-#     try:
-#         period = 3
-#         last_trace = get_last_trace()
-#         while True:
-#             if CLIENT.is_connected():
-#                 check_alarm()
-#                 result_check_input = check_lcd_service(lcd_services)
-#                 if result_check_input.key_code > 0 and result_check_input.key_event > 0:
-#                     if result_check_input.key_code == KEYCODE_11:
-#                         cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_3)
-#                     else:
-#                         result_switch_lcd = switch_lcd_service(result_check_input)
-#                         cmd_lcd_lock.acquire()
+# HungLQ
 def get_temp_tram():
     try:
         warning = ''
@@ -436,4 +339,59 @@ def get_screen_main():
         get_datetime_now()
     except Exception as ex:
         LOGGER.error('Error at get_screen_main function with message: %s', ex.message)
+
+
+# NguyenVQ
+def init_show_alarm():
+    try:
+        cmd_lcd[UPDATE_VALUE] = create_cmd_multi(BAN_TIN_CANH_BAO, ROW_1)
+        LOGGER.info('List telemitries: %s', telemetries)
+        while True:
+            if telemetries:
+                check_alarm(telemetries)
+    except Exception as ex:
+        LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
+
+
+def check_alarm(tel_lcd):
+    cmd_lcd_dict = {}
+    now = datetime.now()
+    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+    try:
+        max_tem = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
+        LOGGER.info('MAX TEMPERATURE: %s', max_tem)
+        LOGGER.info('Check list: %s', tel_lcd)
+        if tel_lcd:
+            if tel_lcd.get('mccFireState') == 1:
+                create_for_each('Canh bao CHAY!', dt_string)
+            elif tel_lcd.get('mccSmokeState') == 1:
+                create_for_each('Canh bao Khoi!', dt_string)
+            elif tel_lcd.get('acmTempIndoor') > max_tem:
+                create_for_each('Canh bao Nhiet!', dt_string)
+            elif tel_lcd.get('mccFloodState') == 1:
+                create_for_each('Canh bao Ngap!', dt_string)
+            elif tel_lcd.get('mccDoorState') == 1:
+                create_for_each('Canh bao Cua!', dt_string)
+            elif telemetries.get('mccMoveState') == 1:
+                create_for_each('CB Chuyen Dong!', dt_string)
+            else:
+                create_for_each('An Toan!', '')
+
+    except Exception as ex:
+        LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
+    return cmd_lcd_dict
+
+
+def create_for_each(string1, string2):
+    try:
+        el1 = create_cmd_multi(string1, ROW_2)
+        el1 += create_cmd_multi(string2, ROW_3)
+        LOGGER.info('CANH BAO : %s', el1)
+        cmd_lcd[UPDATE_VALUE] = el1
+    except Exception as ex:
+        LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
+
+
+def create_cmd_multi(string, row):
+    return str(string) + SALT_DOLLAR_SIGN + str(row) + END_CMD
 
