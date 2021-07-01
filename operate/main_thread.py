@@ -66,14 +66,14 @@ def call():
     try:
         LOGGER.info('Start main thread')
         try:
-            CLIENT.connect(callback=_connect_callback)
+            CLIENT.connect(callback=_connect_callback, disconnect_callback=_disconnect_callback)
             semaphore.acquire()
         except Exception as e:
             LOGGER.info('Fail to connect to server')
 
         if CLIENT.is_connected():
             LOGGER.debug('Set IO time')
-            clock.set()
+            # clock.set()
             LOGGER.debug('Get original attributes')
             #shared_attributes
             device_shared_attributes_name = format_client_attributes(data_dict['shared'])
@@ -117,7 +117,7 @@ def call():
             if not CLIENT.is_connected():
                 LOGGER.info('Disconnected from server, try reconnecting')
                 try:
-                    CLIENT.connect(callback=_connect_callback)
+                    CLIENT.connect(callback=_connect_callback, disconnect_callback=_disconnect_callback)
                     semaphore.acquire()
                 except:
                     LOGGER.info('Fail to connect to server')
@@ -157,11 +157,7 @@ def call():
                         if latest_version > current_version:
                             LOGGER.info('Get new version: %s from server: %s', str(latest_version), link_version)
                             LOGGER.info('Update system, disconnect with server')
-                            CLIENT.gw_disconnect_device(DEVICE_MCC)
-                            CLIENT.gw_disconnect_device(DEVICE_ATS)
-                            CLIENT.gw_disconnect_device(DEVICE_ACM)
-                            CLIENT.disconnect()
-                            command = 'cd /IoT && ./update.sh && echo update successful!'
+                            command = 'cd /IoT && ./update.sh'
                             subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
                         else:
                             pass
