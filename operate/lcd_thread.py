@@ -31,6 +31,10 @@ def call():
     try:
         period = 3
         while True:
+            LOGGER.info('Check list all cmd multi: %s', multi_cmd_lcd)
+            if multi_cmd_lcd:
+                multi_cmd_lcd.clear()
+
             result_check_input = check_lcd_service(lcd_services)
             if result_check_input.key_code > 0 and result_check_input.key_event > 0:
                 if result_check_input.key_code == KEYCODE_11:
@@ -48,7 +52,6 @@ def call():
                 cmd_lcd_lock.release()
                 set_last_trace(result_switch_lcd)
                 lcd_services.clear()
-            multi_cmd_lcd.clear()
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
