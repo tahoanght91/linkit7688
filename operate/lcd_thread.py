@@ -31,9 +31,10 @@ def call():
     try:
         period = 3
         while True:
-            LOGGER.info('Check list all cmd multi: %s', multi_cmd_lcd)
-            if multi_cmd_lcd:
+            LOGGER.info('Check list all cmd multi 1: %s', multi_cmd_lcd)
+            if len(multi_cmd_lcd) > 0:
                 multi_cmd_lcd.clear()
+                LOGGER.info('Check list all cmd multi 2: %s', multi_cmd_lcd)
 
             result_check_input = check_lcd_service(lcd_services)
             if result_check_input.key_code > 0 and result_check_input.key_event > 0:
