@@ -319,3 +319,18 @@ def _process_cmd_sa(module_id, value):
         return result
     except Exception as ex:
         LOGGER.error('Error at _process_cmd_lcd function with message: %s', ex.message)
+
+
+def split_row_by_salt(content):
+    try:
+        arr_dct_split = []
+        if isinstance(content, str):
+            arr_content = content.split(END_CMD)
+            if len(arr_content) > 0:
+                for x in arr_content[:-1]:
+                    temp_tuple = (UPDATE_VALUE, x)
+                    arr_dct_split.append(temp_tuple)
+        LOGGER.info('Content is: %s, after split row by salt: %s', content, arr_dct_split)
+        return arr_dct_split
+    except Exception as ex:
+        LOGGER.error('Error at split_row_by_salt function with message: %s', ex.message)

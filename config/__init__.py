@@ -35,7 +35,7 @@ lcd_services = {}
 cmd_led = {}
 cmd_lcd = {}
 cmd_sa = {}
-dict_cmd{}
+dict_cmd = {}
 
 update_attributes_lock = threading.Lock()
 telemetries_lock = threading.Lock()
