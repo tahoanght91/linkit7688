@@ -343,13 +343,11 @@ class Button():
 
     def check_button(self, bt_info):
         try:
-            key_code = bt_info[1] << 8 | bt_info[0]
-            key_event = bt_info[2]
+            key_code = int(bt_info[1], 16) << 8 | int(bt_info[0], 16)
+            key_event = int(bt_info[2], 16)
 
-            for i in range(len(LIST_KEYCODE)):
-                if key_code == LIST_KEYCODE[i]:
-                    index_key = i
-                    break
+            if key_code in LIST_KEYCODE:
+                index_key = LIST_KEYCODE.index(key_code)
 
             if key_event == EVENT_UP:
                 event = EVENT_UP_BT
