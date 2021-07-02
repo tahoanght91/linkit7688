@@ -34,12 +34,13 @@ def call():
         period = 3
         lcd = menu.Display()
         lcd.clear_display()
-        get_screen_main()
+        # get_screen_main()
+        get_screen_rfid()
         # while True:
-            # init_show_alarm()
-            # lcd.menu(button_status[0])
-            # lcd.clear_display()
-            # time.sleep(period)
+        # init_show_alarm()
+        # lcd.menu(button_status[0])
+        # lcd.clear_display()
+        # time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
@@ -284,6 +285,9 @@ def get_user_tram():
                     staffCode = json.loads(response.content)['result']['maNhanVien']
             show = str(staffCode) + SALT_DOLLAR_SIGN + str(ROW_4) + END_CMD
             cmd_lcd[UPDATE_VALUE] = show
+            dt_string = datetime.now().strftime("%d/%m/%Y %H:%M")
+            rfid_info = {"Time": dt_string, "StaffCode": staffCode}
+            write_to_json(rfid_info, './last_rfid_card_code.json')
             LOGGER.info('Ma nhan vien: %s', show)
     except Exception as ex:
         LOGGER.error('Error at get_user_tram function with message: %s', ex.message)
@@ -334,6 +338,38 @@ def get_screen_main():
             time.sleep(3)
     except Exception as ex:
         LOGGER.error('Error at get_screen_main function with message: %s', ex.message)
+
+
+def get_title_rfid():
+    try:
+        show = 'THONG TIN RFID' + SALT_DOLLAR_SIGN + str(ROW_1) + END_CMD
+        cmd_lcd[UPDATE_VALUE] = show
+        LOGGER.info('Title: %s', show)
+    except Exception as ex:
+        LOGGER.error('Error at get_title_rfid function with message: %s', ex.message)
+
+
+def get_info_rfid():
+    try:
+        json_file = open('./last_rfid_card_code.json', )
+        rfid_info = json.load(json_file)
+        status = 'Ket noi' if telemetries.get('mccRfidConnectState') == 0 else 'Mat ket noi'
+        show = status + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD + rfid_info['Time'] + SALT_DOLLAR_SIGN + str(ROW_3) + END_CMD + rfid_info[
+            'StaffCode'] + SALT_DOLLAR_SIGN + str(ROW_4) + END_CMD
+        cmd_lcd[UPDATE_VALUE] = show
+        LOGGER.info('Title: %s', show)
+    except Exception as ex:
+        LOGGER.error('Error at get_info_rfid function with message: %s', ex.message)
+
+
+def get_screen_rfid():
+    try:
+        get_title_rfid()
+        while True:
+            get_info_rfid()
+            time.sleep(3)
+    except Exception as ex:
+        LOGGER.error('Error at get_screen_rfid function with message: %s', ex.message)
 
 
 # NguyenVQ
