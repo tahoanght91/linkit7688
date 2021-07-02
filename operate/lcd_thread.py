@@ -34,9 +34,9 @@ def call():
         period = 3
         lcd = menu.Display()
         lcd.clear_display()
-        get_screen_main()
+        # get_screen_main()
+        init_show_alarm()
         # while True:
-            # init_show_alarm()
             # lcd.menu(button_status[0])
             # lcd.clear_display()
             # time.sleep(period)
@@ -344,7 +344,7 @@ def init_show_alarm():
         while True:
             if telemetries:
                 check_alarm(telemetries)
-            time.sleep(1)
+            time.sleep(3)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
