@@ -1,3 +1,5 @@
+import time
+
 from config import *
 from config.common import UPDATE_VALUE
 from config.common_lcd_services import *
@@ -23,6 +25,7 @@ class Display:
                 mainScreen.get_user_tram()
                 mainScreen.get_temp_tram()
                 mainScreen.get_datetime_now()
+                time.sleep(3)
                 # lcd_services['key_code'] = KEYCODE_13
                 # lcd_services['key_event'] = EVENT_UP
             # USER CODE END
@@ -43,6 +46,7 @@ class Display:
                 LOGGER.info('List telemitries: %s', telemetries)
                 if telemetries:
                     warning_service.check_alarm(telemetries)
+                time.sleep(3)
             # USER CODE END
         except Exception as ex:
             LOGGER.error('Error at call function in menu.python with message: %s', ex.message)
@@ -90,6 +94,7 @@ class Display:
                 LOGGER.info('Send button value : %s', str(button_status[0]))
                 self.menu(button_status[0])
             rfidScreen.get_info_rfid()
+            time.sleep(3)
         # USER CODE END
 
     def menu(self, number_menu):
