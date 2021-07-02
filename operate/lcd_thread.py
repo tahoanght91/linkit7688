@@ -33,13 +33,13 @@ def call():
     try:
         period = 3
         lcd = menu.Display()
-        get_screen_main()
         lcd.clear_display()
-        while True:
+        get_screen_main()
+        # while True:
             # init_show_alarm()
-            lcd.menu(button_status[0])
+            # lcd.menu(button_status[0])
             # lcd.clear_display()
-            time.sleep(period)
+            # time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
@@ -331,6 +331,7 @@ def get_screen_main():
             get_user_tram()
             get_temp_tram()
             get_datetime_now()
+            time.sleep(3)
     except Exception as ex:
         LOGGER.error('Error at get_screen_main function with message: %s', ex.message)
 
