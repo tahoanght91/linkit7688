@@ -33,6 +33,13 @@ def call():
         if byte_stream and _read_data(byte_stream):
             ser.write(with_check_sum(data_ack, BYTE_ORDER))
 
+        # read button status
+        try:
+            button_status[0] = button.check_button(lcd_services)
+            LOGGER.info('Send button value: %s', LOG_BUTTON[str(button_status[0])])
+        except Exception as ex:
+            LOGGER.error('Error send led command to STM32 with message: %s', ex.message)
+
         # Write command
         try:
             if commands:
@@ -210,16 +217,6 @@ def call():
         except Exception as ex:
             LOGGER.error('Error send led command to STM32 with message: %s', ex.message)
 
-        # read button status
-        try:
-            # if button_status[0] == 0:
-            #     lcd_services['key_code'] = KEYCODE_13
-            #     lcd_services['key_event'] = EVENT_UP
-            button_status[0] = button.check_button(lcd_services)
-            LOGGER.info('Send button value: %s', str(button_status[0]))
-        except Exception as ex:
-            LOGGER.error('Error send led command to STM32 with message: %s', ex.message)
-
 
 def _read_data(byte_stream):
     LOGGER.info('Receive data message')
@@ -311,6 +308,7 @@ class _OpData:
     IO_STATUS_RPC = b'\x21'
     IO_STATUS_LCD = b'\x32'
 
+
 class Button():
     def __init__(self):
         self.button = 0
@@ -331,7 +329,7 @@ class Button():
             elif key_event == EVENT_HOLD:
                 event = EVENT_HOLD_BT
             self.button = event * index_key
-            LOGGER.info('Exit check_button function')
+            LOGGER.info('return button value: %s', LOG_BUTTON[str(self.button)])
 
             return str(self.button)
         except Exception as ex:
