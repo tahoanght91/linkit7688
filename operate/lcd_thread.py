@@ -1,3 +1,4 @@
+from os import altsep
 import time
 
 import requests
@@ -9,12 +10,13 @@ from config.common_lcd_services import *
 from devices.utils import read_lcd_services
 from model.alarm_lcd import Alarm_lcd
 from model.lcd import Lcd
+from operate.led_thread import get_sate_led_alarm
 from operate.rfid_thread import KEY_RFID
 from utility import bytes_to_int
 from model import menu
 
 URL_SEND_SA = 'http://123.30.214.139:8517/api/services/app/DMTram/ChangeValueTemplate'
-URL_NV = 'https://123.30.214.139:8517/api/services/app/DMNhanVienRaVaoTram/GetNhanVienRaVaoTram'
+URL_NV = 'http://123.30.214.139:8517/api/services/app/DMNhanVienRaVaoTram/GetNhanVienRaVaoTram'
 menu_level_1 = [MCC, ACM, ATS]
 LIST_KEY_EVENT = [EVENT_NONE, EVENT_DOWN, EVENT_UP, EVENT_HOLD, EVENT_POWER]
 LIST_KEY_CODE = [KEYCODE_11, KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26, KEYCODE_24, KEYCODE_13, KEYCODE_12]
@@ -32,12 +34,12 @@ def call():
         period = 3
         lcd = menu.Display()
         lcd.clear_display()
-        while True:
-            # init_show_alarm()
-            lcd.menu(button_status[0])
+        # get_screen_main()
+        init_show_alarm()
+        # while True:
+            # lcd.menu(button_status[0])
             # lcd.clear_display()
-
-            time.sleep(period)
+            # time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
@@ -251,17 +253,17 @@ def get_temp_tram():
         acmTempIn = telemetries.get('acmTempIndoor')
         acmTempOut = telemetries.get('acmTempOutdoor')
         acmHumidIn = telemetries.get('acmHumidIndoor')
-        new_list_telemetries = dict(filter(lambda elem: elem[0].lower().find('state') != -1, telemetries.items()))
-        if len(new_list_telemetries) > 0:
-            check = any(elem != 0 for elem in new_list_telemetries.values())
-            warning = '!!!' if check else ''
-            LOGGER.info('Warning: %s', warning)
-        if (acmTempInOld != acmTempIn and acmTempIn != None) or (acmTempOutOld != acmTempOut and acmTempOut != None) or (acmHumidInOld != acmHumidIn and acmHumidIn != None) or warningOld != warning:
+        check = get_sate_led_alarm(telemetries)
+        warning = '!!!' if check == 0 else ''
+        LOGGER.info('Warning: %s', warning)
+        if (
+                acmTempInOld != acmTempIn or acmTempOutOld != acmTempOut or acmHumidInOld != acmHumidIn or warningOld != warning) and (
+                acmTempIn is not None and acmTempOut is not None and acmHumidIn is not None):
             Recheck = {"acmTempIndoor": acmTempIn, "acmTempOutdoor": acmTempOut, "acmHumidIndoor": acmHumidIn,
                        "isWarning": warning}
             write_to_json(Recheck, './last_temp.json')
             show = str(acmTempIn) + ' ' + str(acmTempOut) + ' ' + str(
-                acmHumidIn) + ' ' + warning + SALT_DOLLAR_SIGN + str(ROW_3)
+                acmHumidIn) + ' ' + warning + SALT_DOLLAR_SIGN + str(ROW_3) + END_CMD
             cmd_lcd[UPDATE_VALUE] = show
             LOGGER.info('acmTempIndoor, acmTempOutdoor, acmHumidIndoor: %s', show)
     except Exception as ex:
@@ -270,24 +272,19 @@ def get_temp_tram():
 
 def get_user_tram():
     try:
-        json_file = open('./last_rfid_card_code.json', )
-        card_code = json.load(json_file)
         if KEY_RFID in client_attributes:
             rfid_card = client_attributes.get(KEY_RFID)
             staffCode = rfid_card
-            if card_code != rfid_card:
-                LOGGER.info('Ma nhan vien cu,moi: %s', card_code, rfid_card)
-                write_to_json(rfid_card, './last_rfid_card_code.json')
-                param = {'input': rfid_card}
-                response = requests.get(url=URL_NV, params=param)
-                if response.status_code == 200:
-                    LOGGER.info('Send log request to Smartsite successful!')
-                    staff = json.loads(response.content)['result']
-                    if staff is not None:
-                        staffCode = json.loads(response.content)['result']['maNhanVien']
-                show = str(staffCode) + SALT_DOLLAR_SIGN + str(ROW_4)
-                cmd_lcd[UPDATE_VALUE] = show
-                LOGGER.info('Ma nhan vien: %s', show)
+            param = {'input': rfid_card}
+            response = requests.get(url=URL_NV, params=param)
+            if response.status_code == 200:
+                LOGGER.info('Send log request to Smartsite successful!')
+                staff = json.loads(response.content)['result']
+                if staff is not None:
+                    staffCode = json.loads(response.content)['result']['maNhanVien']
+            show = str(staffCode) + SALT_DOLLAR_SIGN + str(ROW_4) + END_CMD
+            cmd_lcd[UPDATE_VALUE] = show
+            LOGGER.info('Ma nhan vien: %s', show)
     except Exception as ex:
         LOGGER.error('Error at get_user_tram function with message: %s', ex.message)
 
@@ -301,7 +298,7 @@ def get_datetime_now():
             write_to_json(timeNew, './last_time.json')
             now = datetime.now()
             dt_string = now.strftime("%d/%m/%Y %H:%M")
-            show = str(dt_string) + SALT_DOLLAR_SIGN + str(ROW_2)
+            show = str(dt_string) + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD
             cmd_lcd[UPDATE_VALUE] = show
             LOGGER.info('DateTime now: %s', show)
     except Exception as ex:
@@ -310,7 +307,7 @@ def get_datetime_now():
 
 def get_title_main():
     try:
-        show = 'MAKE IN MOBIFONE' + SALT_DOLLAR_SIGN + str(ROW_1)
+        show = 'MAKE IN MOBIFONE' + SALT_DOLLAR_SIGN + str(ROW_1) + END_CMD
         cmd_lcd[UPDATE_VALUE] = show
         LOGGER.info('Title: %s', show)
     except Exception as ex:
@@ -330,9 +327,11 @@ def write_to_json(body, fileUrl):
 def get_screen_main():
     try:
         get_title_main()
-        get_user_tram()
-        get_temp_tram()
-        get_datetime_now()
+        while True:
+            get_user_tram()
+            get_temp_tram()
+            get_datetime_now()
+            time.sleep(3)
     except Exception as ex:
         LOGGER.error('Error at get_screen_main function with message: %s', ex.message)
 
@@ -345,6 +344,7 @@ def init_show_alarm():
         while True:
             if telemetries:
                 check_alarm(telemetries)
+            time.sleep(3)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
@@ -359,17 +359,15 @@ def check_alarm(tel_lcd):
         LOGGER.info('Check list: %s', tel_lcd)
         if tel_lcd:
             if tel_lcd.get('mccFireState') == 1:
-                create_for_each('Canh bao CHAY!', dt_string)
+                create_for_each('CB Chay!', dt_string)
             elif tel_lcd.get('mccSmokeState') == 1:
-                create_for_each('Canh bao Khoi!', dt_string)
+                create_for_each('CB Khoi!', dt_string)
             elif tel_lcd.get('acmTempIndoor') > max_tem:
-                create_for_each('Canh bao Nhiet!', dt_string)
+                create_for_each('CB Nhiet!', dt_string)
             elif tel_lcd.get('mccFloodState') == 1:
-                create_for_each('Canh bao Ngap!', dt_string)
+                create_for_each('CB Ngap!', dt_string)
             elif tel_lcd.get('mccDoorState') == 1:
-                create_for_each('Canh bao Cua!', dt_string)
-            elif telemetries.get('mccMoveState') == 1:
-                create_for_each('CB Chuyen Dong!', dt_string)
+                create_for_each('CB Cua!', dt_string)
             else:
                 create_for_each('An Toan!', '')
 
@@ -390,4 +388,3 @@ def create_for_each(string1, string2):
 
 def create_cmd_multi(string, row):
     return str(string) + SALT_DOLLAR_SIGN + str(row) + END_CMD
-
