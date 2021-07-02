@@ -25,7 +25,4 @@ def print_lcd(string, row):
 
 
 def clear_display():
-    print_lcd(' ', ROW_1)
-    print_lcd(' ', ROW_2)
-    print_lcd(' ', ROW_3)
-    print_lcd(' ', ROW_4)
+    cmd_lcd[CLEAR] = ''
