@@ -343,8 +343,10 @@ class Button():
 
     def check_button(self, bt_info):
         try:
-            key_code = int(bt_info[1], 16) << 8 | int(bt_info[0], 16)
-            key_event = int(bt_info[2], 16)
+            # key_code = int(bt_info[1], 16) << 8 | int(bt_info[0], 16)
+            # key_event = int(bt_info[2], 16)
+            key_code = bytes_to_int(bt_info[0:2], byteorder=BYTE_ORDER)
+            key_event = bytes_to_int(bt_info[2])
 
             if key_code in LIST_KEYCODE:
                 index_key = LIST_KEYCODE.index(key_code)
