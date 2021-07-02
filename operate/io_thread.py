@@ -2,6 +2,7 @@ import serial
 
 import control
 from config import *
+from config.common_lcd_services import *
 from config.common import UPDATE_VALUE
 from control.utils import split_row_by_salt
 from devices import ats, crmu, clock, acm, mcc
@@ -10,6 +11,8 @@ from utility import *
 
 
 def call():
+    button = Button()
+
     ser = serial.Serial(port=IO_PORT, baudrate=BAUDRATE)
     data_ack = b'\xa0\x02\x11\x00'
     control_ack = b'\xa0\x01\x21'
@@ -207,6 +210,16 @@ def call():
         except Exception as ex:
             LOGGER.error('Error send led command to STM32 with message: %s', ex.message)
 
+        # read button status
+        try:
+            # if button_status[0] == 0:
+            #     lcd_services['key_code'] = KEYCODE_13
+            #     lcd_services['key_event'] = EVENT_UP
+            button_status[0] = button.check_button(lcd_services)
+            LOGGER.info('Send button value: %d', button_status[0])
+        except Exception as ex:
+            LOGGER.error('Error send led command to STM32 with message: %s', ex.message)
+
 
 def _read_data(byte_stream):
     LOGGER.info('Receive data message')
@@ -297,3 +310,29 @@ class _OpData:
     IO_STATUS_CRMU = b'\x16'
     IO_STATUS_RPC = b'\x21'
     IO_STATUS_LCD = b'\x32'
+
+class Button():
+    def __init__(self):
+        self.button = 0
+
+    def check_button(self, dct_lcd_service):
+        try:
+            LOGGER.info('Enter check_button function')
+            key_code = dct_lcd_service['key_code']
+            key_event = dct_lcd_service['key_event']
+
+            for i in range(len(LIST_KEYCODE)):
+                if key_code == LIST_KEYCODE[i]:
+                    index_key = i
+                    break
+
+            if key_event == EVENT_UP:
+                event = EVENT_UP_BT
+            elif key_event == EVENT_HOLD:
+                event = EVENT_HOLD_BT
+            self.button = event * index_key
+            LOGGER.info('Exit check_button function')
+
+            return str(self.button)
+        except Exception as ex:
+            LOGGER.info('Fail to connect to server with message: %s', ex.message)

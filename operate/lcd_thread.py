@@ -31,17 +31,14 @@ BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 def call():
     try:
         period = 3
-        # button = menu.Button()
-        # display = menu.Display()
-        # bt = '0'
-        # display.clear_display()
-        # lcd_services['key_code'] = KEYCODE_12
-        # lcd_services['key_event'] = EVENT_UP
+        lcd = menu.Display()
+
+        lcd.clear_display()
         while True:
-            init_show_alarm()
-            # display.menu(bt)
-            # bt = button.check_button(lcd_services)
-            # display.clear_display()
+            # init_show_alarm()
+            lcd.menu(button_status[0])
+            # lcd.clear_display()
+
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
