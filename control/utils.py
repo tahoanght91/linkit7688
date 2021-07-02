@@ -262,14 +262,14 @@ def compose_command_lcd(key_lcd, content):
                 result = struct.pack(FORMAT_LCD + prefix, 0xA0, length, op_code_lcd, key_lcd, row, *arr_char)
                 return result
             elif key_lcd == CLEAR:
-                # length = 2
-                # result = struct.pack('BBBB', 0xA0, length, op_code_lcd, key_lcd)
-                str_empty = ''.join([char * 16 for char in CHAR_SPACE])
-                arr_char = [char for char in str_empty]
-                prefix = ''.join([char * len(arr_char) for char in CHAR_S])
-                length = len(arr_char) + 3
-                row = int(str_split[1])
-                result = struct.pack(FORMAT_LCD + prefix, 0xA0, length, op_code_lcd, key_lcd, row, *arr_char)
+                length = 2
+                result = struct.pack('BBBB', 0xA0, length, op_code_lcd, key_lcd)
+                # str_empty = ''.join([char * 16 for char in CHAR_SPACE])
+                # arr_char = [char for char in str_empty]
+                # prefix = ''.join([char * len(arr_char) for char in CHAR_S])
+                # length = len(arr_char) + 3
+                # row = int(str_split[1])
+                # result = struct.pack(FORMAT_LCD + prefix, 0xA0, length, op_code_lcd, key_lcd, row, *arr_char)
                 return result
         else:
             str_empty = ''.join([char * 16 for char in CHAR_SPACE])
