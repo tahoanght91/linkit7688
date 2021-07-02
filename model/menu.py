@@ -1,8 +1,11 @@
 from config import *
 from config.common import UPDATE_VALUE, END_CMD, CLEAR
 from config.common_lcd_services import *
+from services.lcd.alarm_lcd_services import alarm_lcd_service
 from services.lcd.main_screen_lcd_services import main_screen
 from services.lcd.rfid_screen_lcd_sevices import rfid_screen
+
+BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 
 
 def add_cmd_lcd(dict_cmd):
@@ -60,11 +63,15 @@ class Display:
             # USER CODE BEGIN
             self.clear_display()
             # self.print_lcd('2. Warning display', ROW_1)
+            warning_service = alarm_lcd_service()
+            cmd_lcd[UPDATE_VALUE] = warning_service.create_cmd_multi(BAN_TIN_CANH_BAO, ROW_1)
             while True:
                 if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_12_EVENT_UP]):
                     LOGGER.info('Send button value : %s', str(button_status[0]))
                     self.menu(button_status[0])
                 LOGGER.info('List telemitries: %s', telemetries)
+                if telemetries:
+                    warning_service.check_alarm(telemetries)
             # USER CODE END
         except Exception as ex:
             LOGGER.error('Error at call function in menu.python with message: %s', ex.message)
