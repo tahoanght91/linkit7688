@@ -10,6 +10,8 @@ from operate.lcd_thread import extract_lcd_service
 from utility import *
 
 
+bt_info = []
+
 def call():
     button = Button()
 
@@ -35,8 +37,9 @@ def call():
 
         # read button status
         try:
-            button_status[0] = button.check_button(lcd_services)
-            LOGGER.info('Send button value: %s', LOG_BUTTON[str(button_status[0])])
+            if len(bt_info) == 3:
+                button_status[0] = button.check_button(bt_info)
+                LOGGER.info('Send button value: %s', LOG_BUTTON[str(button_status[0])])
         except Exception as ex:
             LOGGER.error('Error send led command to STM32 with message: %s', ex.message)
 
@@ -219,6 +222,8 @@ def call():
 
 
 def _read_data(byte_stream):
+    global bt_info
+
     LOGGER.info('Receive data message')
     byte_stream_decode = ':'.join(x.encode('hex') for x in byte_stream)
     LOGGER.info('Byte_stream after decode: %s', byte_stream_decode)
@@ -271,6 +276,7 @@ def _read_data(byte_stream):
         LOGGER.info('LCD message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
                     len(data), _OpData.LCD_SIZE)
         if _check_data(frame_length, data, _OpData.LCD_SIZE):
+            bt_info = data
             extract_lcd_service(data)
             return True
     return False
@@ -328,11 +334,11 @@ class Button():
     def __init__(self):
         self.button = 0
 
-    def check_button(self, dct_lcd_service):
+    def check_button(self, bt_info):
         try:
             LOGGER.info('Enter check_button function')
-            key_code = dct_lcd_service['key_code']
-            key_event = dct_lcd_service['key_event']
+            key_code = bt_info[0:1]
+            key_event = bt_info[2]
 
             for i in range(len(LIST_KEYCODE)):
                 if key_code == LIST_KEYCODE[i]:
