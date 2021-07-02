@@ -19,7 +19,11 @@ class Display:
         self.last_menu = '0'
 
     def clear_display(self):
-        cmd_lcd[CLEAR] = ''
+        # cmd_lcd[CLEAR] = ''
+        self.print_lcd(' ', ROW_1)
+        self.print_lcd(' ', ROW_2)
+        self.print_lcd(' ', ROW_3)
+        self.print_lcd(' ', ROW_4)
 
     def print_lcd(self, string, row):
         try:
