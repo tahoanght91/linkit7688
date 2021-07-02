@@ -353,7 +353,7 @@ def get_info_rfid():
     try:
         json_file = open('./last_rfid_card_code.json', )
         rfid_info = json.load(json_file)
-        status = 'Ket noi' if telemetries.get('mccRfidConnectState') == 0 else 'Mat ket noi'
+        status = 'Ket noi' if client_attributes.get('mccRfidConnectState') > 0 else 'Mat ket noi'
         show = status + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD + rfid_info['Time'] + SALT_DOLLAR_SIGN + str(ROW_3) + END_CMD + rfid_info[
             'StaffCode'] + SALT_DOLLAR_SIGN + str(ROW_4) + END_CMD
         cmd_lcd[UPDATE_VALUE] = show
