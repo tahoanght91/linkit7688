@@ -12,7 +12,9 @@ from utility import *
 
 bt_info = []
 
+
 def call():
+    global bt_info
     button = Button()
 
     ser = serial.Serial(port=IO_PORT, baudrate=BAUDRATE)
@@ -341,8 +343,7 @@ class Button():
 
     def check_button(self, bt_info):
         try:
-            LOGGER.info('Enter check_button function')
-            key_code = bt_info[0:1]
+            key_code = bt_info[1] << 8 | bt_info[0]
             key_event = bt_info[2]
 
             for i in range(len(LIST_KEYCODE)):
