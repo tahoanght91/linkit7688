@@ -35,11 +35,11 @@ def call():
         lcd = menu.Display()
         lcd.clear_display()
         # get_screen_main()
-        init_show_alarm()
-        # while True:
-            # lcd.menu(button_status[0])
-            # lcd.clear_display()
-            # time.sleep(period)
+        # init_show_alarm()
+        while True:
+            lcd.menu(button_status[0])
+            lcd.clear_display()
+            time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
