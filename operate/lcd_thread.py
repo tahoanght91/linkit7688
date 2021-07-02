@@ -388,3 +388,30 @@ def create_for_each(string1, string2):
 
 def create_cmd_multi(string, row):
     return str(string) + SALT_DOLLAR_SIGN + str(row) + END_CMD
+
+# TRUONG
+def security_sensor_screen():
+    try:
+        cmd_lcd[UPDATE_VALUE] = create_cmd_multi("CAM BIEN AN NINH", ROW_1)
+        while True:
+            if telemetries:
+                if telemetries.get("mccSmokeState") == 1:
+                    cmd_lcd[UPDATE_VALUE] = str("Khoi: 1") + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD
+                if telemetries.get("mccFireState") == 1:
+                    cmd_lcd[UPDATE_VALUE] = str("Chay: 1") + SALT_DOLLAR_SIGN + str(ROW_3) + END_CMD
+                if telemetries.get("mccFloodState") == 1:
+                    cmd_lcd[UPDATE_VALUE] = str("Ngap: 1") + SALT_DOLLAR_SIGN + str(ROW_4) + END_CMD
+
+                # MAN HINH HAI
+                if telemetries.get("mccFloodState") == 1:
+                    cmd_lcd[UPDATE_VALUE] = str("Ngap: 1") + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD
+                if telemetries.get("mccDoorButton") == 1:
+                    cmd_lcd[UPDATE_VALUE] = str("Cua: 1") + SALT_DOLLAR_SIGN + str(ROW_3) + END_CMD
+                if telemetries.get("mccMoveState") == 1:
+                    cmd_lcd[UPDATE_VALUE] = str("Chuyen dong: 1") + SALT_DOLLAR_SIGN + str(ROW_4) + END_CMD
+            else:
+                LOGGER.error("operate > icd_thread > security_sensor_screen: Can't get telemetries ")
+            time.sleep(3)
+
+    except Exception as ex:
+        LOGGER.error('operate > icd_thread > security_sensor_screen: %s', ex.message)
