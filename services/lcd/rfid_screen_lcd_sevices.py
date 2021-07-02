@@ -11,8 +11,8 @@ class rfid_screen:
     def get_title_rfid(self):
         try:
             show = 'THONG TIN RFID' + SALT_DOLLAR_SIGN + str(ROW_1) + END_CMD
-            cmd_lcd[UPDATE_VALUE] = show
-            LOGGER.info('Title: %s', show)
+            cmd_lcd[UPDATE_VALUE] = str(show)
+            LOGGER.info('Title: %s', str(show))
         except Exception as ex:
             LOGGER.error('Error at get_title_rfid function with message: %s', ex.message)
 
@@ -24,8 +24,8 @@ class rfid_screen:
             status = 'Ket noi' if client_attributes.get('mccRfidConnectState') > 0 else 'Mat ket noi'
             show = status + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD + rfid_info['Time'] + SALT_DOLLAR_SIGN + str(ROW_3) + END_CMD + rfid_info[
                 'StaffCode'] + SALT_DOLLAR_SIGN + str(ROW_4) + END_CMD
-            cmd_lcd[UPDATE_VALUE] = show
-            LOGGER.info('Title: %s', show)
+            cmd_lcd[UPDATE_VALUE] = str(show)
+            LOGGER.info('Title: %s', str(show))
         except Exception as ex:
             LOGGER.error('Error at get_info_rfid function with message: %s', ex.message)
 
