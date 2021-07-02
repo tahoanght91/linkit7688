@@ -1,8 +1,13 @@
+import time
+
 from config import *
 from config.common import UPDATE_VALUE, END_CMD, CLEAR
 from config.common_lcd_services import *
-from operate.lcd_thread import get_screen_main, get_title_main, get_user_tram, get_temp_tram, get_datetime_now, \
-    create_cmd_multi, BAN_TIN_CANH_BAO, check_alarm
+from services.lcd.alarm_lcd_services import alarm_lcd_service
+from services.lcd.main_screen_lcd_services import main_screen
+from services.lcd.rfid_screen_lcd_sevices import rfid_screen
+
+BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 
 
 def add_cmd_lcd(dict_cmd):
@@ -41,13 +46,15 @@ class Display:
             # USER CODE BEGIN
             self.clear_display()
             # self.print_lcd('1.Main display', ROW_3)
-            get_title_main()
+            mainScreen = main_screen()
+            mainScreen.get_title_main()
             while True:
                 if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_11_EVENT_UP]):
                     self.menu(button_status[0])
-                get_user_tram()
-                get_temp_tram()
-                get_datetime_now()
+                mainScreen.get_user_tram()
+                mainScreen.get_temp_tram()
+                mainScreen.get_datetime_now()
+                time.sleep(3)
                 # lcd_services['key_code'] = KEYCODE_13
                 # lcd_services['key_event'] = EVENT_UP
             # USER CODE END
@@ -59,14 +66,15 @@ class Display:
             # USER CODE BEGIN
             self.clear_display()
             # self.print_lcd('2. Warning display', ROW_1)
-            cmd_lcd[UPDATE_VALUE] = create_cmd_multi(BAN_TIN_CANH_BAO, ROW_1)
+            warning_service = alarm_lcd_service()
+            cmd_lcd[UPDATE_VALUE] = warning_service.create_cmd_multi(BAN_TIN_CANH_BAO, ROW_1)
             while True:
                 if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_12_EVENT_UP]):
                     LOGGER.info('Send button value : %s', str(button_status[0]))
                     self.menu(button_status[0])
                 LOGGER.info('List telemitries: %s', telemetries)
                 if telemetries:
-                    check_alarm(telemetries)
+                    warning_service.check_alarm(telemetries)
             # USER CODE END
         except Exception as ex:
             LOGGER.error('Error at call function in menu.python with message: %s', ex.message)
@@ -106,12 +114,15 @@ class Display:
     def rfid_display(self):
         # USER CODE BEGIN
         self.clear_display()
-        self.print_lcd('7. RFID display', ROW_1)
+        # self.print_lcd('7. RFID display', ROW_1)
+        rfidScreen = rfid_screen()
+        rfidScreen.get_title_rfid()
         while True:
             if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_15_EVENT_UP]):
                 LOGGER.info('Send button value : %s', str(button_status[0]))
                 self.menu(button_status[0])
-
+            rfidScreen.get_info_rfid()
+            time.sleep(3)
         # USER CODE END
 
     def menu(self, number_menu):
