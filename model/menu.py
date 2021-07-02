@@ -1,3 +1,5 @@
+import time
+
 from config import *
 from config.common import UPDATE_VALUE, END_CMD, CLEAR
 from config.common_lcd_services import *
@@ -52,6 +54,7 @@ class Display:
                 mainScreen.get_user_tram()
                 mainScreen.get_temp_tram()
                 mainScreen.get_datetime_now()
+                time.sleep(3)
                 # lcd_services['key_code'] = KEYCODE_13
                 # lcd_services['key_event'] = EVENT_UP
             # USER CODE END
@@ -119,6 +122,7 @@ class Display:
                 LOGGER.info('Send button value : %s', str(button_status[0]))
                 self.menu(button_status[0])
             rfidScreen.get_info_rfid()
+            time.sleep(3)
         # USER CODE END
 
     def menu(self, number_menu):

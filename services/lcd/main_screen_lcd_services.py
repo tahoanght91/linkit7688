@@ -8,6 +8,16 @@ from operate.rfid_thread import KEY_RFID
 URL_NV = 'http://123.30.214.139:8517/api/services/app/DMNhanVienRaVaoTram/GetNhanVienRaVaoTram'
 
 
+def write_to_json(body, fileUrl):
+    try:
+        json_last_trace = json.dumps(body)
+        with io.open(fileUrl, 'wb') as last_trace_file:
+            last_trace_file.write(json_last_trace)
+        LOGGER.info('Command information just send: %s', body)
+    except Exception as ex:
+        LOGGER.error('Error at write_to_json function with message: %s', ex.message)
+
+
 # HungLQ
 class main_screen:
     def __init__(self):
@@ -33,7 +43,7 @@ class main_screen:
                     acmTempIn is not None and acmTempOut is not None and acmHumidIn is not None):
                 Recheck = {"acmTempIndoor": acmTempIn, "acmTempOutdoor": acmTempOut, "acmHumidIndoor": acmHumidIn,
                            "isWarning": warning}
-                self.write_to_json(Recheck, './last_temp.json')
+                write_to_json(Recheck, './last_temp.json')
                 show = str(acmTempIn) + ' ' + str(acmTempOut) + ' ' + str(
                     acmHumidIn) + ' ' + warning + SALT_DOLLAR_SIGN + str(ROW_3) + END_CMD
                 cmd_lcd[UPDATE_VALUE] = show
@@ -58,7 +68,7 @@ class main_screen:
                 cmd_lcd[UPDATE_VALUE] = show
                 dt_string = datetime.now().strftime("%d/%m/%Y %H:%M")
                 rfid_info = {"Time": dt_string, "StaffCode": staffCode}
-                self.write_to_json(rfid_info, './last_rfid_card_code.json')
+                write_to_json(rfid_info, './last_rfid_card_code.json')
                 LOGGER.info('Ma nhan vien: %s', show)
         except Exception as ex:
             LOGGER.error('Error at get_user_tram function with message: %s', ex.message)
@@ -70,7 +80,7 @@ class main_screen:
             timeOld = json.load(json_file)
             timeNew = datetime.now().strftime("%M")
             if timeNew != timeOld:
-                self.write_to_json(timeNew, './last_time.json')
+                write_to_json(timeNew, './last_time.json')
                 now = datetime.now()
                 dt_string = now.strftime("%d/%m/%Y %H:%M")
                 show = str(dt_string) + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD
@@ -89,14 +99,7 @@ class main_screen:
             LOGGER.error('Error at set_title_main function with message: %s', ex.message)
 
 
-    def write_to_json(body, fileUrl):
-        try:
-            json_last_trace = json.dumps(body)
-            with io.open(fileUrl, 'wb') as last_trace_file:
-                last_trace_file.write(json_last_trace)
-            LOGGER.info('Command information just send: %s', body)
-        except Exception as ex:
-            LOGGER.error('Error at write_to_json function with message: %s', ex.message)
+
 
 
 # def get_screen_main():
