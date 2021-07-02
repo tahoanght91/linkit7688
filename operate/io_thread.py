@@ -35,9 +35,6 @@ def call():
 
         # read button status
         try:
-            # if button_status[0] == 0:
-            #     lcd_services['key_code'] = KEYCODE_13
-            #     lcd_services['key_event'] = EVENT_UP
             button_status[0] = button.check_button(lcd_services)
             LOGGER.info('Send button value: %s', LOG_BUTTON[str(button_status[0])])
         except Exception as ex:
