@@ -1,3 +1,4 @@
+from os import altsep
 import time
 
 import requests
@@ -260,7 +261,7 @@ def get_temp_tram():
             check = any(elem != 0 for elem in new_list_telemetries.values())
             warning = '!!!' if check else ''
             LOGGER.info('Warning: %s', warning)
-        if (acmTempInOld != acmTempIn and acmTempIn != None) or (acmTempOutOld != acmTempOut and acmTempOut != None) or (acmHumidInOld != acmHumidIn and acmHumidIn != None) or warningOld != warning:
+        if (acmTempInOld != acmTempIn or acmTempOutOld != acmTempOut or acmHumidInOld != acmHumidIn or warningOld != warning) and (acmTempIn is not None and acmTempOut is not None and acmHumidIn is not None):
             Recheck = {"acmTempIndoor": acmTempIn, "acmTempOutdoor": acmTempOut, "acmHumidIndoor": acmHumidIn,
                        "isWarning": warning}
             write_to_json(Recheck, './last_temp.json')
