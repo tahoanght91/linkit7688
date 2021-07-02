@@ -10,6 +10,7 @@ from config.common_lcd_services import *
 from devices.utils import read_lcd_services
 from model.alarm_lcd import Alarm_lcd
 from model.lcd import Lcd
+from operate.led_thread import get_sate_led_alarm
 from operate.rfid_thread import KEY_RFID
 from utility import bytes_to_int
 from model import menu
@@ -38,7 +39,7 @@ def call():
             # init_show_alarm()
             lcd.menu(button_status[0])
             # lcd.clear_display()
-
+            get_screen_main()
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
@@ -253,17 +254,17 @@ def get_temp_tram():
         acmTempIn = telemetries.get('acmTempIndoor')
         acmTempOut = telemetries.get('acmTempOutdoor')
         acmHumidIn = telemetries.get('acmHumidIndoor')
-        new_list_telemetries = dict(filter(lambda elem: elem[0].lower().find('state') != -1, telemetries.items()))
-        if len(new_list_telemetries) > 0:
-            check = any(elem != 0 for elem in new_list_telemetries.values())
-            warning = '!!!' if check else ''
-            LOGGER.info('Warning: %s', warning)
-        if (acmTempInOld != acmTempIn or acmTempOutOld != acmTempOut or acmHumidInOld != acmHumidIn or warningOld != warning) and (acmTempIn is not None and acmTempOut is not None and acmHumidIn is not None):
+        check = get_sate_led_alarm(telemetries)
+        warning = '!!!' if check == 0 else ''
+        LOGGER.info('Warning: %s', warning)
+        if (
+                acmTempInOld != acmTempIn or acmTempOutOld != acmTempOut or acmHumidInOld != acmHumidIn or warningOld != warning) and (
+                acmTempIn is not None and acmTempOut is not None and acmHumidIn is not None):
             Recheck = {"acmTempIndoor": acmTempIn, "acmTempOutdoor": acmTempOut, "acmHumidIndoor": acmHumidIn,
                        "isWarning": warning}
             write_to_json(Recheck, './last_temp.json')
             show = str(acmTempIn) + ' ' + str(acmTempOut) + ' ' + str(
-                acmHumidIn) + ' ' + warning + SALT_DOLLAR_SIGN + str(ROW_3)
+                acmHumidIn) + ' ' + warning + SALT_DOLLAR_SIGN + str(ROW_3) + END_CMD
             cmd_lcd[UPDATE_VALUE] = show
             LOGGER.info('acmTempIndoor, acmTempOutdoor, acmHumidIndoor: %s', show)
     except Exception as ex:
@@ -272,24 +273,19 @@ def get_temp_tram():
 
 def get_user_tram():
     try:
-        json_file = open('./last_rfid_card_code.json', )
-        card_code = json.load(json_file)
         if KEY_RFID in client_attributes:
             rfid_card = client_attributes.get(KEY_RFID)
             staffCode = rfid_card
-            if card_code != rfid_card:
-                LOGGER.info('Ma nhan vien cu,moi: %s', card_code, rfid_card)
-                write_to_json(rfid_card, './last_rfid_card_code.json')
-                param = {'input': rfid_card}
-                response = requests.get(url=URL_NV, params=param)
-                if response.status_code == 200:
-                    LOGGER.info('Send log request to Smartsite successful!')
-                    staff = json.loads(response.content)['result']
-                    if staff is not None:
-                        staffCode = json.loads(response.content)['result']['maNhanVien']
-                show = str(staffCode) + SALT_DOLLAR_SIGN + str(ROW_4)
-                cmd_lcd[UPDATE_VALUE] = show
-                LOGGER.info('Ma nhan vien: %s', show)
+            param = {'input': rfid_card}
+            response = requests.get(url=URL_NV, params=param)
+            if response.status_code == 200:
+                LOGGER.info('Send log request to Smartsite successful!')
+                staff = json.loads(response.content)['result']
+                if staff is not None:
+                    staffCode = json.loads(response.content)['result']['maNhanVien']
+            show = str(staffCode) + SALT_DOLLAR_SIGN + str(ROW_4) + END_CMD
+            cmd_lcd[UPDATE_VALUE] = show
+            LOGGER.info('Ma nhan vien: %s', show)
     except Exception as ex:
         LOGGER.error('Error at get_user_tram function with message: %s', ex.message)
 
@@ -303,7 +299,7 @@ def get_datetime_now():
             write_to_json(timeNew, './last_time.json')
             now = datetime.now()
             dt_string = now.strftime("%d/%m/%Y %H:%M")
-            show = str(dt_string) + SALT_DOLLAR_SIGN + str(ROW_2)
+            show = str(dt_string) + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD
             cmd_lcd[UPDATE_VALUE] = show
             LOGGER.info('DateTime now: %s', show)
     except Exception as ex:
@@ -312,7 +308,7 @@ def get_datetime_now():
 
 def get_title_main():
     try:
-        show = 'MAKE IN MOBIFONE' + SALT_DOLLAR_SIGN + str(ROW_1)
+        show = 'MAKE IN MOBIFONE' + SALT_DOLLAR_SIGN + str(ROW_1) + END_CMD
         cmd_lcd[UPDATE_VALUE] = show
         LOGGER.info('Title: %s', show)
     except Exception as ex:
@@ -392,4 +388,3 @@ def create_for_each(string1, string2):
 
 def create_cmd_multi(string, row):
     return str(string) + SALT_DOLLAR_SIGN + str(row) + END_CMD
-
