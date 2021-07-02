@@ -114,6 +114,10 @@ class Display:
                     mode_setting += 1
                 elif button_status == BUTTON_34_EVENT_UP:
                     mode_setting -= 1
+                elif button_status == BUTTON_23_EVENT_UP:
+                    mode_setting = 0
+                elif button_status == BUTTON_25_EVENT_UP:
+                    mode_setting = 3
                 if mode > 5:
                     mode = 0
                 elif mode < 0:
