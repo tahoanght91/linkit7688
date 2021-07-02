@@ -1,6 +1,8 @@
 from config import *
 from config.common import UPDATE_VALUE, END_CMD, CLEAR
 from config.common_lcd_services import *
+from operate.lcd_thread import get_screen_main, get_title_main, get_user_tram, get_temp_tram, get_datetime_now, \
+    create_cmd_multi, BAN_TIN_CANH_BAO, check_alarm
 
 
 def add_cmd_lcd(dict_cmd):
@@ -35,31 +37,46 @@ class Display:
             LOGGER.info('Fail to connect to server with message: %s', ex.message)
 
     def main_display(self):
-        # USER CODE BEGIN
-        self.print_lcd('1.Main display', ROW_3)
-        while True:
-            if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_11_EVENT_UP]):
-                self.menu(button_status[0])
-            # lcd_services['key_code'] = KEYCODE_13
-            # lcd_services['key_event'] = EVENT_UP
-        # USER CODE END
+        try:
+            # USER CODE BEGIN
+            self.clear_display()
+            # self.print_lcd('1.Main display', ROW_3)
+            get_title_main()
+            while True:
+                if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_11_EVENT_UP]):
+                    self.menu(button_status[0])
+                get_user_tram()
+                get_temp_tram()
+                get_datetime_now()
+                # lcd_services['key_code'] = KEYCODE_13
+                # lcd_services['key_event'] = EVENT_UP
+            # USER CODE END
+        except Exception as ex:
+            LOGGER.error('Error at call function in menu.python with message: %s', ex.message)
 
     def warning_display(self):
-        # USER CODE BEGIN
-        self.clear_display()
-        self.print_lcd('2. Warning display', ROW_1)
-        while True:
-            if button_status[0] == str(MENU[BUTTON_11_EVENT_UP]):
-                LOGGER.info('Send button value : %s', str(button_status[0]))
-                self.menu(button_status[0])
-        # USER CODE END
+        try:
+            # USER CODE BEGIN
+            self.clear_display()
+            # self.print_lcd('2. Warning display', ROW_1)
+            cmd_lcd[UPDATE_VALUE] = create_cmd_multi(BAN_TIN_CANH_BAO, ROW_1)
+            while True:
+                if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_12_EVENT_UP]):
+                    LOGGER.info('Send button value : %s', str(button_status[0]))
+                    self.menu(button_status[0])
+                LOGGER.info('List telemitries: %s', telemetries)
+                if telemetries:
+                    check_alarm(telemetries)
+            # USER CODE END
+        except Exception as ex:
+            LOGGER.error('Error at call function in menu.python with message: %s', ex.message)
 
     def security_sensor_info_display(self):
         # USER CODE BEGIN
         self.clear_display()
         self.print_lcd('3. Secure sensor', ROW_1)
         while True:
-            if button_status[0] == str(MENU[BUTTON_11_EVENT_UP]):
+            if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_31_EVENT_UP]):
                 LOGGER.info('Send button value : %s', str(button_status[0]))
                 self.menu(button_status[0])
         # USER CODE END
@@ -69,7 +86,7 @@ class Display:
         self.clear_display()
         self.print_lcd('4. Air condition', ROW_1)
         while True:
-            if button_status[0] == str(MENU[BUTTON_11_EVENT_UP]):
+            if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_13_EVENT_UP]):
                 LOGGER.info('Send button value : %s', str(button_status[0]))
                 self.menu(button_status[0])
             # lcd_services['key_code'] = KEYCODE_11
@@ -81,7 +98,7 @@ class Display:
         self.clear_display()
         self.print_lcd('5. ATS display', ROW_1)
         while True:
-            if button_status[0] == str(MENU[BUTTON_11_EVENT_UP]):
+            if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_35_EVENT_UP]):
                 LOGGER.info('Send button value : %s', str(button_status[0]))
                 self.menu(button_status[0])
         # USER CODE END
@@ -91,7 +108,7 @@ class Display:
         self.clear_display()
         self.print_lcd('7. RFID display', ROW_1)
         while True:
-            if button_status[0] == str(MENU[BUTTON_11_EVENT_UP]):
+            if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_15_EVENT_UP]):
                 LOGGER.info('Send button value : %s', str(button_status[0]))
                 self.menu(button_status[0])
 
@@ -140,7 +157,7 @@ class Display:
             self.print_lcd('   Thong so mang', ROW_4)
             while True:
                 last_mode = mode_setting
-                if button_status[0] == str(MENU[BUTTON_11_EVENT_UP]):
+                if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_33_EVENT_UP]):
                     LOGGER.info('Send button value : %s', str(button_status[0]))
                     self.menu(button_status[0])
                 if button_status[0] == BUTTON_14_EVENT_UP:
