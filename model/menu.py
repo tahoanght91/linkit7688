@@ -75,6 +75,7 @@ class Display:
                 LOGGER.info('List telemitries: %s', telemetries)
                 if telemetries:
                     warning_service.check_alarm(telemetries)
+                time.sleep(3)
             # USER CODE END
         except Exception as ex:
             LOGGER.error('Error at call function in menu.python with message: %s', ex.message)
