@@ -317,7 +317,7 @@ class Button():
 
     def check_button(self, dct_lcd_service):
         try:
-            LOGGER.info('Enter setting_display function')
+            LOGGER.info('Enter check_button function')
             key_code = dct_lcd_service['key_code']
             key_event = dct_lcd_service['key_event']
 
@@ -331,7 +331,7 @@ class Button():
             elif key_event == EVENT_HOLD:
                 event = EVENT_HOLD_BT
             self.button = event * index_key
-            LOGGER.info('Exit setting_menu function')
+            LOGGER.info('Exit check_button function')
 
             return str(self.button)
         except Exception as ex:
