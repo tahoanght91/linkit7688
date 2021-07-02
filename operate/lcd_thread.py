@@ -31,7 +31,6 @@ def call():
     try:
         period = 3
         lcd = menu.Display()
-
         lcd.clear_display()
         while True:
             # init_show_alarm()
