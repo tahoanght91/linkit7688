@@ -216,7 +216,7 @@ def call():
             #     lcd_services['key_code'] = KEYCODE_13
             #     lcd_services['key_event'] = EVENT_UP
             button_status[0] = button.check_button(lcd_services)
-            LOGGER.info('Send button value: %d', button_status[0])
+            LOGGER.info('Send button value: %s', str(button_status[0]))
         except Exception as ex:
             LOGGER.error('Error send led command to STM32 with message: %s', ex.message)
 
