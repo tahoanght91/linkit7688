@@ -34,9 +34,9 @@ def call():
         period = 3
         lcd = menu.Display()
         lcd.clear_display()
-        get_screen_main()
+        # get_screen_main()
+        init_show_alarm()
         # while True:
-            # init_show_alarm()
             # lcd.menu(button_status[0])
             # lcd.clear_display()
             # time.sleep(period)
@@ -344,6 +344,7 @@ def init_show_alarm():
         while True:
             if telemetries:
                 check_alarm(telemetries)
+            time.sleep(3)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
@@ -358,17 +359,15 @@ def check_alarm(tel_lcd):
         LOGGER.info('Check list: %s', tel_lcd)
         if tel_lcd:
             if tel_lcd.get('mccFireState') == 1:
-                create_for_each('Canh bao CHAY!', dt_string)
+                create_for_each('CB Chay!', dt_string)
             elif tel_lcd.get('mccSmokeState') == 1:
-                create_for_each('Canh bao Khoi!', dt_string)
+                create_for_each('CB Khoi!', dt_string)
             elif tel_lcd.get('acmTempIndoor') > max_tem:
-                create_for_each('Canh bao Nhiet!', dt_string)
+                create_for_each('CB Nhiet!', dt_string)
             elif tel_lcd.get('mccFloodState') == 1:
-                create_for_each('Canh bao Ngap!', dt_string)
+                create_for_each('CB Ngap!', dt_string)
             elif tel_lcd.get('mccDoorState') == 1:
-                create_for_each('Canh bao Cua!', dt_string)
-            elif telemetries.get('mccMoveState') == 1:
-                create_for_each('CB Chuyen Dong!', dt_string)
+                create_for_each('CB Cua!', dt_string)
             else:
                 create_for_each('An Toan!', '')
 
