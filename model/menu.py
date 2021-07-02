@@ -1,3 +1,4 @@
+import sys
 import time
 
 from config import *
@@ -84,18 +85,20 @@ class Display:
         # USER CODE END
 
     def rfid_display(self):
-        # USER CODE BEGIN
-        lcd_cmd.clear_display()
-        # self.print_lcd('7. RFID display', ROW_1)
-        rfidScreen = rfid_screen()
-        rfidScreen.get_title_rfid()
-        while True:
-            if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_15_EVENT_UP]):
-                LOGGER.info('Send button value : %s', str(button_status[0]))
-                self.menu(button_status[0])
-            rfidScreen.get_info_rfid()
-            time.sleep(3)
-        # USER CODE END
+        try:
+            lcd_cmd.clear_display()
+            # self.print_lcd('7. RFID display', ROW_1)
+            rfidScreen = rfid_screen()
+            rfidScreen.get_title_rfid()
+            while True:
+                if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_15_EVENT_UP]):
+                    LOGGER.info('Send button value : %s', str(button_status[0]))
+                    self.menu(button_status[0])
+                rfidScreen.get_info_rfid()
+                time.sleep(3)
+        except Exception as ex:
+            LOGGER.error('Error at rfid_display function with message: %s', ex.message)
+            sys.exit(1)
 
     def menu(self, number_menu):
         try:
