@@ -344,6 +344,7 @@ def init_show_alarm():
         while True:
             if telemetries:
                 check_alarm(telemetries)
+            time.sleep(1)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
