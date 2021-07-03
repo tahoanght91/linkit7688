@@ -38,12 +38,12 @@ def call():
             ser.write(with_check_sum(data_ack, BYTE_ORDER))
 
         # read button status
-        # try:
-        #     if len(bt_info) == 3:
-        #         button_status[0] = button.check_button(bt_info)
-        #         LOGGER.info('Send button value: %s', LOG_BUTTON[str(button_status[0])])
-        # except Exception as ex:
-        #     LOGGER.error('Error send led command to STM32 with message: %s', ex.message)
+        try:
+            if len(bt_info) == 3:
+                button_status[0] = button.check_button(bt_info)
+                LOGGER.info('Send button value: %s', LOG_BUTTON[str(button_status[0])])
+        except Exception as ex:
+            LOGGER.error('Error check button status: %s', ex.message)
 
         # Write command
         try:
@@ -339,6 +339,7 @@ class _OpData:
 class Button():
     def __init__(self):
         self.button = 0
+        self.button_pre = 0
 
     def check_button(self, bt_info):
         try:
@@ -353,8 +354,10 @@ class Button():
             elif key_event == EVENT_HOLD:
                 event = EVENT_HOLD_BT
             self.button = event * index_key
-            LOGGER.info('return button value: %s', LOG_BUTTON[str(self.button)])
+            if self.button_pre != self.button:
+                self.button_pre = self.button
+                LOGGER.info('return button value: %s', LOG_BUTTON[str(self.button)])
 
             return str(self.button)
         except Exception as ex:
-            LOGGER.info('Fail to connect to server with message: %s', ex.message)
+            LOGGER.info('check_button function error: %s', ex.message)
