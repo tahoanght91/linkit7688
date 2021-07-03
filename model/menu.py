@@ -21,9 +21,9 @@ class Display:
             # self.print_lcd('1.Main display', ROW_3)
             while True:
                 if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_11_EVENT_UP]):
-                    self.menu(button_status[0])
                     Recheck = {"title": '', "time": '61'}
                     write_to_json(Recheck, './main_screen.json')
+                    self.menu(button_status[0])
                 mainScreen = main_screen()
                 mainScreen.get_title_main()
                 mainScreen.get_datetime_now()
