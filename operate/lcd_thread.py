@@ -8,6 +8,7 @@ from config.common_lcd_services import *
 from devices.utils import read_lcd_services
 from model.alarm_lcd import Alarm_lcd
 from model.lcd import Lcd
+from services.lcd_cmd import clear_display
 from utility import bytes_to_int
 from model import menu
 
@@ -28,10 +29,10 @@ def call():
     try:
         period = 3
         lcd = menu.Display()
-        lcd.clear_display()
+        clear_display()
         while True:
             lcd.menu(button_status[0])
-            lcd.clear_display()
+            clear_display()
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
