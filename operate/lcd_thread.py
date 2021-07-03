@@ -41,14 +41,21 @@ def call():
         lcd = menu.Display()
         period = 3
         while True:
-            # get_datetime_now()
-            # get_title_main()
-            get_temp_tram()
-            # get_user_tram()
+            screen_main()
             # lcd.menu(button_status[0])
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
+
+
+def screen_main():
+    try:
+        get_datetime_now()
+        get_title_main()
+        get_temp_tram()
+        get_user_tram()
+    except Exception as ex:
+        LOGGER.error('Error at call function in screen_main with message: %s', ex.message)
 
 
 def read_to_json(fileUrl):
@@ -56,7 +63,7 @@ def read_to_json(fileUrl):
         json_file = open(fileUrl, )
         json_info = json.load(json_file)
     except Exception as ex:
-        LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
+        LOGGER.error('Error at call function in read_to_json with message: %s', ex.message)
     return json_info
 
 
@@ -79,7 +86,6 @@ def get_datetime_now():
 def get_title_main():
     global titleOld
     try:
-        json_info = json.load(json_file)
         if titleOld == '':
             show = 'MAKE IN MOBIFONE' + SALT_DOLLAR_SIGN + str(ROW_1) + END_CMD
             cmd_lcd[UPDATE_VALUE] = show
@@ -100,8 +106,10 @@ def get_temp_tram():
         acmTempIn = tel.get('acmTempIndoor')
         acmTempOut = tel.get('acmTempOutdoor')
         acmHumidIn = tel.get('acmHumidIndoor')
-        check = get_sate_led_alarm(tel)
-        warning = '!!!' if check == 0 else ''
+        new_list = dict(filter(lambda elem: elem[0].lower().find('state') != -1, tel.items()))
+        if len(new_list) > 0:
+            check = any(elem != 0 for elem in new_list.values())
+            warning = '!!!' if check else ''
         if (
                 acmTempInOld != acmTempIn or acmTempOutOld != acmTempOut or acmHumidInOld != acmHumidIn or warningOld != warning) and (
                 acmTempIn is not None and acmTempOut is not None and acmHumidIn is not None):
