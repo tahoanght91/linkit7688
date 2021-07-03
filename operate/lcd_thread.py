@@ -29,13 +29,15 @@ dct_lcd_menu_level_lv1 = dct_lcd_menu_level['lv1']
 last_alarm_update = Alarm_lcd()
 BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 timeOld = 61
+titleOld =''
 
 def call():
     try:
         lcd = menu.Display()
         period = 3
         while True:
-            get_datetime_title_now()
+            get_datetime_now()
+            get_title_main()
             # get_temp_tram()
             # get_user_tram()
             # lcd.menu(button_status[0])
@@ -44,21 +46,33 @@ def call():
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
 
-# HuyTQ
-def get_datetime_title_now():
+def get_datetime_now():
     global timeOld
     try:
         timeNew = datetime.now().strftime("%M")
         if timeNew != timeOld:
             now = datetime.now()
             dt_string = now.strftime("%d/%m/%Y %H:%M")
-            show = 'MAKE IN MOBIFONE' + SALT_DOLLAR_SIGN + str(ROW_1) + END_CMD + str(
-                dt_string) + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD
+            show = str(dt_string) + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD
             cmd_lcd[UPDATE_VALUE] = show
-            LOGGER.info('MAIN SCREEN DATETIME AND TITLE NOW: %s', str(show))
+            LOGGER.info('MAIN SCREEN DATETIME NOW: %s', str(show))
             timeOld = timeNew
     except Exception as ex:
         LOGGER.error('Error at get_datetime_now function with message: %s', ex.message)
+
+
+# HungLq
+def get_title_main():
+    global titleOld
+    try:
+        json_info = json.load(json_file)
+        if titleOld == '':
+            show = 'MAKE IN MOBIFONE' + SALT_DOLLAR_SIGN + str(ROW_1) + END_CMD
+            cmd_lcd[UPDATE_VALUE] = show
+            titleOld = 'MAKE IN MOBIFONE'
+            LOGGER.info('MAIN SCREEN TITLE: %s', str(show))
+    except Exception as ex:
+        LOGGER.error('Error at set_title_main function with message: %s', ex.message)
 
 
 def get_temp_tram():
@@ -113,6 +127,7 @@ def get_user_tram():
         LOGGER.error('Error at get_user_tram function with message: %s', ex.message)
 
 
+# HuyTQ
 def switch_lcd_service(input_lcd):
     last_trace = Lcd()
     try:
