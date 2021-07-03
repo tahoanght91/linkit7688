@@ -44,7 +44,7 @@ class Display:
                 if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_12_EVENT_UP]):
                     LOGGER.info('Send button value : %s', str(button_status[0]))
                     self.menu(button_status[0])
-                LOGGER.info('List telemitries: %s', telemetries)
+                # LOGGER.info('List telemitries: %s', telemetries)
                 if telemetries:
                     warning_service.check_alarm(telemetries)
                 time.sleep(3)
