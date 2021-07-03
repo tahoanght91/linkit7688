@@ -6,6 +6,7 @@ from config.common import UPDATE_VALUE
 from config.common_lcd_services import *
 from services.lcd.alarm_lcd_services import alarm_lcd_service, BAN_TIN_CANH_BAO
 from services.lcd.main_screen_lcd_services import main_screen
+from services.lcd.main_screen_lcd_services import main_screen, write_to_json
 from services.lcd.rfid_screen_lcd_sevices import rfid_screen
 from services import lcd_cmd
 
@@ -18,14 +19,17 @@ class Display:
             # USER CODE BEGIN
             lcd_cmd.clear_display()
             # self.print_lcd('1.Main display', ROW_3)
-            mainScreen = main_screen()
-            mainScreen.get_title_main()
             while True:
                 if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_11_EVENT_UP]):
+                    Recheck = {"title": '', "time": '61'}
+                    write_to_json(Recheck, './main_screen.json')
                     self.menu(button_status[0])
-                mainScreen.get_user_tram()
-                mainScreen.get_temp_tram()
+                mainScreen = main_screen()
+                mainScreen.get_title_main()
                 mainScreen.get_datetime_now()
+                # mainScreen.get_user_tram()
+                # mainScreen.get_temp_tram()
+                # mainScreen.get_datetime_now()
                 time.sleep(3)
                 # lcd_services['key_code'] = KEYCODE_13
                 # lcd_services['key_event'] = EVENT_UP
@@ -228,4 +232,3 @@ class Display:
         lcd_cmd.print_lcd('-> Phu kien     ', ROW_4)
 
         # USER CODE END
-
