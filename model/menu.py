@@ -5,6 +5,7 @@ from config import *
 from config.common import UPDATE_VALUE
 from config.common_lcd_services import *
 from services.lcd.alarm_lcd_services import alarm_lcd_service, BAN_TIN_CANH_BAO
+from services.lcd.ats_service import AtsDisplay
 from services.lcd.main_screen_lcd_services import main_screen
 from services.lcd.main_screen_lcd_services import main_screen, write_to_json
 from services.lcd.rfid_screen_lcd_sevices import rfid_screen
@@ -19,17 +20,16 @@ class Display:
             # USER CODE BEGIN
             lcd_cmd.clear_display()
             # self.print_lcd('1.Main display', ROW_3)
+            # button_status[0] = str(MENU[BUTTON_12_EVENT_UP])
             while True:
                 if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_11_EVENT_UP]):
-                    Recheck = {"title": '', "time": '61'}
+                    Recheck = {"title": '', "time": '61', "acmTempOutdoor": 0, "acmHumidIndoor": 0, "acmTempIndoor": 0, "isWarning": ""}
                     write_to_json(Recheck, './main_screen.json')
                     self.menu(button_status[0])
                 mainScreen = main_screen()
-                mainScreen.get_title_main()
-                mainScreen.get_datetime_now()
-                # mainScreen.get_user_tram()
-                # mainScreen.get_temp_tram()
-                # mainScreen.get_datetime_now()
+                mainScreen.get_datetime_title_now()
+                mainScreen.get_temp_tram()
+                mainScreen.get_user_tram()
                 time.sleep(3)
                 # lcd_services['key_code'] = KEYCODE_13
                 # lcd_services['key_event'] = EVENT_UP
@@ -77,12 +77,17 @@ class Display:
 
     def ats_display(self):
         # USER CODE BEGIN
-        lcd_cmd.clear_display()
-        lcd_cmd.print_lcd('5. ATS display', ROW_1)
+        ats = AtsDisplay()
+
+        ats.display1()
         while True:
             if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_35_EVENT_UP]):
                 LOGGER.info('Send button value : %s', str(button_status[0]))
                 self.menu(button_status[0])
+            if button_status[0] == str(MENU[BUTTON_25_EVENT_UP]):
+                ats.display2()
+            if button_status[0] == str(MENU[BUTTON_23_EVENT_UP]):
+                ats.display1()
         # USER CODE END
 
     def rfid_display(self):
@@ -110,7 +115,7 @@ class Display:
             else:
                 return getattr(self, 'case_' + str(self.last_menu))()
         except Exception as ex:
-            LOGGER.info('Fail to connect to server with message: %s', ex.message)
+            LOGGER.info('menu function error: %s', ex.message)
 
     def case_0(self):
         return self.main_display()
@@ -170,14 +175,14 @@ class Display:
                     pass  # vao man hinh setting thong so da chon
 
         except Exception as ex:
-            LOGGER.info('Fail to connect to server with message: %s', ex.message)
+            LOGGER.info('setting_display function error: %s', ex.message)
 
     def setting_menu(self, setting_mode):
         try:
             LOGGER.info('Enter setting_menu function')
             return getattr(self, 'setting_menu_' + str(setting_mode))()
         except Exception as ex:
-            LOGGER.info('Fail to connect to server with message: %s', ex.message)
+            LOGGER.info('switch setting menu false: %s', ex.message)
 
     def setting_menu_0(self):
         # USER CODE BEGIN
