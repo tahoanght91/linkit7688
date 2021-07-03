@@ -207,12 +207,7 @@ def call():
                         if byte_stream:
                             if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
                                 cmd_lcd_lock.acquire()
-                                if key_lcd == UPDATE_VALUE:
-                                    temp_content = content + END_CMD
-                                    if cmd_lcd[key_lcd] == temp_content:
-                                        del cmd_lcd[key_lcd]
-                                elif cmd_lcd[key_lcd] == content:
-                                    del cmd_lcd[key_lcd]
+                                del cmd_lcd[key_lcd]
                                 cmd_lcd_lock.release()
                                 LOGGER.debug("Receive ACK lcd with message with content: %s", content)
                                 break
@@ -222,12 +217,7 @@ def call():
                             tries += 1
                             if tries > MAX_TRIES:
                                 cmd_lcd_lock.acquire()
-                                if key_lcd == UPDATE_VALUE:
-                                    temp_content = content + END_CMD
-                                    if cmd_lcd[key_lcd] == temp_content:
-                                        del cmd_lcd[key_lcd]
-                                elif cmd_lcd[key_lcd] == content:
-                                    del cmd_lcd[key_lcd]
+                                del cmd_lcd[key_lcd]
                                 cmd_lcd_lock.release()
                                 LOGGER.info('Time out')
                                 break
@@ -238,6 +228,7 @@ def call():
 
 def _read_data(byte_stream):
     global bt_info
+    button = Button()
 
     LOGGER.info('Receive data message')
     byte_stream_decode = ':'.join(x.encode('hex') for x in byte_stream)
@@ -292,7 +283,7 @@ def _read_data(byte_stream):
                     len(data), _OpData.LCD_SIZE)
         if _check_data(frame_length, data, _OpData.LCD_SIZE):
             bt_info = data
-            extract_lcd_service(data)
+            # extract_lcd_service(data, button)
             return True
     return False
 
@@ -352,8 +343,6 @@ class Button():
 
     def check_button(self, bt_info):
         try:
-            # key_code = int(bt_info[1], 16) << 8 | int(bt_info[0], 16)
-            # key_event = int(bt_info[2], 16)
             key_code = bytes_to_int(bt_info[0:2], byteorder=BYTE_ORDER)
             key_event = bytes_to_int(bt_info[2])
 

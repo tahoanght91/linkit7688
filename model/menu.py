@@ -20,17 +20,16 @@ class Display:
             # USER CODE BEGIN
             lcd_cmd.clear_display()
             # self.print_lcd('1.Main display', ROW_3)
+            # button_status[0] = str(MENU[BUTTON_12_EVENT_UP])
             while True:
                 if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_11_EVENT_UP]):
-                    Recheck = {"title": '', "time": '61'}
+                    Recheck = {"title": '', "time": '61', "acmTempOutdoor": 0, "acmHumidIndoor": 0, "acmTempIndoor": 0, "isWarning": ""}
                     write_to_json(Recheck, './main_screen.json')
                     self.menu(button_status[0])
                 mainScreen = main_screen()
-                mainScreen.get_title_main()
-                mainScreen.get_datetime_now()
-                # mainScreen.get_user_tram()
-                # mainScreen.get_temp_tram()
-                # mainScreen.get_datetime_now()
+                mainScreen.get_datetime_title_now()
+                mainScreen.get_temp_tram()
+                mainScreen.get_user_tram()
                 time.sleep(3)
                 # lcd_services['key_code'] = KEYCODE_13
                 # lcd_services['key_event'] = EVENT_UP
@@ -42,16 +41,13 @@ class Display:
         try:
             # USER CODE BEGIN
             lcd_cmd.clear_display()
-            # self.print_lcd('2. Warning display', ROW_1)
             warning_service = alarm_lcd_service()
-            cmd_lcd[UPDATE_VALUE] = warning_service.create_cmd_multi(BAN_TIN_CANH_BAO, ROW_1)
             while True:
                 if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_12_EVENT_UP]):
                     LOGGER.info('Send button value : %s', str(button_status[0]))
                     self.menu(button_status[0])
-                # LOGGER.info('List telemitries: %s', telemetries)
-                if telemetries:
-                    warning_service.check_alarm(telemetries)
+                else:
+                    warning_service.check_alarm(tel_lcd=telemetries)
                 time.sleep(3)
             # USER CODE END
         except Exception as ex:

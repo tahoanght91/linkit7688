@@ -164,13 +164,21 @@ def send_shared_attributes(body):
     return result
 
 
-def extract_lcd_service(byte_data):
+# def extract_lcd_service(byte_data):
+#     try:
+#         key_code = bytes_to_int(byte_data[0:2], byteorder=BYTE_ORDER)
+#         key_event = bytes_to_int(byte_data[2])
+#         read_lcd_services('key_code', key_code)
+#         read_lcd_services('key_event', key_event)
+#         LOGGER.info('After extract command lcd from STM32, key code: %d, key event: %d', key_code, key_event)
+#     except Exception as ex:
+#         LOGGER.error('Error at extract_lcd_service function with message: %s', ex.message)
+
+
+def extract_lcd_service(byte_data, button):
     try:
-        key_code = bytes_to_int(byte_data[0:2], byteorder=BYTE_ORDER)
-        key_event = bytes_to_int(byte_data[2])
-        read_lcd_services('key_code', key_code)
-        read_lcd_services('key_event', key_event)
-        LOGGER.info('After extract command lcd from STM32, key code: %d, key event: %d', key_code, key_event)
+        button_status[0] = button.check_button(byte_data)
+        LOGGER.info('Send button value: %s', LOG_BUTTON[str(button_status[0])])
     except Exception as ex:
         LOGGER.error('Error at extract_lcd_service function with message: %s', ex.message)
 
