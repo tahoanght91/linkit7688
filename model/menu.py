@@ -20,15 +20,13 @@ class Display:
         try:
             lcd_cmd.clear_display()
             mainScreen = main_screen()
-            while True:
-                if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_11_EVENT_UP]):
-                    Recheck = {"title": '', "time": '61', "acmTempOutdoor": 0, "acmHumidIndoor": 0, "acmTempIndoor": 0, "isWarning": ""}
-                    write_to_json(Recheck, './main_screen.json')
-                    self.menu(button_status[0])
-                mainScreen.get_datetime_title_now()
-                mainScreen.get_temp_tram()
-                mainScreen.get_user_tram()
-                time.sleep(60)
+            if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_11_EVENT_UP]):
+                Recheck = {"title": '', "time": '61', "acmTempOutdoor": 0, "acmHumidIndoor": 0, "acmTempIndoor": 0, "isWarning": ""}
+                write_to_json(Recheck, './main_screen.json')
+                self.menu(button_status[0])
+            mainScreen.get_datetime_title_now()
+            mainScreen.get_temp_tram()
+            mainScreen.get_user_tram()
         except Exception as ex:
             LOGGER.error('Error at call function in menu.python with message: %s', ex.message)
 

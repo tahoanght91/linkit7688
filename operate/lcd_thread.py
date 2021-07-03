@@ -29,7 +29,6 @@ def call():
     try:
         lcd = menu.Display()
         period = 3
-        button_status[0] = '16'
         while True:
             lcd.menu(button_status[0])
             time.sleep(period)
