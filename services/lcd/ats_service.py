@@ -89,10 +89,10 @@ def get_state():
     global ats_generator_stt
     global ats_power_network_stt
     try:
-
+        LOGGER.info('Enter get_state function')
         # read status ats
         # if 'atsConnect' in update_attributes and 'atsContactorGenState' in update_attributes and 'atsContactorElecState' in update_attributes:
-        if 'atsPac1' in telemetries:
+        if 'mccSmokeState' in telemetries:
             # is_connect = update_attributes['atsConnect']
             # ats_generator_stt = update_attributes['atsContactorGenState']
             # ats_power_network_stt = update_attributes['atsContactorElecState']
