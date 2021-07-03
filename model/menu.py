@@ -39,16 +39,13 @@ class Display:
         try:
             # USER CODE BEGIN
             lcd_cmd.clear_display()
-            # self.print_lcd('2. Warning display', ROW_1)
             warning_service = alarm_lcd_service()
-            cmd_lcd[UPDATE_VALUE] = warning_service.create_cmd_multi(BAN_TIN_CANH_BAO, ROW_1)
             while True:
                 if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_12_EVENT_UP]):
                     LOGGER.info('Send button value : %s', str(button_status[0]))
                     self.menu(button_status[0])
-                # LOGGER.info('List telemitries: %s', telemetries)
-                if telemetries:
-                    warning_service.check_alarm(telemetries)
+                else:
+                    warning_service.check_alarm(tel_lcd=telemetries)
                 time.sleep(3)
             # USER CODE END
         except Exception as ex:
