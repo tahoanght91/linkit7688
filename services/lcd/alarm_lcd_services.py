@@ -54,7 +54,6 @@ class alarm_lcd_service:
                     row2_3 = self.create_for_each('An Toan!', '', row2_3)
             body = {"row1": row1, "row2_3": row2_3}
             write_to_json(body, './last_cmd_alarm.json')
-            LOGGER.info('Log in row 2-3 success: %s', row2_3)
         except Exception as ex:
             LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
