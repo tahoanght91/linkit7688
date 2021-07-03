@@ -98,7 +98,6 @@ class Display:
                 time.sleep(3)
         except Exception as ex:
             LOGGER.error('Error at rfid_display function with message: %s', ex.message)
-            sys.exit(1)
 
     def menu(self, number_menu):
         try:
