@@ -5,6 +5,7 @@ from config.common import *
 from config.common_lcd_services import *
 from operate.led_thread import get_sate_led_alarm
 from operate.rfid_thread import KEY_RFID
+
 URL_NV = 'http://123.30.214.139:8517/api/services/app/DMNhanVienRaVaoTram/GetNhanVienRaVaoTram'
 
 
@@ -13,7 +14,7 @@ def write_to_json(body, fileUrl):
         json_last_trace = json.dumps(body)
         with io.open(fileUrl, 'wb') as last_trace_file:
             last_trace_file.write(json_last_trace)
-        LOGGER.info('Command information just send: %s', body)
+        LOGGER.info('write to json success: %s', str(fileUrl))
     except Exception as ex:
         LOGGER.error('Error at write_to_json function with message: %s', ex.message)
 
@@ -22,6 +23,38 @@ def write_to_json(body, fileUrl):
 class main_screen:
     def __init__(self):
         pass
+
+    def get_title_main(self):
+        try:
+            json_file = open('./main_screen.json', )
+            json_info = json.load(json_file)
+            titleOld = json_info["title"]
+            timeOld = json_info["time"]
+            if titleOld == '':
+                show = 'MAKE IN MOBIFONE' + SALT_DOLLAR_SIGN + str(ROW_1) + END_CMD
+                cmd_lcd[UPDATE_VALUE] = show
+                Recheck = {"title": 'MAKE IN MOBIFONE', "time": timeOld}
+                write_to_json(Recheck, './main_screen.json')
+        except Exception as ex:
+            LOGGER.error('Error at set_title_main function with message: %s', ex.message)
+
+    def get_datetime_now(self):
+        try:
+            json_file = open('./main_screen.json', )
+            json_info = json.load(json_file)
+            timeOld = json_info["time"]
+            titleOld = json_info["title"]
+            timeNew = datetime.now().strftime("%M")
+            if timeNew != timeOld:
+                Recheck = {"title": titleOld, "time": timeNew}
+                write_to_json(Recheck, './main_screen.json')
+                now = datetime.now()
+                dt_string = now.strftime("%d/%m/%Y %H:%M")
+                show = str(dt_string) + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD
+                cmd_lcd[UPDATE_VALUE] = show
+                LOGGER.info('DateTime now: %s', show)
+        except Exception as ex:
+            LOGGER.error('Error at get_datetime_now function with message: %s', ex.message)
 
     def get_temp_tram(self):
         try:
@@ -37,7 +70,6 @@ class main_screen:
             acmHumidIn = telemetries.get('acmHumidIndoor')
             check = get_sate_led_alarm(telemetries)
             warning = '!!!' if check == 0 else ''
-            LOGGER.info('Warning: %s', warning)
             if (
                     acmTempInOld != acmTempIn or acmTempOutOld != acmTempOut or acmHumidInOld != acmHumidIn or warningOld != warning) and (
                     acmTempIn is not None and acmTempOut is not None and acmHumidIn is not None):
@@ -50,7 +82,6 @@ class main_screen:
                 LOGGER.info('acmTempIndoor, acmTempOutdoor, acmHumidIndoor: %s', show)
         except Exception as ex:
             LOGGER.error('Error at get_temp_tram function with message: %s', ex.message)
-
 
     def get_user_tram(self):
         try:
@@ -69,37 +100,8 @@ class main_screen:
                 dt_string = datetime.now().strftime("%d/%m/%Y %H:%M")
                 rfid_info = {"Time": dt_string, "StaffCode": staffCode}
                 write_to_json(rfid_info, './last_rfid_card_code.json')
-                LOGGER.info('Ma nhan vien: %s', show)
         except Exception as ex:
             LOGGER.error('Error at get_user_tram function with message: %s', ex.message)
-
-
-    def get_datetime_now(self):
-        try:
-            json_file = open('./last_time.json', )
-            timeOld = json.load(json_file)
-            timeNew = datetime.now().strftime("%M")
-            if timeNew != timeOld:
-                write_to_json(timeNew, './last_time.json')
-                now = datetime.now()
-                dt_string = now.strftime("%d/%m/%Y %H:%M")
-                show = str(dt_string) + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD
-                cmd_lcd[UPDATE_VALUE] = show
-                LOGGER.info('DateTime now: %s', show)
-        except Exception as ex:
-            LOGGER.error('Error at get_datetime_now function with message: %s', ex.message)
-
-
-    def get_title_main(self):
-        try:
-            show = 'MAKE IN MOBIFONE' + SALT_DOLLAR_SIGN + str(ROW_1) + END_CMD
-            cmd_lcd[UPDATE_VALUE] = show
-            LOGGER.info('Title: %s', show)
-        except Exception as ex:
-            LOGGER.error('Error at set_title_main function with message: %s', ex.message)
-
-
-
 
 
 # def get_screen_main():
