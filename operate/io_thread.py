@@ -38,11 +38,9 @@ def call():
 
         # read button status
         try:
-            LOGGER.info('Enter read button status')
             if len(bt_info) == 3:
                 button_status[0] = button.check_button(bt_info)
                 LOGGER.info('Send button value: %s', LOG_BUTTON[str(button_status[0])])
-            LOGGER.info('Exit read button status')
         except Exception as ex:
             LOGGER.error('Error check button status: %s', ex.message)
 
