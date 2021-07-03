@@ -91,8 +91,9 @@ def get_state():
     global ats_power_network_stt
 
     try:
-        if update_attributes:
-            # read status ats
+
+        # read status ats
+        if 'atsConnect' in update_attributes and 'atsContactorGenState' in update_attributes and 'atsContactorElecState' in update_attributes:
             is_connect = update_attributes['atsConnect']
             ats_generator_stt = update_attributes['atsContactorGenState']
             ats_power_network_stt = update_attributes['atsContactorElecState']
@@ -111,12 +112,11 @@ def get_values_ats():
     global ats_iload
 
     try:
-        if telemetries:
-            # read vol ampe
+        if 'atsVacP1' in telemetries and 'atsVacP2' in telemetries and 'atsVacP3' in telemetries:
             ats_vac = [telemetries['atsVacP1'], telemetries['atsVacP2'], telemetries['atsVacP3']]
-            ats_vgen = [telemetries['atsVgenP1'], telemetries['atsVgenP2'], telemetries['atsVgenP3']]
-            ats_vload = [telemetries['atsVloadP1'], telemetries['atsVloadP2'], telemetries['atsVloadP3']]
-            ats_iload = [telemetries['atsIloadP1'], telemetries['atsIloadP2'], telemetries['atsIloadP3']]
+            # ats_vgen = [telemetries['atsVgenP1'], telemetries['atsVgenP2'], telemetries['atsVgenP3']]
+            # ats_vload = [telemetries['atsVloadP1'], telemetries['atsVloadP2'], telemetries['atsVloadP3']]
+            # ats_iload = [telemetries['atsIloadP1'], telemetries['atsIloadP2'], telemetries['atsIloadP3']]
             LOGGER.info('Get information form ats: vol ampe value')
             return True
         else:
