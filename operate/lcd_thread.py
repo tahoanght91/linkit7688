@@ -1,22 +1,18 @@
-from os import altsep
 import time
 
 import requests
 
-from datetime import datetime
 from config import *
 from config.common import *
 from config.common_lcd_services import *
 from devices.utils import read_lcd_services
 from model.alarm_lcd import Alarm_lcd
 from model.lcd import Lcd
-from operate.led_thread import get_sate_led_alarm
-from operate.rfid_thread import KEY_RFID
+from services.lcd_cmd import clear_display
 from utility import bytes_to_int
 from model import menu
 
 URL_SEND_SA = 'http://123.30.214.139:8517/api/services/app/DMTram/ChangeValueTemplate'
-URL_NV = 'http://123.30.214.139:8517/api/services/app/DMNhanVienRaVaoTram/GetNhanVienRaVaoTram'
 menu_level_1 = [MCC, ACM, ATS]
 LIST_KEY_EVENT = [EVENT_NONE, EVENT_DOWN, EVENT_UP, EVENT_HOLD, EVENT_POWER]
 LIST_KEY_CODE = [KEYCODE_11, KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26, KEYCODE_24, KEYCODE_13, KEYCODE_12]
@@ -33,13 +29,11 @@ def call():
     try:
         period = 3
         lcd = menu.Display()
-        lcd.clear_display()
-        # get_screen_main()
-        init_show_alarm()
-        # while True:
-            # lcd.menu(button_status[0])
-            # lcd.clear_display()
-            # time.sleep(period)
+        clear_display()
+        while True:
+            lcd.menu(button_status[0])
+            clear_display()
+            time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
@@ -388,30 +382,3 @@ def create_for_each(string1, string2):
 
 def create_cmd_multi(string, row):
     return str(string) + SALT_DOLLAR_SIGN + str(row) + END_CMD
-
-# TRUONG
-def security_sensor_screen():
-    try:
-        cmd_lcd[UPDATE_VALUE] = create_cmd_multi("CAM BIEN AN NINH", ROW_1)
-        while True:
-            if telemetries:
-                if telemetries.get("mccSmokeState") == 1:
-                    cmd_lcd[UPDATE_VALUE] = str("Khoi: 1") + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD
-                if telemetries.get("mccFireState") == 1:
-                    cmd_lcd[UPDATE_VALUE] = str("Chay: 1") + SALT_DOLLAR_SIGN + str(ROW_3) + END_CMD
-                if telemetries.get("mccFloodState") == 1:
-                    cmd_lcd[UPDATE_VALUE] = str("Ngap: 1") + SALT_DOLLAR_SIGN + str(ROW_4) + END_CMD
-
-                # MAN HINH HAI
-                if telemetries.get("mccFloodState") == 1:
-                    cmd_lcd[UPDATE_VALUE] = str("Ngap: 1") + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD
-                if telemetries.get("mccDoorButton") == 1:
-                    cmd_lcd[UPDATE_VALUE] = str("Cua: 1") + SALT_DOLLAR_SIGN + str(ROW_3) + END_CMD
-                if telemetries.get("mccMoveState") == 1:
-                    cmd_lcd[UPDATE_VALUE] = str("Chuyen dong: 1") + SALT_DOLLAR_SIGN + str(ROW_4) + END_CMD
-            else:
-                LOGGER.error("operate > icd_thread > security_sensor_screen: Can't get telemetries ")
-            time.sleep(3)
-
-    except Exception as ex:
-        LOGGER.error('operate > icd_thread > security_sensor_screen: %s', ex.message)
