@@ -72,19 +72,24 @@ class Display:
 
     def ats_display(self):
         # USER CODE BEGIN
+        goto_display = 1
         lcd_cmd.clear_display()
         ats_service.header()
-        ats_service.display1()
         while True:
             if button_status[0] in MENU and button_status[0] != BUTTON_35_EVENT_UP:
                 LOGGER.info('Send button value : %s', str(button_status[0]))
                 self.menu(button_status[0])
             if button_status[0] == BUTTON_25_EVENT_UP:
+                goto_display = 2
                 lcd_cmd.clear_display()
-                ats_service.display2()
-            if button_status[0] == BUTTON_23_EVENT_UP:
+            elif button_status[0] == BUTTON_23_EVENT_UP:
+                goto_display = 1
                 lcd_cmd.clear_display()
+
+            if goto_display == 1:
                 ats_service.display1()
+            elif goto_display == 2:
+                ats_service.display2()
         # USER CODE END
 
     def rfid_display(self):
