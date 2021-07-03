@@ -30,10 +30,11 @@ last_alarm_update = Alarm_lcd()
 BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 timeOld = 61
 titleOld = ''
-acmTempInOld =''
-acmTempOutOld =''
-acmHumidInOld =''
-warningOld =''
+acmTempInOld = ''
+acmTempOutOld = ''
+acmHumidInOld = ''
+warningOld = ''
+
 
 def call():
     try:
@@ -42,8 +43,8 @@ def call():
         while True:
             # get_datetime_now()
             # get_title_main()
-            # get_temp_tram()
-            get_user_tram()
+            get_temp_tram()
+            # get_user_tram()
             # lcd.menu(button_status[0])
             time.sleep(period)
     except Exception as ex:
@@ -57,6 +58,7 @@ def read_to_json(fileUrl):
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
     return json_info
+
 
 def get_datetime_now():
     global timeOld
