@@ -1,5 +1,6 @@
 from config import *
 from config.common_lcd_services import *
+from operate.update_attributes_thread import replica_client_attributes
 from services import lcd_cmd
 
 
@@ -38,15 +39,14 @@ def display1():
             header()
             if is_connect:
                 lcd_cmd.print_lcd('Ket noi', ROW_2)
-                if ats_generator_stt:
-                    lcd_cmd.print_lcd('Nguon: Dien luoi', ROW_3)
-                    LOGGER.info('ATS is connecting, power supply: Electric network')
-                elif ats_power_network_stt:
+                if ats_power_network_stt:
                     lcd_cmd.print_lcd('Nguon: May phat', ROW_3)
                     LOGGER.info('ATS is connecting, power supply: Power generator')
+                elif ats_generator_stt:
+                    lcd_cmd.print_lcd('Nguon: Dien luoi', ROW_3)
+                    LOGGER.info('ATS is connecting, power supply: Electric network')
             else:
                 header()
-                lcd_cmd.clear_display()
                 disconnect_display()
                 LOGGER.info('ATS disconnected')
     except Exception as ex:
@@ -72,7 +72,6 @@ def display2():
                 lcd_cmd.print_lcd(string_row2, ROW_2)
             else:
                 header()
-                lcd_cmd.clear_display()
                 disconnect_display()
             lcd_cmd.print_lcd('Ket noi', ROW_2)
             string_row3 = '{p1}V {p2}V {p3}V'.format(p1=ats_vload[0], p2=ats_vload[1],
@@ -89,14 +88,16 @@ def get_state():
     global is_connect
     global ats_generator_stt
     global ats_power_network_stt
-
     try:
 
         # read status ats
         if 'atsConnect' in update_attributes and 'atsContactorGenState' in update_attributes and 'atsContactorElecState' in update_attributes:
-            is_connect = update_attributes['atsConnect']
-            ats_generator_stt = update_attributes['atsContactorGenState']
-            ats_power_network_stt = update_attributes['atsContactorElecState']
+            # is_connect = update_attributes['atsConnect']
+            # ats_generator_stt = update_attributes['atsContactorGenState']
+            # ats_power_network_stt = update_attributes['atsContactorElecState']
+            is_connect = 1
+            ats_generator_stt = 0
+            ats_power_network_stt = 1
             LOGGER.info('Get information form ats: state')
             return True
         else:

@@ -10,7 +10,7 @@ from utility import *
 
 
 bt_info = []
-
+last_stt_bt = 0
 
 def call():
     global bt_info
@@ -333,12 +333,13 @@ class _OpData:
     # IO_STATUS_LCD = b'\x32'
 
 
-class Button():
+class Button:
     def __init__(self):
         self.button = 0
         self.button_pre = 0
 
     def check_button(self, bt_info):
+        global last_stt_bt
         try:
             LOGGER.info('Enter check_button fucntion')
             key_code = bytes_to_int(bt_info[0:2], byteorder=BYTE_ORDER)
@@ -354,8 +355,8 @@ class Button():
             elif key_event == EVENT_HOLD:
                 event = EVENT_HOLD_BT
             self.button = event * index_key
-            if self.button_pre != self.button:
-                self.button_pre = self.button
+            if last_stt_bt != self.button:
+                last_stt_bt = self.button
                 LOGGER.info('return button value: %s', LOG_BUTTON[str(self.button)])
             return str(self.button)
         except Exception as ex:

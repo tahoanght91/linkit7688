@@ -72,6 +72,7 @@ class Display:
 
     def ats_display(self):
         # USER CODE BEGIN
+        lcd_cmd.clear_display()
         ats_service.header()
         ats_service.display1()
         while True:
@@ -79,8 +80,10 @@ class Display:
                 LOGGER.info('Send button value : %s', str(button_status[0]))
                 self.menu(button_status[0])
             if button_status[0] == BUTTON_25_EVENT_UP:
+                lcd_cmd.clear_display()
                 ats_service.display2()
             if button_status[0] == BUTTON_23_EVENT_UP:
+                lcd_cmd.clear_display()
                 ats_service.display1()
         # USER CODE END
 
