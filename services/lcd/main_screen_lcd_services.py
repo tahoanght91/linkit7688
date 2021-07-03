@@ -24,65 +24,54 @@ class main_screen:
     def __init__(self):
         pass
 
-    def get_title_main(self):
-        try:
-            json_file = open('./main_screen.json', )
-            json_info = json.load(json_file)
-            titleOld = json_info["title"]
-            timeOld = json_info["time"]
-            if titleOld == '':
-                show = 'MAKE IN MOBIFONE' + SALT_DOLLAR_SIGN + str(ROW_1) + END_CMD
-                cmd_lcd[UPDATE_VALUE] = show
-                Recheck = {"title": 'MAKE IN MOBIFONE', "time": timeOld}
-                write_to_json(Recheck, './main_screen.json')
-                LOGGER.info('Main screen title: %s', str(show))
-        except Exception as ex:
-            LOGGER.error('Error at set_title_main function with message: %s', ex.message)
 
-    def get_datetime_now(self):
+    def get_datetime_title_now(self):
         try:
             json_file = open('./main_screen.json', )
             json_info = json.load(json_file)
             timeOld = json_info["time"]
-            titleOld = json_info["title"]
             timeNew = datetime.now().strftime("%M")
             if timeNew != timeOld:
-                Recheck = {"title": titleOld, "time": timeNew}
-                write_to_json(Recheck, './main_screen.json')
+                json_info.update({'time': timeNew})
+                write_to_json(json_info, './main_screen.json')
                 now = datetime.now()
                 dt_string = now.strftime("%d/%m/%Y %H:%M")
-                show = str(dt_string) + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD
+                show = 'MAKE IN MOBIFONE' + SALT_DOLLAR_SIGN + str(ROW_1) + END_CMD + str(
+                    dt_string) + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD
                 cmd_lcd[UPDATE_VALUE] = show
-                LOGGER.info('Main screen dateTime now: %s', str(show))
+                LOGGER.info('MAIN SCREEN DATETIME AND TITLE NOW: %s', str(show))
         except Exception as ex:
             LOGGER.error('Error at get_datetime_now function with message: %s', ex.message)
+
 
     def get_temp_tram(self):
         try:
             warning = ''
-            json_file = open('./last_temp.json', )
-            temp = json.load(json_file)
-            acmTempInOld = temp['acmTempIndoor']
-            acmTempOutOld = temp['acmTempOutdoor']
-            acmHumidInOld = temp['acmHumidIndoor']
-            warningOld = temp['isWarning']
+            json_file = open('./main_screen.json', )
+            json_info = json.load(json_file)
+            acmTempInOld = json_info['acmTempIndoor']
+            acmTempOutOld = json_info['acmTempOutdoor']
+            acmHumidInOld = json_info['acmHumidIndoor']
+            warningOld = json_info['isWarning']
             acmTempIn = telemetries.get('acmTempIndoor')
             acmTempOut = telemetries.get('acmTempOutdoor')
             acmHumidIn = telemetries.get('acmHumidIndoor')
             check = get_sate_led_alarm(telemetries)
             warning = '!!!' if check == 0 else ''
-            if (
-                    acmTempInOld != acmTempIn or acmTempOutOld != acmTempOut or acmHumidInOld != acmHumidIn or warningOld != warning) and (
+            if (acmTempInOld != acmTempIn or acmTempOutOld != acmTempOut or acmHumidInOld != acmHumidIn or warningOld != warning) and (
                     acmTempIn is not None and acmTempOut is not None and acmHumidIn is not None):
-                Recheck = {"acmTempIndoor": acmTempIn, "acmTempOutdoor": acmTempOut, "acmHumidIndoor": acmHumidIn,
-                           "isWarning": warning}
-                write_to_json(Recheck, './last_temp.json')
+                json_info.update({'acmTempIndoor': acmTempIn})
+                json_info.update({'acmTempOutdoor': acmTempOut})
+                json_info.update({'acmHumidIndoor': acmHumidIn})
+                json_info.update({'isWarning': warning})
+                write_to_json(json_info, './main_screen.json')
                 show = str(acmTempIn) + ' ' + str(acmTempOut) + ' ' + str(
                     acmHumidIn) + ' ' + warning + SALT_DOLLAR_SIGN + str(ROW_3) + END_CMD
                 cmd_lcd[UPDATE_VALUE] = show
-                LOGGER.info('acmTempIndoor, acmTempOutdoor, acmHumidIndoor: %s', show)
+                LOGGER.info('MAIN SCREEN TEMP AND ALARM NOW: %s', str(show))
         except Exception as ex:
             LOGGER.error('Error at get_temp_tram function with message: %s', ex.message)
+
 
     def get_user_tram(self):
         try:
@@ -101,17 +90,6 @@ class main_screen:
                 dt_string = datetime.now().strftime("%d/%m/%Y %H:%M")
                 rfid_info = {"Time": dt_string, "StaffCode": staffCode}
                 write_to_json(rfid_info, './last_rfid_card_code.json')
+                LOGGER.info('MAIN SCREEN RFIDCODE OR STAFFCODE NOW: %s', str(show))
         except Exception as ex:
             LOGGER.error('Error at get_user_tram function with message: %s', ex.message)
-
-
-# def get_screen_main():
-#     try:
-#         get_title_main()
-#         while True:
-#             get_user_tram()
-#             get_temp_tram()
-#             get_datetime_now()
-#             time.sleep(3)
-#     except Exception as ex:
-#         LOGGER.error('Error at get_screen_main function with message: %s', ex.message)
