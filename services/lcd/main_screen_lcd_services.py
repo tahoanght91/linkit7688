@@ -25,21 +25,29 @@ class main_screen:
         pass
 
 
+    # def get_datetime_title_now(self):
+    #     try:
+    #         json_file = open('./main_screen.json', )
+    #         json_info = json.load(json_file)
+    #         timeOld = json_info["time"]
+    #         timeNew = datetime.now().strftime("%M")
+    #         if timeNew != timeOld:
+    #             json_info.update({'time': timeNew})
+    #             write_to_json(json_info, './main_screen.json')
+    #             now = datetime.now()
+    #             dt_string = now.strftime("%d/%m/%Y %H:%M")
+    #             show = 'MAKE IN MOBIFONE' + SALT_DOLLAR_SIGN + str(ROW_1) + END_CMD + str(
+    #                 dt_string) + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD
+    #             cmd_lcd[UPDATE_VALUE] = show
+    #             LOGGER.info('MAIN SCREEN DATETIME AND TITLE NOW: %s', str(show))
+    #     except Exception as ex:
+    #         LOGGER.error('Error at get_datetime_now function with message: %s', ex.message)
+
     def get_datetime_title_now(self):
         try:
-            json_file = open('./main_screen.json', )
-            json_info = json.load(json_file)
-            timeOld = json_info["time"]
-            timeNew = datetime.now().strftime("%M")
-            if timeNew != timeOld:
-                json_info.update({'time': timeNew})
-                write_to_json(json_info, './main_screen.json')
-                now = datetime.now()
-                dt_string = now.strftime("%d/%m/%Y %H:%M")
-                show = 'MAKE IN MOBIFONE' + SALT_DOLLAR_SIGN + str(ROW_1) + END_CMD + str(
-                    dt_string) + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD
-                cmd_lcd[UPDATE_VALUE] = show
-                LOGGER.info('MAIN SCREEN DATETIME AND TITLE NOW: %s', str(show))
+            LOGGER.info('Enter get_datetime_title_now function')
+            cmd_lcd[UPDATE_VALUE] = 'MAKE IN MOBIFONE'
+            LOGGER.info('Exit get_datetime_title_now function')
         except Exception as ex:
             LOGGER.error('Error at get_datetime_now function with message: %s', ex.message)
 
