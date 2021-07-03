@@ -1,3 +1,4 @@
+from datetime import datetime
 import time
 
 import requests
@@ -8,11 +9,15 @@ from config.common_lcd_services import *
 from devices.utils import read_lcd_services
 from model.alarm_lcd import Alarm_lcd
 from model.lcd import Lcd
+from operate.led_thread import get_sate_led_alarm
+from operate.rfid_thread import KEY_RFID
+from services.lcd.main_screen_lcd_services import write_to_json
 from services.lcd_cmd import clear_display
 from utility import bytes_to_int
 from model import menu
 
 URL_SEND_SA = 'http://123.30.214.139:8517/api/services/app/DMTram/ChangeValueTemplate'
+URL_NV = 'http://123.30.214.139:8517/api/services/app/DMNhanVienRaVaoTram/GetNhanVienRaVaoTram'
 menu_level_1 = [MCC, ACM, ATS]
 LIST_KEY_EVENT = [EVENT_NONE, EVENT_DOWN, EVENT_UP, EVENT_HOLD, EVENT_POWER]
 LIST_KEY_CODE = [KEYCODE_11, KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26, KEYCODE_24, KEYCODE_13, KEYCODE_12]
@@ -30,6 +35,9 @@ def call():
         lcd = menu.Display()
         period = 3
         while True:
+            get_datetime_title_now()
+            # get_temp_tram()
+            # get_user_tram()
             lcd.menu(button_status[0])
             time.sleep(period)
     except Exception as ex:
@@ -37,6 +45,77 @@ def call():
 
 
 # HuyTQ
+def get_datetime_title_now():
+    try:
+        json_file = open('./main_screen.json', )
+        json_info = json.load(json_file)
+        timeOld = json_info["time"]
+        timeNew = datetime.now().strftime("%M")
+        if timeNew != timeOld:
+            json_info.update({'time': timeNew})
+            write_to_json(json_info, './main_screen.json')
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y %H:%M")
+            show = 'MAKE IN MOBIFONE' + SALT_DOLLAR_SIGN + str(ROW_1) + END_CMD + str(
+                dt_string) + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD
+            cmd_lcd[UPDATE_VALUE] = show
+            LOGGER.info('MAIN SCREEN DATETIME AND TITLE NOW: %s', str(show))
+    except Exception as ex:
+        LOGGER.error('Error at get_datetime_now function with message: %s', ex.message)
+
+
+def get_temp_tram():
+    try:
+        warning = ''
+        json_file = open('./main_screen.json', )
+        json_info = json.load(json_file)
+        acmTempInOld = json_info['acmTempIndoor']
+        acmTempOutOld = json_info['acmTempOutdoor']
+        acmHumidInOld = json_info['acmHumidIndoor']
+        warningOld = json_info['isWarning']
+        acmTempIn = telemetries.get('acmTempIndoor')
+        acmTempOut = telemetries.get('acmTempOutdoor')
+        acmHumidIn = telemetries.get('acmHumidIndoor')
+        check = get_sate_led_alarm(telemetries)
+        warning = '!!!' if check == 0 else ''
+        if (
+                acmTempInOld != acmTempIn or acmTempOutOld != acmTempOut or acmHumidInOld != acmHumidIn or warningOld != warning) and (
+                acmTempIn is not None and acmTempOut is not None and acmHumidIn is not None):
+            json_info.update({'acmTempIndoor': acmTempIn})
+            json_info.update({'acmTempOutdoor': acmTempOut})
+            json_info.update({'acmHumidIndoor': acmHumidIn})
+            json_info.update({'isWarning': warning})
+            write_to_json(json_info, './main_screen.json')
+            show = str(acmTempIn) + ' ' + str(acmTempOut) + ' ' + str(
+                acmHumidIn) + ' ' + warning + SALT_DOLLAR_SIGN + str(ROW_3) + END_CMD
+            cmd_lcd[UPDATE_VALUE] = show
+            LOGGER.info('MAIN SCREEN TEMP AND ALARM NOW: %s', str(show))
+    except Exception as ex:
+        LOGGER.error('Error at get_temp_tram function with message: %s', ex.message)
+
+
+def get_user_tram():
+    try:
+        if KEY_RFID in client_attributes:
+            rfid_card = client_attributes.get(KEY_RFID)
+            staffCode = rfid_card
+            param = {'input': rfid_card}
+            response = requests.get(url=URL_NV, params=param)
+            if response.status_code == 200:
+                LOGGER.info('Send log request to Smartsite successful!')
+                staff = json.loads(response.content)['result']
+                if staff is not None:
+                    staffCode = json.loads(response.content)['result']['maNhanVien']
+            show = str(staffCode) + SALT_DOLLAR_SIGN + str(ROW_4) + END_CMD
+            cmd_lcd[UPDATE_VALUE] = show
+            dt_string = datetime.now().strftime("%d/%m/%Y %H:%M")
+            rfid_info = {"Time": dt_string, "StaffCode": staffCode}
+            write_to_json(rfid_info, './last_rfid_card_code.json')
+            LOGGER.info('MAIN SCREEN RFIDCODE OR STAFFCODE NOW: %s', str(show))
+    except Exception as ex:
+        LOGGER.error('Error at get_user_tram function with message: %s', ex.message)
+
+
 def switch_lcd_service(input_lcd):
     last_trace = Lcd()
     try:

@@ -5,7 +5,6 @@ from config import *
 from config.common import UPDATE_VALUE
 from config.common_lcd_services import *
 from services.lcd.alarm_lcd_services import alarm_lcd_service, BAN_TIN_CANH_BAO
-from services.lcd import ats_service
 from services.lcd.main_screen_lcd_services import main_screen
 from services.lcd.main_screen_lcd_services import main_screen, write_to_json
 from services.lcd.rfid_screen_lcd_sevices import rfid_screen
@@ -16,17 +15,24 @@ class Display:
         self.last_menu = '0'
 
     def main_display(self):
-        LOGGER.info('Enter main_display display function in class Display')
         try:
+            # USER CODE BEGIN
             lcd_cmd.clear_display()
-            mainScreen = main_screen()
-            if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_11_EVENT_UP]):
-                Recheck = {"title": '', "time": '61', "acmTempOutdoor": 0, "acmHumidIndoor": 0, "acmTempIndoor": 0, "isWarning": ""}
-                write_to_json(Recheck, './main_screen.json')
-                self.menu(button_status[0])
-            mainScreen.get_datetime_title_now()
-            mainScreen.get_temp_tram()
-            mainScreen.get_user_tram()
+            # self.print_lcd('1.Main display', ROW_3)
+            # button_status[0] = str(MENU[BUTTON_12_EVENT_UP])
+            while True:
+                if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_11_EVENT_UP]):
+                    # Recheck = {"title": '', "time": '61', "acmTempOutdoor": 0, "acmHumidIndoor": 0, "acmTempIndoor": 0, "isWarning": ""}
+                    # write_to_json(Recheck, './main_screen.json')
+                    self.menu(button_status[0])
+                # mainScreen = main_screen()
+                # mainScreen.get_datetime_title_now()
+                # mainScreen.get_temp_tram()
+                # mainScreen.get_user_tram()
+                # time.sleep(3)
+                # lcd_services['key_code'] = KEYCODE_13
+                # lcd_services['key_event'] = EVENT_UP
+            # USER CODE END
         except Exception as ex:
             LOGGER.error('Error at call function in menu.python with message: %s', ex.message)
 
