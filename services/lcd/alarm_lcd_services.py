@@ -24,12 +24,8 @@ class alarm_lcd_service:
         pass
 
     def check_alarm(self, tel_lcd):
-        cmd_lcd_dict = {}
         now = datetime.now()
         dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-        tel_lcd = {
-            'mccFireState': 1
-        }
         try:
             json_file = open('./last_cmd_alarm.json', )
             all_row = json.load(json_file)
@@ -39,6 +35,7 @@ class alarm_lcd_service:
             if row1 != BAN_TIN_CANH_BAO:
                 cmd_lcd[UPDATE_VALUE] = self.create_cmd_multi(BAN_TIN_CANH_BAO, ROW_1)
                 row1 = BAN_TIN_CANH_BAO
+                LOGGER.info('Log in row 1 success: %s', row1)
 
             max_tem = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
             LOGGER.info('MAX TEMPERATURE: %s', str(max_tem))
@@ -57,6 +54,7 @@ class alarm_lcd_service:
                     row2_3 = self.create_for_each('An Toan!', '', row2_3)
             body = {"row1": row1, "row2_3": row2_3}
             write_to_json(body, './last_cmd_alarm.json')
+            LOGGER.info('Log in row 2-3 success: %s', row2_3)
         except Exception as ex:
             LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
@@ -64,7 +62,6 @@ class alarm_lcd_service:
         try:
             el1 = self.create_cmd_multi(string1, ROW_2)
             el1 += self.create_cmd_multi(string2, ROW_3)
-            LOGGER.info('CANH BAO : %s', el1)
             if el1 != row2_3:
                 cmd_lcd[UPDATE_VALUE] = el1
                 row2_3 = el1
