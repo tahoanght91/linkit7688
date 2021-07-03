@@ -29,22 +29,34 @@ dct_lcd_menu_level_lv1 = dct_lcd_menu_level['lv1']
 last_alarm_update = Alarm_lcd()
 BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 timeOld = 61
-titleOld =''
+titleOld = ''
+acmTempInOld =''
+acmTempOutOld =''
+acmHumidInOld =''
+warningOld =''
 
 def call():
     try:
         lcd = menu.Display()
         period = 3
         while True:
-            get_datetime_now()
-            get_title_main()
+            # get_datetime_now()
+            # get_title_main()
             # get_temp_tram()
-            # get_user_tram()
+            get_user_tram()
             # lcd.menu(button_status[0])
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
+
+def read_to_json(fileUrl):
+    try:
+        json_file = open(fileUrl, )
+        json_info = json.load(json_file)
+    except Exception as ex:
+        LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
+    return json_info
 
 def get_datetime_now():
     global timeOld
@@ -76,27 +88,25 @@ def get_title_main():
 
 
 def get_temp_tram():
+    global acmTempInOld
+    global acmTempOutOld
+    global acmHumidInOld
+    global warningOld
     try:
         warning = ''
-        json_file = open('./main_screen.json', )
-        json_info = json.load(json_file)
-        acmTempInOld = json_info['acmTempIndoor']
-        acmTempOutOld = json_info['acmTempOutdoor']
-        acmHumidInOld = json_info['acmHumidIndoor']
-        warningOld = json_info['isWarning']
-        acmTempIn = telemetries.get('acmTempIndoor')
-        acmTempOut = telemetries.get('acmTempOutdoor')
-        acmHumidIn = telemetries.get('acmHumidIndoor')
-        check = get_sate_led_alarm(telemetries)
+        tel = read_to_json('./latest_telemetry.json')
+        acmTempIn = tel.get('acmTempIndoor')
+        acmTempOut = tel.get('acmTempOutdoor')
+        acmHumidIn = tel.get('acmHumidIndoor')
+        check = get_sate_led_alarm(tel)
         warning = '!!!' if check == 0 else ''
         if (
                 acmTempInOld != acmTempIn or acmTempOutOld != acmTempOut or acmHumidInOld != acmHumidIn or warningOld != warning) and (
                 acmTempIn is not None and acmTempOut is not None and acmHumidIn is not None):
-            json_info.update({'acmTempIndoor': acmTempIn})
-            json_info.update({'acmTempOutdoor': acmTempOut})
-            json_info.update({'acmHumidIndoor': acmHumidIn})
-            json_info.update({'isWarning': warning})
-            write_to_json(json_info, './main_screen.json')
+            acmTempInOld = acmTempIn
+            acmTempOutOld = acmTempOut
+            acmHumidInOld = acmHumidIn
+            warningOld = warning
             show = str(acmTempIn) + ' ' + str(acmTempOut) + ' ' + str(
                 acmHumidIn) + ' ' + warning + SALT_DOLLAR_SIGN + str(ROW_3) + END_CMD
             cmd_lcd[UPDATE_VALUE] = show
@@ -107,8 +117,9 @@ def get_temp_tram():
 
 def get_user_tram():
     try:
-        if KEY_RFID in client_attributes:
-            rfid_card = client_attributes.get(KEY_RFID)
+        rfid = read_to_json('./latest_client_attributes.json')
+        if KEY_RFID in rfid:
+            rfid_card = rfid.get(KEY_RFID)
             staffCode = rfid_card
             param = {'input': rfid_card}
             response = requests.get(url=URL_NV, params=param)
