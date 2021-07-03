@@ -30,8 +30,7 @@ def call():
         lcd = menu.Display()
         period = 3
         while True:
-            LOGGER.info('Go into call of lcd thread')
-            # lcd.menu(button_status[0])
+            lcd.menu(button_status[0])
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
