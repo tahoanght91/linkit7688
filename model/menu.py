@@ -8,6 +8,7 @@ from services.lcd.alarm_lcd_services import alarm_lcd_service, BAN_TIN_CANH_BAO
 from services.lcd.main_screen_lcd_services import main_screen
 from services.lcd.rfid_screen_lcd_sevices import rfid_screen
 from services import lcd_cmd
+from services.lcd.security_sensor_screen_icd_sevices import security_sensor_screen
 
 class Display:
     def __init__(self):
@@ -55,12 +56,22 @@ class Display:
     def security_sensor_info_display(self):
         # USER CODE BEGIN
         lcd_cmd.clear_display()
-        lcd_cmd.print_lcd('3. Secure sensor', ROW_1)
+        # lcd_cmd.print_lcd('3. Secure sensor', ROW_1)
+        moving_screen = False
         while True:
             if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_31_EVENT_UP]):
                 LOGGER.info('Send button value : %s', str(button_status[0]))
                 self.menu(button_status[0])
         # USER CODE END
+            if telemetries:
+                if button_status[0] in MENU and button_status[0] == str(MENU[BUTTON_23_EVENT_UP]):
+                    moving_screen = False
+                if button_status[0] in MENU and button_status[0] == str(MENU[BUTTON_25_EVENT_UP]):
+                    moving_screen = True
+
+                security_sensor_screen(telemetries, moving_screen)
+            else:
+                LOGGER.error("model > menu > security_sensor_info_display: Can't get telemetries ")
 
     def air_info_display(self):
         # USER CODE BEGIN
