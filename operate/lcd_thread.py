@@ -47,15 +47,15 @@ def call():
 def check_key_code():
     try:
         result_check_input = check_lcd_service(lcd_services)
-        # result_check_input.key_code = KEYCODE_24
+        # result_check_input.key_code = KEYCODE_12
         # result_check_input.key_event = EVENT_UP
         json_file = open('./last_trace_lcd.json', )
         last_trace = json.load(json_file)
         a = last_trace['key_code']
         b = last_trace['key_event']
-        if a > 0 and b > 0:
-            check_last_display(a, b)
-        elif result_check_input.key_code > 0 and result_check_input.key_event > 0:
+
+        if result_check_input.key_code > 0 and result_check_input.key_event > 0:
+            cmd_lcd[CLEAR] = ''
             result_switch_lcd = switch_lcd_service(result_check_input)
             # cmd_lcd_lock.acquire()
             # if result_switch_lcd.value < 0:
@@ -65,6 +65,8 @@ def check_key_code():
             # cmd_lcd_lock.release()
             set_last_trace(result_switch_lcd)
             lcd_services.clear()
+        elif a > 0 and b > 0:
+            check_last_display(a, b)
     except Exception as ex:
         LOGGER.error('Error at call function in check_key_code with message: %s', ex.message)
 
@@ -98,7 +100,7 @@ def switch_lcd_service(input_lcd):
             elif key_code == KEYCODE_13:
                 pass
             elif key_code == KEYCODE_12:
-                pass
+                check_alarm(telemetries)
             elif key_event == EVENT_DOWN:
                 pass
             elif key_event == EVENT_HOLD:
