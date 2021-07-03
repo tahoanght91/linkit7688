@@ -207,12 +207,7 @@ def call():
                         if byte_stream:
                             if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
                                 cmd_lcd_lock.acquire()
-                                if key_lcd == UPDATE_VALUE:
-                                    temp_content = content + END_CMD
-                                    if cmd_lcd[key_lcd] == temp_content:
-                                        del cmd_lcd[key_lcd]
-                                elif cmd_lcd[key_lcd] == content:
-                                    del cmd_lcd[key_lcd]
+                                del cmd_lcd[key_lcd]
                                 cmd_lcd_lock.release()
                                 LOGGER.debug("Receive ACK lcd with message with content: %s", content)
                                 break
@@ -222,12 +217,7 @@ def call():
                             tries += 1
                             if tries > MAX_TRIES:
                                 cmd_lcd_lock.acquire()
-                                if key_lcd == UPDATE_VALUE:
-                                    temp_content = content + END_CMD
-                                    if cmd_lcd[key_lcd] == temp_content:
-                                        del cmd_lcd[key_lcd]
-                                elif cmd_lcd[key_lcd] == content:
-                                    del cmd_lcd[key_lcd]
+                                del cmd_lcd[key_lcd]
                                 cmd_lcd_lock.release()
                                 LOGGER.info('Time out')
                                 break
