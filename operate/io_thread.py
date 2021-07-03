@@ -6,6 +6,7 @@ from config.common_lcd_services import *
 from config.common import UPDATE_VALUE, CLEAR, END_CMD
 from control.utils import split_row_by_salt
 from devices import ats, crmu, clock, acm, mcc
+from operate.lcd_thread import extract_lcd_service
 from utility import *
 
 
@@ -14,7 +15,7 @@ bt_info = []
 
 def call():
     global bt_info
-    button = Button()
+    # button = Button()
 
     ser = serial.Serial(port=IO_PORT, baudrate=BAUDRATE)
     data_ack = b'\xa0\x02\x11\x00'
@@ -37,12 +38,12 @@ def call():
             ser.write(with_check_sum(data_ack, BYTE_ORDER))
 
         # read button status
-        try:
-            if len(bt_info) == 3:
-                button_status[0] = button.check_button(bt_info)
-                LOGGER.info('Send button value: %s', LOG_BUTTON[str(button_status[0])])
-        except Exception as ex:
-            LOGGER.error('Error check button status: %s', ex.message)
+        # try:
+        #     if len(bt_info) == 3:
+        #         button_status[0] = button.check_button(bt_info)
+        #         LOGGER.info('Send button value: %s', LOG_BUTTON[str(button_status[0])])
+        # except Exception as ex:
+        #     LOGGER.error('Error check button status: %s', ex.message)
 
         # Write command
         try:
@@ -281,7 +282,8 @@ def _read_data(byte_stream):
         LOGGER.info('LCD message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
                     len(data), _OpData.LCD_SIZE)
         if _check_data(frame_length, data, _OpData.LCD_SIZE):
-            bt_info = data
+            # bt_info = data
+            extract_lcd_service(data, button)
             return True
     return False
 
