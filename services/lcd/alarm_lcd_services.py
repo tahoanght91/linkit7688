@@ -16,7 +16,7 @@ class alarm_lcd_service:
     def init_show_alarm(self):
         try:
             cmd_lcd[UPDATE_VALUE] = self.create_cmd_multi(self.BAN_TIN_CANH_BAO, ROW_1)
-            LOGGER.info('List telemitries: %s', telemetries)
+            # LOGGER.info('List telemitries: %s', telemetries)
             while True:
                 if telemetries:
                     self.check_alarm(tel_lcd=telemetries)
@@ -30,8 +30,7 @@ class alarm_lcd_service:
         dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
         try:
             max_tem = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
-            LOGGER.info('MAX TEMPERATURE: %s', max_tem)
-            LOGGER.info('Check list: %s', tel_lcd)
+            LOGGER.info('MAX TEMPERATURE: %s', str(max_tem))
             if tel_lcd:
                 if tel_lcd.get('mccFireState') == 1:
                     self.create_for_each('CB Chay!', dt_string)
