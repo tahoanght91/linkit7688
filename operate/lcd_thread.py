@@ -8,6 +8,7 @@ from config.common_lcd_services import *
 from devices.utils import read_lcd_services
 from model.alarm_lcd import Alarm_lcd
 from model.lcd import Lcd
+from services.lcd.alarm_lcd_services import check_alarm
 from services.lcd_cmd import clear_display
 from utility import bytes_to_int
 from model import menu
@@ -28,14 +29,48 @@ BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 def call():
     try:
         period = 3
-        lcd = menu.Display()
-        clear_display()
+        # lcd = menu.Display()
+        # clear_display()
         while True:
-            lcd.menu(button_status[0])
-            clear_display()
+            # lcd.menu(button_status[0])
+            # clear_display()
+            check_key_code()
             time.sleep(period)
     except Exception as ex:
-        LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
+        LOGGER.error('Error at call function in lcd_thread with message: %s', ex.message)
+
+
+def check_key_code():
+    try:
+        result_check_input = check_lcd_service(lcd_services)
+        # result_check_input.key_code = KEYCODE_24
+        # result_check_input.key_event = EVENT_UP
+        json_file = open('./last_trace_lcd.json', )
+        last_trace = json.load(json_file)
+        a = last_trace['key_code']
+        b = last_trace['key_event']
+        if a > 0 and b > 0:
+            check_last_display(a, b)
+        elif result_check_input.key_code > 0 and result_check_input.key_event > 0:
+            result_switch_lcd = switch_lcd_service(result_check_input)
+            # cmd_lcd_lock.acquire()
+            # if result_switch_lcd.value < 0:
+            #     cmd_lcd[UPDATE_VALUE] = result_switch_lcd.name
+            # else:
+            #     cmd_lcd[UPDATE_VALUE] = result_switch_lcd.value
+            # cmd_lcd_lock.release()
+            set_last_trace(result_switch_lcd)
+            lcd_services.clear()
+    except Exception as ex:
+        LOGGER.error('Error at call function in check_key_code with message: %s', ex.message)
+
+
+def check_last_display(key_code, key_event):
+    try:
+        if key_code == KEYCODE_12 and key_event == EVENT_UP:
+            check_alarm(telemetries)
+    except Exception as ex:
+        LOGGER.error('Error at call function in check_last_display with message: %s', ex.message)
 
 
 # HuyTQ
@@ -59,7 +94,7 @@ def switch_lcd_service(input_lcd):
             elif key_code == KEYCODE_13:
                 pass
             elif key_code == KEYCODE_12:
-                pass
+                check_alarm(telemetries)
             elif key_event == EVENT_DOWN:
                 pass
             elif key_event == EVENT_HOLD:
