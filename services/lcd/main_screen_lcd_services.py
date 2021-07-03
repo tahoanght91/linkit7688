@@ -35,6 +35,7 @@ class main_screen:
                 cmd_lcd[UPDATE_VALUE] = show
                 Recheck = {"title": 'MAKE IN MOBIFONE', "time": timeOld}
                 write_to_json(Recheck, './main_screen.json')
+                LOGGER.info('Main screen title: %s', str(show))
         except Exception as ex:
             LOGGER.error('Error at set_title_main function with message: %s', ex.message)
 
@@ -52,7 +53,7 @@ class main_screen:
                 dt_string = now.strftime("%d/%m/%Y %H:%M")
                 show = str(dt_string) + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD
                 cmd_lcd[UPDATE_VALUE] = show
-                LOGGER.info('DateTime now: %s', show)
+                LOGGER.info('Main screen dateTime now: %s', str(show))
         except Exception as ex:
             LOGGER.error('Error at get_datetime_now function with message: %s', ex.message)
 
