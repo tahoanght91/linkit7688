@@ -1,3 +1,4 @@
+import datetime
 import time
 
 import requests
@@ -8,6 +9,7 @@ from config.common_lcd_services import *
 from devices.utils import read_lcd_services
 from model.alarm_lcd import Alarm_lcd
 from model.lcd import Lcd
+from services.lcd.main_screen_lcd_services import write_to_json
 from services.lcd_cmd import clear_display
 from utility import bytes_to_int
 from model import menu
@@ -31,6 +33,7 @@ def call():
         lcd = menu.Display()
         clear_display()
         while True:
+            get_datetime_title_now()
             lcd.menu(button_status[0])
             clear_display()
             time.sleep(period)
@@ -39,6 +42,26 @@ def call():
 
 
 # HuyTQ
+def get_datetime_title_now():
+    try:
+        json_file = open('./main_screen.json', )
+        json_info = json.load(json_file)
+        timeOld = json_info["time"]
+        timeNew = datetime.now().strftime("%M")
+        if timeNew != timeOld:
+            json_info.update({'time': timeNew})
+            write_to_json(json_info, './main_screen.json')
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y %H:%M")
+            show = 'MAKE IN MOBIFONE' + SALT_DOLLAR_SIGN + str(ROW_1) + END_CMD + str(
+                dt_string) + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD
+            cmd_lcd[UPDATE_VALUE] = show
+            LOGGER.info('MAIN SCREEN DATETIME AND TITLE NOW: %s', str(show))
+            g = timeNew
+    except Exception as ex:
+        LOGGER.error('Error at get_datetime_now function with message: %s', ex.message)
+
+
 def switch_lcd_service(input_lcd):
     last_trace = Lcd()
     try:
