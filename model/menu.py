@@ -25,12 +25,9 @@ class Display:
                     Recheck = {"title": '', "time": '61', "acmTempOutdoor": 0, "acmHumidIndoor": 0, "acmTempIndoor": 0, "isWarning": ""}
                     write_to_json(Recheck, './main_screen.json')
                     self.menu(button_status[0])
-                LOGGER.info('Enter else in main_display')
                 mainScreen.get_datetime_title_now()
-                LOGGER.info('Exit get_datetime_title_now')
-                # LOGGER.info('call get_datetime_title_now function')
-                # mainScreen.get_temp_tram()
-                # mainScreen.get_user_tram()
+                mainScreen.get_temp_tram()
+                mainScreen.get_user_tram()
                 time.sleep(60)
         except Exception as ex:
             LOGGER.error('Error at call function in menu.python with message: %s', ex.message)
