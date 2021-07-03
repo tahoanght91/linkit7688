@@ -9,11 +9,15 @@ from devices.utils import read_lcd_services
 from model.alarm_lcd import Alarm_lcd
 from model.lcd import Lcd
 from services.lcd.alarm_lcd_services import check_alarm
+from operate.led_thread import get_sate_led_alarm
+from operate.rfid_thread import KEY_RFID
+from services.lcd.main_screen_lcd_services import write_to_json
 from services.lcd_cmd import clear_display
 from utility import bytes_to_int
 from model import menu
 
 URL_SEND_SA = 'http://123.30.214.139:8517/api/services/app/DMTram/ChangeValueTemplate'
+URL_NV = 'http://123.30.214.139:8517/api/services/app/DMNhanVienRaVaoTram/GetNhanVienRaVaoTram'
 menu_level_1 = [MCC, ACM, ATS]
 LIST_KEY_EVENT = [EVENT_NONE, EVENT_DOWN, EVENT_UP, EVENT_HOLD, EVENT_POWER]
 LIST_KEY_CODE = [KEYCODE_11, KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26, KEYCODE_24, KEYCODE_13, KEYCODE_12]
@@ -24,7 +28,7 @@ dct_lcd_menu_level = dct_lcd_menu['level']
 dct_lcd_menu_level_lv1 = dct_lcd_menu_level['lv1']
 last_alarm_update = Alarm_lcd()
 BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
-
+timeOld = 61
 
 def call():
     try:
@@ -94,7 +98,7 @@ def switch_lcd_service(input_lcd):
             elif key_code == KEYCODE_13:
                 pass
             elif key_code == KEYCODE_12:
-                check_alarm(telemetries)
+                pass
             elif key_event == EVENT_DOWN:
                 pass
             elif key_event == EVENT_HOLD:
@@ -199,21 +203,13 @@ def send_shared_attributes(body):
     return result
 
 
-# def extract_lcd_service(byte_data):
-#     try:
-#         key_code = bytes_to_int(byte_data[0:2], byteorder=BYTE_ORDER)
-#         key_event = bytes_to_int(byte_data[2])
-#         read_lcd_services('key_code', key_code)
-#         read_lcd_services('key_event', key_event)
-#         LOGGER.info('After extract command lcd from STM32, key code: %d, key event: %d', key_code, key_event)
-#     except Exception as ex:
-#         LOGGER.error('Error at extract_lcd_service function with message: %s', ex.message)
-
-
-def extract_lcd_service(byte_data, button):
+def extract_lcd_service(byte_data):
     try:
-        button_status[0] = button.check_button(byte_data)
-        LOGGER.info('Send button value: %s', LOG_BUTTON[str(button_status[0])])
+        key_code = bytes_to_int(byte_data[0:2], byteorder=BYTE_ORDER)
+        key_event = bytes_to_int(byte_data[2])
+        read_lcd_services('key_code', key_code)
+        read_lcd_services('key_event', key_event)
+        LOGGER.info('After extract command lcd from STM32, key code: %d, key event: %d', key_code, key_event)
     except Exception as ex:
         LOGGER.error('Error at extract_lcd_service function with message: %s', ex.message)
 

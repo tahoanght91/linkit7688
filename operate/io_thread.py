@@ -6,12 +6,11 @@ from config.common_lcd_services import *
 from config.common import UPDATE_VALUE, CLEAR, END_CMD
 from control.utils import split_row_by_salt
 from devices import ats, crmu, clock, acm, mcc
-from operate.lcd_thread import extract_lcd_service
 from utility import *
 
 
 bt_info = []
-
+last_stt_bt = 0
 
 def call():
     global bt_info
@@ -30,7 +29,7 @@ def call():
         current_cycle = int((time.time()) / 60)
         if not (current_cycle - original_cycle) and not (current_cycle - original_cycle) % 2:
             LOGGER.info("Send clock set")
-            # clock.set()
+            clock.set()
 
         # Read data
         byte_stream = blocking_read(ser, message_break)
@@ -228,7 +227,6 @@ def call():
 
 def _read_data(byte_stream):
     global bt_info
-    button = Button()
 
     LOGGER.info('Receive data message')
     byte_stream_decode = ':'.join(x.encode('hex') for x in byte_stream)
@@ -283,7 +281,6 @@ def _read_data(byte_stream):
                     len(data), _OpData.LCD_SIZE)
         if _check_data(frame_length, data, _OpData.LCD_SIZE):
             bt_info = data
-            # extract_lcd_service(data, button)
             return True
     return False
 
@@ -336,28 +333,32 @@ class _OpData:
     # IO_STATUS_LCD = b'\x32'
 
 
-class Button():
+class Button:
     def __init__(self):
         self.button = 0
         self.button_pre = 0
 
     def check_button(self, bt_info):
+        global last_stt_bt
         try:
+            LOGGER.info('Enter check_button fucntion')
             key_code = bytes_to_int(bt_info[0:2], byteorder=BYTE_ORDER)
             key_event = bytes_to_int(bt_info[2])
+            bt_info = []
+            LOGGER.info('After extract command lcd from STM32, key code: %d, key event: %d', key_code, key_event)
 
             if key_code in LIST_KEYCODE:
                 index_key = LIST_KEYCODE.index(key_code)
+                LOGGER.info('Key code exist in list key code')
 
             if key_event == EVENT_UP:
                 event = EVENT_UP_BT
             elif key_event == EVENT_HOLD:
                 event = EVENT_HOLD_BT
             self.button = event * index_key
-            if self.button_pre != self.button:
-                self.button_pre = self.button
+            if last_stt_bt != self.button:
+                last_stt_bt = self.button
                 LOGGER.info('return button value: %s', LOG_BUTTON[str(self.button)])
-
             return str(self.button)
         except Exception as ex:
             LOGGER.info('check_button function error: %s', ex.message)

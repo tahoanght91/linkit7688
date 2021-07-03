@@ -53,8 +53,9 @@ def replica_client_attributes():
         "atsVgenThresholdState": 0,
         "atsState": 0,
         "atsErrorState": 0,
-        "atsMode": 0
-    }
+        "atsMode": 0,
+        "atsConnect": 1,
+        }
 
     return attributes
 
