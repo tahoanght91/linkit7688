@@ -3,7 +3,7 @@ import serial
 import control
 from config import *
 from config.common_lcd_services import *
-from config.common import UPDATE_VALUE, CLEAR
+from config.common import UPDATE_VALUE, CLEAR, END_CMD
 from control.utils import split_row_by_salt
 from devices import ats, crmu, clock, acm, mcc
 from operate.lcd_thread import extract_lcd_service
@@ -30,7 +30,7 @@ def call():
         current_cycle = int((time.time()) / 60)
         if not (current_cycle - original_cycle) and not (current_cycle - original_cycle) % 2:
             LOGGER.info("Send clock set")
-            clock.set()
+            # clock.set()
 
         # Read data
         byte_stream = blocking_read(ser, message_break)
@@ -207,7 +207,11 @@ def call():
                         if byte_stream:
                             if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
                                 cmd_lcd_lock.acquire()
-                                if cmd_lcd[key_lcd] == content:
+                                if key_lcd == UPDATE_VALUE:
+                                    temp_content = content + END_CMD
+                                    if cmd_lcd[key_lcd] == temp_content:
+                                        del cmd_lcd[key_lcd]
+                                elif cmd_lcd[key_lcd] == content:
                                     del cmd_lcd[key_lcd]
                                 cmd_lcd_lock.release()
                                 LOGGER.debug("Receive ACK lcd with message with content: %s", content)
@@ -218,7 +222,11 @@ def call():
                             tries += 1
                             if tries > MAX_TRIES:
                                 cmd_lcd_lock.acquire()
-                                if cmd_lcd[key_lcd] == content:
+                                if key_lcd == UPDATE_VALUE:
+                                    temp_content = content + END_CMD
+                                    if cmd_lcd[key_lcd] == temp_content:
+                                        del cmd_lcd[key_lcd]
+                                elif cmd_lcd[key_lcd] == content:
                                     del cmd_lcd[key_lcd]
                                 cmd_lcd_lock.release()
                                 LOGGER.info('Time out')
