@@ -5,7 +5,7 @@ from config import *
 from config.common import UPDATE_VALUE
 from config.common_lcd_services import *
 from services.lcd.alarm_lcd_services import alarm_lcd_service, BAN_TIN_CANH_BAO
-from services.lcd.ats_service import AtsDisplay
+from services.lcd import ats_service
 from services.lcd.main_screen_lcd_services import main_screen
 from services.lcd.main_screen_lcd_services import main_screen, write_to_json
 from services.lcd.rfid_screen_lcd_sevices import rfid_screen
@@ -72,17 +72,16 @@ class Display:
 
     def ats_display(self):
         # USER CODE BEGIN
-        ats = AtsDisplay()
-
-        ats.display1()
+        ats_service.header()
+        ats_service.display1()
         while True:
             if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_35_EVENT_UP]):
                 LOGGER.info('Send button value : %s', str(button_status[0]))
                 self.menu(button_status[0])
             if button_status[0] == str(MENU[BUTTON_25_EVENT_UP]):
-                ats.display2()
+                ats_service.display2()
             if button_status[0] == str(MENU[BUTTON_23_EVENT_UP]):
-                ats.display1()
+                ats_service.display1()
         # USER CODE END
 
     def rfid_display(self):
