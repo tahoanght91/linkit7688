@@ -38,7 +38,7 @@ def call():
             get_datetime_title_now()
             # get_temp_tram()
             # get_user_tram()
-            lcd.menu(button_status[0])
+            # lcd.menu(button_status[0])
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
