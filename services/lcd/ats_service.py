@@ -102,6 +102,7 @@ def get_state():
             LOGGER.info('Get information form ats: state')
             return True
         else:
+            LOGGER.info('Run to else in get_state function')
             return False
     except Exception as ex:
         LOGGER.info('get_state function error: %s', ex.message)
