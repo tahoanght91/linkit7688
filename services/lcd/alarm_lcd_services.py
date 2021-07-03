@@ -25,7 +25,7 @@ class alarm_lcd_service:
 
     def check_alarm(self, tel_lcd):
         now = datetime.now()
-        dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+        dt_string = now.strftime("%d/%m/%Y %H:%M")
         try:
             json_file = open('./last_cmd_alarm.json', )
             all_row = json.load(json_file)
@@ -64,8 +64,8 @@ class alarm_lcd_service:
             el1 += self.create_cmd_multi(string2, ROW_3)
             if el1 != row2_3:
                 cmd_lcd[UPDATE_VALUE] = el1
+                LOGGER.info('ALarm in line 2 -3 in create_for_each : %s', el1)
                 row2_3 = el1
-            LOGGER.info('ALarm in line 2 -3 in create_for_each : %s', el1)
             return row2_3
         except Exception as ex:
             LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
