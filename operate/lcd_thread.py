@@ -170,14 +170,6 @@ def send_shared_attributes(body):
 #         LOGGER.error('Error at extract_lcd_service function with message: %s', ex.message)
 
 
-def extract_lcd_service(byte_data, button):
-    try:
-        button_status[0] = button.check_button(byte_data)
-        LOGGER.info('Send button value: %s', LOG_BUTTON[str(button_status[0])])
-    except Exception as ex:
-        LOGGER.error('Error at extract_lcd_service function with message: %s', ex.message)
-
-
 def get_last_trace():
     lcd_last_trace = Lcd()
     try:
