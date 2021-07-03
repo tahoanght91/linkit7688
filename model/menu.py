@@ -16,10 +16,7 @@ class Display:
 
     def main_display(self):
         try:
-            # USER CODE BEGIN
             lcd_cmd.clear_display()
-            # self.print_lcd('1.Main display', ROW_3)
-            # button_status[0] = str(MENU[BUTTON_12_EVENT_UP])
             while True:
                 if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_11_EVENT_UP]):
                     Recheck = {"title": '', "time": '61', "acmTempOutdoor": 0, "acmHumidIndoor": 0, "acmTempIndoor": 0, "isWarning": ""}
@@ -29,10 +26,7 @@ class Display:
                 mainScreen.get_datetime_title_now()
                 mainScreen.get_temp_tram()
                 mainScreen.get_user_tram()
-                time.sleep(3)
-                # lcd_services['key_code'] = KEYCODE_13
-                # lcd_services['key_event'] = EVENT_UP
-            # USER CODE END
+                time.sleep(60)
         except Exception as ex:
             LOGGER.error('Error at call function in menu.python with message: %s', ex.message)
 

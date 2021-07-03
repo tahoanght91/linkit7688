@@ -6,7 +6,6 @@ from config.common_lcd_services import *
 from config.common import UPDATE_VALUE, CLEAR, END_CMD
 from control.utils import split_row_by_salt
 from devices import ats, crmu, clock, acm, mcc
-from operate.lcd_thread import extract_lcd_service
 from utility import *
 
 
@@ -30,7 +29,7 @@ def call():
         current_cycle = int((time.time()) / 60)
         if not (current_cycle - original_cycle) and not (current_cycle - original_cycle) % 2:
             LOGGER.info("Send clock set")
-            # clock.set()
+            clock.set()
 
         # Read data
         byte_stream = blocking_read(ser, message_break)
@@ -38,12 +37,12 @@ def call():
             ser.write(with_check_sum(data_ack, BYTE_ORDER))
 
         # read button status
-        # try:
-        #     if len(bt_info) == 3:
-        #         button_status[0] = button.check_button(bt_info)
-        #         LOGGER.info('Send button value: %s', LOG_BUTTON[str(button_status[0])])
-        # except Exception as ex:
-        #     LOGGER.error('Error send led command to STM32 with message: %s', ex.message)
+        try:
+            if len(bt_info) == 3:
+                button_status[0] = button.check_button(bt_info)
+                LOGGER.info('Send button value: %s', LOG_BUTTON[str(button_status[0])])
+        except Exception as ex:
+            LOGGER.error('Error send led command to STM32 with message: %s', ex.message)
 
         # Write command
         try:
@@ -283,7 +282,6 @@ def _read_data(byte_stream):
                     len(data), _OpData.LCD_SIZE)
         if _check_data(frame_length, data, _OpData.LCD_SIZE):
             bt_info = data
-            # extract_lcd_service(data, button)
             return True
     return False
 

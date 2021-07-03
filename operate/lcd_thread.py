@@ -27,13 +27,8 @@ BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 
 def call():
     try:
-        period = 3
         lcd = menu.Display()
-        clear_display()
-        while True:
-            lcd.menu(button_status[0])
-            clear_display()
-            time.sleep(period)
+        lcd.menu(button_status[0])
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
 
