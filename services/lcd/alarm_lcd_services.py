@@ -37,15 +37,15 @@ class alarm_lcd_service:
                 row1 = BAN_TIN_CANH_BAO
                 LOGGER.info('Log in row 1 success: %s', row1)
 
-            max_tem = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
-            LOGGER.info('MAX TEMPERATURE: %s', str(max_tem))
+            # max_tem = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
+            # LOGGER.info('MAX TEMPERATURE: %s', str(max_tem))
             if tel_lcd:
                 if tel_lcd.get('mccFireState') == 1:
                     row2_3 = self.create_for_each('CB Chay!', dt_string, row2_3)
                 elif tel_lcd.get('mccSmokeState') == 1:
                     row2_3 = self.create_for_each('CB Khoi!', dt_string, row2_3)
-                elif tel_lcd.get('acmTempIndoor') > max_tem:
-                    row2_3 = self.create_for_each('CB Nhiet!', dt_string, row2_3)
+                # elif tel_lcd.get('acmTempIndoor') > max_tem:
+                #     row2_3 = self.create_for_each('CB Nhiet!', dt_string, row2_3)
                 elif tel_lcd.get('mccFloodState') == 1:
                     row2_3 = self.create_for_each('CB Ngap!', dt_string, row2_3)
                 elif tel_lcd.get('mccDoorState') == 1:
