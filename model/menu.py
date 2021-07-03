@@ -76,12 +76,25 @@ class Display:
 
     def ats_display(self):
         # USER CODE BEGIN
+        goto_display = 1
         lcd_cmd.clear_display()
-        lcd_cmd.print_lcd('5. ATS display', ROW_1)
+        ats_service.header()
         while True:
-            if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_35_EVENT_UP]):
+            if button_status[0] in MENU and button_status[0] != BUTTON_35_EVENT_UP:
                 LOGGER.info('Send button value : %s', str(button_status[0]))
                 self.menu(button_status[0])
+            if button_status[0] == BUTTON_25_EVENT_UP:
+                goto_display = 2
+                lcd_cmd.clear_display()
+            elif button_status[0] == BUTTON_23_EVENT_UP:
+                goto_display = 1
+                lcd_cmd.clear_display()
+
+            if goto_display == 1:
+                ats_service.display1()
+            elif goto_display == 2:
+                ats_service.display2()
+            time.sleep(3)
         # USER CODE END
 
     def rfid_display(self):
@@ -98,7 +111,6 @@ class Display:
                 time.sleep(3)
         except Exception as ex:
             LOGGER.error('Error at rfid_display function with message: %s', ex.message)
-            sys.exit(1)
 
     def menu(self, number_menu):
         try:
@@ -109,7 +121,7 @@ class Display:
             else:
                 return getattr(self, 'case_' + str(self.last_menu))()
         except Exception as ex:
-            LOGGER.info('Fail to connect to server with message: %s', ex.message)
+            LOGGER.info('menu function error: %s', ex.message)
 
     def case_0(self):
         return self.main_display()
@@ -169,14 +181,14 @@ class Display:
                     pass  # vao man hinh setting thong so da chon
 
         except Exception as ex:
-            LOGGER.info('Fail to connect to server with message: %s', ex.message)
+            LOGGER.info('setting_display function error: %s', ex.message)
 
     def setting_menu(self, setting_mode):
         try:
             LOGGER.info('Enter setting_menu function')
             return getattr(self, 'setting_menu_' + str(setting_mode))()
         except Exception as ex:
-            LOGGER.info('Fail to connect to server with message: %s', ex.message)
+            LOGGER.info('switch setting menu false: %s', ex.message)
 
     def setting_menu_0(self):
         # USER CODE BEGIN

@@ -32,15 +32,13 @@ BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 
 def call():
     try:
-        period = 3
         lcd = menu.Display()
-        clear_display()
+        period = 3
         while True:
             get_datetime_title_now()
             # get_temp_tram()
             # get_user_tram()
             lcd.menu(button_status[0])
-            clear_display()
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
@@ -243,15 +241,15 @@ def send_shared_attributes(body):
     return result
 
 
-def extract_lcd_service(byte_data):
-    try:
-        key_code = bytes_to_int(byte_data[0:2], byteorder=BYTE_ORDER)
-        key_event = bytes_to_int(byte_data[2])
-        read_lcd_services('key_code', key_code)
-        read_lcd_services('key_event', key_event)
-        LOGGER.info('After extract command lcd from STM32, key code: %d, key event: %d', key_code, key_event)
-    except Exception as ex:
-        LOGGER.error('Error at extract_lcd_service function with message: %s', ex.message)
+# def extract_lcd_service(byte_data):
+#     try:
+#         key_code = bytes_to_int(byte_data[0:2], byteorder=BYTE_ORDER)
+#         key_event = bytes_to_int(byte_data[2])
+#         read_lcd_services('key_code', key_code)
+#         read_lcd_services('key_event', key_event)
+#         LOGGER.info('After extract command lcd from STM32, key code: %d, key event: %d', key_code, key_event)
+#     except Exception as ex:
+#         LOGGER.error('Error at extract_lcd_service function with message: %s', ex.message)
 
 
 def get_last_trace():
