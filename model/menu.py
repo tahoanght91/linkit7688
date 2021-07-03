@@ -90,6 +90,7 @@ class Display:
                 ats_service.display1()
             elif goto_display == 2:
                 ats_service.display2()
+            time.sleep(3)
         # USER CODE END
 
     def rfid_display(self):
