@@ -27,6 +27,7 @@ class Display:
                     self.menu(button_status[0])
                 mainScreen = main_screen()
                 mainScreen.get_datetime_title_now()
+                mainScreen.get_temp_tram()
                 mainScreen.get_user_tram()
                 time.sleep(3)
                 # lcd_services['key_code'] = KEYCODE_13
