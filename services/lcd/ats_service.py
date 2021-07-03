@@ -91,7 +91,8 @@ def get_state():
     try:
 
         # read status ats
-        if 'atsConnect' in update_attributes and 'atsContactorGenState' in update_attributes and 'atsContactorElecState' in update_attributes:
+        # if 'atsConnect' in update_attributes and 'atsContactorGenState' in update_attributes and 'atsContactorElecState' in update_attributes:
+        if 'atsPac1' in telemetries:
             # is_connect = update_attributes['atsConnect']
             # ats_generator_stt = update_attributes['atsContactorGenState']
             # ats_power_network_stt = update_attributes['atsContactorElecState']

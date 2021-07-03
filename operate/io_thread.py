@@ -344,6 +344,7 @@ class Button:
             LOGGER.info('Enter check_button fucntion')
             key_code = bytes_to_int(bt_info[0:2], byteorder=BYTE_ORDER)
             key_event = bytes_to_int(bt_info[2])
+            bt_info = []
             LOGGER.info('After extract command lcd from STM32, key code: %d, key event: %d', key_code, key_event)
 
             if key_code in LIST_KEYCODE:
