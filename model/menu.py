@@ -1,12 +1,7 @@
-import sys
 import time
 
 from config import *
-from config.common import UPDATE_VALUE
 from config.common_lcd_services import *
-from services.lcd.alarm_lcd_services import alarm_lcd_service, BAN_TIN_CANH_BAO
-from services.lcd.main_screen_lcd_services import main_screen
-from services.lcd.main_screen_lcd_services import main_screen, write_to_json
 from services.lcd.rfid_screen_lcd_sevices import rfid_screen
 from services import lcd_cmd
 
@@ -40,13 +35,13 @@ class Display:
         try:
             # USER CODE BEGIN
             lcd_cmd.clear_display()
-            warning_service = alarm_lcd_service()
+            # warning_service = alarm_lcd_service()
             while True:
                 if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_12_EVENT_UP]):
                     LOGGER.info('Send button value : %s', str(button_status[0]))
                     self.menu(button_status[0])
-                else:
-                    warning_service.check_alarm(tel_lcd=telemetries)
+                # else:
+                    # warning_service.check_alarm(tel_lcd=telemetries)
                 time.sleep(3)
             # USER CODE END
         except Exception as ex:
@@ -74,28 +69,28 @@ class Display:
             # lcd_services['key_event'] = EVENT_UP
         # USER CODE END
 
-    def ats_display(self):
-        # USER CODE BEGIN
-        goto_display = 1
-        lcd_cmd.clear_display()
-        ats_service.header()
-        while True:
-            if button_status[0] in MENU and button_status[0] != BUTTON_35_EVENT_UP:
-                LOGGER.info('Send button value : %s', str(button_status[0]))
-                self.menu(button_status[0])
-            if button_status[0] == BUTTON_25_EVENT_UP:
-                goto_display = 2
-                lcd_cmd.clear_display()
-            elif button_status[0] == BUTTON_23_EVENT_UP:
-                goto_display = 1
-                lcd_cmd.clear_display()
-
-            if goto_display == 1:
-                ats_service.display1()
-            elif goto_display == 2:
-                ats_service.display2()
-            time.sleep(3)
-        # USER CODE END
+    # def ats_display(self):
+    #     # USER CODE BEGIN
+    #     goto_display = 1
+    #     lcd_cmd.clear_display()
+    #     # ats_service.header()
+    #     while True:
+    #         if button_status[0] in MENU and button_status[0] != BUTTON_35_EVENT_UP:
+    #             LOGGER.info('Send button value : %s', str(button_status[0]))
+    #             self.menu(button_status[0])
+    #         if button_status[0] == BUTTON_25_EVENT_UP:
+    #             goto_display = 2
+    #             lcd_cmd.clear_display()
+    #         elif button_status[0] == BUTTON_23_EVENT_UP:
+    #             goto_display = 1
+    #             lcd_cmd.clear_display()
+    #
+    #         # if goto_display == 1:
+    #         #     # ats_service.display1()
+    #         # elif goto_display == 2:
+    #         #     ats_service.display2()
+    #         time.sleep(3)
+    #     # USER CODE END
 
     def rfid_display(self):
         try:
