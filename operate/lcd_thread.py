@@ -41,7 +41,9 @@ def call():
     try:
         period = 3
         while True:
-            check_key_code()
+            show = 'MAKE IN MOBIFONE' + SALT_DOLLAR_SIGN + str(ROW_1) + END_CMD
+            cmd_lcd[UPDATE_VALUE] = show
+            # check_key_code()
             # lcd.menu(button_status[0])
             time.sleep(period)
     except Exception as ex:
