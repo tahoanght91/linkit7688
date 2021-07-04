@@ -7,7 +7,7 @@ def call():
     period = shared_attributes.get('mccPeriodSendTelemetry', default_data.mccPeriodSendTelemetry)
     while True:
         if CLIENT.is_connected():
-            telemetry = format_telemetry(replica_telemetry())
+            telemetry = format_telemetry(telemetries)
             for key, value in telemetry.items():
                 response = CLIENT.gw_send_telemetry(key, value)
                 LOGGER.info('RC of send telemetry to Thingsboard is: %s', str(response.rc()))
