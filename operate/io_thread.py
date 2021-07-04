@@ -326,9 +326,9 @@ class _OpData:
 
     # new
     # uncomment when update STM32
-    ACM_SIZE = 28
-    ATS_SIZE = 52
-    MCC_SIZE = 58
+    ACM_SIZE = 29
+    ATS_SIZE = 53
+    MCC_SIZE = 59
     CRMU_SIZE = 19
     LCD_SIZE = 4
     RPC_SIZE = 10
