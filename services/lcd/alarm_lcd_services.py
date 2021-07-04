@@ -1,5 +1,3 @@
-import time
-
 from datetime import datetime
 from config import *
 from config.common import *
@@ -18,32 +16,39 @@ def write_to_json(body, file_url):
         LOGGER.error('Error at write_to_json function with message: %s', ex.message)
 
 
-def check_alarm(tel_lcd):
+def read_to_json(fileUrl):
+    try:
+        json_file = open(fileUrl, )
+        json_info = json.load(json_file)
+    except Exception as ex:
+        LOGGER.error('Error at call function in read_to_json with message: %s', ex.message)
+    return json_info
+
+
+def check_alarm():
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M")
     try:
-        json_file = open('./last_cmd_alarm.json', )
-        all_row = json.load(json_file)
+        tel_lcd = read_to_json('./latest_telemetry.json')
+        all_row = read_to_json('./last_cmd_alarm.json')
         row1 = all_row['row1']
         row2_3 = all_row['row2_3']
-
         if row1 != BAN_TIN_CANH_BAO:
             cmd_lcd[UPDATE_VALUE] = create_cmd_multi(BAN_TIN_CANH_BAO, ROW_1)
             row1 = BAN_TIN_CANH_BAO
             LOGGER.info('Log in row 1 success: %s', row1)
-
         # max_tem = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
         # LOGGER.info('MAX TEMPERATURE: %s', str(max_tem))
         if tel_lcd:
-            if tel_lcd.get('mccFireState') == 1:
+            if (CB_CHAY in tel_lcd) and tel_lcd.get(CB_CHAY) == 1:
                 row2_3 = create_for_each('CB Chay!', dt_string, row2_3)
-            elif tel_lcd.get('mccSmokeState') == 1:
+            elif (CB_KHOI in tel_lcd) and tel_lcd.get(CB_KHOI) == 1:
                 row2_3 = create_for_each('CB Khoi!', dt_string, row2_3)
             # elif tel_lcd.get('acmTempIndoor') > max_tem:
             #     row2_3 = self.create_for_each('CB Nhiet!', dt_string, row2_3)
-            elif tel_lcd.get('mccFloodState') == 1:
+            elif (CB_NGAP in tel_lcd) and tel_lcd.get(CB_NGAP) == 1:
                 row2_3 = create_for_each('CB Ngap!', dt_string, row2_3)
-            elif tel_lcd.get('mccDoorState') == 1:
+            elif (CB_CUA in tel_lcd) and tel_lcd.get(CB_CUA) == 1:
                 row2_3 = create_for_each('CB Cua!', dt_string, row2_3)
             else:
                 row2_3 = create_for_each('An Toan!', '', row2_3)

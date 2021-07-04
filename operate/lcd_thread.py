@@ -56,7 +56,7 @@ def check_key_code():
         last_trace = json.load(json_file)
         a = last_trace['key_code']
         b = last_trace['key_event']
-
+        LOGGER.info('OLD KEY CODE: %s', str(a))
         if result_check_input.key_code > 0 and result_check_input.key_event > 0:
             # cmd_lcd[CLEAR] = ''
             result_switch_lcd = switch_lcd_service(result_check_input)
@@ -73,7 +73,7 @@ def check_last_display(key_code, key_event):
         if key_code == KEYCODE_11 and key_event == EVENT_UP:
             screen_main()
         elif key_code == KEYCODE_12 and key_event == EVENT_UP:
-            check_alarm(telemetries)
+            check_alarm()
     except Exception as ex:
         LOGGER.error('Error at call function in check_last_display with message: %s', ex.message)
 
