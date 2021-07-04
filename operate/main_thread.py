@@ -150,7 +150,7 @@ def call():
                         if latest_version > current_version:
                             LOGGER.info('Get new version: %s from server: %s', str(latest_version), link_version)
                             LOGGER.info('Update system, disconnect with server')
-                            command = 'cd /IoT && ./update.sh'
+                            command = 'cd /IoT && ./update.sh ' + link_update
                             subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
                         else:
                             pass

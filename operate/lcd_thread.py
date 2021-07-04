@@ -39,7 +39,6 @@ warningOld = ''
 
 def call():
     try:
-        lcd = menu.Display()
         period = 3
         while True:
             check_key_code()
@@ -80,8 +79,8 @@ def check_last_display(key_code, key_event):
 # HungLq
 def screen_main():
     try:
-        get_datetime_now()
         get_title_main()
+        get_datetime_now()
         get_temp_tram()
         get_user_tram()
     except Exception as ex:
