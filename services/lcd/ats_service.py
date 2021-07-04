@@ -11,13 +11,6 @@ ats_vac = [0, 0, 0]
 ats_vgen = [0, 0, 0]
 ats_vload = [0, 0, 0]
 ats_iload = [0, 0, 0]
-# self.is_connect_previous = 0
-# self.electricity_supply_previous = 0
-#
-# self.ats_vac_previous = [0, 0, 0]
-# self.ats_vgen_previous = [0, 0, 0]
-# self.ats_vload_previous = [0, 0, 0]
-# self.ats_iload_previous = [0, 0, 0]
 
 def header():
     lcd_cmd.print_lcd('THONG TIN ATS', ROW_1)

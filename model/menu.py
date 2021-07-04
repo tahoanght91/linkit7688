@@ -2,6 +2,7 @@ import time
 
 from config import *
 from config.common_lcd_services import *
+from services.lcd import ats_service
 from services.lcd.rfid_screen_lcd_sevices import rfid_screen
 from services import lcd_cmd
 
@@ -69,28 +70,29 @@ class Display:
             # lcd_services['key_event'] = EVENT_UP
         # USER CODE END
 
-    # def ats_display(self):
-    #     # USER CODE BEGIN
-    #     goto_display = 1
-    #     lcd_cmd.clear_display()
-    #     # ats_service.header()
-    #     while True:
-    #         if button_status[0] in MENU and button_status[0] != BUTTON_35_EVENT_UP:
-    #             LOGGER.info('Send button value : %s', str(button_status[0]))
-    #             self.menu(button_status[0])
-    #         if button_status[0] == BUTTON_25_EVENT_UP:
-    #             goto_display = 2
-    #             lcd_cmd.clear_display()
-    #         elif button_status[0] == BUTTON_23_EVENT_UP:
-    #             goto_display = 1
-    #             lcd_cmd.clear_display()
-    #
-    #         # if goto_display == 1:
-    #         #     # ats_service.display1()
-    #         # elif goto_display == 2:
-    #         #     ats_service.display2()
-    #         time.sleep(3)
-    #     # USER CODE END
+    def ats_display(self):
+        # USER CODE BEGIN
+        goto_display = 1
+        lcd_cmd.clear_display()
+        ats_service.header()
+        while True:
+            if button_status[0] in MENU and button_status[0] != BUTTON_35_EVENT_UP:
+                LOGGER.info('Send button value : %s', str(button_status[0]))
+                self.menu(button_status[0])
+                break
+            if button_status[0] == BUTTON_25_EVENT_UP:
+                goto_display = 2
+                lcd_cmd.clear_display()
+            elif button_status[0] == BUTTON_23_EVENT_UP:
+                goto_display = 1
+                lcd_cmd.clear_display()
+
+            if goto_display == 1:
+                ats_service.display1()
+            elif goto_display == 2:
+                ats_service.display2()
+            time.sleep(3)
+        # USER CODE END
 
     def rfid_display(self):
         try:

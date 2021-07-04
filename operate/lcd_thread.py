@@ -9,13 +9,13 @@ from config.common_lcd_services import *
 from devices.utils import read_lcd_services
 from model.alarm_lcd import Alarm_lcd
 from model.lcd import Lcd
+from model.menu import Display
 from services.lcd.alarm_lcd_services import check_alarm
 from operate.led_thread import get_sate_led_alarm
 from operate.rfid_thread import KEY_RFID
 from services.lcd.main_screen_lcd_services import write_to_json
 from services.lcd_cmd import clear_display
 from utility import bytes_to_int
-from model import menu
 
 URL_SEND_SA = 'http://123.30.214.139:8517/api/services/app/DMTram/ChangeValueTemplate'
 URL_NV = 'http://123.30.214.139:8517/api/services/app/DMNhanVienRaVaoTram/GetNhanVienRaVaoTram'
@@ -36,13 +36,14 @@ acmTempOutOld = ''
 acmHumidInOld = ''
 warningOld = ''
 
-
+button_status[0] = '16'
 def call():
     try:
+        lcd = Display()
         period = 3
         while True:
-            check_key_code()
-            # lcd.menu(button_status[0])
+            # check_key_code()
+            lcd.menu(button_status[0])
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
