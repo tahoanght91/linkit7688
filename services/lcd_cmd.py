@@ -12,7 +12,7 @@ def add_cmd_lcd(dict_cmd):
 
 def create_cmd_rule(dict_cmd, string, row):
     dict_cmd[str(row)] = str(string) + SALT_DOLLAR_SIGN + str(row) + END_CMD
-
+    LOGGER.info('Send message: %s', dict_cmd[str(row)])
 
 def print_lcd(string, row):
     try:
