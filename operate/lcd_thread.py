@@ -5,6 +5,7 @@ import requests
 
 from config import *
 from config.common import *
+from config.common_api import *
 from config.common_lcd_services import *
 from devices.utils import read_lcd_services
 from model.alarm_lcd import Alarm_lcd
@@ -17,9 +18,8 @@ from services.lcd_cmd import clear_display
 from utility import bytes_to_int
 from model import menu
 
-URL_SEND_SA = 'http://123.30.214.139:8517/api/services/app/DMTram/ChangeValueTemplate'
-URL_NV = 'http://123.30.214.139:8517/api/services/app/DMNhanVienRaVaoTram/GetNhanVienRaVaoTram'
-menu_level_1 = [MCC, ACM, ATS]
+url_send_sa = PREFIX + DOMAIN + API_UPDATE_SHARED_ATTRIBUTES
+url_get_staff = PREFIX + DOMAIN + API_GET_STAFF
 LIST_KEY_EVENT = [EVENT_NONE, EVENT_DOWN, EVENT_UP, EVENT_HOLD, EVENT_POWER]
 LIST_KEY_CODE = [KEYCODE_11, KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26, KEYCODE_24, KEYCODE_13, KEYCODE_12]
 json_file = open('config/lcd.json')
@@ -161,7 +161,7 @@ def get_user_tram():
             rfid_card = rfid.get(KEY_RFID)
             staffCode = rfid_card
             param = {'input': rfid_card}
-            response = requests.get(url=URL_NV, params=param)
+            response = requests.get(url=url_get_staff, params=param)
             if response.status_code == 200:
                 LOGGER.info('Send log request to Smartsite successful!')
                 staff = json.loads(response.content)['result']
@@ -307,7 +307,7 @@ def write_body_send_shared_attributes(key, value):
 def send_shared_attributes(body):
     result = False
     try:
-        response = requests.post(url=URL_SEND_SA, json=body)
+        response = requests.post(url=url_send_sa, json=body)
         if response.status_code == 200:
             LOGGER.info('Send shared attributes to Smartsite successful!')
             result = True
