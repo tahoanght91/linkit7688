@@ -200,7 +200,7 @@ def switch_lcd_service(input_lcd):
             elif key_code == KEYCODE_13:
                 pass
             elif key_code == KEYCODE_12:
-                check_alarm(telemetries)
+                check_alarm()
             elif key_event == EVENT_DOWN:
                 pass
             elif key_event == EVENT_HOLD:
