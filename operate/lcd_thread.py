@@ -29,7 +29,7 @@ dct_lcd_menu_level = dct_lcd_menu['level']
 dct_lcd_menu_level_lv1 = dct_lcd_menu_level['lv1']
 last_alarm_update = Alarm_lcd()
 BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
-timeOld = 61
+timeOld = '61'
 titleOld = ''
 acmTempInOld = ''
 acmTempOutOld = ''
@@ -75,6 +75,7 @@ def check_last_display(key_code, key_event):
             check_alarm()
     except Exception as ex:
         LOGGER.error('Error at call function in check_last_display with message: %s', ex.message)
+
 
 # HungLq
 def screen_main():
@@ -153,7 +154,6 @@ def get_temp_tram():
         LOGGER.error('Error at get_temp_tram function with message: %s', ex.message)
 
 
-
 def get_user_tram():
     try:
         rfid = read_to_json('./latest_client_attributes.json')
@@ -180,11 +180,23 @@ def get_user_tram():
 # HuyTQ
 def switch_lcd_service(input_lcd):
     last_trace = Lcd()
+    global titleOld
+    global acmTempInOld
+    global acmTempOutOld
+    global acmHumidInOld
+    global warningOld
+    global timeOld
     try:
         key_event = input_lcd.key_event
         key_code = input_lcd.key_code
         if key_event == EVENT_UP:
             if key_code == KEYCODE_11:
+                titleOld = ''
+                acmTempInOld = 0
+                acmTempOutOld = 0
+                acmHumidInOld = 0
+                warningOld = ''
+                timeOld = '61'
                 screen_main()
             elif key_code == KEYCODE_16:
                 last_trace.category = dct_lcd_menu['id']
