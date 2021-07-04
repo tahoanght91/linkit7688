@@ -77,7 +77,7 @@ def check_last_display(key_code, key_event):
     except Exception as ex:
         LOGGER.error('Error at call function in check_last_display with message: %s', ex.message)
 
-
+# HungLq
 def screen_main():
     try:
         get_datetime_now()
@@ -112,7 +112,6 @@ def get_datetime_now():
         LOGGER.error('Error at call function in check_key_code with message: %s', ex.message)
 
 
-# HungLq
 def get_title_main():
     global titleOld
     try:
@@ -155,10 +154,12 @@ def get_temp_tram():
         LOGGER.error('Error at get_temp_tram function with message: %s', ex.message)
 
 
+
 def get_user_tram():
     try:
-        if KEY_RFID in client_attributes:
-            rfid_card = client_attributes.get(KEY_RFID)
+        rfid = read_to_json('./latest_client_attributes.json')
+        if KEY_RFID in rfid:
+            rfid_card = rfid.get(KEY_RFID)
             staffCode = rfid_card
             param = {'input': rfid_card}
             response = requests.get(url=URL_NV, params=param)
