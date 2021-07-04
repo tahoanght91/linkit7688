@@ -7,7 +7,7 @@ def call():
     period = shared_attributes.get('mccPeriodSendTelemetry', default_data.mccPeriodSendTelemetry)
     while True:
         if CLIENT.is_connected():
-            telemetry = format_telemetry(telemetries)
+            telemetry = format_telemetry(replica_telemetry())
             for key, value in telemetry.items():
                 response = CLIENT.gw_send_telemetry(key, value)
                 LOGGER.info('RC of send telemetry to Thingsboard is: %s', str(response.rc()))
@@ -96,9 +96,17 @@ def format_telemetry(dict_telemetry):
         if 'mcc' in key:
             telemetry_mcc_1[key] = value
         elif 'ats' in key:
-            telemetry_ats_1[key] = value
+            if 'atsVacP1' == key or 'atsVacP2' == key or 'atsVacP3' == key:
+                telemetry_ats_1['atsVacAlarm'] = check_vac_alarm_ats(value)
+            else:
+                telemetry_ats_1[key] = value
         elif 'acm' in key:
-            telemetry_acm_1[key] = value
+            if 'acmTempIndoor' == key:
+                telemetry_acm_1['acmTempAlarm'] = check_temp_alarm_acm(value)
+            elif 'acmHumidIndoor' == key:
+                telemetry_acm_1['acmHumidAlarm'] = check_humid_alarm_acm(value)
+            else:
+                telemetry_acm_1[key] = value
 
     if telemetry_mcc_1:
         list_telemetry[DEVICE_MCC] = [telemetry_mcc_1]
@@ -108,3 +116,82 @@ def format_telemetry(dict_telemetry):
         list_telemetry[DEVICE_ACM] = [telemetry_acm_1]
 
     return list_telemetry
+
+
+def check_temp_alarm_acm(value):
+    result = 0
+    try:
+        if 'acmMaxTempThreshold' in shared_attributes:
+            max_temp_threshold = shared_attributes['acmMaxTempThreshold']
+            if value > max_temp_threshold:
+                result = 2
+                LOGGER.info('Temperature indoor > acmMaxTempThreshold')
+            else:
+                LOGGER.info('Temperature indoor < acmMaxTempThreshold')
+        else:
+            LOGGER.info('No acmMaxTempThreshold key in shared attributes')
+        if 'acmMinTempThreshold' in shared_attributes:
+            min_temp_threshold = shared_attributes['acmMaxTempThreshold']
+            if value < min_temp_threshold:
+                result = 1
+                LOGGER.info('Temperature indoor < acmMinTempThreshold')
+            else:
+                LOGGER.info('Temperature indoor > acmMinTempThreshold')
+        else:
+            LOGGER.info('No acmMinTempThreshold key in shared attributes')
+    except Exception as ex:
+        LOGGER.error('Error at check_alarm_acm function with message: %s', ex.message)
+    return result
+
+
+def check_humid_alarm_acm(value):
+    result = 0
+    try:
+        if 'acmMaxHumidThreshold' in shared_attributes:
+            max_humid_threshold = shared_attributes['acmMaxHumidThreshold']
+            if value > max_humid_threshold:
+                result = 2
+                LOGGER.info('Humidity indoor > acmMaxHumidThreshold')
+            else:
+                LOGGER.info('Humidity indoor < acmMaxHumidThreshold')
+        else:
+            LOGGER.info('No acmMaxHumidThreshold key in shared attributes')
+        if 'acmMinHumidThreshold' in shared_attributes:
+            min_humid_threshold = shared_attributes['acmMinHumidThreshold']
+            if value < min_humid_threshold:
+                result = 1
+                LOGGER.info('Humidity indoor < acmMinHumidThreshold')
+            else:
+                LOGGER.info('Humidity indoor > acmMinHumidThreshold')
+        else:
+            LOGGER.info('No acmMinHumidThreshold key in shared attributes')
+    except Exception as ex:
+        LOGGER.error('Error at check_humid_alarm_acm function with message: %s', ex.message)
+    return result
+
+
+def check_vac_alarm_ats(value):
+    result = 0
+    try:
+        if 'atsVacMaxThreshold ' in shared_attributes:
+            max_vac_threshold = shared_attributes['atsVacMaxThreshold ']
+            if value > max_vac_threshold:
+                result = 2
+                LOGGER.info('VAC > atsVacMaxThreshold')
+            else:
+                LOGGER.info('VAC indoor < atsVacMaxThreshold')
+        else:
+            LOGGER.info('No atsVacMaxThreshold key in shared attributes')
+        if 'atsVacMinThreshold ' in shared_attributes:
+            min_vac_threshold = shared_attributes['atsVacMinThreshold ']
+            if value < min_vac_threshold:
+                result = 1
+                LOGGER.info('VAC < atsVacMinThreshold')
+            else:
+                LOGGER.info('VAC > atsVacMinThreshold')
+        else:
+            LOGGER.info('No atsVacMinThreshold key in shared attributes')
+    except Exception as ex:
+        LOGGER.error('Error at check_vac_alarm_ats function with message: %s', ex.message)
+    return result
+
