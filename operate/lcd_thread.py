@@ -36,7 +36,7 @@ acmTempOutOld = ''
 acmHumidInOld = ''
 warningOld = ''
 
-button_status[0] = '16'
+button_status[0] = '14'
 def call():
     try:
         lcd = Display()

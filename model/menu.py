@@ -145,14 +145,11 @@ class Display:
         try:
             LOGGER.info('Enter setting_display function')
             mode_setting = 0
-            lcd_cmd.clear_display()
-            lcd_cmd.print_lcd('CAI DAT HE THONG', ROW_1)
-            lcd_cmd.print_lcd('-> TT he thong  ', ROW_2)
-            lcd_cmd.print_lcd('   Thoi gian    ', ROW_3)
-            lcd_cmd.print_lcd('   Thong so mang', ROW_4)
+            # lcd_cmd.clear_display()
+            self.setting_menu_0()
             while True:
                 last_mode = mode_setting
-                if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_33_EVENT_UP]):
+                if button_status[0] in MENU and button_status[0] != BUTTON_33_EVENT_UP:
                     LOGGER.info('Send button value : %s', str(button_status[0]))
                     self.menu(button_status[0])
                 if button_status[0] == BUTTON_14_EVENT_UP:
@@ -176,6 +173,7 @@ class Display:
                 if button_status[0] == BUTTON_24_EVENT_UP:
                     LOGGER.info('Send button value : %s', str(button_status[0]))
                     pass  # vao man hinh setting thong so da chon
+                time.sleep(1)
 
         except Exception as ex:
             LOGGER.info('setting_display function error: %s', ex.message)
