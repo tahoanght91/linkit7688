@@ -178,6 +178,7 @@ class Display:
                     LOGGER.info('Send button value : %s', str(button_status[0]))
 
                 # button_status[0] = BUTTON_14_EVENT_UP
+                button_status[0] = ''
                 time.sleep(1)
 
         except Exception as ex:
