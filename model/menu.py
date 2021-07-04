@@ -131,7 +131,7 @@ def menu_list(number_menu):
             menu_lv_1 = number_menu
         else:
             pass
-        LOGGER.info('show display %d', number_menu)
+        LOGGER.info('show display %s', str(number_menu))
         func = switcher.get(menu_lv_1)
         return func()
     except Exception as ex:
