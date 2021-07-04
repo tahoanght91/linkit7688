@@ -40,7 +40,7 @@ def check_alarm():
         row3 = get_time_alarm(row3)
         # max_tem = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
         # LOGGER.info('MAX TEMPERATURE: %s', str(max_tem))
-        body = {"row1": row1, "row2_3": row2, "row3": row3}
+        body = {"row1": row1, "row2": row2, "row3": row3}
         write_to_json(body, './last_cmd_alarm.json')
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
