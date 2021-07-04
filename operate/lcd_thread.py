@@ -180,11 +180,13 @@ def get_user_tram():
 # HuyTQ
 def switch_lcd_service(input_lcd):
     last_trace = Lcd()
+    global titleOld
     try:
         key_event = input_lcd.key_event
         key_code = input_lcd.key_code
         if key_event == EVENT_UP:
             if key_code == KEYCODE_11:
+                titleOld = ''
                 screen_main()
             elif key_code == KEYCODE_16:
                 last_trace.category = dct_lcd_menu['id']
