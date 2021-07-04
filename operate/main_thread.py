@@ -9,7 +9,7 @@ from config import *
 from config.default_data import data_dict
 from devices import clock
 from . import subscription_thread, monitor_thread, io_thread, telemetry_thread, update_attributes_thread, ui_thread, \
-    shared_attributes_thread, rfid_thread, led_thread, lcd_thread
+    shared_attributes_thread, rfid_thread, led_thread, lcd_thread, check_connection_thread
 from .update_attributes_thread import format_client_attributes, get_list_key
 
 semaphore = threading.Semaphore(0)
@@ -18,10 +18,6 @@ semaphore = threading.Semaphore(0)
 def _connect_callback(client, userdata, flags, rc, *extra_params):
     LOGGER.info('Connection successful')
     semaphore.release()
-
-
-def _disconnect_callback():
-    CLIENT.disconnect()
 
 
 def _on_receive_shared_attributes_callback(content, exception):
@@ -68,8 +64,8 @@ def call():
         try:
             CLIENT.connect(callback=_connect_callback)
             semaphore.acquire()
-        except Exception as e:
-            LOGGER.info('Fail to connect to server')
+        except Exception as ex:
+            LOGGER.info('Fail to connect to server with message: %s', ex.message)
 
         if CLIENT.is_connected():
             LOGGER.debug('Set IO time')
@@ -100,10 +96,10 @@ def call():
         CLIENT.gw_subscribe_to_all_attributes(callback=subscription_thread._attribute_change_callback)
         CLIENT.gw_set_server_side_rpc_request_handler(handler=subscription_thread._gw_rpc_callback)
 
-        thread_list = [io_thread, update_attributes_thread, telemetry_thread, led_thread, lcd_thread, shared_attributes_thread, rfid_thread]
+        thread_list = [io_thread, update_attributes_thread, telemetry_thread, lcd_thread, led_thread, shared_attributes_thread, rfid_thread, monitor_thread, check_connection_thread]
 
         # enable when test in IDE
-        # thread_list = [update_attributes_thread, telemetry_thread, led_thread, lcd_thread, shared_attributes_thread, rfid_thread]
+        # thread_list = [update_attributes_thread, telemetry_thread, led_thread, lcd_thread, shared_attributes_thread, rfid_thread, monitor_thread]
 
         for i, thread in enumerate(thread_list):
             thread.name = thread.__name__
@@ -141,9 +137,6 @@ def call():
             current_update_cycle = math.floor(time.time() / UPDATE_PERIOD)
             if current_update_cycle > original_update_cycle and CLIENT.is_connected():
                 latest_version = -1
-                current_version = -1
-                link_update = ''
-                link_version = ''
                 try:
                     link_update = shared_attributes['mccLinkUpdate']
                     link_version = shared_attributes['mccLinkVersion']
@@ -157,7 +150,7 @@ def call():
                         if latest_version > current_version:
                             LOGGER.info('Get new version: %s from server: %s', str(latest_version), link_version)
                             LOGGER.info('Update system, disconnect with server')
-                            command = 'cd /IoT && ./update.sh'
+                            command = 'cd /IoT && ./update.sh ' + link_update
                             subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
                         else:
                             pass

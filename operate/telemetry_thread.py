@@ -18,10 +18,22 @@ def call():
             for key, value in telemetries.items():
                 log_info.append('\t{:>20s}: {:>20s}'.format(str(key), str(value)))
             LOGGER.info('\n'.join(log_info))
+            save_history_telemetry(telemetries)
             telemetries_lock.acquire()
             telemetries.clear()
             telemetries_lock.release()
         time.sleep(period)
+
+
+def save_history_telemetry(dct_telemetry):
+    try:
+        dct_latest_telemetry = dct_telemetry
+        json_latest = json.dumps(dct_latest_telemetry)
+        with io.open('./latest_telemetry.json', 'wb') as latest_telemetry_file:
+            latest_telemetry_file.write(json_latest)
+        LOGGER.info('Latest telemetry just write to file: %s', dct_latest_telemetry)
+    except Exception as ex:
+        LOGGER.error('Error at save_history_telemetry function with message: %s', ex.message)
 
 
 def replica_telemetry():

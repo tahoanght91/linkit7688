@@ -254,22 +254,16 @@ def compose_command_lcd(key_lcd, content):
                     arr_char = [item for index, item in enumerate(arr_char) if index <= 15]
                 elif len(arr_char) < 16:
                     need_add_space = 16 - len(arr_char)
-                    posfix = ''.join([char * need_add_space for char in CHAR_SPACE])
-                    arr_char.extend([char for char in posfix])
+                    postfix = ''.join([char * need_add_space for char in CHAR_SPACE])
+                    arr_char.extend([char for char in postfix])
                 prefix = ''.join([char * len(arr_char) for char in CHAR_S])
                 length = len(arr_char) + 3
                 row = int(str_split[1])
                 result = struct.pack(FORMAT_LCD + prefix, 0xA0, length, op_code_lcd, key_lcd, row, *arr_char)
                 return result
             elif key_lcd == CLEAR:
-                # length = 2
-                # result = struct.pack('BBBB', 0xA0, length, op_code_lcd, key_lcd)
-                str_empty = ''.join([char * 16 for char in CHAR_SPACE])
-                arr_char = [char for char in str_empty]
-                prefix = ''.join([char * len(arr_char) for char in CHAR_S])
-                length = len(arr_char) + 3
-                row = int(str_split[1])
-                result = struct.pack(FORMAT_LCD + prefix, 0xA0, length, op_code_lcd, key_lcd, row, *arr_char)
+                length = 2
+                result = struct.pack('BBBB', 0xA0, length, op_code_lcd, key_lcd)
                 return result
         else:
             str_empty = ''.join([char * 16 for char in CHAR_SPACE])
@@ -282,7 +276,6 @@ def compose_command_lcd(key_lcd, content):
 
     except Exception as ex:
         LOGGER.error('Error at compose_command_lcd function with message: %s', ex.message)
-
 
 
 def _process_cmd_led(length_led, arr_value):
@@ -319,3 +312,18 @@ def _process_cmd_sa(module_id, value):
         return result
     except Exception as ex:
         LOGGER.error('Error at _process_cmd_lcd function with message: %s', ex.message)
+
+
+def split_row_by_salt(content):
+    try:
+        arr_dct_split = []
+        if isinstance(content, str):
+            arr_content = content.split(END_CMD)
+            if len(arr_content) > 0:
+                for x in arr_content[:-1]:
+                    temp_tuple = (UPDATE_VALUE, x)
+                    arr_dct_split.append(temp_tuple)
+        LOGGER.info('Content is: %s, after split row by salt: %s', content, arr_dct_split)
+        return arr_dct_split
+    except Exception as ex:
+        LOGGER.error('Error at split_row_by_salt function with message: %s', ex.message)
