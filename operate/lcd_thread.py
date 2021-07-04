@@ -39,8 +39,8 @@ warningOld = ''
 # button_status[0] = BUTTON_14_EVENT_UP
 def call():
     try:
-        # lcd = Display()
         period = 3
+        clear_display()
         while True:
             button = button_status[0]
             # button = BUTTON_33_EVENT_UP

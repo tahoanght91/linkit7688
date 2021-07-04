@@ -117,6 +117,7 @@ def menu_list(number_menu):
     global menu_lv_1
 
     try:
+        LOGGER.info('Enter menu_list function')
         switcher = {
             BUTTON_11_EVENT_UP: main_display,
             BUTTON_12_EVENT_UP: warning_display,
@@ -130,10 +131,11 @@ def menu_list(number_menu):
             menu_lv_1 = number_menu
         else:
             pass
+        LOGGER.info('show display %d', number_menu)
         func = switcher.get(menu_lv_1)
         return func()
     except Exception as ex:
-        LOGGER.info('menu function error: %s', ex.message)
+        LOGGER.info('menu_list function error: %s', ex.message)
 
 
 def main_display():

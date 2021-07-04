@@ -12,7 +12,6 @@ from utility import *
 
 bt_info = []
 last_stt_bt = 0
-lass_button = 0
 
 def call():
     global bt_info
