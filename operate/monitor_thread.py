@@ -5,7 +5,7 @@ from monitor import *
 
 
 def call():
-    period = 60
+    period = 4
     while True:
         # mcc.check_status()
         # Check if device is set in Auto mode
