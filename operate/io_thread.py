@@ -354,6 +354,6 @@ def check_button():
         if last_stt_bt != button:
             last_stt_bt = button
             LOGGER.info('return button value: %s', LOG_BUTTON[str(button)])
-        return str(button)
+        return button
     except Exception as ex:
         LOGGER.info('check_button function error: %s', ex.message)

@@ -9,7 +9,7 @@ from config.common_lcd_services import *
 from devices.utils import read_lcd_services
 from model.alarm_lcd import Alarm_lcd
 from model.lcd import Lcd
-from model.menu import Display
+from model import menu
 from services.lcd.alarm_lcd_services import check_alarm
 from operate.led_thread import get_sate_led_alarm
 from operate.rfid_thread import KEY_RFID
@@ -36,14 +36,16 @@ acmTempOutOld = ''
 acmHumidInOld = ''
 warningOld = ''
 
-button_status[0] = '14'
+# button_status[0] = BUTTON_14_EVENT_UP
 def call():
     try:
-        lcd = Display()
+        # lcd = Display()
         period = 3
         while True:
+            button = button_status[0]
+            # button = BUTTON_33_EVENT_UP
             # check_key_code()
-            lcd.menu(button_status[0])
+            menu.menu_list(button)
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
