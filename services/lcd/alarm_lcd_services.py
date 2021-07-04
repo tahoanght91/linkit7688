@@ -6,28 +6,8 @@ from config.common_lcd_services import *
 BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 
 
-def write_to_json(body, file_url):
-    try:
-        json_last_trace = json.dumps(body)
-        with io.open(file_url, 'wb') as last_trace_file:
-            last_trace_file.write(json_last_trace)
-        LOGGER.info('Command information just send: %s', body)
-    except Exception as ex:
-        LOGGER.error('Error at write_to_json function with message: %s', ex.message)
-
-
-def read_to_json(fileUrl):
-    try:
-        json_file = open(fileUrl, )
-        json_info = json.load(json_file)
-    except Exception as ex:
-        LOGGER.error('Error at call function in read_to_json with message: %s', ex.message)
-    return json_info
-
-
 def check_alarm():
     try:
-        delete_row4()
         tel_lcd = read_to_json('./latest_telemetry.json')
         all_row = read_to_json('./last_cmd_alarm.json')
         row1 = all_row['row1']
@@ -100,7 +80,7 @@ def get_time_alarm(row3, row2):
     try:
         now = datetime.now()
         dt_string = now.strftime("%d/%m/%Y %H:%M")
-        if dt_string != row3 and row2 != 'An Toan!':
+        if dt_string != row3 and row2 != 'An Toan!' and row2 != '':
             show = str(dt_string) + SALT_DOLLAR_SIGN + str(ROW_3) + END_CMD
             cmd_lcd[UPDATE_VALUE] = show
             LOGGER.info('TIME TO ALARM: %s', str(show))
@@ -121,9 +101,28 @@ def create_for_each(string):
     return string
 
 
+def write_to_json(body, file_url):
+    try:
+        json_last_trace = json.dumps(body)
+        with io.open(file_url, 'wb') as last_trace_file:
+            last_trace_file.write(json_last_trace)
+        LOGGER.info('Command information just send: %s', body)
+    except Exception as ex:
+        LOGGER.error('Error at write_to_json function with message: %s', ex.message)
+
+
+def read_to_json(fileUrl):
+    try:
+        json_file = open(fileUrl, )
+        json_info = json.load(json_file)
+    except Exception as ex:
+        LOGGER.error('Error at call function in read_to_json with message: %s', ex.message)
+    return json_info
+
+
 def delete_row4():
     try:
-        cmd_lcd[UPDATE_VALUE] = CHAR_SPACE + SALT_DOLLAR_SIGN + str(ROW_4) + END_CMD
+        cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_4) + END_CMD
     except Exception as ex:
         LOGGER.error('Error at call function in delete_row4 with message: %s', ex.message)
 
