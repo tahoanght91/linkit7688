@@ -3,22 +3,14 @@ from config import *
 from config.common_lcd_services import *
 
 
-def add_cmd_lcd(dict_cmd):
-    cmd = ''
-    for i in dict_cmd:
-        cmd += dict_cmd[i]
-    cmd_lcd[UPDATE_VALUE] = cmd
-
-
-def create_cmd_rule(dict_cmd, string, row):
-    dict_cmd[str(row)] = str(string) + SALT_DOLLAR_SIGN + str(row) + END_CMD
-    LOGGER.info('Send message: %s', dict_cmd[str(row)])
-
-def print_lcd(string, row):
+def print_lcd(row1, row2, row3, row4):
     try:
         LOGGER.info('Send message print on lcd')
-        create_cmd_rule(dict_cmd, string, row)
-        add_cmd_lcd(dict_cmd)
+        cmd_lcd[UPDATE_VALUE] = str(row1) + SALT_DOLLAR_SIGN + str(1) + END_CMD \
+                                + str(row2) + SALT_DOLLAR_SIGN + str(2) + END_CMD \
+                                + str(row3) + SALT_DOLLAR_SIGN + str(3) + END_CMD \
+                                + str(row4) + SALT_DOLLAR_SIGN + str(4) + END_CMD
+        LOGGER.info('Send message print on lcd: %s', str(cmd_lcd[UPDATE_VALUE]))
     except Exception as ex:
         LOGGER.info('print_lcd function error: %s', ex.message)
 

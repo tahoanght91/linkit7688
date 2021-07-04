@@ -41,6 +41,8 @@ def call():
     try:
         period = 3
         clear_display()
+        time.sleep(1)
+
         while True:
             button = button_status[0]
             # button = BUTTON_33_EVENT_UP

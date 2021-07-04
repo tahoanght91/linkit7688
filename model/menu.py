@@ -175,32 +175,36 @@ def setting_display():
             LOGGER.info('Send button value : %s', str(button_status[0]))
             button_status[0] = None
         if setting_mode == 0:
-            lcd_cmd.print_lcd('CAI DAT HE THONG', ROW_1)
-            lcd_cmd.print_lcd('-> TT he thong  ', ROW_2)
-            lcd_cmd.print_lcd('   Thoi gian    ', ROW_3)
-            lcd_cmd.print_lcd('   Thong so mang', ROW_4)
+            lcd_cmd.print_lcd('CAI DAT HE THONG',
+                              '-> TT he thong  ',
+                              '   Thoi gian    ',
+                              '   Thong so mang')
         elif setting_mode == 1:
-            lcd_cmd.print_lcd('   TT he thong  ', ROW_2)
-            lcd_cmd.print_lcd('-> Thoi gian    ', ROW_3)
-            lcd_cmd.print_lcd('   Thong so mang', ROW_4)
+            lcd_cmd.print_lcd('CAI DAT HE THONG',
+                              '   TT he thong  ',
+                              '-> Thoi gian    ',
+                              '   Thong so mang')
         elif setting_mode == 2:
-            lcd_cmd.print_lcd('   TT he thong  ', ROW_2)
-            lcd_cmd.print_lcd('   Thoi gian    ', ROW_3)
-            lcd_cmd.print_lcd('-> Thong so mang', ROW_4)
+            lcd_cmd.print_lcd('CAI DAT HE THONG',
+                              '   TT he thong  ',
+                              '   Thoi gian    ',
+                              '-> Thong so mang')
         elif setting_mode == 3:
-            lcd_cmd.print_lcd('-> Canh bao     ', ROW_2)
-            lcd_cmd.print_lcd('   ATS          ', ROW_3)
-            lcd_cmd.print_lcd('   Phu kien     ', ROW_4)
+            lcd_cmd.print_lcd('CAI DAT HE THONG',
+                              '-> Canh bao     ',
+                              '   ATS          ',
+                              '   Phu kien     ')
         elif setting_mode == 4:
-            lcd_cmd.print_lcd('   Canh bao     ', ROW_2)
-            lcd_cmd.print_lcd('-> ATS          ', ROW_3)
-            lcd_cmd.print_lcd('   Phu kien     ', ROW_4)
+            lcd_cmd.print_lcd('CAI DAT HE THONG',
+                              '   Canh bao     ',
+                              '-> ATS          ',
+                              '   Phu kien     ')
         elif setting_mode == 5:
-            lcd_cmd.print_lcd('   Canh bao     ', ROW_2)
-            lcd_cmd.print_lcd('   ATS          ', ROW_3)
-            lcd_cmd.print_lcd('-> Phu kien     ', ROW_4)
+            lcd_cmd.print_lcd('CAI DAT HE THONG',
+                              '   Canh bao     ',
+                              '   ATS          ',
+                              '-> Phu kien     ')
         button_status[0] = None
-        # button_status[0] = BUTTON_14_EVENT_UP
     except Exception as ex:
         LOGGER.info('switch setting menu false: %s', ex.message)
 
