@@ -42,7 +42,7 @@ def extract(byte_data):
     mccDcCabinetSate = bytes_to_int(byte_data[56])
 
     # uncomment when update code STM32
-    # mccDcCabinetSate = bytes_to_int(byte_data[57])
+    mccDcLow = bytes_to_int(byte_data[57])
 
     # telemetry
     _read_telemetry('mccSmokeState', mccSmokeState)
@@ -78,7 +78,7 @@ def extract(byte_data):
     _read_telemetry('mccDcP5', mccDcP5)
 
     # uncomment when update code STM32
-    # _read_telemetry('mccDcCabinetSate', mccDcCabinetSate)
+    _read_telemetry('mccDcLow', mccDcLow)
 
     # client attributes
     _read_attribute('mccSystemClock', mccSystemClock)

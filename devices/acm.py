@@ -18,9 +18,9 @@ def extract(byte_data):
     acmFanError = utility.bytes_to_int(byte_data[10])
 
     # uncomment when update STM32
-    # acmRunTimeAirc1 = utility.bytes_to_int(byte_data[25])
-    # acmRunTimeAirc2 = utility.bytes_to_int(byte_data[26])
-    # acmRunTimeFan = utility.bytes_to_int(byte_data[27])
+    acmRunTimeAirc1 = utility.bytes_to_int(byte_data[25])
+    acmRunTimeAirc2 = utility.bytes_to_int(byte_data[26])
+    acmRunTimeFan = utility.bytes_to_int(byte_data[27])
 
     #telemetry
     acmTempIndoor = utility.bytes_to_int(byte_data[11:13], byteorder='big')
@@ -54,7 +54,7 @@ def extract(byte_data):
     utils._read_attribute('acmFanError', acmFanError)
 
     # uncomment when update STM32
-    # utils._read_attribute('acmRunTimeAirc1', acmRunTimeAirc1)
-    # utils._read_attribute('acmRunTimeAirc2', acmRunTimeAirc2)
-    # utils._read_attribute('acmRunTimeFan', acmRunTimeFan)
+    utils._read_attribute('acmRunTimeAirc1', acmRunTimeAirc1)
+    utils._read_attribute('acmRunTimeAirc2', acmRunTimeAirc2)
+    utils._read_attribute('acmRunTimeFan', acmRunTimeFan)
 
