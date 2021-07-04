@@ -58,7 +58,7 @@ def check_key_code():
         b = last_trace['key_event']
 
         if result_check_input.key_code > 0 and result_check_input.key_event > 0:
-            cmd_lcd[CLEAR] = ''
+            # cmd_lcd[CLEAR] = ''
             result_switch_lcd = switch_lcd_service(result_check_input)
             set_last_trace(result_switch_lcd)
             lcd_services.clear()
