@@ -16,8 +16,6 @@ def extract(byte_data):
     acmAirc2Error = utility.bytes_to_int(byte_data[8])
     acmFanRunState = utility.bytes_to_int(byte_data[9])
     acmFanError = utility.bytes_to_int(byte_data[10])
-
-    # uncomment when update STM32
     acmRunTimeAirc1 = utility.bytes_to_int(byte_data[25])
     acmRunTimeAirc2 = utility.bytes_to_int(byte_data[26])
     acmRunTimeFan = utility.bytes_to_int(byte_data[27])
@@ -52,8 +50,6 @@ def extract(byte_data):
     utils._read_attribute('acmAirc2Error', acmAirc2Error)
     utils._read_attribute('acmFanRunState', acmFanRunState)
     utils._read_attribute('acmFanError', acmFanError)
-
-    # uncomment when update STM32
     utils._read_attribute('acmRunTimeAirc1', acmRunTimeAirc1)
     utils._read_attribute('acmRunTimeAirc2', acmRunTimeAirc2)
     utils._read_attribute('acmRunTimeFan', acmRunTimeFan)
