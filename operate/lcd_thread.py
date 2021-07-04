@@ -200,9 +200,7 @@ def switch_lcd_service(input_lcd):
             elif key_code == KEYCODE_13:
                 pass
             elif key_code == KEYCODE_12:
-                file_json = read_to_json('./last_cmd_alarm.json')
-                file_json['row1'] = ""
-                write_to_json(file_json, './last_cmd_alarm.json')
+                remove_json_file_alarm()
                 check_alarm()
             elif key_event == EVENT_DOWN:
                 pass
