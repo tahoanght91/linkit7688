@@ -311,23 +311,8 @@ def _check_data(frame_length, data, expected_data_length):
 
 class _OpData:
     # current
-    ACM_SIZE = 26
-    ATS_SIZE = 51
-    MCC_SIZE = 58
-    CRMU_SIZE = 19
-    LCD_SIZE = 4
-    RPC_SIZE = 10
-    IO_STATUS_MCC = b'\x11'
-    IO_STATUS_ATS = b'\x13'
-    IO_STATUS_ACM = b'\x14'
-    IO_STATUS_CRMU = b'\x16'
-    IO_STATUS_RPC = b'\x21'
-    IO_STATUS_LCD = b'\x32'
-
-    # new
-    # uncomment when update STM32
-    # ACM_SIZE = 28
-    # ATS_SIZE = 52
+    # ACM_SIZE = 26
+    # ATS_SIZE = 51
     # MCC_SIZE = 58
     # CRMU_SIZE = 19
     # LCD_SIZE = 4
@@ -338,6 +323,21 @@ class _OpData:
     # IO_STATUS_CRMU = b'\x16'
     # IO_STATUS_RPC = b'\x21'
     # IO_STATUS_LCD = b'\x32'
+
+    # new
+    # uncomment when update STM32
+    ACM_SIZE = 29
+    ATS_SIZE = 53
+    MCC_SIZE = 59
+    CRMU_SIZE = 19
+    LCD_SIZE = 4
+    RPC_SIZE = 10
+    IO_STATUS_MCC = b'\x11'
+    IO_STATUS_ATS = b'\x13'
+    IO_STATUS_ACM = b'\x14'
+    IO_STATUS_CRMU = b'\x16'
+    IO_STATUS_RPC = b'\x21'
+    IO_STATUS_LCD = b'\x32'
 
 
 class Button:
