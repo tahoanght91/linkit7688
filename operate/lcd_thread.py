@@ -9,6 +9,7 @@ from config.common_lcd_services import *
 from devices.utils import read_lcd_services
 from model.alarm_lcd import Alarm_lcd
 from model.lcd import Lcd
+from services.lcd.alarm_lcd_services import check_alarm
 from operate.led_thread import get_sate_led_alarm
 from operate.rfid_thread import KEY_RFID
 from services.lcd.main_screen_lcd_services import write_to_json
@@ -41,11 +42,40 @@ def call():
         lcd = menu.Display()
         period = 3
         while True:
-            screen_main()
+            check_key_code()
             # lcd.menu(button_status[0])
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
+
+
+def check_key_code():
+    try:
+        result_check_input = check_lcd_service(lcd_services)
+        json_file = open('./last_trace_lcd.json', )
+        last_trace = json.load(json_file)
+        a = last_trace['key_code']
+        b = last_trace['key_event']
+
+        if result_check_input.key_code > 0 and result_check_input.key_event > 0:
+            cmd_lcd[CLEAR] = ''
+            result_switch_lcd = switch_lcd_service(result_check_input)
+            set_last_trace(result_switch_lcd)
+            lcd_services.clear()
+        elif a > 0 and b > 0:
+            check_last_display(a, b)
+    except Exception as ex:
+        LOGGER.error('Error at call function in check_key_code with message: %s', ex.message)
+
+
+def check_last_display(key_code, key_event):
+    try:
+        if key_code == KEYCODE_11 and key_event == EVENT_UP:
+            screen_main()
+        elif key_code == KEYCODE_12 and key_event == EVENT_UP:
+            check_alarm(telemetries)
+    except Exception as ex:
+        LOGGER.error('Error at call function in check_last_display with message: %s', ex.message)
 
 
 def screen_main():
@@ -79,7 +109,7 @@ def get_datetime_now():
             LOGGER.info('MAIN SCREEN DATETIME NOW: %s', str(show))
             timeOld = timeNew
     except Exception as ex:
-        LOGGER.error('Error at get_datetime_now function with message: %s', ex.message)
+        LOGGER.error('Error at call function in check_key_code with message: %s', ex.message)
 
 
 # HungLq
@@ -127,9 +157,8 @@ def get_temp_tram():
 
 def get_user_tram():
     try:
-        rfid = read_to_json('./latest_client_attributes.json')
-        if KEY_RFID in rfid:
-            rfid_card = rfid.get(KEY_RFID)
+        if KEY_RFID in client_attributes:
+            rfid_card = client_attributes.get(KEY_RFID)
             staffCode = rfid_card
             param = {'input': rfid_card}
             response = requests.get(url=URL_NV, params=param)
@@ -155,7 +184,9 @@ def switch_lcd_service(input_lcd):
         key_event = input_lcd.key_event
         key_code = input_lcd.key_code
         if key_event == EVENT_UP:
-            if key_code == KEYCODE_16:
+            if key_code == KEYCODE_11:
+                screen_main()
+            elif key_code == KEYCODE_16:
                 last_trace.category = dct_lcd_menu['id']
                 last_trace.level = dct_lcd_menu_level['levelId']
                 last_trace.index_level1 = dct_lcd_menu_level_lv1[0]['index']
@@ -169,7 +200,7 @@ def switch_lcd_service(input_lcd):
             elif key_code == KEYCODE_13:
                 pass
             elif key_code == KEYCODE_12:
-                pass
+                check_alarm(telemetries)
             elif key_event == EVENT_DOWN:
                 pass
             elif key_event == EVENT_HOLD:
