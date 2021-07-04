@@ -59,12 +59,12 @@ def get_alarm(row2, row3, tel_lcd):
                 if not check:
                     row2 = create_for_each('An Toan!')
                 get_time_alarm(row3, row2)
-            else:
-                row2 = create_for_each(row2)
-                get_time_alarm(row3, row2)
-        else:
-            row2 = create_for_each(row2)
-            get_time_alarm(row3, row2)
+        #     else:
+        #         row2 = create_for_each(row2)
+        #         get_time_alarm(row3, row2)
+        # else:
+        #     row2 = create_for_each(row2)
+        #     get_time_alarm(row3, row2)
     except Exception as ex:
         LOGGER.error('Error at call function in get_alarm with message: %s', ex.message)
 
