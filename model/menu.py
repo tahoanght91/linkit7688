@@ -145,10 +145,11 @@ class Display:
         try:
             LOGGER.info('Enter setting_display function')
             mode_setting = 0
+            last_mode = mode_setting
             # lcd_cmd.clear_display()
             self.setting_menu_0()
             while True:
-                last_mode = mode_setting
+
                 if button_status[0] in MENU and button_status[0] != BUTTON_33_EVENT_UP:
                     LOGGER.info('Send button value : %s', str(button_status[0]))
                     self.menu(button_status[0])
@@ -166,13 +167,17 @@ class Display:
                     mode_setting = 0
 
                 if mode_setting != last_mode:
-                    LOGGER.info('mode setting : %s', str(mode_setting))
+                    LOGGER.info('previous mode setting : %s', str(last_mode))
+                    LOGGER.info('new mode setting : %s', str(mode_setting))
                     LOGGER.info('Send button value : %s', str(button_status[0]))
                     self.setting_menu(mode_setting)
+                    last_mode = mode_setting
 
+                # vao man hinh setting thong so da chon
                 if button_status[0] == BUTTON_24_EVENT_UP:
                     LOGGER.info('Send button value : %s', str(button_status[0]))
-                    pass  # vao man hinh setting thong so da chon
+
+                # button_status[0] = BUTTON_14_EVENT_UP
                 time.sleep(1)
 
         except Exception as ex:
@@ -180,7 +185,7 @@ class Display:
 
     def setting_menu(self, setting_mode):
         try:
-            LOGGER.info('Enter setting_menu function')
+            LOGGER.info('Enter setting_menu_%s function', setting_mode)
             return getattr(self, 'setting_menu_' + str(setting_mode))()
         except Exception as ex:
             LOGGER.info('switch setting menu false: %s', ex.message)
