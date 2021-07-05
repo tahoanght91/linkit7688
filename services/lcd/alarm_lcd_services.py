@@ -122,14 +122,14 @@ def read_to_json(file_url):
 
 def delete_row4():
     try:
-        cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_4) + END_CMD
+        cmd_lcd[UPDATE_VALUE] = ' ' + SALT_DOLLAR_SIGN + str(ROW_4) + END_CMD
     except Exception as ex:
         LOGGER.error('Error at call function in delete_row4 with message: %s', ex.message)
 
 
 def delete_row3():
     try:
-        cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_3) + END_CMD
+        cmd_lcd[UPDATE_VALUE] = ' ' + SALT_DOLLAR_SIGN + str(ROW_3) + END_CMD
     except Exception as ex:
         LOGGER.error('Error at call function in delete_row4 with message: %s', ex.message)
 
