@@ -42,7 +42,6 @@ def save_to_file(str_saved, number):
 
 def get_alarm(row2, row3, tel_lcd):
     try:
-        no_have_alarm = True
         if tel_lcd:
             if CB_CHAY in tel_lcd:
                 if tel_lcd.get(CB_CHAY) == 1 and row2 != 'CB Chay!':
