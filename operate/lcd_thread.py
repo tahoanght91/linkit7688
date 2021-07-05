@@ -173,7 +173,7 @@ def get_user_tram():
             rfid_card = rfid.get(KEY_RFID)
             staffCode = rfid_card
             param = {'input': rfid_card}
-            response = requests.get(url=url_get_staff, params=param, verify=False)
+            response = requests.get(url=url_get_staff, params=param)
             if response.status_code == 200:
                 LOGGER.info('Send log request to Smartsite successful!')
                 staff = json.loads(response.content)['result']
@@ -320,7 +320,7 @@ def write_body_send_shared_attributes(key, value):
 def send_shared_attributes(body):
     result = False
     try:
-        response = requests.post(url=url_send_sa, json=body, verify=False)
+        response = requests.post(url=url_send_sa, json=body)
         if response.status_code == 200:
             LOGGER.info('Send shared attributes to Smartsite successful!')
             result = True

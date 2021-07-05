@@ -78,7 +78,7 @@ def write_log(rfid_card, status):
 def send_log(log):
     result = False
     try:
-        response = requests.post(url=url_send_log_rfid, json=log, verify=False)
+        response = requests.post(url=url_send_log_rfid, json=log)
         if response.status_code == 200:
             LOGGER.info('Send log request to Smartsite successful!')
             result = True
