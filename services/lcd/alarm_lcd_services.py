@@ -26,14 +26,14 @@ def check_alarm():
 
 def save_to_file(str_saved, number):
     try:
-        all_row = read_to_json(last_telemetry)
+        all_row = read_to_json(last_cmd_alarm)
         if number == ROW_1:
             all_row['row1'] = str_saved
         elif number == ROW_2:
             all_row['row2'] = str_saved
         elif number == ROW_3:
             all_row['row3'] = str_saved
-        write_to_json(all_row, last_telemetry)
+        write_to_json(all_row, last_cmd_alarm)
         LOGGER.info('Saved file last_cmd_alarm')
 
     except Exception as ex:

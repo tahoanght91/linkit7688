@@ -404,11 +404,11 @@ def check_lcd_service(dct_lcd_service):
 #Nguyenvq
 def remove_json_file_alarm():
     try:
-        file_json = read_to_json('./last_cmd_alarm.json')
+        file_json = read_to_json(last_cmd_alarm)
         file_json['row1'] = ""
         file_json['row2'] = ""
         file_json['row3'] = ""
-        write_to_json(file_json, './last_cmd_alarm.json')
+        write_to_json(file_json, last_cmd_alarm)
     except Exception as ex:
         LOGGER.error('Error at remove_json_file_alarm function with message: %s', ex.message)
 
