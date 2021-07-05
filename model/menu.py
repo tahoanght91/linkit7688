@@ -141,7 +141,7 @@ def menu_list(number_menu):
 
 
 def main_display():
-    lcd_cmd.print_lcd('MAKE IN MOBIFIONE',
+    lcd_cmd.print_lcd('MAKE IN MOBIFONE',
                       'TIME',
                       'VALUE',
                       '')
