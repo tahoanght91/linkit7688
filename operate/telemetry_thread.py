@@ -28,8 +28,6 @@ def call():
         time.sleep(period)
 
 
-
-
 def save_history_telemetry(dct_telemetry):
     try:
         dct_latest_telemetry = dct_telemetry
@@ -101,17 +99,15 @@ def format_telemetry(dict_telemetry):
         if 'mcc' in key:
             telemetry_mcc_1[key] = value
         elif 'ats' in key:
+            telemetry_ats_1[key] = value
             if 'atsVacP1' == key or 'atsVacP2' == key or 'atsVacP3' == key:
                 telemetry_ats_1['atsVacAlarm'] = check_vac_alarm_ats(value)
-            else:
-                telemetry_ats_1[key] = value
         elif 'acm' in key:
+            telemetry_acm_1[key] = value
             if 'acmTempIndoor' == key:
                 telemetry_acm_1['acmTempAlarm'] = check_temp_alarm_acm(value)
             elif 'acmHumidIndoor' == key:
                 telemetry_acm_1['acmHumidAlarm'] = check_humid_alarm_acm(value)
-            else:
-                telemetry_acm_1[key] = value
 
     if telemetry_mcc_1:
         list_telemetry[DEVICE_MCC] = [telemetry_mcc_1]
