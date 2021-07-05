@@ -6,6 +6,101 @@ from config.common_lcd_services import *
 BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 
 
+def check_alarm():
+    try:
+        tel_lcd = read_to_json('./latest_telemetry.json')
+        all_row = read_to_json('./last_cmd_alarm.json')
+        row1 = all_row['row1']
+        row2 = all_row['row2']
+        row3 = all_row['row3']
+        if row1 != BAN_TIN_CANH_BAO:
+            cmd_lcd[UPDATE_VALUE] = create_cmd_multi(BAN_TIN_CANH_BAO, ROW_1)
+            row1 = BAN_TIN_CANH_BAO
+            LOGGER.info('Log in row 1 success: %s', row1)
+            save_to_file(row1, ROW_1)
+        get_alarm(row2, row3, tel_lcd)
+    except Exception as ex:
+        LOGGER.error('Error at call function in check_alarm with message: %s', ex.message)
+
+
+def save_to_file(str_saved, number):
+    try:
+        all_row = read_to_json('./last_cmd_alarm.json')
+        if number == ROW_1:
+            all_row['row1'] = str_saved
+        elif number == ROW_2:
+            all_row['row2'] = str_saved
+        elif number == ROW_3:
+            all_row['row3'] = str_saved
+        write_to_json(all_row, './last_cmd_alarm.json')
+        LOGGER.info('Saved file last_cmd_alarm')
+
+    except Exception as ex:
+        LOGGER.error('Error at call function in save_to_file with message: %s', ex.message)
+
+
+def get_alarm(row2, row3, tel_lcd):
+    try:
+        no_have_alarm = True
+        if tel_lcd:
+            if CB_CHAY in tel_lcd:
+                if tel_lcd.get(CB_CHAY) == 1 and row2 != 'CB Chay!':
+                    row2 = create_for_each('CB Chay!')
+                elif tel_lcd.get(CB_KHOI) == 1 and row2 != 'CB Khoi!':
+                    row2 = create_for_each('CB Khoi!')
+                elif tel_lcd.get(CB_NGAP) == 1 and row2 != 'CB Ngap!':
+                    row2 = create_for_each('CB Ngap!')
+                elif tel_lcd.get(CB_CUA) == 1 and row2 != 'CB Cua!':
+                    row2 = create_for_each('CB Cua!')
+
+                new_list_telemetries = dict(
+                    filter(lambda elem: elem[0].lower().find('state') != -1, tel_lcd.items()))
+                check = any(elem != 0 for elem in new_list_telemetries.values())
+                if not check:
+                    row2 = create_for_each('An Toan!')
+                get_time_alarm(row3, row2)
+        #     else:
+        #         row2 = create_for_each(row2)
+        #         get_time_alarm(row3, row2)
+        # else:
+        #     row2 = create_for_each(row2)
+        #     get_time_alarm(row3, row2)
+    except Exception as ex:
+        LOGGER.error('Error at call function in get_alarm with message: %s', ex.message)
+
+
+def check_detail_alarm(key, row2, text, tel_lcd):
+    if tel_lcd.get(key) == 1 and row2 != text:
+            return True
+    return False
+
+
+
+def get_time_alarm(row3, row2):
+    try:
+        now = datetime.now()
+        dt_string = now.strftime("%d/%m/%Y %H:%M")
+        if dt_string != row3 and row2 != 'An Toan!' and row2 != '':
+            show = str(dt_string) + SALT_DOLLAR_SIGN + str(ROW_3) + END_CMD
+            cmd_lcd[UPDATE_VALUE] = show
+            LOGGER.info('TIME TO ALARM: %s', str(show))
+            row = dt_string
+            save_to_file(row, ROW_3)
+    except Exception as ex:
+        LOGGER.error('Error at call function in get_time_alarm with message: %s', ex.message)
+
+
+def create_for_each(string):
+    try:
+        el1 = create_cmd_multi(string, ROW_2)
+        cmd_lcd[UPDATE_VALUE] = el1
+        LOGGER.info('ALarm in line 2 -3 in create_for_each : %s', el1)
+        save_to_file(string, ROW_2)
+    except Exception as ex:
+        LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
+    return string
+
+
 def write_to_json(body, file_url):
     try:
         json_last_trace = json.dumps(body)
@@ -25,71 +120,11 @@ def read_to_json(fileUrl):
     return json_info
 
 
-def check_alarm():
+def delete_row4():
     try:
-        tel_lcd = read_to_json('./latest_telemetry.json')
-        all_row = read_to_json('./last_cmd_alarm.json')
-        row1 = all_row['row1']
-        row2 = all_row['row2']
-        row3 = all_row['row3']
-        if row1 != BAN_TIN_CANH_BAO:
-            cmd_lcd[UPDATE_VALUE] = create_cmd_multi(BAN_TIN_CANH_BAO, ROW_1)
-            row1 = BAN_TIN_CANH_BAO
-            LOGGER.info('Log in row 1 success: %s', row1)
-        row2 = get_alarm(row2, tel_lcd)
-        row3 = get_time_alarm(row3)
-        # max_tem = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
-        # LOGGER.info('MAX TEMPERATURE: %s', str(max_tem))
-        body = {"row1": row1, "row2": row2, "row3": row3}
-        write_to_json(body, './last_cmd_alarm.json')
+        cmd_lcd[UPDATE_VALUE] = '' + SALT_DOLLAR_SIGN + str(ROW_4) + END_CMD
     except Exception as ex:
-        LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
-
-
-def get_alarm(row2, tel_lcd):
-    try:
-        if tel_lcd:
-            if (CB_CHAY in tel_lcd) and tel_lcd.get(CB_CHAY) == 1:
-                row2 = create_for_each('CB Chay!', row2)
-            elif (CB_KHOI in tel_lcd) and tel_lcd.get(CB_KHOI) == 1:
-                row2 = create_for_each('CB Khoi!', row2)
-            # elif tel_lcd.get('acmTempIndoor') > max_tem:
-            #     row2_3 = self.create_for_each('CB Nhiet!', dt_string, row2_3)
-            elif (CB_NGAP in tel_lcd) and tel_lcd.get(CB_NGAP) == 1:
-                row2 = create_for_each('CB Ngap!', row2)
-            elif (CB_CUA in tel_lcd) and tel_lcd.get(CB_CUA) == 1:
-                row2 = create_for_each('CB Cua!', row2)
-            else:
-                row2 = create_for_each('An Toan!', row2)
-    except Exception as ex:
-        LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
-    return row2
-
-
-def get_time_alarm(row):
-    try:
-        now = datetime.now()
-        dt_string = now.strftime("%d/%m/%Y %H:%M")
-        show = str(dt_string) + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD
-        if show != row:
-            cmd_lcd[UPDATE_VALUE] = show
-            LOGGER.info('TIME TO ALARM: %s', str(show))
-            row = show
-    except Exception as ex:
-        LOGGER.error('Error at call function in check_key_code with message: %s', ex.message)
-    return row
-
-
-def create_for_each(string, row_str):
-    try:
-        el1 = create_cmd_multi(string, ROW_2)
-        if el1 != row_str:
-            cmd_lcd[UPDATE_VALUE] = el1
-            LOGGER.info('ALarm in line 2 -3 in create_for_each : %s', el1)
-            row_str = el1
-        return row_str
-    except Exception as ex:
-        LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
+        LOGGER.error('Error at call function in delete_row4 with message: %s', ex.message)
 
 
 def create_cmd_multi(str_show, row):
