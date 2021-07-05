@@ -29,6 +29,9 @@ def process_cmd_led(cmd_led):
 def process_cmd_lcd(cmd_lcd):
     return utils._process_cmd_lcd(cmd_lcd['key_lcd'], cmd_lcd['content'])
 
+# def process_cmd_lcd(row, key_lcd, content):
+#     return utils._process_cmd_lcd(row, key_lcd, content)
+
 
 def process_cmd_sa(cmd_sa):
     return utils._process_cmd_sa(cmd_sa['module_id'], cmd_sa['value'])

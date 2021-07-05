@@ -13,11 +13,11 @@ params = {'gatewayId': CLIENT_ID}
 
 
 def call():
-    period = 30
+    period = 60
     while True:
         try:
             time.sleep(period)
-            response = requests.get(url=url_check_connection, params=params, verify=False)
+            response = requests.get(url=url_check_connection, params=params)
             if response.status_code == 200:
                 LOGGER.info('Send check connection request to Smartsite successful!')
                 active = json.loads(response.content)['result']
