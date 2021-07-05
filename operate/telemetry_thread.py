@@ -7,22 +7,27 @@ def call():
     period = shared_attributes.get('mccPeriodSendTelemetry', default_data.mccPeriodSendTelemetry)
     while True:
         if CLIENT.is_connected():
-            telemetry = format_telemetry(telemetries)
-            for key, value in telemetry.items():
-                response = CLIENT.gw_send_telemetry(key, value)
-                LOGGER.info('RC of send telemetry to Thingsboard is: %s', str(response.rc()))
-                if response.rc() != 0:
-                    CLIENT.disconnect()
-            LOGGER.info('Sent telemetry data')
-            log_info = []
-            for key, value in telemetries.items():
-                log_info.append('\t{:>20s}: {:>20s}'.format(str(key), str(value)))
-            LOGGER.info('\n'.join(log_info))
-            save_history_telemetry(telemetries)
-            telemetries_lock.acquire()
-            telemetries.clear()
-            telemetries_lock.release()
+            if len(telemetries) > 0:
+                telemetry = format_telemetry(telemetries)
+                for key, value in telemetry.items():
+                    response = CLIENT.gw_send_telemetry(key, value)
+                    LOGGER.info('RC of send telemetry to Thingsboard is: %s', str(response.rc()))
+                    if response.rc() != 0:
+                        CLIENT.disconnect()
+                LOGGER.info('Sent telemetry data')
+                log_info = []
+                for key, value in telemetries.items():
+                    log_info.append('\t{:>20s}: {:>20s}'.format(str(key), str(value)))
+                LOGGER.info('\n'.join(log_info))
+                save_history_telemetry(telemetries)
+                telemetries_lock.acquire()
+                telemetries.clear()
+                telemetries_lock.release()
+            else:
+                LOGGER.info('Telemetry is empty!!!')
         time.sleep(period)
+
+
 
 
 def save_history_telemetry(dct_telemetry):
