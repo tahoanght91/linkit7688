@@ -173,7 +173,7 @@ def get_user_tram():
             rfid_card = rfid.get(KEY_RFID)
             staffCode = rfid_card
             param = {'input': rfid_card}
-            response = requests.get(url=url_get_staff, params=param)
+            response = requests.get(url=url_get_staff, params=param, verify=False)
             if response.status_code == 200:
                 LOGGER.info('Send log request to Smartsite successful!')
                 staff = json.loads(response.content)['result']
