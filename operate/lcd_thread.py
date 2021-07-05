@@ -118,7 +118,7 @@ def get_title_main():
     try:
         if titleOld == '':
             show = 'MAKE IN MOBIFONE' + SALT_DOLLAR_SIGN + str(ROW_1) + END_CMD
-            cmd_lcd[UPDATE_VALUE] = show
+            run_repeat_cmd_lcd(show)
             titleOld = 'MAKE IN MOBIFONE'
             LOGGER.info('MAIN SCREEN TITLE: %s', str(show))
     except Exception as ex:
@@ -409,5 +409,11 @@ def int_file_trace():
     except Exception as ex:
         LOGGER.error('Error at remove_json_file_alarm function with message: %s', ex.message)
 
+
+def run_repeat_cmd_lcd(str_cmd):
+    num = 3
+    for x in range(num):
+        cmd_lcd[UPDATE_VALUE] = str_cmd
+        time.sleep(0.25)
 
 
