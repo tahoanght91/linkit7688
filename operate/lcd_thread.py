@@ -8,6 +8,7 @@ from config.common import *
 from config.common_api import *
 from config.common_lcd_services import *
 from devices.utils import read_lcd_services
+from model import menu
 from model.alarm_lcd import Alarm_lcd
 from model.lcd import Lcd
 from services.lcd.alarm_lcd_services import check_alarm, delete_row4

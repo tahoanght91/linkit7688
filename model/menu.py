@@ -127,6 +127,8 @@ def menu_list(number_menu):
             BUTTON_33_EVENT_UP: setting_display,
             BUTTON_15_EVENT_UP: rfid_display
         }
+        if menu_lv_1 == 0:
+            number_menu = BUTTON_11_EVENT_UP
         if number_menu in MENU_LV_1:
             menu_lv_1 = number_menu
         else:
@@ -139,7 +141,10 @@ def menu_list(number_menu):
 
 
 def main_display():
-    pass
+    lcd_cmd.print_lcd('MAKE IN MOBIFIONE',
+                      'TIME',
+                      'VALUE',
+                      '')
 
 def warning_display():
     pass
@@ -176,34 +181,34 @@ def setting_display():
             button_status[0] = None
         if setting_mode == 0:
             lcd_cmd.print_lcd('CAI DAT HE THONG',
-                              '-> TT he thong  ',
-                              '   Thoi gian    ',
-                              '   Thong so mang')
+                              '> Thong tin     ',
+                              'Ngay gio        ',
+                              'Thong so mang   ')
         elif setting_mode == 1:
             lcd_cmd.print_lcd('CAI DAT HE THONG',
-                              '   TT he thong  ',
-                              '-> Thoi gian    ',
-                              '   Thong so mang')
+                              'Thong tin       ',
+                              '> Ngay gio      ',
+                              'Thong so mang   ')
         elif setting_mode == 2:
             lcd_cmd.print_lcd('CAI DAT HE THONG',
                               '   TT he thong  ',
                               '   Thoi gian    ',
-                              '-> Thong so mang')
+                              '> Thong so mang ')
         elif setting_mode == 3:
             lcd_cmd.print_lcd('CAI DAT HE THONG',
-                              '-> Canh bao     ',
-                              '   ATS          ',
-                              '   Phu kien     ')
+                              '> Canh bao      ',
+                              'Thiet bi ATS    ',
+                              'Thiet bi RFID   ')
         elif setting_mode == 4:
             lcd_cmd.print_lcd('CAI DAT HE THONG',
-                              '   Canh bao     ',
-                              '-> ATS          ',
-                              '   Phu kien     ')
+                              '  Canh bao      ',
+                              '> Thiet bi ATS  ',
+                              'Thiet bi RFID   ')
         elif setting_mode == 5:
             lcd_cmd.print_lcd('CAI DAT HE THONG',
-                              '   Canh bao     ',
-                              '   ATS          ',
-                              '-> Phu kien     ')
+                              '  Canh bao      ',
+                              'Thiet bi ATS    ',
+                              '> Thiet bi RFID ')
         button_status[0] = None
     except Exception as ex:
         LOGGER.info('switch setting menu false: %s', ex.message)
