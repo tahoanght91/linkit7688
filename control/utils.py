@@ -238,7 +238,7 @@ def compose_command_shared_attributes(module_id, value):
         LOGGER.error('Error at compose_command_shared_attributes function with message: %s', ex.message)
     return result
 
-
+# old
 def compose_command_lcd(key_lcd, content):
     op_code_lcd = 0X31
     try:
@@ -277,6 +277,8 @@ def compose_command_lcd(key_lcd, content):
     except Exception as ex:
         LOGGER.error('Error at compose_command_lcd function with message: %s', ex.message)
 
+
+# new
 # def compose_command_lcd(row, key_lcd, content):
 #     try:
 #         convert_str = str(content)
@@ -327,9 +329,19 @@ def _process_cmd_led(length_led, arr_value):
         LOGGER.error('Error at _process_cmd_led function with message: %s', ex.message)
 
 
-def _process_cmd_lcd(row, key_lcd, content):
+# def _process_cmd_lcd(row, key_lcd, content):
+#     try:
+#         result = compose_command_lcd(row, key_lcd, content)
+#         result_encode = ':'.join(x.encode('hex') for x in result)
+#         LOGGER.debug('Process lcd command: key_lcd: %s, content: %s, after decode is: %s', key_lcd, content, result_encode)
+#         return result
+#     except Exception as ex:
+#         LOGGER.error('Error at _process_cmd_lcd function with message: %s', ex.message)
+
+
+def _process_cmd_lcd(key_lcd, content):
     try:
-        result = compose_command_lcd(row, key_lcd, content)
+        result = compose_command_lcd(key_lcd, content)
         result_encode = ':'.join(x.encode('hex') for x in result)
         LOGGER.debug('Process lcd command: key_lcd: %s, content: %s, after decode is: %s', key_lcd, content, result_encode)
         return result
