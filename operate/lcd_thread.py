@@ -40,6 +40,7 @@ warningOld = ''
 def call():
     try:
         period = 3
+        int_file_trace()
         while True:
             check_key_code()
             # lcd.menu(button_status[0])
@@ -399,3 +400,14 @@ def remove_json_file_alarm():
         write_to_json(file_json, './last_cmd_alarm.json')
     except Exception as ex:
         LOGGER.error('Error at remove_json_file_alarm function with message: %s', ex.message)
+
+
+def int_file_trace():
+    try:
+        file = {'key_event': EVENT_UP, 'key_code': KEYCODE_11}
+        write_to_json(file, './last_trace_lcd.json')
+    except Exception as ex:
+        LOGGER.error('Error at remove_json_file_alarm function with message: %s', ex.message)
+
+
+
