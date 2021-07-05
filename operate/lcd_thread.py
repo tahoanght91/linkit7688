@@ -320,7 +320,7 @@ def write_body_send_shared_attributes(key, value):
 def send_shared_attributes(body):
     result = False
     try:
-        response = requests.post(url=url_send_sa, json=body)
+        response = requests.post(url=url_send_sa, json=body, verify=False)
         if response.status_code == 200:
             LOGGER.info('Send shared attributes to Smartsite successful!')
             result = True
