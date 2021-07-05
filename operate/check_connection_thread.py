@@ -13,9 +13,10 @@ params = {'gatewayId': CLIENT_ID}
 
 
 def call():
-    period = 10
+    period = 30
     while True:
         try:
+            time.sleep(period)
             response = requests.get(url=url_check_connection, params=params)
             if response.status_code == 200:
                 LOGGER.info('Send check connection request to Smartsite successful!')
@@ -31,4 +32,3 @@ def call():
         except Exception as ex:
             LOGGER.info('Error when check connection with message: %s', ex.message)
             subprocess.Popen(COMMAND_RESET_SERVICE_7688, shell=True, stdout=subprocess.PIPE)
-        time.sleep(period)
