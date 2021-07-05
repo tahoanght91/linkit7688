@@ -68,7 +68,7 @@ def check_key_code():
             set_last_trace(result_switch_lcd)
             lcd_services.clear()
         elif a > 0 and b > 0:
-            if time_pre != next_minute:
+            if time_pre != next_minute and a != KEYCODE_11:
                 time_pre = next_minute
                 a = KEYCODE_11
                 b = EVENT_UP
