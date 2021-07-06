@@ -3,10 +3,7 @@ import serial
 import control
 from config import *
 from config.common_lcd_services import *
-from config.common import UPDATE_VALUE, CLEAR, END_CMD
-# from control.utils import split_row_by_salt
 from devices import ats, crmu, clock, acm, mcc
-from operate.lcd_thread import extract_lcd_service
 from utility import *
 
 
@@ -287,7 +284,6 @@ def _read_data(byte_stream):
                     len(data), _OpData.LCD_SIZE)
         if _check_data(frame_length, data, _OpData.LCD_SIZE):
             bt_info = data
-            extract_lcd_service(data)
             return True
     return False
 
