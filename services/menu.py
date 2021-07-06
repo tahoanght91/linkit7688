@@ -66,7 +66,7 @@ def main_display():
     #           'VALUE',
     #           'ID')
     # LOGGER.info('Enter main_display function')
-    main_screen_lcd_services.screen1_main()
+    main_screen_lcd_services.screen_main()
 
 def warning_display():
     # print_lcd('BAN TIN CANH BAO',
