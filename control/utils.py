@@ -413,34 +413,48 @@ def set_alarm_state_to_dct(dct_telemetry):
         dct_alarm['atsVacThresholdState'] = dct_telemetry['atsVgenThresholdState']
 
 
+# def write_update_value(bytes_command):
+#     result = False
+#     message_break = shared_attributes.get('mccPeriodReadDataIO', default_data.mccPeriodReadDataIO)
+#     data_ack = b'\xa0\x02\x11\x00'
+#     flip = 0
+#     try:
+#         write_stream = with_check_sum(bytes_command, BYTE_ORDER)
+#         tries = 0
+#         while True:
+#             if flip == 0:
+#                 flip = READ_PER_WRITE
+#                 response = ser.write(write_stream)
+#                 LOGGER.info('Response when send command UPDATE_VALUE: %s', str(response))
+#                 result = True
+#             else:
+#                 flip -= 1
+#                 byte_stream = blocking_read(ser, message_break)
+#                 if byte_stream:
+#                     if _read_data(byte_stream):
+#                         response = ser.write(with_check_sum(data_ack, BYTE_ORDER))
+#                         LOGGER.info('Response when send command with check sum UPDATE_VALUE: %s', str(response))
+#                         result = True
+#                 if flip == 0:
+#                     tries += 1
+#                     if tries > MAX_TRIES:
+#                         LOGGER.info('Time out')
+#                         break
+#                     LOGGER.debug('Try sending again')
+#     except Exception as ex:
+#         LOGGER.error('Error at function write_update_value with message: %s', ex.message)
+#     return result
+
+
 def write_update_value(bytes_command):
     result = False
-    message_break = shared_attributes.get('mccPeriodReadDataIO', default_data.mccPeriodReadDataIO)
-    data_ack = b'\xa0\x02\x11\x00'
-    flip = 0
     try:
         write_stream = with_check_sum(bytes_command, BYTE_ORDER)
-        tries = 0
-        while True:
-            if flip == 0:
-                flip = READ_PER_WRITE
-                response = ser.write(write_stream)
-                LOGGER.info('Response when send command UPDATE_VALUE: %s', str(response))
-                result = True
-            else:
-                flip -= 1
-                byte_stream = blocking_read(ser, message_break)
-                if byte_stream:
-                    if _read_data(byte_stream):
-                        response = ser.write(with_check_sum(data_ack, BYTE_ORDER))
-                        LOGGER.info('Response when send command with check sum UPDATE_VALUE: %s', str(response))
-                        result = True
-                if flip == 0:
-                    tries += 1
-                    if tries > MAX_TRIES:
-                        LOGGER.info('Time out')
-                        break
-                    LOGGER.debug('Try sending again')
+        response = ser.write(write_stream)
+        if response > 0:
+            result = True
+        LOGGER.info('Response when send command UPDATE_VALUE: %s', str(response))
     except Exception as ex:
         LOGGER.error('Error at function write_update_value with message: %s', ex.message)
     return result
+
