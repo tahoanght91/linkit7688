@@ -7,6 +7,7 @@ CONTINUOUS_RUN = 180 * 60  # time run
 acm_period_start = 0
 acm_air_alter_state = True
 acm_air_alter_time = 0
+acm_fan_only_cycle = 0
 
 
 def _send_command(command):
@@ -22,6 +23,7 @@ def check_status():
     global acm_period_start
     global acm_air_alter_state
     global acm_air_alter_time
+    global acm_fan_only_cycle
 
     # Time to run in alternative mode (not used), convert from hour to second
     if 'acmAlternativeTime' in shared_attributes:
@@ -120,7 +122,7 @@ def check_status():
     if acm_air_alter_time == 0:
         acm_air_alter_time = timestamp
 
-    TempDelta = 1   # Delta temperature (in Celcius degree)
+    TempDelta = 1  # Delta temperature (in Celcius degree)
 
     # Decide whether to run air or fan
     air_enabled = True
@@ -158,8 +160,9 @@ def check_status():
         acmAirc1NextState = False
         acmAirc2NextState = False
         acmFanNextState = False
-        acm_period_start = 0    # Reset period timer
-        acm_air_alter_time = timestamp
+        acm_fan_only_cycle = 0
+        acm_period_start = 0  # Reset period timer
+        acm_air_alter_time = timestamp  # Reset alternative timer
     elif acmHumidIndoor > acmMaxHumid:
         # When too humid, must turn on air-conditioner, turn off fan, don't care for temperature
         LOGGER.debug('# Humidity too high, turn on AIRC, turn off FAN')
@@ -167,16 +170,18 @@ def check_status():
         acmAirc1NextState = air_enabled
         acmAirc2NextState = air_enabled
         acmFanNextState = False
-        acm_period_start = 0    # Reset period timer
-        acm_air_alter_time = timestamp
+        acm_fan_only_cycle = 0
+        acm_period_start = 0  # Reset period timer
+        acm_air_alter_time = timestamp  # Reset alternative timer
     elif acmTempIndoor > acmT1Temp:
         # Temperature driven: T > T1 ~ run both Air if enabled
         LOGGER.debug('# Temperature driven: T > T1 ~ run both Air if enabled')
         acmAirc1NextState = air_enabled
         acmAirc2NextState = air_enabled
         acmFanNextState = False
-        acm_period_start = 0    # Reset period timer
-        acm_air_alter_time = timestamp
+        acm_fan_only_cycle = 0
+        acm_period_start = 0  # Reset period timer
+        acm_air_alter_time = timestamp  # Reset alternative timer
     elif acmT2Temp < acmTempIndoor < acmT1Temp - TempDelta:
         # Temperature driven: T1 - TempDelta > T > T2 ~ run only one Air if enabled
         LOGGER.debug('# Temperature driven: T1 - TempDelta > T > T2'
@@ -184,43 +189,67 @@ def check_status():
         acmAirc1NextState = air_enabled and acm_air_alter_state
         acmAirc2NextState = air_enabled and not acm_air_alter_state
         acmFanNextState = False
-        acm_period_start = 0    # Reset period timer
+        acm_fan_only_cycle = 0
+        acm_period_start = 0  # Reset period timer
+        # Don't reset alternative timer
     elif acmTempIndoor < acmT2Temp - TempDelta:
         # Fan should already be enabled
         if acmTempOutdoor > acmT4Temp + TempDelta:
             # If temp_outdoor > T4 + delta => always one Air
-            LOGGER.debug('# If temp_outdoor > T4 + delta => always one Air')
+            LOGGER.debug('# Temperature driven: temp_outdoor > T4 + delta => always one Air')
             acmAirc1NextState = air_enabled and acm_air_alter_state
             acmAirc2NextState = air_enabled and not acm_air_alter_state
             acmFanNextState = False
+            acm_fan_only_cycle = 0
+            acm_period_start = 0  # Reset period timer
+            # Don't reset alternative timer
         elif acmTempOutdoor < acmT4Temp:
             # If temp_outdoor < T4 => Air off for t1 (Fan only), after t1 if temp_indoor > T3 => Air in t2 time
-            LOGGER.debug('# If temp_outdoor < T4 => Air off for t1 (Fan only), after t1 if temp_indoor > T3'
+            LOGGER.debug('# Cycling: temp_outdoor < T4 => Air off for t1 (Fan only), after t1 if temp_indoor > T3'
                          ' => Air in t2 time')
             # t1 = acmRestTime
             # t2 = acmRunTime
-            period_elapsed = timestamp - acm_period_start     # time since start of current period (either Running or Resting)
-            if (not acmAirc1CurrentState and not acmAirc2CurrentState) and \
-                    period_elapsed > acmRestTime and \
-                    acmTempIndoor > acmT3Temp:
-                # Currently in Resting period (Fan only) while t1 is due and temp_indoor is higher than T3
-                # => Run arc1 in t2 time (start a new period)
-                LOGGER.debug('# Resting => Run arc1 in t2 time (start a new period)')
-                acm_period_start = timestamp
-                acmAirc1NextState = air_enabled and acm_air_alter_state
-                acmAirc2NextState = air_enabled and not acm_air_alter_state
-                acmFanNextState = False
-            elif (acmAirc1CurrentState or acmAirc2CurrentState) and \
-                    period_elapsed > acmRunTime and \
-                    acmTempIndoor < acmT3Temp:
-                # Currently in Running period (1 Air) while t2 is due and temp_indoor is expected (lower than T3)
-                # => Stop Air, run only fan in t1 time (start a new period)
-                LOGGER.debug('# Running => Stop Air, run only fan in t1 time (start a new period)')
-                acm_period_start = timestamp
-                acm_air_alter_time = timestamp
-                acmAirc1NextState = False
-                acmAirc2NextState = False
-                acmFanNextState = True
+            period_elapsed = timestamp - acm_period_start  # time since start of current period (either Running or Resting)
+            LOGGER.debug('# ACM cycling time is: ' + str(period_elapsed))
+            if acm_fan_only_cycle == 0:
+                # acm_period_start == 0: First time running t1/t2 cycle (acm_period_start is reset before)
+                # period_elapsed > acmRunTime: Was running for t2 already, check acmT3Temp again
+                if acm_period_start == 0 or \
+                        period_elapsed > acmRunTime:
+                    if acmAirc1CurrentState or acmAirc2CurrentState or not acmFanCurrentState:
+                        LOGGER.debug('# Running => Stop Air, run only fan in t1 time (start a new period)')
+                        acmAirc1NextState = False
+                        acmAirc2NextState = False
+                        acmFanNextState = True
+                    else:
+                        # Start counting t1 (acmRestTime) after both Air1-Air2 are off and Fan is on
+                        acm_fan_only_cycle = 1
+                        acm_period_start = timestamp  # Start period timer
+                        acm_air_alter_time = timestamp  # Reset alternative timer
+            elif period_elapsed > acmRestTime:
+                if acmTempIndoor >= acmT3Temp:
+                    # We are resting
+                    # After resting for t1, check if acmTempIndoor > acmT3Temp then start Air
+                    # => Run arc1 in t2 time (start a new period)
+                    LOGGER.debug('# Resting => Run arc1 in t2 time (start a new period)')
+                    acmAirc1NextState = air_enabled and acm_air_alter_state
+                    acmAirc2NextState = air_enabled and not acm_air_alter_state
+                    acmFanNextState = False
+                    # After both Air1-Air2 and Fan state are set successfully
+                    if acmAirc1NextState == acmAirc1CurrentState and \
+                            acmAirc2NextState == acmAirc2CurrentState and \
+                            acmFanNextState == acmFanCurrentState:
+                        # Start counting t2 (acmRunTime)
+                        acm_fan_only_cycle = 0
+                        acm_period_start = timestamp  # Start period timer
+                        # Don't reset alternative timer
+                else:
+                    # Already acmTempIndoor < acmT3Temp, restart fan-only cycle
+                    # Remove this part if want to start Air right after acmTempIndoor >= acmT3Temp
+                    # without waiting for a complete t1 (acmRestTime) cycle again
+                    acm_fan_only_cycle = 0
+                    acm_period_start = 0            # Reset period timer
+                    acm_air_alter_time = timestamp  # Reset alternative timer
 
     # Counting alternative time, only if 1 airc is running:
     if (acmAirc1NextState and not acmAirc2NextState) or (not acmAirc1NextState and acmAirc2NextState):
@@ -234,21 +263,21 @@ def check_status():
         return ''
 
     '''
-    Checking next state and issue command
+    Checking next state and issue command. Send 1 command at a time.
     '''
     rtn = ''
     if acmAirc1CurrentState and not acmAirc1NextState:
-        rtn += _send_command(COMMAND_ACM_AIRC_1_OFF) + ' | '
-    if not acmAirc1CurrentState and acmAirc1NextState:
-        rtn += _send_command(COMMAND_ACM_AIRC_1_ON) + ' | '
-    if acmAirc2CurrentState and not acmAirc2NextState:
-        rtn += _send_command(COMMAND_ACM_AIRC_2_OFF) + ' | '
-    if not acmAirc2CurrentState and acmAirc2NextState:
-        rtn += _send_command(COMMAND_ACM_AIRC_2_ON) + ' | '
+        rtn += _send_command(COMMAND_ACM_AIRC_1_OFF)
+    elif not acmAirc1CurrentState and acmAirc1NextState:
+        rtn += _send_command(COMMAND_ACM_AIRC_1_ON)
+    elif acmAirc2CurrentState and not acmAirc2NextState:
+        rtn += _send_command(COMMAND_ACM_AIRC_2_OFF)
+    elif not acmAirc2CurrentState and acmAirc2NextState:
+        rtn += _send_command(COMMAND_ACM_AIRC_2_ON)
     if acmFanCurrentState and not acmFanNextState:
-        rtn += _send_command(COMMAND_ACM_FAN_OFF) + ' | '
-    if not acmFanCurrentState and acmFanNextState:
-        rtn += _send_command(COMMAND_ACM_FAN_ON) + ' | '
+        rtn += _send_command(COMMAND_ACM_FAN_OFF)
+    elif not acmFanCurrentState and acmFanNextState:
+        rtn += _send_command(COMMAND_ACM_FAN_ON)
 
     LOGGER.info('Exit monitor:acm:check_status - ' + rtn)
     return rtn
