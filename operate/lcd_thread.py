@@ -44,7 +44,7 @@ def call():
         period = 3
         while True:
             button = check_button(lcd_services)
-            LOGGER.info('Send button value: %s', LOG_BUTTON[str(button_status[0])])
+            LOGGER.info('Send button value: %s', str(button))
             main_menu(button)
             time.sleep(period)
     except Exception as ex:
