@@ -9,9 +9,9 @@ from config.common_api import *
 from devices.utils import read_lcd_services
 from model.alarm_lcd import Alarm_lcd
 from model.lcd import Lcd
-from services.lcd.alarm_lcd_services import check_alarm, delete_row4, delete_row3
+from services.lcd.alarm_lcd_services import check_alarm
 from operate.rfid_thread import KEY_RFID
-from services.lcd.main_screen_lcd_services import write_to_json, screen1_main
+from services.lcd.main_screen_lcd_services import write_to_json, screen_main
 from utility import bytes_to_int
 from services.menu import *
 
@@ -225,8 +225,6 @@ def switch_lcd_service(input_lcd):
             #     pass
             elif key_code == KEYCODE_12:
                 remove_json_file_alarm()
-                delete_row3()
-                delete_row4()
                 check_alarm()
             elif key_event == EVENT_DOWN:
                 pass

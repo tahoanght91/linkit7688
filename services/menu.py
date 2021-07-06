@@ -2,6 +2,7 @@ from config import *
 from config.common import *
 from config.common_lcd_services import *
 from services.lcd import main_screen_lcd_services
+from services.lcd.alarm_lcd_services import check_alarm
 
 ROW = [ROW_1, ROW_2, ROW_3, ROW_4]
 section_lv_1 = -1
@@ -65,15 +66,16 @@ def main_display():
     #           'VALUE',
     #           'ID')
     # LOGGER.info('Enter main_display function')
-    main_screen_lcd_services.screen1_main()
+    main_screen_lcd_services.screen_main()
 
 def warning_display():
-    print_lcd('BAN TIN CANH BAO',
-              'Ten canh bao',
-              'Thoi gian',
-              '')
-    # goi ham hien thi
-    LOGGER.info('Enter warning_display function')
+    # print_lcd('BAN TIN CANH BAO',
+    #           'Ten canh bao',
+    #           'Thoi gian',
+    #           '')
+    # # goi ham hien thi
+    # LOGGER.info('Enter warning_display function')
+    check_alarm()
 
 def security_sensor_info_display():
     global section_lv_2
