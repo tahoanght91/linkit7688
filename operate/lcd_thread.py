@@ -36,15 +36,15 @@ acmTempOutOld = ''
 acmHumidInOld = ''
 warningOld = ''
 
-# button_status[0] = SETTING
+# button_status[0]
 def call():
     try:
         period = 3
         # int_file_trace()
         while True:
-            screen1_main()
-            # button = button_status[0]
-            # main_menu(button)
+            # screen1_main()
+            button = button_status[0]
+            main_menu(button)
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
