@@ -1,7 +1,7 @@
 from config import *
 from config.common import *
 from config.common_lcd_services import *
-from control import process_cmd_lcd
+
 
 section_lv_1 = -1
 section_lv_2 = 0
@@ -14,6 +14,7 @@ set_string_ok = 0
 
 
 def print_lcd(str1, str2, str3, str4):
+    from control import process_cmd_lcd
     try:
         LOGGER.info('Send message print_lcd on lcd')
         process_cmd_lcd(ROW_1, UPDATE_VALUE, str1)
