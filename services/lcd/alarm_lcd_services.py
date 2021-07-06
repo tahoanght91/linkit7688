@@ -16,9 +16,9 @@ def check_alarm():
         row1 = all_row['row1']
         row2 = all_row['row2']
         row3 = all_row['row3']
-        delete_row(ROW_1)
         delete_row(ROW_2)
         delete_row(ROW_3)
+        delete_row(ROW_4)
         if row1 != BAN_TIN_CANH_BAO:
             process_cmd_lcd(ROW_1, UPDATE_VALUE, BAN_TIN_CANH_BAO)
             row1 = BAN_TIN_CANH_BAO
