@@ -432,21 +432,21 @@ def check_button(bt_info):
     global last_stt_bt
     try:
         LOGGER.info('Enter check_button function')
-        key_code = bytes_to_int(bt_info[0:2], byteorder=BYTE_ORDER)
-        key_event = bytes_to_int(bt_info[2])
-        bt_info = []
-        LOGGER.info('check_button function key code: %d, key event: %d', key_code, key_event)
-        if key_code in LIST_KEYCODE:
-            index_key = LIST_KEYCODE.index(key_code)
-            LOGGER.info('Key code exist in list key code')
-        if key_event == EVENT_UP:
-            event = EVENT_UP_BT
-        elif key_event == EVENT_HOLD:
-            event = EVENT_HOLD_BT
-        button = event * index_key
-        if last_stt_bt != button:
-            last_stt_bt = button
-            LOGGER.info('return button value: %s', LOG_BUTTON[str(button)])
-        return button
+        if bt_info:
+            key_code = bt_info['key_code']
+            key_event = bt_info['key_event']
+            LOGGER.info('check_button function key code: %s, key event: %s', str(key_code), str(key_event))
+            if int(key_code) in LIST_KEYCODE:
+                index_key = int(LIST_KEYCODE.index(key_code))
+                LOGGER.info('Key code exist in list key code')
+            if key_event == EVENT_UP:
+                event = EVENT_UP_BT
+            elif key_event == EVENT_HOLD:
+                event = EVENT_HOLD_BT
+            button = event * index_key
+            if last_stt_bt != button:
+                last_stt_bt = button
+                LOGGER.info('return button value: %s', LOG_BUTTON[str(button)])
+            return button
     except Exception as ex:
-        LOGGER.info('check_button function error: %s', ex.message)
+        LOGGER.error('check_button function error: %s', ex.message)

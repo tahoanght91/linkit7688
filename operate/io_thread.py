@@ -280,7 +280,6 @@ def _read_data(byte_stream):
         LOGGER.info('LCD message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
                     len(data), _OpData.LCD_SIZE)
         if _check_data(frame_length, data, _OpData.LCD_SIZE):
-            bt_info = data
             extract_lcd_service(data)
             return True
     return False
