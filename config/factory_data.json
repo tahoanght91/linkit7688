@@ -18,7 +18,7 @@
     "acmMinTemp": 16,
     "acmMaxTemp": 60,
     "acmMinHumid": 10,
-    "acmMaxHumid": 90,
+    "acmMaxHumid": 200,
     "acmExpectedTemp": 25,
     "acmExpectedHumid": 45,
     "acmT1Temp": 35,
