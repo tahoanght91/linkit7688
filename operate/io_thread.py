@@ -12,18 +12,17 @@ from utility import *
 
 bt_info = []
 last_stt_bt = 0
+ser = serial.Serial(port=IO_PORT, baudrate=BAUDRATE)
 
 
 def call():
     global bt_info
     # button = Button()
 
-    ser = serial.Serial(port=IO_PORT, baudrate=BAUDRATE)
     data_ack = b'\xa0\x02\x11\x00'
     control_ack = b'\xa0\x01\x21'
     message_break = shared_attributes.get('mccPeriodReadDataIO', default_data.mccPeriodReadDataIO)  # time read data from IO
     flip = READ_PER_WRITE
-    flip_lcd = READ_PER_WRITE_LCD
 
     original_cycle = int((time.time()) / 60)
     while True:
