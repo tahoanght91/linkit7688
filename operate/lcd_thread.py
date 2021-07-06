@@ -169,7 +169,7 @@ def get_temp_tram():
 def get_user_tram():
     try:
         # rfid = read_to_json('./latest_client_attributes.json')
-        rfid = update_attributes
+        rfid = client_attributes
         if KEY_RFID in rfid:
             rfid_card = rfid.get(KEY_RFID)
             staffCode = rfid_card
