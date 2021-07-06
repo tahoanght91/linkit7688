@@ -305,7 +305,7 @@ def compose_command_lcd(row, key_lcd, content):
                     cmd_lcd_lock.acquire()
                     del cmd_lcd[row]
                     cmd_lcd_lock.release()
-                return resp_write_cmd
+                return result
             elif key_lcd == CLEAR:
                 length = 2
                 result = struct.pack('BBBB', 0xA0, length, OP_CODE_SEND_LCD, key_lcd)
@@ -341,7 +341,7 @@ def _process_cmd_lcd(row, key_lcd, content):
         result = compose_command_lcd(row, key_lcd, content)
         result_encode = ':'.join(x.encode('hex') for x in result)
         LOGGER.debug('Process lcd command: key_lcd: %s, content: %s, after decode is: %s', key_lcd, content, result_encode)
-        return result
+        return result_encode
     except Exception as ex:
         LOGGER.error('Error at _process_cmd_lcd function with message: %s', ex.message)
 
