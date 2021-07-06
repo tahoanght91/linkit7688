@@ -17,7 +17,6 @@ ser = serial.Serial(port=IO_PORT, baudrate=BAUDRATE)
 
 def call():
     global bt_info
-    # button = Button()
 
     data_ack = b'\xa0\x02\x11\x00'
     control_ack = b'\xa0\x01\x21'
@@ -38,12 +37,12 @@ def call():
             ser.write(with_check_sum(data_ack, BYTE_ORDER))
 
         # read button status
-        # try:
-        #     if len(bt_info) == 3:
-        #         button_status[0] = button.check_button(bt_info)
-        #         LOGGER.info('Send button value: %s', LOG_BUTTON[str(button_status[0])])
-        # except Exception as ex:
-        #     LOGGER.error('Error check button status: %s', ex.message)
+        try:
+            if len(bt_info) == 3:
+                button_status[0] = check_button()
+                LOGGER.info('Send button value: %s', LOG_BUTTON[str(button_status[0])])
+        except Exception as ex:
+            LOGGER.error('Error check button status: %s', ex.message)
 
         # Write command
         # try:
@@ -287,7 +286,7 @@ def _read_data(byte_stream):
         LOGGER.info('LCD message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
                     len(data), _OpData.LCD_SIZE)
         if _check_data(frame_length, data, _OpData.LCD_SIZE):
-            # bt_info = data
+            bt_info = data
             extract_lcd_service(data)
             return True
     return False
@@ -341,32 +340,25 @@ class _OpData:
     IO_STATUS_LCD = b'\x32'
 
 
-class Button:
-    def __init__(self):
-        self.button = 0
-        self.button_pre = 0
-
-    def check_button(self, bt_info):
-        global last_stt_bt
-        try:
-            LOGGER.info('Enter check_button fucntion')
-            key_code = bytes_to_int(bt_info[0:2], byteorder=BYTE_ORDER)
-            key_event = bytes_to_int(bt_info[2])
-            bt_info = []
-            LOGGER.info('After extract command lcd from STM32, key code: %d, key event: %d', key_code, key_event)
-
-            if key_code in LIST_KEYCODE:
-                index_key = LIST_KEYCODE.index(key_code)
-                LOGGER.info('Key code exist in list key code')
-
-            if key_event == EVENT_UP:
-                event = EVENT_UP_BT
-            elif key_event == EVENT_HOLD:
-                event = EVENT_HOLD_BT
-            self.button = event * index_key
-            if last_stt_bt != self.button:
-                last_stt_bt = self.button
-                LOGGER.info('return button value: %s', LOG_BUTTON[str(self.button)])
-            return str(self.button)
-        except Exception as ex:
-            LOGGER.info('check_button function error: %s', ex.message)
+def check_button():
+    global bt_info, last_stt_bt
+    try:
+        LOGGER.info('Enter check_button function')
+        key_code = bytes_to_int(bt_info[0:2], byteorder=BYTE_ORDER)
+        key_event = bytes_to_int(bt_info[2])
+        bt_info = []
+        LOGGER.info('check_button function key code: %d, key event: %d', key_code, key_event)
+        if key_code in LIST_KEYCODE:
+            index_key = LIST_KEYCODE.index(key_code)
+            LOGGER.info('Key code exist in list key code')
+        if key_event == EVENT_UP:
+            event = EVENT_UP_BT
+        elif key_event == EVENT_HOLD:
+            event = EVENT_HOLD_BT
+        button = event * index_key
+        if last_stt_bt != button:
+            last_stt_bt = button
+            LOGGER.info('return button value: %s', LOG_BUTTON[str(button)])
+        return button
+    except Exception as ex:
+        LOGGER.info('check_button function error: %s', ex.message)
