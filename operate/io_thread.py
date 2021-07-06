@@ -36,12 +36,7 @@ def call():
             ser.write(with_check_sum(data_ack, BYTE_ORDER))
 
         # read button status
-        try:
-            if len(bt_info) == 3:
-                button_status[0] = check_button()
-                LOGGER.info('Send button value: %s', LOG_BUTTON[str(button_status[0])])
-        except Exception as ex:
-            LOGGER.error('Error check button status: %s', ex.message)
+
 
         # Write command
         # try:
@@ -339,25 +334,4 @@ class _OpData:
     IO_STATUS_LCD = b'\x32'
 
 
-def check_button():
-    global bt_info, last_stt_bt
-    try:
-        LOGGER.info('Enter check_button function')
-        key_code = bytes_to_int(bt_info[0:2], byteorder=BYTE_ORDER)
-        key_event = bytes_to_int(bt_info[2])
-        bt_info = []
-        LOGGER.info('check_button function key code: %d, key event: %d', key_code, key_event)
-        if key_code in LIST_KEYCODE:
-            index_key = LIST_KEYCODE.index(key_code)
-            LOGGER.info('Key code exist in list key code')
-        if key_event == EVENT_UP:
-            event = EVENT_UP_BT
-        elif key_event == EVENT_HOLD:
-            event = EVENT_HOLD_BT
-        button = event * index_key
-        if last_stt_bt != button:
-            last_stt_bt = button
-            LOGGER.info('return button value: %s', LOG_BUTTON[str(button)])
-        return button
-    except Exception as ex:
-        LOGGER.info('check_button function error: %s', ex.message)
+
