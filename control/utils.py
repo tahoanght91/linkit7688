@@ -417,7 +417,7 @@ def write_update_value(bytes_command):
     try:
         response = ser.write(bytes_command)
         if response > 0:
-            LOGGER.info('Response when send command UPDATE_VALUE: %s', str())
+            LOGGER.info('Response when send command UPDATE_VALUE: %s', str(response))
             return True
         else:
             return False
