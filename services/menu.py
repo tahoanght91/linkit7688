@@ -1,6 +1,7 @@
 from config import *
 from config.common import *
 from config.common_lcd_services import *
+from services.lcd import main_screen_lcd_services
 
 ROW = [ROW_1, ROW_2, ROW_3, ROW_4]
 section_lv_1 = -1
@@ -59,11 +60,12 @@ def select_section_lv1():
 
 def main_display():
     # goi ham hien thi
-    print_lcd('MAKE IN MOBIFONE',
-              'TIME',
-              'VALUE',
-              'ID')
-    LOGGER.info('Enter main_display function')
+    # print_lcd('MAKE IN MOBIFONE',
+    #           'TIME',
+    #           'VALUE',
+    #           'ID')
+    # LOGGER.info('Enter main_display function')
+    main_screen_lcd_services.screen1_main()
 
 def warning_display():
     print_lcd('BAN TIN CANH BAO',
