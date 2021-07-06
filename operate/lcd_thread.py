@@ -144,7 +144,7 @@ def get_temp_tram():
         acmTempIn = tel.get('acmTempIndoor')
         acmTempOut = tel.get('acmTempOutdoor')
         acmHumidIn = tel.get('acmHumidIndoor')
-        new_list = dict(filter(lambda elem: elem[0].lower().find('state') != -1, tel.items()))
+        new_list = dict(filter(lambda elem: elem[0].lower().find('state') != -1, dct_alarm.items()))
         if len(new_list) > 0:
             check = any(elem != 0 for elem in new_list.values())
             warning = '!!!' if check else ''
