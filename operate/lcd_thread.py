@@ -11,7 +11,7 @@ from devices.utils import read_lcd_services
 from model import menu
 from model.alarm_lcd import Alarm_lcd
 from model.lcd import Lcd
-from services.lcd.alarm_lcd_services import check_alarm, delete_row4
+from services.lcd.alarm_lcd_services import check_alarm, delete_row4, delete_row3
 from operate.led_thread import get_sate_led_alarm
 from operate.rfid_thread import KEY_RFID
 from services.lcd.main_screen_lcd_services import write_to_json
@@ -23,6 +23,8 @@ url_get_staff = PREFIX + DOMAIN + API_GET_STAFF
 LIST_KEY_EVENT = [EVENT_NONE, EVENT_DOWN, EVENT_UP, EVENT_HOLD, EVENT_POWER]
 LIST_KEY_CODE = [KEYCODE_11, KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26, KEYCODE_24, KEYCODE_13, KEYCODE_12]
 json_file = open('config/lcd.json')
+last_trace_lcd = './last_trace_lcd.json'
+last_cmd_alarm = './last_cmd_alarm.json'
 dct_lcd = json.load(json_file)
 dct_lcd_menu = dct_lcd['lcd']['category']['menu']
 dct_lcd_menu_level = dct_lcd_menu['level']
@@ -30,6 +32,7 @@ dct_lcd_menu_level_lv1 = dct_lcd_menu_level['lv1']
 last_alarm_update = Alarm_lcd()
 BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 timeOld = '61'
+time_pre = '61'
 titleOld = ''
 acmTempInOld = ''
 acmTempOutOld = ''
@@ -40,9 +43,7 @@ warningOld = ''
 def call():
     try:
         period = 3
-        clear_display()
-        time.sleep(1)
-
+        int_file_trace()
         while True:
             button = button_status[0]
             # button = BUTTON_33_EVENT_UP
@@ -54,19 +55,26 @@ def call():
 
 
 def check_key_code():
+    global time_pre
     try:
+        # next_minute = datetime.now().strftime("%M")
         result_check_input = check_lcd_service(lcd_services)
-        json_file = open('./last_trace_lcd.json', )
+        json_file = open(last_trace_lcd, )
         last_trace = json.load(json_file)
         a = last_trace['key_code']
         b = last_trace['key_event']
         LOGGER.info('OLD KEY CODE: %s', str(a))
         if result_check_input.key_code > 0 and result_check_input.key_event > 0:
-            # cmd_lcd[CLEAR] = ''
             result_switch_lcd = switch_lcd_service(result_check_input)
             set_last_trace(result_switch_lcd)
             lcd_services.clear()
         elif a > 0 and b > 0:
+            # if time_pre != next_minute and a != KEYCODE_11:
+            #     time_pre = next_minute
+            #     a = KEYCODE_11
+            #     b = EVENT_UP
+            #     last_trace = {'key_event': EVENT_UP, 'key_code': KEYCODE_11}
+            #     write_to_json(last_trace, last_trace_lcd)
             check_last_display(a, b)
     except Exception as ex:
         LOGGER.error('Error at call function in check_key_code with message: %s', ex.message)
@@ -122,7 +130,7 @@ def get_title_main():
     try:
         if titleOld == '':
             show = 'MAKE IN MOBIFONE' + SALT_DOLLAR_SIGN + str(ROW_1) + END_CMD
-            cmd_lcd[UPDATE_VALUE] = show
+            run_repeat_cmd_lcd(show)
             titleOld = 'MAKE IN MOBIFONE'
             LOGGER.info('MAIN SCREEN TITLE: %s', str(show))
     except Exception as ex:
@@ -136,7 +144,8 @@ def get_temp_tram():
     global warningOld
     try:
         warning = ''
-        tel = read_to_json('./latest_telemetry.json')
+        # tel = read_to_json('./latest_telemetry.json')
+        tel = telemetries
         acmTempIn = tel.get('acmTempIndoor')
         acmTempOut = tel.get('acmTempOutdoor')
         acmHumidIn = tel.get('acmHumidIndoor')
@@ -161,7 +170,8 @@ def get_temp_tram():
 
 def get_user_tram():
     try:
-        rfid = read_to_json('./latest_client_attributes.json')
+        # rfid = read_to_json('./latest_client_attributes.json')
+        rfid = client_attributes
         if KEY_RFID in rfid:
             rfid_card = rfid.get(KEY_RFID)
             staffCode = rfid_card
@@ -203,21 +213,22 @@ def switch_lcd_service(input_lcd):
                 warningOld = ''
                 timeOld = '61'
                 screen_main()
-            elif key_code == KEYCODE_16:
-                last_trace.category = dct_lcd_menu['id']
-                last_trace.level = dct_lcd_menu_level['levelId']
-                last_trace.index_level1 = dct_lcd_menu_level_lv1[0]['index']
-                last_trace.name = dct_lcd_menu_level_lv1[0]['name']
-                last_trace.value = -1
-                last_trace.index_level2 = -1
-            elif key_code == KEYCODE_14 or key_code == KEYCODE_34:
-                last_trace = navigate_lcd_service(key_code)
-            elif key_code == KEYCODE_24:
-                last_trace = enter_lcd_service()
-            elif key_code == KEYCODE_13:
-                pass
+            # elif key_code == KEYCODE_16:
+            #     last_trace.category = dct_lcd_menu['id']
+            #     last_trace.level = dct_lcd_menu_level['levelId']
+            #     last_trace.index_level1 = dct_lcd_menu_level_lv1[0]['index']
+            #     last_trace.name = dct_lcd_menu_level_lv1[0]['name']
+            #     last_trace.value = -1
+            #     last_trace.index_level2 = -1
+            # elif key_code == KEYCODE_14 or key_code == KEYCODE_34:
+            #     last_trace = navigate_lcd_service(key_code)
+            # elif key_code == KEYCODE_24:
+            #     last_trace = enter_lcd_service()
+            # elif key_code == KEYCODE_13:
+            #     pass
             elif key_code == KEYCODE_12:
                 remove_json_file_alarm()
+                delete_row3()
                 delete_row4()
                 check_alarm()
             elif key_event == EVENT_DOWN:
@@ -397,10 +408,25 @@ def check_lcd_service(dct_lcd_service):
 #Nguyenvq
 def remove_json_file_alarm():
     try:
-        file_json = read_to_json('./last_cmd_alarm.json')
+        file_json = read_to_json(last_cmd_alarm)
         file_json['row1'] = ""
         file_json['row2'] = ""
         file_json['row3'] = ""
-        write_to_json(file_json, './last_cmd_alarm.json')
+        write_to_json(file_json, last_cmd_alarm)
     except Exception as ex:
         LOGGER.error('Error at remove_json_file_alarm function with message: %s', ex.message)
+
+
+def int_file_trace():
+    try:
+        file = {'key_event': EVENT_UP, 'key_code': KEYCODE_11}
+        write_to_json(file, last_trace_lcd)
+    except Exception as ex:
+        LOGGER.error('Error at remove_json_file_alarm function with message: %s', ex.message)
+
+
+def run_repeat_cmd_lcd(str_cmd):
+    num = 1
+    for x in range(num):
+        cmd_lcd[UPDATE_VALUE] = str_cmd
+        time.sleep(0.1)

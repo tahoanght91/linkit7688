@@ -24,57 +24,96 @@ def check_status():
     global acm_air_alter_time
 
     # Time to run in alternative mode (not used), convert from hour to second
-    acmAlternativeTime = 3600 * shared_attributes.get('acmAlternativeTime', default_data.acmAlternativeTime)
+    if 'acmAlternativeTime' in shared_attributes:
+        acmAlternativeTime = 3600 * shared_attributes['acmAlternativeTime']
+    else:
+        acmAlternativeTime = 3600 * shared_attributes.get('acmAlternativeTime', default_data.acmAlternativeTime)
     # Time to run/rest air-conditioner if T is lower than T2, , convert from hour to second
-    acmRunTime = 3600 * shared_attributes.get('acmRunTime', default_data.acmRunTime)
-    acmRestTime = 3600 * shared_attributes.get('acmRestTime', default_data.acmRestTime)
-    acmGenAllow = shared_attributes.get('acmGenAllow', default_data.acmGenAllow)
-    acmVacThreshold = shared_attributes.get('acmVacThreshold', default_data.acmVacThreshold)
+    if 'acmRunTime' in shared_attributes:
+        acmRunTime = 3600 * shared_attributes['acmRunTime']
+    else:
+        acmRunTime = 3600 * shared_attributes.get('acmRunTime', default_data.acmRunTime)
+
+    if 'acmRestTime' in shared_attributes:
+        acmRestTime = 3600 * shared_attributes['acmRestTime']
+    else:
+        acmRestTime = 3600 * shared_attributes.get('acmRestTime', default_data.acmRestTime)
+
+    if 'acmGenAllow' in shared_attributes:
+        acmGenAllow = shared_attributes['acmGenAllow']
+    else:
+        acmGenAllow = shared_attributes.get('acmGenAllow', default_data.acmGenAllow)
+
+    if 'acmVacThreshold' in shared_attributes:
+        acmVacThreshold = shared_attributes['acmVacThreshold']
+    else:
+        acmVacThreshold = shared_attributes.get('acmVacThreshold', default_data.acmVacThreshold)
+
+    if 'acmMaxHumid' in shared_attributes:
+        acmMaxHumid = shared_attributes['acmMaxHumid']
+    else:
+        acmMaxHumid = shared_attributes.get('acmMaxHumid', default_data.acmMaxHumid)
+
+    if 'acmT1Temp' in shared_attributes:
+        acmT1Temp = shared_attributes['acmT1Temp']
+    else:
+        acmT1Temp = shared_attributes.get('acmT1Temp', default_data.acmT1Temp)
+
+    if 'acmT2Temp' in shared_attributes:
+        acmT2Temp = shared_attributes['acmT2Temp']
+    else:
+        acmT2Temp = shared_attributes.get('acmT2Temp', default_data.acmT2Temp)
+
+    if 'acmT3Temp' in shared_attributes:
+        acmT3Temp = shared_attributes['acmT3Temp']
+    else:
+        acmT3Temp = shared_attributes.get('acmT3Temp', default_data.acmT3Temp)
+
+    if 'acmT4Temp' in shared_attributes:
+        acmT4Temp = shared_attributes['acmT4Temp']
+    else:
+        acmT4Temp = shared_attributes.get('acmT4Temp', default_data.acmT4Temp)
+
     # acmMinHumid = shared_attributes.get('acmMinHumid', default_data.acmMinHumid)
-    acmMaxHumid = shared_attributes.get('acmMaxHumid', default_data.acmMaxHumid)
     # acmExpectedTemp = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
     # acmExpectedHumid = shared_attributes.get('acmExpectedHumid', default_data.acmExpectedHumid)
-    acmT1Temp = shared_attributes.get('acmT1Temp', default_data.acmT1Temp)
-    acmT2Temp = shared_attributes.get('acmT2Temp', default_data.acmT2Temp)
-    acmT3Temp = shared_attributes.get('acmT3Temp', default_data.acmT3Temp)
-    acmT4Temp = shared_attributes.get('acmT4Temp', default_data.acmT4Temp)
 
     # Client
-    acmOnlineState = client_attributes.get('acmOnlineState', default_data.acmOnlineState)
+    acmOnlineState = client_attributes['acmOnlineState']
     # acmAutoMode = client_attributes.get('acmAutoMode', default_data.acmAutoMode)
     # acmTempError = client_attributes.get('acmTempError', default_data.acmTempError)
     # acmHumidError = client_attributes.get('acmHumidError', default_data.acmHumidError)
     # acmIState = client_attributes.get('acmIState', default_data.acmIState)
-    acmAirc1RunState = client_attributes.get('acmAirc1RunState', default_data.acmAirc1RunState)
-    acmAirc2RunState = client_attributes.get('acmAirc2RunState', default_data.acmAirc2RunState)
+    acmAirc1RunState = client_attributes['acmAirc1RunState']
+    acmAirc2RunState = client_attributes['acmAirc2RunState']
     # acmAirc1Error = client_attributes.get('acmAirc1Error', default_data.acmAirc1Error)
     # acmAirc2Error = client_attributes.get('acmAirc2Error', default_data.acmAirc2Error)
-    acmFanRunState = client_attributes.get('acmFanRunState', default_data.acmFanRunState)
+    acmFanRunState = client_attributes['acmFanRunState']
     # acmFanError = client_attributes.get('acmFanError', default_data.acmFanError)
 
     # Telemetry
-    acmTempIndoor = telemetries.get('acmTempIndoor', default_data.acmTempIndoor)
-    acmTempOutdoor = telemetries.get('acmTempOutdoor', default_data.acmTempOutdoor)
-    acmHumidIndoor = telemetries.get('acmHumidIndoor', default_data.acmHumidIndoor)
+    acmTempIndoor = telemetries['acmTempIndoor']
+    acmTempOutdoor = telemetries['acmTempOutdoor']
+    acmHumidIndoor = telemetries['acmHumidIndoor']
     # acmT1TempUser = telemetries.get('acmT1Temp', default_data.acmT1Temp)
     # acmT2TempUser = telemetries.get('acmT2Temp', default_data.acmT2Temp)
     # acmT3TempUser = telemetries.get('acmT3Temp', default_data.acmT3Temp)
     # acmT4TempUser = telemetries.get('acmT4Temp', default_data.acmT4Temp)
 
-    mccSmokeState = telemetries.get('mccSmokeState', default_data.mccSmokeState)
-    mccFireState = telemetries.get('mccFireState', default_data.mccFireState)
+    mccSmokeState = telemetries['mccSmokeState']
+    mccFireState = telemetries['mccFireState']
 
-    atsAcState = client_attributes.get('atsAcState', default_data.atsAcState)
+    atsAcState = client_attributes['atsAcState']
 
-    atsVacP1 = telemetries.get('atsVacP1', default_data.atsVacP1)
-    atsVacP2 = telemetries.get('atsVacP2', default_data.atsVacP2)
-    atsVacP3 = telemetries.get('atsVacP3', default_data.atsVacP3)
-    atsVgenP1 = telemetries.get('atsVgenP1', default_data.atsVgenP1)
-    atsVgenP2 = telemetries.get('atsVgenP2', default_data.atsVgenP2)
-    atsVgenP3 = telemetries.get('atsVgenP3', default_data.atsVgenP3)
+    atsVacP1 = telemetries['atsVacP1']
+    atsVacP2 = telemetries['atsVacP2']
+    atsVacP3 = telemetries['atsVacP3']
+    atsVgenP1 = telemetries['atsVgenP1']
+    atsVgenP2 = telemetries['atsVgenP2']
+    atsVgenP3 = telemetries['atsVgenP3']
 
-    atsContactorElecState = client_attributes.get('atsContactorElecState', default_data.atsContactorElecState)
-    atsContactorGenState = client_attributes.get('atsContactorGenState', default_data.atsContactorGenState)
+    atsContactorElecState = client_attributes['atsContactorElecState']
+    atsContactorGenState = client_attributes['atsContactorGenState']
 
     # Get current time
     timestamp = time.time()
