@@ -2,10 +2,12 @@ from datetime import datetime
 from config import *
 from config.common import *
 from config.common_lcd_services import *
+from operate.rfid_thread import compare_rfid_card
 
 BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 last_telemetry = './latest_telemetry.json'
 last_cmd_alarm = './last_cmd_alarm.json'
+KEY_RFID = 'mccRfidCard'
 
 
 def check_alarm():
@@ -43,6 +45,7 @@ def save_to_file(str_saved, number):
 
 def get_alarm(row2, row3, tel_lcd):
     try:
+        check_card = check_rfid()
         if tel_lcd:
             if CB_CHAY in tel_lcd:
                 if tel_lcd.get(CB_CHAY) == 1 and row2 != 'CB Chay!':
@@ -51,13 +54,24 @@ def get_alarm(row2, row3, tel_lcd):
                     row2 = create_for_each('CB Khoi!')
                 elif tel_lcd.get(CB_NGAP) == 1 and row2 != 'CB Ngap!':
                     row2 = create_for_each('CB Ngap!')
+                elif tel_lcd.get(CB_NHIET) != 0 and row2 != 'CB Nhiet Do!':
+                    row2 = create_for_each('CB Nhiet Do!')
+                elif tel_lcd.get(CB_DOAM) != 0 and row2 != 'CB Do Am!':
+                    row2 = create_for_each('CB Do Am!')
+                elif tel_lcd.get(CB_DIENAPLUOI) == 1 and row2 != 'CB Dien Luoi!':
+                    row2 = create_for_each('CB Dien Luoi!')
+                elif tel_lcd.get(CB_DIENMAYPHAT) == 1 and row2 != 'CB Dien M.Phat!':
+                    row2 = create_for_each('CB Dien M.Phat!')
                 elif tel_lcd.get(CB_CUA) == 1 and row2 != 'CB Cua!':
                     row2 = create_for_each('CB Cua!')
+                elif check_card and row2 != 'CB RFID!':
+                    row2 = create_for_each('CB RFID!')
 
-                new_list_telemetries = dict(
-                    filter(lambda elem: elem[0].lower().find('state') != -1, tel_lcd.items()))
-                check = any(elem != 0 for elem in new_list_telemetries.values())
-                if not check and row2 != 'An Toan!':
+                check = False
+                new_list = dict(filter(lambda elem: elem[0].lower().find('state') != -1, dct_alarm.items()))
+                if len(new_list) > 0:
+                    check = any(elem != 0 for elem in new_list.values())
+                if not check and check_card and row2 != 'An Toan!':
                     row2 = create_for_each('An Toan!')
                     delete_row3()
                 get_time_alarm(row3, row2)
@@ -69,6 +83,20 @@ def get_alarm(row2, row3, tel_lcd):
         #     get_time_alarm(row3, row2)
     except Exception as ex:
         LOGGER.error('Error at call function in get_alarm with message: %s', ex.message)
+
+
+def check_rfid():
+    if CB_RFID in shared_attributes:
+        list_card = shared_attributes['mccListRfid']
+        LOGGER.info('Check list check_rfid: %s', list_card)
+        if len(list_card) > 0:
+            if KEY_RFID in client_attributes:
+                rfid_card = client_attributes.get(KEY_RFID)
+                if isinstance(rfid_card, str) and rfid_card is not None:
+                    set_temp = set(list_card)
+                    if rfid_card in set_temp:
+                        return True
+    return False
 
 
 def check_detail_alarm(key, row2, text, tel_lcd):
