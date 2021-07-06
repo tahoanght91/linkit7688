@@ -4,6 +4,7 @@ import control
 from config import *
 from config.common_lcd_services import *
 from devices import ats, crmu, clock, acm, mcc
+from operate.lcd_thread import extract_lcd_service
 from utility import *
 
 
