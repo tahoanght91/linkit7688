@@ -346,7 +346,7 @@ def check_button():
         key_code = bytes_to_int(bt_info[0:2], byteorder=BYTE_ORDER)
         key_event = bytes_to_int(bt_info[2])
         bt_info = []
-        LOGGER.info('After extract command lcd from STM32, key code: %d, key event: %d', key_code, key_event)
+        LOGGER.info('check_button function key code: %d, key event: %d', key_code, key_event)
         if key_code in LIST_KEYCODE:
             index_key = LIST_KEYCODE.index(key_code)
             LOGGER.info('Key code exist in list key code')

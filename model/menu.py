@@ -1,217 +1,276 @@
-import time
-
+import json
 from config import *
-from config.common_lcd_services import *
-from services.lcd import ats_service
-from services.lcd.rfid_screen_lcd_sevices import rfid_screen
 from services import lcd_cmd
+from services.lcd_cmd import print_lcd
 
 setting_mode = 0
 menu_lv_1 = 0
-# class Display:
-#     def __init__(self):
-#         self.last_menu = '0'
-#
-#     def main_display(self):
-#         try:
-#             # USER CODE BEGIN
-#             lcd_cmd.clear_display()
-#             # self.print_lcd('1.Main display', ROW_3)
-#             # button_status[0] = str(MENU[BUTTON_12_EVENT_UP])
-#             while True:
-#                 if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_11_EVENT_UP]):
-#                     # Recheck = {"title": '', "time": '61', "acmTempOutdoor": 0, "acmHumidIndoor": 0, "acmTempIndoor": 0, "isWarning": ""}
-#                     # write_to_json(Recheck, './main_screen.json')
-#                     self.menu(button_status[0])
-#                 # mainScreen = main_screen()
-#                 # mainScreen.get_datetime_title_now()
-#                 # mainScreen.get_temp_tram()
-#                 # mainScreen.get_user_tram()
-#                 # time.sleep(3)
-#                 # lcd_services['key_code'] = KEYCODE_13
-#                 # lcd_services['key_event'] = EVENT_UP
-#             # USER CODE END
-#         except Exception as ex:
-#             LOGGER.error('Error at call function in menu.python with message: %s', ex.message)
-#
-#     def warning_display(self):
-#         try:
-#             # USER CODE BEGIN
-#             lcd_cmd.clear_display()
-#             # warning_service = alarm_lcd_service()
-#             while True:
-#                 if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_12_EVENT_UP]):
-#                     LOGGER.info('Send button value : %s', str(button_status[0]))
-#                     self.menu(button_status[0])
-#                 # else:
-#                     # warning_service.check_alarm(tel_lcd=telemetries)
-#                 time.sleep(3)
-#             # USER CODE END
-#         except Exception as ex:
-#             LOGGER.error('Error at call function in menu.python with message: %s', ex.message)
-#
-#     def security_sensor_info_display(self):
-#         # USER CODE BEGIN
-#         lcd_cmd.clear_display()
-#         lcd_cmd.print_lcd('3. Secure sensor', ROW_1)
-#         while True:
-#             if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_31_EVENT_UP]):
-#                 LOGGER.info('Send button value : %s', str(button_status[0]))
-#                 self.menu(button_status[0])
-#         # USER CODE END
-#
-#     def air_info_display(self):
-#         # USER CODE BEGIN
-#         lcd_cmd.clear_display()
-#         lcd_cmd.print_lcd('4. Air condition', ROW_1)
-#         while True:
-#             if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_13_EVENT_UP]):
-#                 LOGGER.info('Send button value : %s', str(button_status[0]))
-#                 self.menu(button_status[0])
-#             # lcd_services['key_code'] = KEYCODE_11
-#             # lcd_services['key_event'] = EVENT_UP
-#         # USER CODE END
-#
-#     def ats_display(self):
-#         # USER CODE BEGIN
-#         goto_display = 1
-#         lcd_cmd.clear_display()
-#         ats_service.header()
-#         while True:
-#             if button_status[0] in MENU and button_status[0] != BUTTON_35_EVENT_UP:
-#                 LOGGER.info('Send button value : %s', str(button_status[0]))
-#                 self.menu(button_status[0])
-#                 break
-#             if button_status[0] == BUTTON_25_EVENT_UP:
-#                 goto_display = 2
-#                 lcd_cmd.clear_display()
-#             elif button_status[0] == BUTTON_23_EVENT_UP:
-#                 goto_display = 1
-#                 lcd_cmd.clear_display()
-#
-#             if goto_display == 1:
-#                 ats_service.display1()
-#             elif goto_display == 2:
-#                 ats_service.display2()
-#             time.sleep(3)
-#         # USER CODE END
-#
-#     def rfid_display(self):
-#         try:
-#             lcd_cmd.clear_display()
-#             # self.print_lcd('7. RFID display', ROW_1)
-#             rfidScreen = rfid_screen()
-#             rfidScreen.get_title_rfid()
-#             while True:
-#                 if button_status[0] in MENU and button_status[0] != str(MENU[BUTTON_15_EVENT_UP]):
-#                     LOGGER.info('Send button value : %s', str(button_status[0]))
-#                     self.menu(button_status[0])
-#                 rfidScreen.get_info_rfid()
-#                 time.sleep(3)
-#         except Exception as ex:
-#             LOGGER.error('Error at rfid_display function with message: %s', ex.message)
+menu_lv_2 = 0
+menu_lv_3 = 0
+menu_lv_4 = 0
+menu_lv_5 = 0
+
+
+def write_json():
+    global menu_lv_1, menu_lv_2, menu_lv_3, menu_lv_4, menu_lv_5
+    pass
+
+def menu(button):
+    global menu_lv_1, menu_lv_2, menu_lv_3, menu_lv_4, menu_lv_5
+
+    with open('./config/menu.json') as json_file:
+        data = json.load(json_file)
+    menu_lv_1 = data["menu_lv1"]
+    menu_lv_2 = data["menu_lv2"]
+    menu_lv_3 = data["menu_lv3"]
+    menu_lv_4 = data["menu_lv4"]
+    menu_lv_5 = data["menu_lv5"]
 
 
 
-def menu_list(number_menu):
-    global menu_lv_1
 
-    try:
-        LOGGER.info('Enter menu_list function')
-        switcher = {
-            BUTTON_11_EVENT_UP: main_display,
-            BUTTON_12_EVENT_UP: warning_display,
-            BUTTON_31_EVENT_UP: security_sensor_info_display,
-            BUTTON_13_EVENT_UP: air_info_display,
-            BUTTON_35_EVENT_UP: ats_display,
-            BUTTON_33_EVENT_UP: setting_display,
-            BUTTON_15_EVENT_UP: rfid_display
-        }
-        if menu_lv_1 == 0:
-            number_menu = BUTTON_11_EVENT_UP
-        if number_menu in MENU_LV_1:
-            menu_lv_1 = number_menu
-        else:
-            pass
-        LOGGER.info('show display %s', str(number_menu))
-        func = switcher.get(menu_lv_1)
-        return func()
-    except Exception as ex:
-        LOGGER.info('menu_list function error: %s', ex.message)
+# def menu_lv1():
+#     global menu_lv_1
+#
+#     try:
+#         LOGGER.info('Enter menu_list function')
+#         switcher = {
+#             0: main_display,
+#             1: warning_display,
+#             2: security_sensor_info_display,
+#             3: air_info_display,
+#             4: ats_display,
+#             5: setting_display,
+#             6: rfid_display
+#         }
+#
+#         LOGGER.info('show display %s', str(menu_lv_1))
+#         func = switcher.get(menu_lv_1)
+#         return func()
+#     except Exception as ex:
+#         LOGGER.info('menu_list function error: %s', ex.message)
 
 
 def main_display():
+    # goi ham hien thi
     lcd_cmd.print_lcd('MAKE IN MOBIFONE',
                       'TIME',
                       'VALUE',
-                      '')
+                      'ID')
+
 
 def warning_display():
-    pass
+    lcd_cmd.print_lcd('BAN TIN CANH BAO',
+                      'Ten canh bao',
+                      'Thoi gian',
+                      '')
+    # goi ham hien thi
+
 
 def security_sensor_info_display():
-    pass
+    global menu_lv_2
+
+    if menu_lv_2 == 0:
+        print_lcd('CAM BIEN AN NINH',
+                  'Khoi: 0',
+                  'Chay: 0',
+                  'Ngap nuoc: 0')
+        # goi ham hien thi
+    if menu_lv_2 == 1:
+        print_lcd('CAM BIEN AN NINH',
+                  'Ngap nuoc: 0',
+                  'Cua: 0',
+                  'chuyen dong: 1')
+        # goi ham hien thi
 
 def air_info_display():
-    pass
+    print_lcd('BAN TIN DIEU HOA',
+              'DH1: bat, HD2:Tat',
+              'Quat:Bat',
+              'Che do: Auto')
+    # goi ham hien thi
 
 def ats_display():
+    global menu_lv_2
+    if menu_lv_2 == 0:
+        print_lcd('THONG TIN ATS',
+                  'Ket noi',
+                  'Nguon: Dien luoi',
+                  '')
+        # goi ham hien thi
+    elif menu_lv_2 == 1:
+        print_lcd('THONG TIN ATS',
+                  '220V 220V 220V',
+                  '220V 220V 220V',
+                  '3.0A 4.0A 4.6A')
+        # goi ham hien thi
+
+def rfid_display():
+    print_lcd('THONG TIN RFID',
+              'Ket noi',
+              'Ngay gio',
+              'ma the')
     pass
 
 def setting_display():
-    global setting_mode
-    try:
-        if button_status[0] == BUTTON_14_EVENT_UP:
-            setting_mode += 1
-        elif button_status[0] == BUTTON_34_EVENT_UP:
-            setting_mode -= 1
-        elif button_status[0] == BUTTON_23_EVENT_UP:
-            setting_mode = 0
-        elif button_status[0] == BUTTON_25_EVENT_UP:
-            setting_mode = 3
-        if setting_mode > 5:
-            setting_mode = 5
-        elif setting_mode < 0:
-            setting_mode = 0
-        LOGGER.info('Enter setting_display function')
-        LOGGER.info('mode setting : %s', str(setting_mode))
-        # vao man hinh setting thong so da chon
-        if button_status[0] == BUTTON_24_EVENT_UP:
-            LOGGER.info('Send button value : %s', str(button_status[0]))
-            button_status[0] = None
-        if setting_mode == 0:
-            lcd_cmd.print_lcd('CAI DAT HE THONG',
-                              '> Thong tin     ',
-                              'Ngay gio        ',
-                              'Thong so mang   ')
-        elif setting_mode == 1:
-            lcd_cmd.print_lcd('CAI DAT HE THONG',
-                              'Thong tin       ',
-                              '> Ngay gio      ',
-                              'Thong so mang   ')
-        elif setting_mode == 2:
-            lcd_cmd.print_lcd('CAI DAT HE THONG',
-                              '   TT he thong  ',
-                              '   Thoi gian    ',
-                              '> Thong so mang ')
-        elif setting_mode == 3:
-            lcd_cmd.print_lcd('CAI DAT HE THONG',
-                              '> Canh bao      ',
-                              'Thiet bi ATS    ',
-                              'Thiet bi RFID   ')
-        elif setting_mode == 4:
-            lcd_cmd.print_lcd('CAI DAT HE THONG',
-                              '  Canh bao      ',
-                              '> Thiet bi ATS  ',
-                              'Thiet bi RFID   ')
-        elif setting_mode == 5:
-            lcd_cmd.print_lcd('CAI DAT HE THONG',
-                              '  Canh bao      ',
-                              'Thiet bi ATS    ',
-                              '> Thiet bi RFID ')
-        button_status[0] = None
-    except Exception as ex:
-        LOGGER.info('switch setting menu false: %s', ex.message)
+    global menu_lv_2
+    global menu_lv_3
 
-def rfid_display():
+    if menu_lv_2 == 0:
+        print_lcd('CAI DAT HE THONG',
+                  '> Thong tin',
+                  'Ngay gio',
+                  'Thong so mang')
+        # goi ham
+    elif menu_lv_2 == 1:
+        print_lcd('CAI DAT HE THONG',
+                  'Thong tin',
+                  '> Ngay gio',
+                  'Thong so mang')
+        # goi ham
+    elif menu_lv_2 == 2:
+        print_lcd('CAI DAT HE THONG',
+                  'Thong tin',
+                  'Ngay gio',
+                  '> Thong so mang')
+        # goi ham
+    elif menu_lv_2 == 3:
+        print_lcd('CAI DAT HE THONG',
+                  '> Canh bao',
+                  'Thiet bi ATS',
+                  'Thiet bi RFID')
+        # goi ham
+    elif menu_lv_2 == 4:
+        print_lcd('CAI DAT HE THONG',
+                  'Canh bao',
+                  '> Thiet bi ATS',
+                  'Thiet bi RFID')
+        # goi ham
+    elif menu_lv_2 == 5:
+        print_lcd('CAI DAT HE THONG',
+                  'Canh bao',
+                  'Thiet bi ATS',
+                  '> Thiet bi RFID')
+        # goi ham
+
+    switcher = {
+        0: cai_dat_thong_tin,
+        1: thoi_gian,
+        2: thong_so_mang,
+        3: canh_bao,
+        4: thiet_bi_ats,
+        5: thiet_bi_rfid,
+    }
+    LOGGER.info('show display %s', str(menu_lv_3))
+    func = switcher.get(menu_lv_3)
+    return func()
+
+def cai_dat_thong_tin():
+    # goi ham cai dat
     pass
+
+def thoi_gian():
+    global menu_lv_4
+
+    if menu_lv_4:
+        print_lcd('THOI GIAN',
+                  '> Ngay',
+                  'Gio',
+                  '')
+        # goi ham xu ly
+    else:
+        print_lcd('THOI GIAN',
+                  'Ngay',
+                  '> Gio',
+                  '')
+        # goi ham xu ly
+
+def thong_so_mang():
+    global menu_lv_4
+
+    if menu_lv_4 == 0:
+        print_lcd('THONG SO MANG',
+                  '> IP address',
+                  'Subnet mask',
+                  'Default gateway')
+    elif menu_lv_4 == 1:
+        print_lcd('THONG SO MANG',
+                  'IP address',
+                  '> Subnet mask',
+                  'Default gateway')
+    elif menu_lv_4 == 2:
+        print_lcd('THONG SO MANG',
+                  'IP address',
+                  'Subnet mask',
+                  '> Default gateway')
+    elif menu_lv_4 == 3:
+        print_lcd('THONG SO MANG',
+                  '> Prefered DNS',
+                  'AlternateDNS',
+                  '')
+    elif menu_lv_4 == 4:
+        print_lcd('THONG SO MANG',
+                  'Prefered DNS',
+                  '> AlternateDNS',
+                  '')
+
+def canh_bao():
+    global menu_lv_4
+
+    if menu_lv_4:
+        print_lcd('CANH BAO',
+                  '> Nguong AC cao',
+                  'Nguong AC thap',
+                  '')
+    else:
+        print_lcd('CANH BAO',
+                  'Nguong AC cao',
+                  '> Nguong AC thap',
+                  '')
+
+def thiet_bi_ats():
+    global menu_lv_4
+
+    if menu_lv_4 == 0:
+        print_lcd('THIET BI ATS',
+                  '> Tu chay',
+                  'Dien luoi',
+                  'May phat')
+    elif menu_lv_4 == 1:
+        print_lcd('THIET BI ATS',
+                  'Tu chay',
+                  '> Dien luoi',
+                  'May phat')
+    elif menu_lv_4 == 2:
+        print_lcd('THIET BI ATS',
+                  'Tu chay',
+                  'Dien luoi',
+                  '> May phat')
+
+def thiet_bi_rfid():
+    global menu_lv_4
+
+    if menu_lv_4 == 0:
+        print_lcd('THIET BI RFID',
+                  '> Cho phep doc',
+                  'khong doc',
+                  '')
+    elif menu_lv_4 == 1:
+        print_lcd('THIET BI RFID',
+                  'Cho phep doc',
+                  '> khong doc',
+                  '')
+
+def save():
+    global menu_lv_5
+
+    if menu_lv_5:
+        print_lcd('XAC NHAN LUU',
+                  '> Co',
+                  'Khong',
+                  '')
+        print_lcd('XAC NHAN LUU',
+                  'Co',
+                  '> Khong',
+                  '')
+
