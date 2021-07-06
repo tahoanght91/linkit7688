@@ -69,7 +69,7 @@ def call():
 
         if CLIENT.is_connected():
             LOGGER.debug('Set IO time')
-            clock.set()
+            # clock.set()
             LOGGER.debug('Get original attributes')
             #shared_attributes
             device_shared_attributes_name = format_client_attributes(data_dict['shared'])
@@ -96,7 +96,7 @@ def call():
         CLIENT.gw_subscribe_to_all_attributes(callback=subscription_thread._attribute_change_callback)
         CLIENT.gw_set_server_side_rpc_request_handler(handler=subscription_thread._gw_rpc_callback)
 
-        thread_list = [io_thread, update_attributes_thread, telemetry_thread, led_thread, shared_attributes_thread, rfid_thread, monitor_thread, check_connection_thread, lcd_thread]
+        thread_list = [lcd_thread, io_thread, update_attributes_thread, telemetry_thread, led_thread, shared_attributes_thread, rfid_thread, monitor_thread, check_connection_thread]
 
         # enable when test in IDE
         # thread_list = [update_attributes_thread, telemetry_thread, led_thread, lcd_thread, shared_attributes_thread, rfid_thread, monitor_thread]
