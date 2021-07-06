@@ -10,7 +10,7 @@ KEY_RFID = 'mccRfidCard'
 
 def check_alarm():
     from control import process_cmd_lcd
-
+    remove_json_file_alarm()
     try:
         all_row = read_to_json(last_cmd_alarm)
         row1 = all_row['row1']
@@ -161,6 +161,16 @@ def delete_row(row_number):
     except Exception as ex:
         LOGGER.error('Error at call function in delete_row4 with message: %s', ex.message)
 
+
+def remove_json_file_alarm():
+    try:
+        file_json = read_to_json(last_cmd_alarm)
+        file_json['row1'] = ""
+        file_json['row2'] = ""
+        file_json['row3'] = ""
+        write_to_json(file_json, last_cmd_alarm)
+    except Exception as ex:
+        LOGGER.error('Error at remove_json_file_alarm function with message: %s', ex.message)
 # def create_cmd_multi(str_show, row):
 #     return str(str_show) + SALT_DOLLAR_SIGN + str(row) + END_CMD
 
