@@ -2,23 +2,25 @@ from datetime import datetime
 from config import *
 from config.common import *
 from config.common_lcd_services import *
-from operate.rfid_thread import compare_rfid_card
 
 BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
-last_telemetry = './latest_telemetry.json'
 last_cmd_alarm = './last_cmd_alarm.json'
 KEY_RFID = 'mccRfidCard'
 
 
 def check_alarm():
+    from control import process_cmd_lcd
+
     try:
-        # tel_lcd = read_to_json(last_telemetry)
         all_row = read_to_json(last_cmd_alarm)
         row1 = all_row['row1']
         row2 = all_row['row2']
         row3 = all_row['row3']
+        delete_row(ROW_1)
+        delete_row(ROW_2)
+        delete_row(ROW_3)
         if row1 != BAN_TIN_CANH_BAO:
-            cmd_lcd[UPDATE_VALUE] = create_cmd_multi(BAN_TIN_CANH_BAO, ROW_1)
+            process_cmd_lcd(ROW_1, UPDATE_VALUE, BAN_TIN_CANH_BAO)
             row1 = BAN_TIN_CANH_BAO
             LOGGER.info('Log in row 1 success: %s', row1)
             save_to_file(row1, ROW_1)
@@ -59,7 +61,7 @@ def get_alarm(row2, row3, tel_lcd):
                 elif tel_lcd.get(CB_DOAM) != 0 and row2 != 'CB Do Am!':
                     row2 = create_for_each('CB Do Am!')
                 elif tel_lcd.get(CB_DIENAPLUOI) == 1 and row2 != 'CB Dien Luoi!':
-                    row2 = create_for_each('CB Dien Luoi!')
+                    row2 = create_for_each('CB AC!')
                 elif tel_lcd.get(CB_DIENMAYPHAT) == 1 and row2 != 'CB Dien M.Phat!':
                     row2 = create_for_each('CB Dien M.Phat!')
                 elif tel_lcd.get(CB_CUA) == 1 and row2 != 'CB Cua!':
@@ -73,7 +75,7 @@ def get_alarm(row2, row3, tel_lcd):
                     check = any(elem != 0 for elem in new_list.values())
                 if not check and check_card and row2 != 'An Toan!':
                     row2 = create_for_each('An Toan!')
-                    delete_row3()
+                    delete_row(ROW_3)
                 get_time_alarm(row3, row2)
         #     else:
         #         row2 = create_for_each(row2)
@@ -101,18 +103,19 @@ def check_rfid():
 
 def check_detail_alarm(key, row2, text, tel_lcd):
     if tel_lcd.get(key) == 1 and row2 != text:
-            return True
+        return True
     return False
 
 
 def get_time_alarm(row3, row2):
+    from control import process_cmd_lcd
+
     try:
         now = datetime.now()
         dt_string = now.strftime("%d/%m/%Y %H:%M")
         if dt_string != row3 and row2 != 'An Toan!' and row2 != '':
-            show = str(dt_string) + SALT_DOLLAR_SIGN + str(ROW_3) + END_CMD
-            cmd_lcd[UPDATE_VALUE] = show
-            LOGGER.info('TIME TO ALARM: %s', str(show))
+            process_cmd_lcd(ROW_3, UPDATE_VALUE, str(dt_string))
+            LOGGER.info('TIME TO ALARM: %s', str(dt_string))
             row = dt_string
             save_to_file(row, ROW_3)
     except Exception as ex:
@@ -120,10 +123,11 @@ def get_time_alarm(row3, row2):
 
 
 def create_for_each(string):
+    from control import process_cmd_lcd
+
     try:
-        el1 = create_cmd_multi(string, ROW_2)
-        cmd_lcd[UPDATE_VALUE] = el1
-        LOGGER.info('ALarm in line 2 -3 in create_for_each : %s', el1)
+        process_cmd_lcd(ROW_2, UPDATE_VALUE, string)
+        LOGGER.info('ALarm in line 2 -3 in create_for_each : %s', string)
         save_to_file(string, ROW_2)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
@@ -149,22 +153,16 @@ def read_to_json(file_url):
     return json_info
 
 
-def delete_row4():
+def delete_row(row_number):
+    from control import process_cmd_lcd
+
     try:
-        cmd_lcd[UPDATE_VALUE] = ' ' + SALT_DOLLAR_SIGN + str(ROW_4) + END_CMD
+        process_cmd_lcd(row_number, UPDATE_VALUE, CHAR_SPACE)
     except Exception as ex:
         LOGGER.error('Error at call function in delete_row4 with message: %s', ex.message)
 
-
-def delete_row3():
-    try:
-        cmd_lcd[UPDATE_VALUE] = ' ' + SALT_DOLLAR_SIGN + str(ROW_3) + END_CMD
-    except Exception as ex:
-        LOGGER.error('Error at call function in delete_row4 with message: %s', ex.message)
-
-
-def create_cmd_multi(str_show, row):
-    return str(str_show) + SALT_DOLLAR_SIGN + str(row) + END_CMD
+# def create_cmd_multi(str_show, row):
+#     return str(str_show) + SALT_DOLLAR_SIGN + str(row) + END_CMD
 
 # class alarm_lcd_service:
 #

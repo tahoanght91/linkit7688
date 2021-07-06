@@ -27,7 +27,7 @@ def write_to_json(body, fileUrl):
 
 
 # HungLq
-def screen1_main():
+def screen_main():
     try:
         get_title_main()
         get_datetime_now()
@@ -64,14 +64,13 @@ def get_datetime_now():
 
 def get_title_main():
     from control import process_cmd_lcd
-    global titleOld
+    # global titleOld
     try:
-        if titleOld == '':
-            show = 'MAKE IN MOBIFONE'
-
-            process_cmd_lcd(ROW_1, UPDATE_VALUE, show)
-            titleOld = 'MAKE IN MOBIFONE'
-            LOGGER.info('MAIN SCREEN TITLE: %s', str(show))
+        # if titleOld == '':
+        show = 'MAKE IN MOBIFONE'
+        process_cmd_lcd(ROW_1, UPDATE_VALUE, show)
+        # titleOld = 'MAKE IN MOBIFONE'
+        LOGGER.info('MAIN SCREEN TITLE: %s', str(show))
     except Exception as ex:
         LOGGER.error('Error at set_title_main function with message: %s', ex.message)
 
