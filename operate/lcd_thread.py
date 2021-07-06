@@ -3,18 +3,17 @@ import time
 
 import requests
 
-from config import *
 from config.common import *
 from config.common_api import *
-from config.common_lcd_services import *
+# from config.common_lcd_services import *
 from devices.utils import read_lcd_services
 from model.alarm_lcd import Alarm_lcd
 from model.lcd import Lcd
 from services.lcd.alarm_lcd_services import check_alarm, delete_row4, delete_row3
 from operate.rfid_thread import KEY_RFID
 from services.lcd.main_screen_lcd_services import write_to_json
-from services.menu import *
 from utility import bytes_to_int
+from services.menu import *
 
 url_send_sa = PREFIX + DOMAIN + API_UPDATE_SHARED_ATTRIBUTES
 url_get_staff = PREFIX + DOMAIN + API_GET_STAFF
@@ -37,23 +36,14 @@ acmTempOutOld = ''
 acmHumidInOld = ''
 warningOld = ''
 
-# button_status[0] = BUTTON_14_EVENT_UP
+# button_status[0] = SETTING
 def call():
     try:
         period = 3
         # int_file_trace()
         while True:
-            if section_lv_1 == -1:
-                main_display()
-                button = button_status[0]
-                if button in MENU_LV_1 and button != section_lv_1 or section_lv_5 == 1:
-                    section_lv_2 = 0
-                    section_lv_3 = -1
-                    section_lv_4 = -1
-                    section_lv_5 = 0
-
-                select_section_lv1()
-                button = -1
+            button = button_status[0]
+            main_menu(button)
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
