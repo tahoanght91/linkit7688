@@ -1,8 +1,9 @@
 from config import *
 from config.common import *
 from config.common_lcd_services import *
+from services.lcd import main_screen_lcd_services
 
-
+ROW = [ROW_1, ROW_2, ROW_3, ROW_4]
 section_lv_1 = -1
 section_lv_2 = 0
 section_lv_3 = -1
@@ -15,13 +16,16 @@ set_string_ok = 0
 
 def print_lcd(str1, str2, str3, str4):
     from control import process_cmd_lcd
+    status = False
     try:
+        str = [str1, str2, str3, str4]
         LOGGER.info('Send message print_lcd on lcd')
-        process_cmd_lcd(ROW_1, UPDATE_VALUE, str1)
-        # process_cmd_lcd(ROW_2, UPDATE_VALUE, str2)
-        # process_cmd_lcd(ROW_3, UPDATE_VALUE, str3)
-        # process_cmd_lcd(ROW_4, UPDATE_VALUE, str4)
-        LOGGER.info('Send message print_lcd on lcd: %s', str(cmd_lcd))
+        i = 0
+        while i < 4:
+            if str[i] != '':
+                status = process_cmd_lcd(ROW[i], UPDATE_VALUE, str[i])
+            if status:
+                i += 1
     except Exception as ex:
         LOGGER.info('print_lcd_lcd function error: %s', ex.message)
 
@@ -56,11 +60,12 @@ def select_section_lv1():
 
 def main_display():
     # goi ham hien thi
-    print_lcd('MAKE IN MOBIFONE',
-              'TIME',
-              'VALUE',
-              'ID')
-    LOGGER.info('Enter main_display function')
+    # print_lcd('MAKE IN MOBIFONE',
+    #           'TIME',
+    #           'VALUE',
+    #           'ID')
+    # LOGGER.info('Enter main_display function')
+    main_screen_lcd_services.screen1_main()
 
 def warning_display():
     print_lcd('BAN TIN CANH BAO',

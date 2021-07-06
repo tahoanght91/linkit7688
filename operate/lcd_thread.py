@@ -36,15 +36,16 @@ acmTempOutOld = ''
 acmHumidInOld = ''
 warningOld = ''
 
-# button_status[0] = SETTING
+last_stt_bt = 0
+
+# button_status[0]
 def call():
     try:
         period = 3
-        # int_file_trace()
         while True:
-            screen1_main()
-            # button = button_status[0]
-            # main_menu(button)
+            button = check_button(lcd_services)
+            LOGGER.info('Send button value: %s', str(button))
+            main_menu(button)
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
@@ -426,3 +427,26 @@ def run_repeat_cmd_lcd(str_cmd):
     for x in range(num):
         cmd_lcd[UPDATE_VALUE] = str_cmd
         time.sleep(0.1)
+
+def check_button(bt_info):
+    global last_stt_bt
+    try:
+        LOGGER.info('Enter check_button function')
+        if bt_info:
+            key_code = bt_info['key_code']
+            key_event = bt_info['key_event']
+            LOGGER.info('check_button function key code: %s, key event: %s', str(key_code), str(key_event))
+            if int(key_code) in LIST_KEYCODE:
+                index_key = int(LIST_KEYCODE.index(key_code))
+                LOGGER.info('Key code exist in list key code')
+            if key_event == EVENT_UP:
+                event = EVENT_UP_BT
+            elif key_event == EVENT_HOLD:
+                event = EVENT_HOLD_BT
+            button = event * index_key
+            if last_stt_bt != button:
+                last_stt_bt = button
+                LOGGER.info('return button value: %s', LOG_BUTTON[str(button)])
+            return button
+    except Exception as ex:
+        LOGGER.error('check_button function error: %s', ex.message)
