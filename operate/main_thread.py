@@ -9,7 +9,7 @@ from config import *
 from config.default_data import data_dict
 from devices import clock
 from . import subscription_thread, monitor_thread, io_thread, telemetry_thread, update_attributes_thread, ui_thread, \
-    shared_attributes_thread, rfid_thread, led_thread, lcd_thread, check_connection_thread, io_thread_lcd
+    shared_attributes_thread, rfid_thread, led_thread, lcd_thread, check_connection_thread
 from .update_attributes_thread import format_client_attributes, get_list_key
 
 semaphore = threading.Semaphore(0)
