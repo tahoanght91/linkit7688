@@ -3,20 +3,17 @@ import time
 
 import requests
 
-from config import *
 from config.common import *
 from config.common_api import *
-from config.common_lcd_services import *
+# from config.common_lcd_services import *
 from devices.utils import read_lcd_services
 from model.alarm_lcd import Alarm_lcd
 from model.lcd import Lcd
 from services.lcd.alarm_lcd_services import check_alarm, delete_row4, delete_row3
-from operate.led_thread import get_sate_led_alarm
 from operate.rfid_thread import KEY_RFID
 from services.lcd.main_screen_lcd_services import write_to_json
-from services.lcd_cmd import clear_display
 from utility import bytes_to_int
-from model import menu
+from services.menu import *
 
 url_send_sa = PREFIX + DOMAIN + API_UPDATE_SHARED_ATTRIBUTES
 url_get_staff = PREFIX + DOMAIN + API_GET_STAFF
@@ -39,14 +36,14 @@ acmTempOutOld = ''
 acmHumidInOld = ''
 warningOld = ''
 
-
+# button_status[0] = SETTING
 def call():
     try:
         period = 3
-        int_file_trace()
+        # int_file_trace()
         while True:
-            check_key_code()
-            # lcd.menu(button_status[0])
+            button = button_status[0]
+            main_menu(button)
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
