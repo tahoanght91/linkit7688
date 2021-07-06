@@ -27,7 +27,7 @@ def write_to_json(body, fileUrl):
 
 
 # HungLq
-def screen_main():
+def screen1_main():
     try:
         get_title_main()
         get_datetime_now()
