@@ -4,7 +4,6 @@ from config import *
 from config.common import UPDATE_VALUE
 from config.common_api import PREFIX, DOMAIN, API_GET_STAFF
 from config.common_lcd_services import *
-from control import process_cmd_lcd
 from operate.rfid_thread import KEY_RFID
 
 timeOld = '61'
@@ -48,6 +47,7 @@ def read_to_json(fileUrl):
 
 
 def get_datetime_now():
+    from control import process_cmd_lcd
     global timeOld
     try:
         timeNew = datetime.now().strftime("%M")
@@ -63,10 +63,12 @@ def get_datetime_now():
 
 
 def get_title_main():
+    from control import process_cmd_lcd
     global titleOld
     try:
         if titleOld == '':
             show = 'MAKE IN MOBIFONE'
+
             process_cmd_lcd(ROW_1, UPDATE_VALUE, show)
             titleOld = 'MAKE IN MOBIFONE'
             LOGGER.info('MAIN SCREEN TITLE: %s', str(show))
@@ -75,6 +77,7 @@ def get_title_main():
 
 
 def get_temp_tram():
+    from control import process_cmd_lcd
     global acmTempInOld
     global acmTempOutOld
     global acmHumidInOld
@@ -106,6 +109,7 @@ def get_temp_tram():
 
 
 def get_user_tram():
+    from control import process_cmd_lcd
     try:
         # rfid = read_to_json('./latest_client_attributes.json')
         rfid = client_attributes
