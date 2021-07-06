@@ -11,7 +11,7 @@ from model.alarm_lcd import Alarm_lcd
 from model.lcd import Lcd
 from services.lcd.alarm_lcd_services import check_alarm, delete_row4, delete_row3
 from operate.rfid_thread import KEY_RFID
-from services.lcd.main_screen_lcd_services import write_to_json
+from services.lcd.main_screen_lcd_services import write_to_json, screen1_main
 from utility import bytes_to_int
 from services.menu import *
 
@@ -42,6 +42,7 @@ def call():
         period = 3
         # int_file_trace()
         while True:
+            screen1_main()
             button = button_status[0]
             main_menu(button)
             time.sleep(period)
