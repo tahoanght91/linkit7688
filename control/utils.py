@@ -390,3 +390,22 @@ def split_list_by_row(list_cmd_lcd):
         LOGGER.error('Error at function split_list_by_row with message: %s', ex.message)
     return arr_dct_split
 
+
+def set_alarm_state_to_dct(dct_telemetry):
+    if 'mccFireState' in dct_telemetry:
+        dct_alarm['mccFireState'] = dct_telemetry['mccFireState']
+    if 'mccFloodState' in dct_telemetry:
+        dct_alarm['mccFloodState'] = dct_telemetry['mccFloodState']
+    if 'mccSmokeState' in dct_telemetry:
+        dct_alarm['mccSmokeState'] = dct_telemetry['mccSmokeState']
+    if 'mccDoorState' in dct_telemetry:
+        dct_alarm['mccDoorState'] = dct_telemetry['mccDoorState']
+    if 'acmTempAlarm' in dct_telemetry:
+        dct_alarm['acmTempAlarm'] = dct_telemetry['acmTempAlarm']
+    if 'acmHumidAlarm' in dct_telemetry:
+        dct_alarm['acmHumidAlarm'] = dct_telemetry['acmHumidAlarm']
+    if 'atsVgenThresholdState' in dct_telemetry:
+        dct_alarm['atsVgenThresholdState'] = dct_telemetry['atsVgenThresholdState']
+    if 'atsVacThresholdState' in dct_telemetry:
+        dct_alarm['atsVacThresholdState'] = dct_telemetry['atsVgenThresholdState']
+
