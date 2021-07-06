@@ -300,12 +300,10 @@ def compose_command_lcd(row, key_lcd, content):
                 length = len(arr_char) + 3
                 result = struct.pack(FORMAT_LCD + prefix, 0xA0, length, OP_CODE_SEND_LCD, key_lcd, row, *arr_char)
                 LOGGER.info('String in LCD success: %s', str_content)
+                result_encode = ':'.join(x.encode('hex') for x in result)
+                LOGGER.debug('Process lcd command: key_lcd: %s, content: %s, after decode is: %s', key_lcd, content, result_encode)
                 resp_write_cmd = write_update_value(result)
-                if cmd_lcd[row] == [key_lcd, content]:
-                    cmd_lcd_lock.acquire()
-                    del cmd_lcd[row]
-                    cmd_lcd_lock.release()
-                return result
+                return resp_write_cmd
             elif key_lcd == CLEAR:
                 length = 2
                 result = struct.pack('BBBB', 0xA0, length, OP_CODE_SEND_LCD, key_lcd)
@@ -339,9 +337,7 @@ def _process_cmd_led(length_led, arr_value):
 def _process_cmd_lcd(row, key_lcd, content):
     try:
         result = compose_command_lcd(row, key_lcd, content)
-        result_encode = ':'.join(x.encode('hex') for x in result)
-        LOGGER.debug('Process lcd command: key_lcd: %s, content: %s, after decode is: %s', key_lcd, content, result_encode)
-        return result_encode
+        return result
     except Exception as ex:
         LOGGER.error('Error at _process_cmd_lcd function with message: %s', ex.message)
 
@@ -421,7 +417,7 @@ def write_update_value(bytes_command):
     try:
         response = ser.write(bytes_command)
         if response > 0:
-            LOGGER.info('Response when send command UPDATE_VALUE: %s', str())
+            LOGGER.info('Response when send command UPDATE_VALUE: %s', str(response))
             return True
         else:
             return False
