@@ -1,8 +1,10 @@
 import requests
 from datetime import datetime
 from config import *
+from config.common import UPDATE_VALUE
 from config.common_api import PREFIX, DOMAIN, API_GET_STAFF
 from config.common_lcd_services import *
+from control import process_cmd_lcd
 from operate.rfid_thread import KEY_RFID
 
 timeOld = '61'
@@ -25,7 +27,6 @@ def write_to_json(body, fileUrl):
         LOGGER.error('Error at write_to_json function with message: %s', ex.message)
 
 
-# HungLQ
 # HungLq
 def screen_main():
     try:
@@ -53,8 +54,8 @@ def get_datetime_now():
         if timeNew != timeOld:
             now = datetime.now()
             dt_string = now.strftime("%d/%m/%Y %H:%M")
-            show = [5, str(dt_string)]
-            cmd_lcd[ROW_2] = show
+            show = str(dt_string)
+            process_cmd_lcd(ROW_2, UPDATE_VALUE, show)
             LOGGER.info('MAIN SCREEN DATETIME NOW: %s', str(show))
             timeOld = timeNew
     except Exception as ex:
@@ -65,8 +66,8 @@ def get_title_main():
     global titleOld
     try:
         if titleOld == '':
-            show = [5, 'MAKE IN MOBIFONE']
-            cmd_lcd[ROW_1] = show
+            show = 'MAKE IN MOBIFONE'
+            process_cmd_lcd(ROW_1, UPDATE_VALUE, show)
             titleOld = 'MAKE IN MOBIFONE'
             LOGGER.info('MAIN SCREEN TITLE: %s', str(show))
     except Exception as ex:
@@ -85,7 +86,7 @@ def get_temp_tram():
         acmTempIn = tel.get('acmTempIndoor')
         acmTempOut = tel.get('acmTempOutdoor')
         acmHumidIn = tel.get('acmHumidIndoor')
-        new_list = dict(filter(lambda elem: elem[0].lower().find('state') != -1, tel.items()))
+        new_list = dict(filter(lambda elem: elem[0].lower().find('state') != -1, dct_alarm.items()))
         if len(new_list) > 0:
             check = any(elem != 0 for elem in new_list.values())
             warning = '!!!' if check else ''
@@ -96,9 +97,9 @@ def get_temp_tram():
             acmTempOutOld = acmTempOut
             acmHumidInOld = acmHumidIn
             warningOld = warning
-            show = [str(acmTempIn) + ' ' + str(acmTempOut) + ' ' + str(
-                acmHumidIn) + ' ' + warning]
-            cmd_lcd[ROW_3] = show
+            show = str(acmTempIn) + ' ' + str(acmTempOut) + ' ' + str(
+                acmHumidIn) + ' ' + warning
+            process_cmd_lcd(ROW_3, UPDATE_VALUE, show)
             LOGGER.info('MAIN SCREEN TEMP AND ALARM NOW: %s', str(show))
     except Exception as ex:
         LOGGER.error('Error at get_temp_tram function with message: %s', ex.message)
@@ -118,8 +119,8 @@ def get_user_tram():
                 staff = json.loads(response.content)['result']
                 if staff is not None:
                     staffCode = json.loads(response.content)['result']['maNhanVien']
-            show = [str(staffCode)]
-            cmd_lcd[ROW_4] = show
+            show = str(staffCode)
+            process_cmd_lcd(ROW_4, UPDATE_VALUE, show)
             dt_string = datetime.now().strftime("%d/%m/%Y %H:%M")
             rfid_info = {"Time": dt_string, "StaffCode": staffCode}
             write_to_json(rfid_info, './last_rfid_card_code.json')
