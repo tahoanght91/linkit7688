@@ -1,6 +1,7 @@
 from config import *
-from config.common import END_CMD, CLEAR
+from config.common import *
 from config.common_lcd_services import *
+from control import process_cmd_lcd
 
 section_lv_1 = -1
 section_lv_2 = 0
@@ -15,12 +16,10 @@ set_string_ok = 0
 def print_lcd(str1, str2, str3, str4):
     try:
         LOGGER.info('Send message print_lcd on lcd')
-        str1 = str1 + SALT_DOLLAR_SIGN + str(ROW_1) + END_CMD
-        str2 = str2 + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD
-        str3 = str3 + SALT_DOLLAR_SIGN + str(ROW_3) + END_CMD
-        str4 = str4 + SALT_DOLLAR_SIGN + str(ROW_4) + END_CMD
-
-        cmd_lcd = {1: [5, str1], 2: [5, str2], 3: [5, str3], 4: [5, str4]}
+        process_cmd_lcd(ROW_1, UPDATE_VALUE, str1)
+        # process_cmd_lcd(ROW_2, UPDATE_VALUE, str2)
+        # process_cmd_lcd(ROW_3, UPDATE_VALUE, str3)
+        # process_cmd_lcd(ROW_4, UPDATE_VALUE, str4)
         LOGGER.info('Send message print_lcd on lcd: %s', str(cmd_lcd))
     except Exception as ex:
         LOGGER.info('print_lcd_lcd function error: %s', ex.message)
