@@ -274,7 +274,7 @@ def check_status():
         rtn += _send_command(COMMAND_ACM_AIRC_2_OFF)
     elif not acmAirc2CurrentState and acmAirc2NextState:
         rtn += _send_command(COMMAND_ACM_AIRC_2_ON)
-    if acmFanCurrentState and not acmFanNextState:
+    elif acmFanCurrentState and not acmFanNextState:
         rtn += _send_command(COMMAND_ACM_FAN_OFF)
     elif not acmFanCurrentState and acmFanNextState:
         rtn += _send_command(COMMAND_ACM_FAN_ON)
