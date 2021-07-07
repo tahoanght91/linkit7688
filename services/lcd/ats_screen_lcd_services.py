@@ -17,31 +17,100 @@ def get_info_ats():
     try:
         infor_ats = client_attributes
         status = 'Ket noi' if infor_ats.get('atsConnect') > 0 else 'Mat ket noi'
-        resource = 'May phat' if infor_ats.get('atsContactorGenState') > 0 else 'Dien luoi'
+        resource = 'Nguon: May phat' if infor_ats.get('atsContactorGenState') > 0 else 'Nguon: Dien luoi'
+        mode = 'Che do: ' + str(telemetries.get('atsState'))
         process_cmd_lcd(ROW_2, UPDATE_VALUE, str(status))
-        process_cmd_lcd(ROW_3, UPDATE_VALUE, 'Nguon: ' + str(resource))
+        process_cmd_lcd(ROW_3, UPDATE_VALUE, str(resource))
+        process_cmd_lcd(ROW_4, UPDATE_VALUE, str(mode))
     except Exception as ex:
         LOGGER.error('Error at get_info_ats function with message: %s', ex.message)
 
 
-def get_detail_ats():
+def get_detail_screen1_ats():
     row2 = ''
     row3 = ''
     row4 = ''
     from control import process_cmd_lcd
     try:
-        detail = telemetries
-        status = client_attributes
-        row2 = 'Mat ket noi'
-        row3 = 'Mat ket noi'
-        row4 = 'Mat ket noi'
-        if status.get('atsConnect') == 1:
-            if status.get('atsContactorGenState') == 1:
-                row2 = str(detail.get('atsVgenP1')) + str(detail.get('atsVgenP2')) + str(detail.get('atsVgenP3'))
-            else:
-                row2 = str(detail.get('atsVacP1')) + str(detail.get('atsVacP2')) + str(detail.get('atsVacP3'))
-            row3 = str(detail.get('atsVloadP1')) + str(detail.get('atsVloadP2')) + str(detail.get('atsVloadP3'))
-            row4 = str(detail.get('atsIloadP1')) + str(detail.get('atsIloadP2')) + str(detail.get('atsIloadP3'))
+        row2 = 'Dien luoi: ' + str(telemetries.get('atsAcState'))
+        row3 = 'May phat: ' + str(telemetries.get('atsGenState'))
+        row4 = 'Che do M.Phat: ' + str(telemetries.get('atsState'))
+        process_cmd_lcd(ROW_2, UPDATE_VALUE, str(row2))
+        process_cmd_lcd(ROW_3, UPDATE_VALUE, str(row3))
+        process_cmd_lcd(ROW_4, UPDATE_VALUE, str(row4))
+    except Exception as ex:
+        LOGGER.error('Error at get_detail_ats function with message: %s', ex.message)
+
+
+def get_detail_screen2_ats():
+    row2 = ''
+    row3 = ''
+    row4 = ''
+    from control import process_cmd_lcd
+    try:
+        row2 = str(telemetries.get('atsVacP1')) + 'V' + str(telemetries.get('atsVacP2')) + 'V' + str(
+            telemetries.get('atsVacP3')) + 'V'
+        row3 = str(telemetries.get('atsVgenP1')) + 'V' + str(telemetries.get('atsVgenP2')) + 'V' + str(
+            telemetries.get('atsVgenP3')) + 'V'
+        row4 = str(telemetries.get('atsVloadP1')) + 'V' + str(telemetries.get('atsVloadP2')) + 'V' + str(
+            telemetries.get('atsVloadP3')) + 'V'
+        process_cmd_lcd(ROW_2, UPDATE_VALUE, str(row2))
+        process_cmd_lcd(ROW_3, UPDATE_VALUE, str(row3))
+        process_cmd_lcd(ROW_4, UPDATE_VALUE, str(row4))
+    except Exception as ex:
+        LOGGER.error('Error at get_detail_ats function with message: %s', ex.message)
+
+
+def get_detail_screen3_ats():
+    row2 = ''
+    row3 = ''
+    row4 = ''
+    from control import process_cmd_lcd
+    try:
+        row2 = str(telemetries.get('atsIloadP1')) + 'A' + str(telemetries.get('atsIloadP2')) + 'A' + str(
+            telemetries.get('atsIloadP3')) + 'A'
+        row3 = str(telemetries.get('atsPac1')) + 'W' + str(telemetries.get('atsPac2')) + 'W' + str(
+            telemetries.get('atsPac3')) + 'W'
+        row4 = str(telemetries.get('atsVacFreq')) + 'Hz' + str(telemetries.get('atsVgenFreq')) + 'Hz' + str(
+            telemetries.get('atsVloadFreq')) + 'Hz'
+        process_cmd_lcd(ROW_2, UPDATE_VALUE, str(row2))
+        process_cmd_lcd(ROW_3, UPDATE_VALUE, str(row3))
+        process_cmd_lcd(ROW_4, UPDATE_VALUE, str(row4))
+    except Exception as ex:
+        LOGGER.error('Error at get_detail_ats function with message: %s', ex.message)
+
+
+def get_detail_screen4_ats():
+    row2 = ''
+    row3 = ''
+    row4 = ''
+    from control import process_cmd_lcd
+    try:
+        row2 = str(telemetries.get('mccDcBat1Temp')) + 'C' + str(telemetries.get('mccDcBat2Temp')) + 'C' + str(
+            telemetries.get('mccDcBat3Temp')) + 'C'
+        row3 = str(telemetries.get('mccDcV1')) + 'V' + str(telemetries.get('mccDcI1')) + 'A' + str(
+            telemetries.get('mccDcP1')) + 'W'
+        row4 = str(telemetries.get('mccDcV2')) + 'V' + str(telemetries.get('mccDcI2')) + 'A' + str(
+            telemetries.get('mccDcP2')) + 'W'
+        process_cmd_lcd(ROW_2, UPDATE_VALUE, str(row2))
+        process_cmd_lcd(ROW_3, UPDATE_VALUE, str(row3))
+        process_cmd_lcd(ROW_4, UPDATE_VALUE, str(row4))
+    except Exception as ex:
+        LOGGER.error('Error at get_detail_ats function with message: %s', ex.message)
+
+
+def get_detail_screen5_ats():
+    row2 = ''
+    row3 = ''
+    row4 = ''
+    from control import process_cmd_lcd
+    try:
+        row2 = str(telemetries.get('mccDcV3 ')) + 'V' + str(telemetries.get('mccDcI3')) + 'A' + str(
+            telemetries.get('mccDcP3')) + 'W'
+        row3 = str(telemetries.get('mccDcV4')) + 'V' + str(telemetries.get('mccDcI4')) + 'A' + str(
+            telemetries.get('mccDcP4')) + 'W'
+        row4 = str(telemetries.get('mccDcV5')) + 'V' + str(telemetries.get('mccDcI5')) + 'A' + str(
+            telemetries.get('mccDcP5')) + 'W'
         process_cmd_lcd(ROW_2, UPDATE_VALUE, str(row2))
         process_cmd_lcd(ROW_3, UPDATE_VALUE, str(row3))
         process_cmd_lcd(ROW_4, UPDATE_VALUE, str(row4))

@@ -64,22 +64,10 @@ def select_section_lv1():
 
 
 def main_display():
-    # goi ham hien thi
-    # print_lcd('MAKE IN MOBIFONE',
-    #           'TIME',
-    #           'VALUE',
-    #           'ID')
-    # LOGGER.info('Enter main_display function')
     main_screen_lcd_services.screen_main()
 
 
 def warning_display():
-    # print_lcd('BAN TIN CANH BAO',
-    #           'Ten canh bao',
-    #           'Thoi gian',
-    #           '')
-    # # goi ham hien thi
-    # LOGGER.info('Enter warning_display function')
     check_alarm()
 
 
@@ -92,18 +80,8 @@ def security_sensor_info_display():
         section_lv_2 = 1
 
     if section_lv_2 == 0:
-        # print_lcd('CAM BIEN AN NINH',
-        #           'Khoi: 0',
-        #           'Chay: 0',
-        #           'Ngap nuoc: 0')
-        # goi ham hien thi
         security_sensor_screen_1(telemetries)
     if section_lv_2 == 1:
-        # print_lcd('CAM BIEN AN NINH',
-        #           'Ngap nuoc: 0',
-        #           'Cua: 0',
-        #           'chuyen dong: 1')
-        # goi ham hien thi
         security_sensor_screen_2(telemetries)
     LOGGER.info('Enter security_sensor_info_display function')
     LOGGER.info('section_lv_2: %s', str(section_lv_2))
@@ -127,8 +105,8 @@ def ats_display():
         section_lv_2 += 1
     elif button == RIGHT:
         section_lv_2 -= 1
-    if section_lv_2 > 3:
-        section_lv_2 = 3
+    if section_lv_2 > 5:
+        section_lv_2 = 5
     elif section_lv_2 < 0:
         section_lv_2 = 0
 
@@ -136,12 +114,20 @@ def ats_display():
         ats_screen_lcd_services.get_screen_ats()
         LOGGER.info('ATS DISPLAY')
     elif section_lv_2 == 1:
-        ats_screen_lcd_services.get_detail_ats()
+        ats_screen_lcd_services.get_detail_screen1_ats()
+        LOGGER.info('ATS DISPLAY DETAIL1')
     elif section_lv_2 == 2:
-        pass
+        ats_screen_lcd_services.get_detail_screen2_ats()
+        LOGGER.info('ATS DISPLAY DETAIL2')
     elif section_lv_2 == 3:
-        pass
-    LOGGER.info('ATS DISPLAY DETAIL')
+        ats_screen_lcd_services.get_detail_screen3_ats()
+        LOGGER.info('ATS DISPLAY DETAIL3')
+    elif section_lv_2 == 4:
+        ats_screen_lcd_services.get_detail_screen4_ats()
+        LOGGER.info('ATS DISPLAY DETAIL4')
+    elif section_lv_2 == 5:
+        ats_screen_lcd_services.get_detail_screen5_ats()
+        LOGGER.info('ATS DISPLAY DETAIL5')
 
 
 def rfid_display():
@@ -456,16 +442,17 @@ def thiet_bi_rfid():
 
 def main_menu(bt):
     global section_lv_1, section_lv_2, section_lv_3, section_lv_4, section_lv_5, button
-    button = bt
 
     LOGGER.info('Enter main_menu function')
     try:
-        if button == -1:
-            LOGGER.info('Menu no action. Read button status: %s', str(button))
-            return
+        section_lv_1 = section[0]
+        section_lv_2 = section[1]
+        section_lv_3 = section[2]
+        section_lv_4 = section[3]
+        section_lv_5 = section[4]
 
-        if section_lv_1 == -1:
-            main_display()
+        if bt != -1:
+            button = bt
 
         if button in MENU_LV_1 and button != section_lv_1 or section_lv_5 == 1:
             section_lv_2 = 0
@@ -473,6 +460,11 @@ def main_menu(bt):
             section_lv_4 = -1
             section_lv_5 = 0
         select_section_lv1()
-        button = -1
+        section[0] = section_lv_1
+        section[1] = section_lv_2
+        section[2] = section_lv_3
+        section[3] = section_lv_4
+        section[4] = section_lv_5
+
     except Exception as ex:
         LOGGER.error('Error at call function in main_menu with message: %s', ex.message)
