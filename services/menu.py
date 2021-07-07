@@ -446,10 +446,6 @@ def main_menu(bt):
 
     LOGGER.info('Enter main_menu function')
     try:
-        if button == -1:
-            LOGGER.info('Menu no action. Read button status: %s', str(button))
-            return
-
         if section_lv_1 == -1:
             main_display()
 
