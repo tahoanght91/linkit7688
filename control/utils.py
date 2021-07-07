@@ -477,39 +477,8 @@ def set_alarm_state_to_dct(dct_telemetry):
 
 def write_update_value(bytes_command):
     result = False
-    tries = 0
-    flip = 0
-    message_break = shared_attributes.get('mccPeriodReadDataIO', default_data.mccPeriodReadDataIO)
     try:
-        while True:
-            write_stream = with_check_sum(bytes_command, BYTE_ORDER)
-            if flip == 0:
-                flip = READ_PER_WRITE
-                ser.write(write_stream)
-            else:
-                flip -= 1
-            byte_stream = blocking_read(ser, message_break)
-            if byte_stream:
-                if byte_stream == with_check_sum(lcd_ack, BYTE_ORDER):
-                    cmd_led_lock.acquire()
-                    if cmd_led[length_led] == arr_value:
-                        del cmd_led[length_led]
-                    cmd_led_lock.release()
-                    LOGGER.debug("Receive ACK led message with length_led: %d", length_led)
-                    break
-                if _read_data(byte_stream):
-                    ser.write(with_check_sum(data_ack, BYTE_ORDER))
-            if flip == 0:
-                tries += 1
-                if tries > MAX_TRIES:
-                    cmd_led_lock.acquire()
-                    if cmd_led[length_led] == arr_value:
-                        del cmd_led[length_led]
-                    cmd_led_lock.release()
-                    LOGGER.info('Time out')
-                    break
-                LOGGER.debug('Try sending again')
-
+        write_stream = with_check_sum(bytes_command, BYTE_ORDER)
         response = ser.write(write_stream)
         if response > 0:
             result = True
@@ -517,6 +486,7 @@ def write_update_value(bytes_command):
     except Exception as ex:
         LOGGER.error('Error at function write_update_value with message: %s', ex.message)
     return result
+
 
 def write_to_json(body, file_url):
     try:
