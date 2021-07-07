@@ -452,6 +452,6 @@ def main_menu(bt):
             section_lv_4 = -1
             section_lv_5 = 0
         select_section_lv1()
-
+        button = -1
     except Exception as ex:
         LOGGER.error('Error at call function in main_menu with message: %s', ex.message)
