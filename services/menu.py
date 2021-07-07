@@ -447,10 +447,11 @@ def main_menu(bt):
     try:
         if bt != -1:
             button = bt
+        else:
             time_count = time()
 
         time_come_back = time() - time_count
-        LOGGER.info('Time out come back to main display %d:', time_come_back)
+        LOGGER.info('Time out come back to main display: %ds', time_come_back)
         if time_come_back > TIME_OUT:
             time_come_back = 0
             section_lv_1 = 0
