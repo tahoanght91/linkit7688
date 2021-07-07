@@ -445,6 +445,12 @@ def main_menu(bt):
 
     LOGGER.info('Enter main_menu function')
     try:
+        section_lv_1 = section[0]
+        section_lv_2 = section[1]
+        section_lv_3 = section[2]
+        section_lv_4 = section[3]
+        section_lv_5 = section[4]
+
         if bt != -1:
             button = bt
 
@@ -454,6 +460,11 @@ def main_menu(bt):
             section_lv_4 = -1
             section_lv_5 = 0
         select_section_lv1()
-        button = -1
+        section[0] = section_lv_1
+        section[1] = section_lv_2
+        section[2] = section_lv_3
+        section[3] = section_lv_4
+        section[4] = section_lv_5
+
     except Exception as ex:
         LOGGER.error('Error at call function in main_menu with message: %s', ex.message)
