@@ -70,6 +70,7 @@ def main_display():
     # LOGGER.info('Enter main_display function')
     main_screen_lcd_services.screen_main()
 
+
 def warning_display():
     # print_lcd('BAN TIN CANH BAO',
     #           'Ten canh bao',
@@ -78,6 +79,7 @@ def warning_display():
     # # goi ham hien thi
     # LOGGER.info('Enter warning_display function')
     check_alarm()
+
 
 def security_sensor_info_display():
     global section_lv_2
@@ -112,18 +114,28 @@ def air_info_display():
     LOGGER.info('Enter air_info_display function')
     # LOGGER.info('section_lv_2: %s', str(section_lv_2))
 
+
 def ats_display():
     global section_lv_2
 
     if button == LEFT:
-        section_lv_2 = 0
+        section_lv_2 += 1
     elif button == RIGHT:
-        section_lv_2 = 1
+        section_lv_2 -= 1
+    if section_lv_2 > 3:
+        section_lv_2 = 3
+    elif section_lv_2 < 0:
+        section_lv_2 = 0
+
     if section_lv_2 == 0:
         ats_screen_lcd_services.get_screen_ats()
         LOGGER.info('ATS DISPLAY')
     elif section_lv_2 == 1:
         ats_screen_lcd_services.get_detail_ats()
+    elif section_lv_2 == 2:
+        pass
+    elif section_lv_2 == 3:
+        pass
     LOGGER.info('ATS DISPLAY DETAIL')
 
 
@@ -245,6 +257,7 @@ def thoi_gian():
     LOGGER.info('Finish thoi_gian function')
     LOGGER.info('section_lv_3: %s', str(section_lv_3))
 
+
 def thong_so_mang():
     global section_lv_3
     global section_lv_4
@@ -312,6 +325,7 @@ def thong_so_mang():
                       '')
     LOGGER.info('section_lv_3: %s', str(section_lv_3))
 
+
 def canh_bao():
     global section_lv_3
     global section_lv_4
@@ -347,6 +361,7 @@ def canh_bao():
                       '> Nguong AC thap',
                       '')
     LOGGER.info('section_lv_3: %s', str(section_lv_3))
+
 
 def thiet_bi_ats():
     global section_lv_3
@@ -397,6 +412,7 @@ def thiet_bi_ats():
                       '> May phat')
     LOGGER.info('section_lv_3: %s', str(section_lv_3))
 
+
 def thiet_bi_rfid():
     global section_lv_3
     global section_lv_4
@@ -431,6 +447,7 @@ def thiet_bi_rfid():
                       '> khong doc',
                       '')
     LOGGER.info('section_lv_3: %s', str(section_lv_3))
+
 
 def main_menu(bt):
     global section_lv_1, section_lv_2, section_lv_3, section_lv_4, section_lv_5, button
