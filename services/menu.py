@@ -9,7 +9,7 @@ from services.lcd import rfid_screen_lcd_sevices
 from services.lcd.sensor_screen_lcd_services import *
 
 ROW = [ROW_1, ROW_2, ROW_3, ROW_4]
-section_lv_1 = -1
+section_lv_1 = 0
 section_lv_2 = 0
 section_lv_3 = -1
 section_lv_4 = -1
@@ -17,7 +17,6 @@ section_lv_5 = -1
 
 button = 0
 set_string_ok = 0
-menu_path = './config/menu.json'
 
 def print_lcd(str1, str2, str3, str4):
     from control import process_cmd_lcd
@@ -56,7 +55,7 @@ def select_section_lv1():
             5: setting_display,
             6: rfid_display
         }
-        LOGGER.info('Send message select_section_lv1 on lcd, section_lv_1: %s', section_lv_1)
+        LOGGER.info('Send message select_section_lv1 on lcd, section_lv_1: %s', str(section_lv_1))
         func = switcher.get(section_lv_1)
         return func()
     except Exception as ex:
@@ -444,15 +443,6 @@ def main_menu(bt):
     global section_lv_1, section_lv_2, section_lv_3, section_lv_4, section_lv_5, button
     LOGGER.info('Enter main_menu function')
     try:
-        json_file = open(menu_path)
-        json_info = json.load(json_file)
-
-        section_lv_1 = json_info["section_lv_1"]
-        section_lv_2 = json_info["section_lv_2"]
-        section_lv_3 = json_info["section_lv_3"]
-        section_lv_4 = json_info["section_lv_4"]
-        section_lv_5 = json_info["section_lv_5"]
-
         if bt != -1:
             button = bt
 
@@ -462,16 +452,6 @@ def main_menu(bt):
             section_lv_4 = -1
             section_lv_5 = 0
         select_section_lv1()
-
-        data = {
-            "section_lv_1": section_lv_1,
-            "section_lv_2": section_lv_2,
-            "section_lv_3": section_lv_3,
-            "section_lv_4": section_lv_4,
-            "section_lv_5": section_lv_5,
-        }
-        with open(menu_path, 'w') as outfile:
-            json.dump(data, outfile)
 
     except Exception as ex:
         LOGGER.error('Error at call function in main_menu with message: %s', ex.message)
