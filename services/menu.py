@@ -7,14 +7,16 @@ from services.lcd.alarm_lcd_services import check_alarm
 from services.lcd import ats_screen_lcd_services
 from services.lcd import rfid_screen_lcd_sevices
 from services.lcd.sensor_screen_lcd_services import *
+from time import time
 
+TIME_OUT = 600
 ROW = [ROW_1, ROW_2, ROW_3, ROW_4]
 section_lv_1 = 0
 section_lv_2 = 0
 section_lv_3 = -1
 section_lv_4 = -1
 section_lv_5 = -1
-
+time_count = 0
 button = 0
 set_string_ok = 0
 
@@ -440,11 +442,17 @@ def thiet_bi_rfid():
 
 
 def main_menu(bt):
-    global section_lv_1, section_lv_2, section_lv_3, section_lv_4, section_lv_5, button
+    global section_lv_1, section_lv_2, section_lv_3, section_lv_4, section_lv_5, button, time_count
     LOGGER.info('Enter main_menu function')
     try:
         if bt != -1:
             button = bt
+            time_count = time()
+
+        time_come_back = time() - time_count
+        if time_come_back > TIME_OUT:
+            time_come_back = 0
+            section_lv_1 = 0
 
         if button in MENU_LV_1 and button != section_lv_1 or section_lv_5 == 1:
             section_lv_2 = 0
