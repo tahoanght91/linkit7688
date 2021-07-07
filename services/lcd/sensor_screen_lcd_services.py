@@ -2,11 +2,12 @@
 from config import *
 from config.common import UPDATE_VALUE
 from config.common_lcd_services import *
-from control import process_cmd_lcd
 
 
 # man hinh mac dinh
 def security_sensor_screen_1(_telemitries):
+    from control import process_cmd_lcd
+
     try:
         mcc_smoke_tate = ''
         mcc_fire_state = ''
@@ -42,6 +43,8 @@ def security_sensor_screen_1(_telemitries):
 
 
 def security_sensor_screen_2(_telemitries):
+    from control import process_cmd_lcd
+
     try:
         mcc_flood_state = ''
         mcc_door_button = ''

@@ -1,10 +1,11 @@
 from config import LOGGER, telemetries
 from config.common import UPDATE_VALUE
 from config.common_lcd_services import *
-from control import process_cmd_lcd
 
 
 def show_temp_condition(_telemetries):
+    from control import process_cmd_lcd
+
     try:
         process_cmd_lcd(ROW_1, UPDATE_VALUE, 'BAN TIN DIEU HOA')
         LOGGER.info('Check Telemetries: %s', _telemetries)
