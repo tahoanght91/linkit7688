@@ -330,7 +330,7 @@ def canh_bao():
     if button == DOWN:
         section_lv_3 += 1
     elif button == UP:
-        section_lv_3 -= 0
+        section_lv_3 -= 1
 
     if button == LEFT:
         section_lv_3 = 0
