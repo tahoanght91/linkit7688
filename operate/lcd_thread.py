@@ -44,7 +44,7 @@ def call():
                 del lcd_services['key_event']
             time.sleep(period)
     except Exception as ex:
-        LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
+        LOGGER.error('Error at call function in lcd_thread with message: %s', ex.message)
 
 
 def write_body_send_shared_attributes(key, value):
