@@ -17,8 +17,8 @@ DEVICE_MCC = device_config['mcc']
 DEVICE_ACM = device_config['acm']
 DEVICE_ATS = device_config['ats']
 CLIENT = mqtt.TBGatewayMqttClient(host=HOST, port=8001, token=ACCESS_TOKEN)
-IO_PORT = '/dev/ttyS0'
-# IO_PORT = 'COM3'
+# IO_PORT = '/dev/ttyS0'
+IO_PORT = 'COM3'
 # IO_PORT = 'COM4'
 BAUDRATE = 115200
 # uncomment when test auto update firmware
