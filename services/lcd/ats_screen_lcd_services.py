@@ -46,14 +46,38 @@ def get_detail_screen2_ats():
     row2 = ''
     row3 = ''
     row4 = ''
+    atsVacP1 =''
+    atsVacP2 =''
+    atsVacP3 =''
+    atsVgenP1 =''
+    atsVgenP2 =''
+    atsVgenP3 =''
+    atsVloadP1 =''
+    atsVloadP2 =''
+    atsVloadP3 =''
     from control import process_cmd_lcd
     try:
-        row2 = str(telemetries.get('atsVacP1')) + 'V' + str(telemetries.get('atsVacP2')) + 'V' + str(
-            telemetries.get('atsVacP3')) + 'V'
-        row3 = str(telemetries.get('atsVgenP1')) + 'V' + str(telemetries.get('atsVgenP2')) + 'V' + str(
-            telemetries.get('atsVgenP3')) + 'V'
-        row4 = str(telemetries.get('atsVloadP1')) + 'V' + str(telemetries.get('atsVloadP2')) + 'V' + str(
-            telemetries.get('atsVloadP3')) + 'V'
+        if telemetries.get('atsVacP1') is not None and telemetries.get('atsVacP1') != '':
+            atsVacP1 = str(telemetries.get('atsVacP1')) + 'V'
+        if telemetries.get('atsVacP2') is not None and telemetries.get('atsVacP2') != '':
+            atsVacP2 = str(telemetries.get('atsVacP2')) + 'V'
+        if telemetries.get('atsVacP3') is not None and telemetries.get('atsVacP3') != '':
+            atsVacP3 = str(telemetries.get('atsVacP3')) + 'V'
+        row2 = atsVacP1 + atsVacP2 + atsVacP3
+        if telemetries.get('atsVgenP1') is not None and telemetries.get('atsVgenP1') != '':
+            atsVgenP1 = str(telemetries.get('atsVgenP1')) + 'V'
+        if telemetries.get('atsVgenP2') is not None and telemetries.get('atsVgenP2') != '':
+            atsVgenP2 = str(telemetries.get('atsVgenP2')) + 'V'
+        if telemetries.get('atsVgenP3') is not None and telemetries.get('atsVgenP3') != '':
+            atsVgenP3 = str(telemetries.get('atsVgenP3')) + 'V'
+        row3 = atsVgenP1 + atsVgenP2 + atsVgenP3
+        if telemetries.get('atsVloadP1') is not None and telemetries.get('atsVloadP1') != '':
+            atsVloadP1 = str(telemetries.get('atsVloadP1')) + 'V'
+        if telemetries.get('atsVloadP2') is not None and telemetries.get('atsVloadP2') != '':
+            atsVloadP2 = str(telemetries.get('atsVloadP2')) + 'V'
+        if telemetries.get('atsVloadP3') is not None and telemetries.get('atsVloadP3') != '':
+            atsVloadP3 = str(telemetries.get('atsVloadP3')) + 'V'
+        row4 = atsVloadP1 + atsVloadP2 + atsVloadP3
         process_cmd_lcd(ROW_2, UPDATE_VALUE, str(row2))
         process_cmd_lcd(ROW_3, UPDATE_VALUE, str(row3))
         process_cmd_lcd(ROW_4, UPDATE_VALUE, str(row4))
