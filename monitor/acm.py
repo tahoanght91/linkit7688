@@ -20,6 +20,7 @@ def _send_command(command):
 # This method is called every loop if the device is in Auto mode
 def check_status():
     LOGGER.info('Enter monitor:acm:check_status')
+    LOGGER.info('Shared attributes: %s', shared_attributes)
     global acm_period_start
     global acm_air_alter_state
     global acm_air_alter_time
