@@ -17,7 +17,7 @@ section_lv_5 = -1
 
 button = 0
 set_string_ok = 0
-
+menu_path = './config/menu.json'
 
 def print_lcd(str1, str2, str3, str4):
     from control import process_cmd_lcd
@@ -442,14 +442,16 @@ def thiet_bi_rfid():
 
 def main_menu(bt):
     global section_lv_1, section_lv_2, section_lv_3, section_lv_4, section_lv_5, button
-
     LOGGER.info('Enter main_menu function')
     try:
-        section_lv_1 = section[0]
-        section_lv_2 = section[1]
-        section_lv_3 = section[2]
-        section_lv_4 = section[3]
-        section_lv_5 = section[4]
+        json_file = open(menu_path)
+        json_info = json.load(json_file)
+
+        section_lv_1 = json_info["section_lv_1"]
+        section_lv_2 = json_info["section_lv_2"]
+        section_lv_3 = json_info["section_lv_3"]
+        section_lv_4 = json_info["section_lv_4"]
+        section_lv_5 = json_info["section_lv_5"]
 
         if bt != -1:
             button = bt
@@ -460,11 +462,16 @@ def main_menu(bt):
             section_lv_4 = -1
             section_lv_5 = 0
         select_section_lv1()
-        section[0] = section_lv_1
-        section[1] = section_lv_2
-        section[2] = section_lv_3
-        section[3] = section_lv_4
-        section[4] = section_lv_5
+
+        data = {
+            "section_lv_1": section_lv_1,
+            "section_lv_2": section_lv_2,
+            "section_lv_3": section_lv_3,
+            "section_lv_4": section_lv_4,
+            "section_lv_5": section_lv_5,
+        }
+        with open(menu_path, 'w') as outfile:
+            json.dump(data, outfile)
 
     except Exception as ex:
         LOGGER.error('Error at call function in main_menu with message: %s', ex.message)
