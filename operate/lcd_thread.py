@@ -35,11 +35,13 @@ last_stt_bt = 0
 # button_status[0]
 def call():
     try:
-        period = 3
+        period = 0.5
         while True:
             button = check_button(lcd_services)
             LOGGER.info('Send button value: %s', str(button))
             main_menu(button)
+            del lcd_services['key_code']
+            del lcd_services['key_event']
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
@@ -348,5 +350,8 @@ def check_button(bt_info):
                 last_stt_bt = button
                 LOGGER.info('return button value: %s', LOG_BUTTON[str(button)])
             return button
+        else:
+            return -1
+            LOGGER.info('Button status: No action')
     except Exception as ex:
         LOGGER.error('check_button function error: %s', ex.message)
