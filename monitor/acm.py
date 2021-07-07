@@ -86,11 +86,11 @@ def check_status():
     # acmTempError = client_attributes.get('acmTempError', default_data.acmTempError)
     # acmHumidError = client_attributes.get('acmHumidError', default_data.acmHumidError)
     # acmIState = client_attributes.get('acmIState', default_data.acmIState)
-    acmAirc1RunState = client_attributes['acmAirc1RunState']
-    acmAirc2RunState = client_attributes['acmAirc2RunState']
+    acmAirc1RunState = telemetries['acmAirc1RunState']
+    acmAirc2RunState = telemetries['acmAirc2RunState']
     # acmAirc1Error = client_attributes.get('acmAirc1Error', default_data.acmAirc1Error)
     # acmAirc2Error = client_attributes.get('acmAirc2Error', default_data.acmAirc2Error)
-    acmFanRunState = client_attributes['acmFanRunState']
+    acmFanRunState = telemetries['acmFanRunState']
     # acmFanError = client_attributes.get('acmFanError', default_data.acmFanError)
 
     # Telemetry
@@ -114,8 +114,8 @@ def check_status():
     atsVgenP2 = telemetries['atsVgenP2']
     atsVgenP3 = telemetries['atsVgenP3']
 
-    atsContactorElecState = client_attributes['atsContactorElecState']
-    atsContactorGenState = client_attributes['atsContactorGenState']
+    atsContactorElecState = telemetries['atsContactorElecState']
+    atsContactorGenState = telemetries['atsContactorGenState']
 
     # Get current time
     timestamp = time.time()

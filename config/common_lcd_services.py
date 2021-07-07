@@ -14,6 +14,7 @@ MENU_LEVEL_2 = 2
 MENU_LEVEL_3 = 3
 
 SALT_DOLLAR_SIGN = '$$'
+LCD_ACK = b'\xa0\x02\x11\x00'
 
 ROW_1 = 1
 ROW_2 = 2
