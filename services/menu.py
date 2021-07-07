@@ -103,9 +103,9 @@ def air_info_display():
 def ats_display():
     global section_lv_2
 
-    if button == LEFT:
+    if button == RIGHT:
         section_lv_2 += 1
-    elif button == RIGHT:
+    elif button == LEFT:
         section_lv_2 -= 1
     if section_lv_2 > 5:
         section_lv_2 = 5
@@ -450,6 +450,7 @@ def main_menu(bt):
             time_count = time()
 
         time_come_back = time() - time_count
+        LOGGER.info('Time out come back to main display %d:', time_come_back)
         if time_come_back > TIME_OUT:
             time_come_back = 0
             section_lv_1 = 0
