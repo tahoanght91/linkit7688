@@ -67,7 +67,9 @@ def get_title_main():
     # global titleOld
     try:
         # if titleOld == '':
-        show = 'MAKE IN MOBIFONE'
+        title = read_to_json('./lcd_setting_data_file.json')
+        values_of_key = title['setting_info_title']
+        show = values_of_key
         process_cmd_lcd(ROW_1, UPDATE_VALUE, show)
         # titleOld = 'MAKE IN MOBIFONE'
         LOGGER.info('MAIN SCREEN TITLE: %s', str(show))
