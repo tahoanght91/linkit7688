@@ -28,8 +28,9 @@ def print_lcd(str1, str2, str3, str4):
         LOGGER.info('Send message print_lcd on lcd')
         i = 0
         while i < 4:
-            if str[i] != '':
-                status = process_cmd_lcd(ROW[i], UPDATE_VALUE, str[i])
+            # if str[i] != '':
+            #     status = process_cmd_lcd(ROW[i], UPDATE_VALUE, str[i])
+            status = process_cmd_lcd(ROW[i], UPDATE_VALUE, str[i])
             if status:
                 i += 1
     except Exception as ex:
