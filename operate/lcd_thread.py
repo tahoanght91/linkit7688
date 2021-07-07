@@ -35,7 +35,6 @@ last_stt_bt = 0
 def call():
     try:
         period = 1
-        main_menu(0)
         while True:
             button = check_button(lcd_services)
             LOGGER.info('Send button value: %s', str(button))
