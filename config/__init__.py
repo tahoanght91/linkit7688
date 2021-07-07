@@ -38,7 +38,6 @@ cmd_sa = {}
 dict_cmd = {}
 dct_alarm = {}
 
-
 update_attributes_lock = threading.Lock()
 telemetries_lock = threading.Lock()
 commands_lock = threading.Lock()

@@ -35,7 +35,6 @@ last_stt_bt = 0
 def call():
     try:
         period = 1
-        main_menu(0)
         while True:
             button = check_button(lcd_services)
             LOGGER.info('Send button value: %s', str(button))
@@ -102,7 +101,7 @@ def check_button(bt_info):
             button = event * index_key
             if last_stt_bt != button:
                 last_stt_bt = button
-                LOGGER.info('return button value: %s', LOG_BUTTON[str(button)])
+                LOGGER.info('return button value: %s', LOG_BUTTON[button])
             return button
         else:
             LOGGER.info('Button status: No action')

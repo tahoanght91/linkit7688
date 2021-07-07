@@ -287,7 +287,7 @@ def check_arr_value(module_id, value):
                 arr_checked.append(byte)
         elif module_id == ID_ATS:
             for index, item in enumerate(value):
-                if index == 5:
+                if index == 5 or index == 8:
                     byte = struct.pack('B', item)
                     real_length += 1
                 else:
