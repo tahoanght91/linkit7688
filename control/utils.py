@@ -215,16 +215,40 @@ def compose_command_rpc(device, command):
     return result
 
 
+# def compose_command_shared_attributes(module_id, value):
+#     result = -1
+#     bytes_length = -1
+#     prefix = ''
+#     length = -1
+#     op_code_sa = 0x41
+#     try:
+#         length_value = len(value)
+#         length_prefix = length_value + 5
+#         prefix = ''.join([char * length_prefix for char in CHAR_B])
+#         if module_id == ID_MCC:
+#             bytes_length = BYTES_SA_MCC
+#             length = length_value + 3
+#         elif module_id == ID_ACM:
+#             bytes_length = BYTES_SA_ACM
+#             length = length_value + 3
+#         elif module_id == ID_ATS:
+#             bytes_length = BYTES_SA_ATS
+#             length = length_value + 3
+#         if bytes_length > 0 and prefix is not '' and length > 0:
+#             result = struct.pack(prefix, 0xA0, length, op_code_sa, module_id, bytes_length, *value)
+#     except Exception as ex:
+#         LOGGER.error('Error at compose_command_shared_attributes function with message: %s', ex.message)
+#     return result
+
+
 def compose_command_shared_attributes(module_id, value):
     result = -1
     bytes_length = -1
-    prefix = ''
     length = -1
     op_code_sa = 0x41
     try:
-        length_value = len(value)
-        length_prefix = length_value + 5
-        prefix = ''.join([char * length_prefix for char in CHAR_B])
+        value_checked = check_arr_value(module_id, value)
+        length_value = value_checked[-1]
         if module_id == ID_MCC:
             bytes_length = BYTES_SA_MCC
             length = length_value + 3
@@ -234,11 +258,43 @@ def compose_command_shared_attributes(module_id, value):
         elif module_id == ID_ATS:
             bytes_length = BYTES_SA_ATS
             length = length_value + 3
-        if bytes_length > 0 and prefix is not '' and length > 0:
-            result = struct.pack(prefix, 0xA0, length, op_code_sa, module_id, bytes_length, *value)
+        if bytes_length > 0 and length > 0 and len(value_checked) > 0:
+            result = struct.pack('BBBBB', 0xA0, length, op_code_sa, module_id, bytes_length)
+            for byte in value_checked[0]:
+                result += byte
     except Exception as ex:
         LOGGER.error('Error at compose_command_shared_attributes function with message: %s', ex.message)
     return result
+
+
+def check_arr_value(module_id, value):
+    arr_checked = []
+    real_length = 0
+    if module_id == ID_MCC:
+        for index, item in enumerate(value):
+            byte = struct.pack('<H', item)
+            arr_checked.append(byte)
+            real_length += 2
+    elif module_id == ID_ACM:
+        for index, item in enumerate(value):
+            if index == 1 or index == 2 or index == 3 or index == 5:
+                byte = struct.pack('<H', item)
+                real_length += 2
+            else:
+                byte = struct.pack('B', item)
+                real_length += 1
+            arr_checked.append(byte)
+    elif module_id == ID_ATS:
+        for index, item in enumerate(value):
+            if index == 5:
+                byte = struct.pack('B', item)
+                real_length += 1
+            else:
+                byte = struct.pack('<H', item)
+                real_length += 2
+            arr_checked.append(byte)
+    return arr_checked, real_length
+
 
 # old
 # def compose_command_lcd(key_lcd, content):
