@@ -484,3 +484,20 @@ def write_update_value(bytes_command):
         LOGGER.error('Error at function write_update_value with message: %s', ex.message)
     return result
 
+def write_to_json(body, file_url):
+    try:
+        json_last_trace = json.dumps(body)
+        with io.open(file_url, 'wb') as last_trace_file:
+            last_trace_file.write(json_last_trace)
+        LOGGER.info('Command information just send: %s', body)
+    except Exception as ex:
+        LOGGER.error('Error at write_to_json function with message: %s', ex.message)
+
+
+def read_to_json(file_url):
+    try:
+        json_file = open(file_url, )
+        json_info = json.load(json_file)
+    except Exception as ex:
+        LOGGER.error('Error at call function in read_to_json with message: %s', ex.message)
+    return json_info
