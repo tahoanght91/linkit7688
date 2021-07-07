@@ -28,8 +28,9 @@ def print_lcd(str1, str2, str3, str4):
         LOGGER.info('Send message print_lcd on lcd')
         i = 0
         while i < 4:
-            if str[i] != '':
-                status = process_cmd_lcd(ROW[i], UPDATE_VALUE, str[i])
+            # if str[i] != '':
+            #     status = process_cmd_lcd(ROW[i], UPDATE_VALUE, str[i])
+            status = process_cmd_lcd(ROW[i], UPDATE_VALUE, str[i])
             if status:
                 i += 1
     except Exception as ex:
@@ -327,30 +328,41 @@ def canh_bao():
     if button == OK:
         section_lv_4 += 1
 
-    if section_lv_4 == 1:
-        if section_lv_3 == 0:
-            print_lcd('Vao cai dat Nguong AC cao')
-            # goi ham xu ly
-        elif section_lv_3 == 1:
-            print_lcd('Vao cai dat Nguong AC thap')
-            # goi ham xu ly
-        return
-
     if button == DOWN:
-        section_lv_3 = 1
+        section_lv_3 += 1
     elif button == UP:
+        section_lv_3 -= 1
+
+    if button == LEFT:
         section_lv_3 = 0
+    elif button == RIGHT:
+        section_lv_3 = 2
+    if section_lv_3 > 3:
+        section_lv_3 = 3
+    elif section_lv_3 < 0:
+        section_lv_3 = 0
+
 
     if section_lv_4 < 1:
         if section_lv_3 == 0:
-            print_lcd('CANH BAO ',
-                      '> Nguong AC cao',
-                      'Nguong AC thap',
+            print_lcd('CANH BAO',
+                      '> Dien ap luoi',
+                      'Dien ap may phat',
                       '')
         elif section_lv_3 == 1:
-            print_lcd('CANH BAO ',
-                      'Nguong AC cao',
-                      '> Nguong AC thap',
+            print_lcd('CANH BAO',
+                      'Dien ap luoi',
+                      '> Dien ap may phat',
+                      '')
+        elif section_lv_3 == 2:
+            print_lcd('CANH BAO',
+                      '> Nhiet do',
+                      'Do am',
+                      '')
+        elif section_lv_3 == 3:
+            print_lcd('CANH BAO',
+                      'Nhiet do',
+                      '> Do am',
                       '')
     LOGGER.info('section_lv_3: %s', str(section_lv_3))
 
@@ -365,18 +377,6 @@ def thiet_bi_ats():
     if button == OK:
         section_lv_4 += 1
 
-    if section_lv_4 == 1:
-        if section_lv_3 == 0:
-            print_lcd('Chay auto')
-            # goi ham xu ly
-        elif section_lv_3 == 1:
-            print_lcd('Chay dien luoi')
-            # goi ham xu ly
-        elif section_lv_3 == 2:
-            print_lcd('Chay may phat')
-
-        return
-
     if button == DOWN:
         section_lv_3 += 1
     elif button == UP:
@@ -389,19 +389,19 @@ def thiet_bi_ats():
     if section_lv_4 < 1:
         if section_lv_3 == 0:
             print_lcd('THIET BI ATS',
-                      '> Tu chay',
-                      'Dien luoi',
-                      'May phat')
+                      '> Cam chay M.phat',
+                      'T.gian cam 1',
+                      'T.gian cam 2')
         elif section_lv_3 == 1:
             print_lcd('THIET BI ATS',
-                      'Tu chay',
-                      '> Dien luoi',
-                      'May phat')
+                      'Cam chay M.phat',
+                      '> T.gian cam 1',
+                      'T.gian cam 2')
         elif section_lv_3 == 2:
             print_lcd('THIET BI ATS',
-                      'Tu chay',
-                      'Dien luoi',
-                      '> May phat')
+                      'Cam chay M.phat',
+                      'T.gian cam 1',
+                      '> T.gian cam 2')
     LOGGER.info('section_lv_3: %s', str(section_lv_3))
 
 
