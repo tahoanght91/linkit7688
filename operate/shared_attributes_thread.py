@@ -10,7 +10,6 @@ list_dict_ats = []
 list_dict_acm = []
 list_dict_mcc = []
 
-
 def call():
     try:
         period = 60
@@ -18,8 +17,9 @@ def call():
             if CLIENT.is_connected():
                 for key, value in shared_attributes.items():
                     response_classify_sa = classify_shared_attributes(key, value)
-                    if response_classify_sa is not None:
-                        classify_dict(response_classify_sa)
+                    if len(response_classify_sa) > 0:
+                        if response_classify_sa[ID_SHARED_ATTRIBUTES] > 0:
+                            classify_dict(response_classify_sa)
                 response_sorted = sort_list_dict(list_dict_mcc, list_dict_acm, list_dict_ats)
                 if len(response_sorted) > 0:
                     LOGGER.info('Sort the list successful')

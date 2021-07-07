@@ -1,16 +1,9 @@
-from datetime import datetime
 import time
-
 import requests
-
-from config.common import *
 from config.common_api import *
-# from config.common_lcd_services import *
 from devices.utils import read_lcd_services
 from model.alarm_lcd import Alarm_lcd
 from model.lcd import Lcd
-from services.lcd.alarm_lcd_services import check_alarm
-from operate.rfid_thread import KEY_RFID
 from services.lcd.main_screen_lcd_services import write_to_json, screen_main
 from utility import bytes_to_int
 from services.menu import *
@@ -38,14 +31,17 @@ warningOld = ''
 
 last_stt_bt = 0
 
+
 # button_status[0]
 def call():
     try:
-        period = 3
+        period = 0.5
         while True:
             button = check_button(lcd_services)
             LOGGER.info('Send button value: %s', str(button))
             main_menu(button)
+            del lcd_services['key_code']
+            del lcd_services['key_event']
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
@@ -88,16 +84,6 @@ def check_last_display(key_code, key_event):
 
 
 # HungLq
-def screen_main():
-    try:
-        get_title_main()
-        get_datetime_now()
-        get_temp_tram()
-        get_user_tram()
-    except Exception as ex:
-        LOGGER.error('Error at call function in screen_main with message: %s', ex.message)
-
-
 def read_to_json(fileUrl):
     try:
         json_file = open(fileUrl, )
@@ -105,88 +91,6 @@ def read_to_json(fileUrl):
     except Exception as ex:
         LOGGER.error('Error at call function in read_to_json with message: %s', ex.message)
     return json_info
-
-
-def get_datetime_now():
-    global timeOld
-    try:
-        timeNew = datetime.now().strftime("%M")
-        if timeNew != timeOld:
-            now = datetime.now()
-            dt_string = now.strftime("%d/%m/%Y %H:%M")
-            show = str(dt_string) + SALT_DOLLAR_SIGN + str(ROW_2) + END_CMD
-            cmd_lcd[UPDATE_VALUE] = show
-            LOGGER.info('MAIN SCREEN DATETIME NOW: %s', str(show))
-            timeOld = timeNew
-    except Exception as ex:
-        LOGGER.error('Error at call function in check_key_code with message: %s', ex.message)
-
-
-def get_title_main():
-    global titleOld
-    try:
-        if titleOld == '':
-            show = 'MAKE IN MOBIFONE' + SALT_DOLLAR_SIGN + str(ROW_1) + END_CMD
-            run_repeat_cmd_lcd(show)
-            titleOld = 'MAKE IN MOBIFONE'
-            LOGGER.info('MAIN SCREEN TITLE: %s', str(show))
-    except Exception as ex:
-        LOGGER.error('Error at set_title_main function with message: %s', ex.message)
-
-
-def get_temp_tram():
-    global acmTempInOld
-    global acmTempOutOld
-    global acmHumidInOld
-    global warningOld
-    try:
-        warning = ''
-        # tel = read_to_json('./latest_telemetry.json')
-        tel = telemetries
-        acmTempIn = tel.get('acmTempIndoor')
-        acmTempOut = tel.get('acmTempOutdoor')
-        acmHumidIn = tel.get('acmHumidIndoor')
-        new_list = dict(filter(lambda elem: elem[0].lower().find('state') != -1, dct_alarm.items()))
-        if len(new_list) > 0:
-            check = any(elem != 0 for elem in new_list.values())
-            warning = '!!!' if check else ''
-        if (
-                acmTempInOld != acmTempIn or acmTempOutOld != acmTempOut or acmHumidInOld != acmHumidIn or warningOld != warning) and (
-                acmTempIn is not None and acmTempOut is not None and acmHumidIn is not None):
-            acmTempInOld = acmTempIn
-            acmTempOutOld = acmTempOut
-            acmHumidInOld = acmHumidIn
-            warningOld = warning
-            show = str(acmTempIn) + ' ' + str(acmTempOut) + ' ' + str(
-                acmHumidIn) + ' ' + warning + SALT_DOLLAR_SIGN + str(ROW_3) + END_CMD
-            cmd_lcd[UPDATE_VALUE] = show
-            LOGGER.info('MAIN SCREEN TEMP AND ALARM NOW: %s', str(show))
-    except Exception as ex:
-        LOGGER.error('Error at get_temp_tram function with message: %s', ex.message)
-
-
-def get_user_tram():
-    try:
-        # rfid = read_to_json('./latest_client_attributes.json')
-        rfid = client_attributes
-        if KEY_RFID in rfid:
-            rfid_card = rfid.get(KEY_RFID)
-            staffCode = rfid_card
-            param = {'input': rfid_card}
-            response = requests.get(url=url_get_staff, params=param)
-            if response.status_code == 200:
-                LOGGER.info('Send log request to Smartsite successful!')
-                staff = json.loads(response.content)['result']
-                if staff is not None:
-                    staffCode = json.loads(response.content)['result']['maNhanVien']
-            show = str(staffCode) + SALT_DOLLAR_SIGN + str(ROW_4) + END_CMD
-            cmd_lcd[UPDATE_VALUE] = show
-            dt_string = datetime.now().strftime("%d/%m/%Y %H:%M")
-            rfid_info = {"Time": dt_string, "StaffCode": staffCode}
-            write_to_json(rfid_info, './last_rfid_card_code.json')
-            LOGGER.info('MAIN SCREEN RFIDCODE OR STAFFCODE NOW: %s', str(show))
-    except Exception as ex:
-        LOGGER.error('Error at get_user_tram function with message: %s', ex.message)
 
 
 # HuyTQ
@@ -446,5 +350,8 @@ def check_button(bt_info):
                 last_stt_bt = button
                 LOGGER.info('return button value: %s', LOG_BUTTON[str(button)])
             return button
+        else:
+            return -1
+            LOGGER.info('Button status: No action')
     except Exception as ex:
         LOGGER.error('check_button function error: %s', ex.message)
