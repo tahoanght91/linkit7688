@@ -39,8 +39,9 @@ def call():
             button = check_button(lcd_services)
             LOGGER.info('Send button value: %s', str(button))
             main_menu(button)
-            del lcd_services['key_code']
-            del lcd_services['key_event']
+            if lcd_services:
+                del lcd_services['key_code']
+                del lcd_services['key_event']
             time.sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
