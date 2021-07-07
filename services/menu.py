@@ -442,12 +442,11 @@ def thiet_bi_rfid():
 
 def main_menu(bt):
     global section_lv_1, section_lv_2, section_lv_3, section_lv_4, section_lv_5, button
-    button = bt
 
     LOGGER.info('Enter main_menu function')
     try:
-        if section_lv_1 == -1:
-            main_display()
+        if bt != -1:
+            button = bt
 
         if button in MENU_LV_1 and button != section_lv_1 or section_lv_5 == 1:
             section_lv_2 = 0
