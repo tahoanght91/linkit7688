@@ -3,6 +3,8 @@ from config.common import *
 from config.common_lcd_services import *
 from services.lcd import main_screen_lcd_services
 from services.lcd.alarm_lcd_services import check_alarm
+from services.lcd import ats_screen_lcd_services
+from services.lcd import rfid_screen_lcd_sevices
 
 ROW = [ROW_1, ROW_2, ROW_3, ROW_4]
 section_lv_1 = -1
@@ -118,26 +120,16 @@ def ats_display():
     elif button == RIGHT:
         section_lv_2 = 1
     if section_lv_2 == 0:
-        print_lcd('THONG TIN ATS',
-                  'Ket noi',
-                  'Nguon: Dien luoi',
-                  '')
-        # goi ham hien thi
+        ats_screen_lcd_services.get_screen_ats()
+        LOGGER.info('ATS DISPLAY')
     elif section_lv_2 == 1:
-        print_lcd('THONG TIN ATS',
-                  '220V 220V 220V',
-                  '220V 220V 220V',
-                  '3.0A 4.0A 4.6A')
-        # goi ham hien thi
-    LOGGER.info('Enter ats_display function')
-    LOGGER.info('section_lv_2: %s', str(section_lv_2))
+        ats_screen_lcd_services.get_detail_ats()
+    LOGGER.info('ATS DISPLAY DETAIL')
+
 
 def rfid_display():
-    print_lcd('THONG TIN RFID',
-              'Ket noi',
-              'Ngay gio',
-              'ma the')
-    LOGGER.info('Enter rfid_display function')
+    rfid_screen_lcd_sevices.get_screen_rfid()
+    LOGGER.info('RFID DISPLAY')
 
 
 def setting_display():
