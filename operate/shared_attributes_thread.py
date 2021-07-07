@@ -25,18 +25,19 @@ def call():
                     LOGGER.info('Sort the list successful')
                     for current_list in response_sorted:
                         current_list_value = get_array_value(current_list)
-                        type = current_list[0][TYPE]
                         if len(current_list_value) > 0:
-                            cmd_sa_lock.acquire()
-                            if type is MCC:
-                                cmd_sa[ID_MCC] = current_list_value
-                            elif type is ACM:
-                                cmd_sa[ID_ACM] = current_list_value
-                            elif type is ATS:
-                                cmd_sa[ID_ATS] = current_list_value
-                            cmd_sa_lock.release()
-                        else:
-                            LOGGER.info('Get value of array failed')
+                            type = current_list[0][TYPE]
+                            if len(current_list_value) > 0:
+                                cmd_sa_lock.acquire()
+                                if type is MCC:
+                                    cmd_sa[ID_MCC] = current_list_value
+                                elif type is ACM:
+                                    cmd_sa[ID_ACM] = current_list_value
+                                elif type is ATS:
+                                    cmd_sa[ID_ATS] = current_list_value
+                                cmd_sa_lock.release()
+                            else:
+                                LOGGER.info('Get value of array failed')
                     response_clear_list = clear_all_list(list_dict_mcc, list_dict_acm, list_dict_ats)
                 else:
                     LOGGER.info('Sort the list failed')
