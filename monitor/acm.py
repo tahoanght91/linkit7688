@@ -26,55 +26,68 @@ def check_status():
     global acm_fan_only_cycle
 
     # Time to run in alternative mode (not used), convert from hour to second
-    if 'acmAlternativeTime' in shared_attributes:
-        acmAlternativeTime = 3600 * shared_attributes['acmAlternativeTime']
-    else:
-        acmAlternativeTime = 3600 * shared_attributes.get('acmAlternativeTime', default_data.acmAlternativeTime)
+    acmAlternativeTime = 3600 * shared_attributes.get('acmAlternativeTime', default_data.acmAlternativeTime)
     # Time to run/rest air-conditioner if T is lower than T2, , convert from hour to second
-    if 'acmRunTime' in shared_attributes:
-        acmRunTime = 3600 * shared_attributes['acmRunTime']
-    else:
-        acmRunTime = 3600 * shared_attributes.get('acmRunTime', default_data.acmRunTime)
+    acmRunTime = 3600 * shared_attributes.get('acmRunTime', default_data.acmRunTime)
+    acmRestTime = 3600 * shared_attributes.get('acmRestTime', default_data.acmRestTime)
+    acmGenAllow = shared_attributes.get('acmGenAllow', default_data.acmGenAllow)
+    acmVacThreshold = shared_attributes.get('acmVacThreshold', default_data.acmVacThreshold)
+    acmMaxHumid = shared_attributes.get('acmMaxHumid', default_data.acmMaxHumid)
+    acmT1Temp = shared_attributes.get('acmT1Temp', default_data.acmT1Temp)
+    acmT2Temp = shared_attributes.get('acmT2Temp', default_data.acmT2Temp)
+    acmT3Temp = shared_attributes.get('acmT3Temp', default_data.acmT3Temp)
+    acmT4Temp = shared_attributes.get('acmT4Temp', default_data.acmT4Temp)
 
-    if 'acmRestTime' in shared_attributes:
-        acmRestTime = 3600 * shared_attributes['acmRestTime']
-    else:
-        acmRestTime = 3600 * shared_attributes.get('acmRestTime', default_data.acmRestTime)
 
-    if 'acmGenAllow' in shared_attributes:
-        acmGenAllow = shared_attributes['acmGenAllow']
-    else:
-        acmGenAllow = shared_attributes.get('acmGenAllow', default_data.acmGenAllow)
-
-    if 'acmVacThreshold' in shared_attributes:
-        acmVacThreshold = shared_attributes['acmVacThreshold']
-    else:
-        acmVacThreshold = shared_attributes.get('acmVacThreshold', default_data.acmVacThreshold)
-
-    if 'acmMaxHumid' in shared_attributes:
-        acmMaxHumid = shared_attributes['acmMaxHumid']
-    else:
-        acmMaxHumid = shared_attributes.get('acmMaxHumid', default_data.acmMaxHumid)
-
-    if 'acmT1Temp' in shared_attributes:
-        acmT1Temp = shared_attributes['acmT1Temp']
-    else:
-        acmT1Temp = shared_attributes.get('acmT1Temp', default_data.acmT1Temp)
-
-    if 'acmT2Temp' in shared_attributes:
-        acmT2Temp = shared_attributes['acmT2Temp']
-    else:
-        acmT2Temp = shared_attributes.get('acmT2Temp', default_data.acmT2Temp)
-
-    if 'acmT3Temp' in shared_attributes:
-        acmT3Temp = shared_attributes['acmT3Temp']
-    else:
-        acmT3Temp = shared_attributes.get('acmT3Temp', default_data.acmT3Temp)
-
-    if 'acmT4Temp' in shared_attributes:
-        acmT4Temp = shared_attributes['acmT4Temp']
-    else:
-        acmT4Temp = shared_attributes.get('acmT4Temp', default_data.acmT4Temp)
+    # if 'acmAlternativeTime' in shared_attributes:
+    #     acmAlternativeTime = 3600 * shared_attributes['acmAlternativeTime']
+    # else:
+    #     acmAlternativeTime = 3600 * shared_attributes.get('acmAlternativeTime', default_data.acmAlternativeTime)
+    # # Time to run/rest air-conditioner if T is lower than T2, , convert from hour to second
+    # if 'acmRunTime' in shared_attributes:
+    #     acmRunTime = 3600 * shared_attributes['acmRunTime']
+    # else:
+    #     acmRunTime = 3600 * shared_attributes.get('acmRunTime', default_data.acmRunTime)
+    #
+    # if 'acmRestTime' in shared_attributes:
+    #     acmRestTime = 3600 * shared_attributes['acmRestTime']
+    # else:
+    #     acmRestTime = 3600 * shared_attributes.get('acmRestTime', default_data.acmRestTime)
+    #
+    # if 'acmGenAllow' in shared_attributes:
+    #     acmGenAllow = shared_attributes['acmGenAllow']
+    # else:
+    #     acmGenAllow = shared_attributes.get('acmGenAllow', default_data.acmGenAllow)
+    #
+    # if 'acmVacThreshold' in shared_attributes:
+    #     acmVacThreshold = shared_attributes['acmVacThreshold']
+    # else:
+    #     acmVacThreshold = shared_attributes.get('acmVacThreshold', default_data.acmVacThreshold)
+    #
+    # if 'acmMaxHumid' in shared_attributes:
+    #     acmMaxHumid = shared_attributes['acmMaxHumid']
+    # else:
+    #     acmMaxHumid = shared_attributes.get('acmMaxHumid', default_data.acmMaxHumid)
+    #
+    # if 'acmT1Temp' in shared_attributes:
+    #     acmT1Temp = shared_attributes['acmT1Temp']
+    # else:
+    #     acmT1Temp = shared_attributes.get('acmT1Temp', default_data.acmT1Temp)
+    #
+    # if 'acmT2Temp' in shared_attributes:
+    #     acmT2Temp = shared_attributes['acmT2Temp']
+    # else:
+    #     acmT2Temp = shared_attributes.get('acmT2Temp', default_data.acmT2Temp)
+    #
+    # if 'acmT3Temp' in shared_attributes:
+    #     acmT3Temp = shared_attributes['acmT3Temp']
+    # else:
+    #     acmT3Temp = shared_attributes.get('acmT3Temp', default_data.acmT3Temp)
+    #
+    # if 'acmT4Temp' in shared_attributes:
+    #     acmT4Temp = shared_attributes['acmT4Temp']
+    # else:
+    #     acmT4Temp = shared_attributes.get('acmT4Temp', default_data.acmT4Temp)
 
     # acmMinHumid = shared_attributes.get('acmMinHumid', default_data.acmMinHumid)
     # acmExpectedTemp = shared_attributes.get('acmExpectedTemp', default_data.acmExpectedTemp)
@@ -82,15 +95,15 @@ def check_status():
 
     # Client
     acmOnlineState = client_attributes['acmOnlineState']
+    acmAirc1RunState = telemetries['acmAirc1RunState']
+    acmAirc2RunState = telemetries['acmAirc2RunState']
+    acmFanRunState = telemetries['acmFanRunState']
     # acmAutoMode = client_attributes.get('acmAutoMode', default_data.acmAutoMode)
     # acmTempError = client_attributes.get('acmTempError', default_data.acmTempError)
     # acmHumidError = client_attributes.get('acmHumidError', default_data.acmHumidError)
     # acmIState = client_attributes.get('acmIState', default_data.acmIState)
-    acmAirc1RunState = telemetries['acmAirc1RunState']
-    acmAirc2RunState = telemetries['acmAirc2RunState']
     # acmAirc1Error = client_attributes.get('acmAirc1Error', default_data.acmAirc1Error)
     # acmAirc2Error = client_attributes.get('acmAirc2Error', default_data.acmAirc2Error)
-    acmFanRunState = telemetries['acmFanRunState']
     # acmFanError = client_attributes.get('acmFanError', default_data.acmFanError)
 
     # Telemetry
