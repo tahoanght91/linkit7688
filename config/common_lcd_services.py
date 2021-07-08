@@ -20,6 +20,7 @@ ROW_1 = 1
 ROW_2 = 2
 ROW_3 = 3
 ROW_4 = 4
+ROW_5 = 5
 
 KEYCODE_11 = 257
 KEYCODE_12 = 513
