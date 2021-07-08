@@ -19,7 +19,8 @@ section_lv_5 = -1
 time_count = 0
 button = 0
 set_string_ok = 0
-
+cycle_flag = False
+time_cycle = 0
 def print_lcd(str1, str2, str3, str4):
     from control import process_cmd_lcd
     status = False
@@ -103,9 +104,9 @@ def air_info_display():
 def ats_display():
     global section_lv_2
 
-    if button == LEFT:
+    if button == RIGHT:
         section_lv_2 += 1
-    elif button == RIGHT:
+    elif button == LEFT:
         section_lv_2 -= 1
     if section_lv_2 > 5:
         section_lv_2 = 5
@@ -442,15 +443,19 @@ def thiet_bi_rfid():
 
 
 def main_menu(bt):
-    global section_lv_1, section_lv_2, section_lv_3, section_lv_4, section_lv_5, button, time_count
+    global section_lv_1, section_lv_2, section_lv_3, section_lv_4, section_lv_5, button, time_count, cycle_flag, time_cycle
     LOGGER.info('Enter main_menu function')
     try:
         if bt != -1:
             button = bt
             time_count = time()
+            cycle_flag = True
 
-        time_come_back = time() - time_count
-        if time_come_back > TIME_OUT:
+        if cycle_flag is True:
+            time_cycle = time() - time_count
+
+        LOGGER.info('Time out come back to main display: %ds', time_cycle)
+        if time_cycle > TIME_OUT:
             time_come_back = 0
             section_lv_1 = 0
 
