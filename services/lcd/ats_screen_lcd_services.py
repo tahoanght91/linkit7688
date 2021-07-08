@@ -194,23 +194,23 @@ def get_detail_screen5_ats():
     from control import process_cmd_lcd
     try:
         if telemetries.get('mccDcV3') is not None and telemetries.get('mccDcV3') != '':
-            mccDcV3 = str(telemetries.get('mccDcV3')) + 'V, '
+            mccDcV3 = str(telemetries.get('mccDcV3')) + 'V '
         if telemetries.get('mccDcI3') is not None and telemetries.get('mccDcI3') != '':
-            mccDcI3 = str(telemetries.get('mccDcI3')) + 'A, '
+            mccDcI3 = str(telemetries.get('mccDcI3')) + 'A '
         if telemetries.get('mccDcP3') is not None and telemetries.get('mccDcP3') != '':
             mccDcP3 = str(telemetries.get('mccDcP3')) + 'W'
         row2 = mccDcV3 + mccDcI3 + mccDcP3
         if telemetries.get('mccDcV4') is not None and telemetries.get('mccDcV4') != '':
-            mccDcV4 = str(telemetries.get('mccDcV4')) + 'V, '
+            mccDcV4 = str(telemetries.get('mccDcV4')) + 'V '
         if telemetries.get('mccDcI4') is not None and telemetries.get('mccDcI4') != '':
-            mccDcI4 = str(telemetries.get('mccDcI4')) + 'A, '
+            mccDcI4 = str(telemetries.get('mccDcI4')) + 'A '
         if telemetries.get('mccDcP4') is not None and telemetries.get('mccDcP4') != '':
             mccDcP4 = str(telemetries.get('mccDcP4')) + 'W'
         row3 = mccDcV4 + mccDcI4 + mccDcP4
         if telemetries.get('mccDcV5') is not None and telemetries.get('mccDcV5') != '':
-            mccDcV5 = str(telemetries.get('mccDcV5')) + 'V, '
+            mccDcV5 = str(telemetries.get('mccDcV5')) + 'V '
         if telemetries.get('mccDcI5') is not None and telemetries.get('mccDcI5') != '':
-            mccDcI5 = str(telemetries.get('mccDcI5')) + 'A, '
+            mccDcI5 = str(telemetries.get('mccDcI5')) + 'A '
         if telemetries.get('mccDcP5') is not None and telemetries.get('mccDcP5') != '':
             mccDcP5 = str(telemetries.get('mccDcP5')) + 'W'
         row4 = mccDcV5 + mccDcI5 + mccDcP5
