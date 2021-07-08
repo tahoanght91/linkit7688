@@ -4,8 +4,8 @@ from config.common_lcd_services import *
 from services.lcd import main_screen_lcd_services
 from services.lcd.acm_sreen_lcd_services import show_temp_condition
 from services.lcd.alarm_lcd_services import check_alarm
-from services.lcd import ats_screen_lcd_services, ats_setting_lcd_service
-from services.lcd import rfid_screen_lcd_sevices, rfid_setting_lcd_service
+from services.lcd import ats_screen_lcd_services#, ats_setting_lcd_service
+from services.lcd import rfid_screen_lcd_sevices#, rfid_setting_lcd_service
 from services.lcd.sensor_screen_lcd_services import *
 from time import time
 
@@ -386,6 +386,7 @@ def canh_bao():
 
 
 def thiet_bi_ats():
+    from services.lcd import ats_setting_lcd_service
     global section_lv_3
     global section_lv_4
     global section_lv_5
@@ -426,6 +427,7 @@ def thiet_bi_ats():
 
 
 def thiet_bi_rfid():
+    from services.lcd import rfid_setting_lcd_service
     global section_lv_3
     global section_lv_4
     global section_lv_5
