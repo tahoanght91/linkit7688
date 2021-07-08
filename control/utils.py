@@ -12,6 +12,9 @@ from operate.io_thread import ser, _read_data
 from utility import with_check_sum, blocking_read
 
 
+
+
+
 def _check_command(device, command):
     if device == DEVICE_MCC and (command == GET_STATE or command == GET_VALUE):
         return True
@@ -215,16 +218,40 @@ def compose_command_rpc(device, command):
     return result
 
 
+# def compose_command_shared_attributes(module_id, value):
+#     result = -1
+#     bytes_length = -1
+#     prefix = ''
+#     length = -1
+#     op_code_sa = 0x41
+#     try:
+#         length_value = len(value)
+#         length_prefix = length_value + 5
+#         prefix = ''.join([char * length_prefix for char in CHAR_B])
+#         if module_id == ID_MCC:
+#             bytes_length = BYTES_SA_MCC
+#             length = length_value + 3
+#         elif module_id == ID_ACM:
+#             bytes_length = BYTES_SA_ACM
+#             length = length_value + 3
+#         elif module_id == ID_ATS:
+#             bytes_length = BYTES_SA_ATS
+#             length = length_value + 3
+#         if bytes_length > 0 and prefix is not '' and length > 0:
+#             result = struct.pack(prefix, 0xA0, length, op_code_sa, module_id, bytes_length, *value)
+#     except Exception as ex:
+#         LOGGER.error('Error at compose_command_shared_attributes function with message: %s', ex.message)
+#     return result
+
+
 def compose_command_shared_attributes(module_id, value):
     result = -1
     bytes_length = -1
-    prefix = ''
     length = -1
     op_code_sa = 0x41
     try:
-        length_value = len(value)
-        length_prefix = length_value + 5
-        prefix = ''.join([char * length_prefix for char in CHAR_B])
+        value_checked = check_arr_value(module_id, value)
+        length_value = value_checked[-1]
         if module_id == ID_MCC:
             bytes_length = BYTES_SA_MCC
             length = length_value + 3
@@ -234,11 +261,46 @@ def compose_command_shared_attributes(module_id, value):
         elif module_id == ID_ATS:
             bytes_length = BYTES_SA_ATS
             length = length_value + 3
-        if bytes_length > 0 and prefix is not '' and length > 0:
-            result = struct.pack(prefix, 0xA0, length, op_code_sa, module_id, bytes_length, *value)
+        if bytes_length > 0 and length > 0 and len(value_checked) > 0:
+            result = struct.pack('BBBBB', 0xA0, length, op_code_sa, module_id, bytes_length)
+            for byte in value_checked[0]:
+                result += byte
     except Exception as ex:
         LOGGER.error('Error at compose_command_shared_attributes function with message: %s', ex.message)
     return result
+
+
+def check_arr_value(module_id, value):
+    arr_checked = []
+    real_length = 0
+    try:
+        if module_id == ID_MCC:
+            for index, item in enumerate(value):
+                byte = struct.pack('>H', item)
+                arr_checked.append(byte)
+                real_length += 2
+        elif module_id == ID_ACM:
+            for index, item in enumerate(value):
+                if index == 1 or index == 2 or index == 3 or index == 5:
+                    byte = struct.pack('>H', item)
+                    real_length += 2
+                else:
+                    byte = struct.pack('B', item)
+                    real_length += 1
+                arr_checked.append(byte)
+        elif module_id == ID_ATS:
+            for index, item in enumerate(value):
+                if index == 5 or index == 8:
+                    byte = struct.pack('B', item)
+                    real_length += 1
+                else:
+                    byte = struct.pack('>H', item)
+                    real_length += 2
+                arr_checked.append(byte)
+    except Exception as ex:
+        LOGGER.error('Error at check_arr_value function with message %s: ', ex.message)
+    return arr_checked, real_length
+
 
 # old
 # def compose_command_lcd(key_lcd, content):
@@ -413,39 +475,6 @@ def set_alarm_state_to_dct(dct_telemetry):
         dct_alarm['atsVacThresholdState'] = dct_telemetry['atsVgenThresholdState']
 
 
-# def write_update_value(bytes_command):
-#     result = False
-#     message_break = shared_attributes.get('mccPeriodReadDataIO', default_data.mccPeriodReadDataIO)
-#     data_ack = b'\xa0\x02\x11\x00'
-#     flip = 0
-#     try:
-#         write_stream = with_check_sum(bytes_command, BYTE_ORDER)
-#         tries = 0
-#         while True:
-#             if flip == 0:
-#                 flip = READ_PER_WRITE
-#                 response = ser.write(write_stream)
-#                 LOGGER.info('Response when send command UPDATE_VALUE: %s', str(response))
-#                 result = True
-#             else:
-#                 flip -= 1
-#                 byte_stream = blocking_read(ser, message_break)
-#                 if byte_stream:
-#                     if _read_data(byte_stream):
-#                         response = ser.write(with_check_sum(data_ack, BYTE_ORDER))
-#                         LOGGER.info('Response when send command with check sum UPDATE_VALUE: %s', str(response))
-#                         result = True
-#                 if flip == 0:
-#                     tries += 1
-#                     if tries > MAX_TRIES:
-#                         LOGGER.info('Time out')
-#                         break
-#                     LOGGER.debug('Try sending again')
-#     except Exception as ex:
-#         LOGGER.error('Error at function write_update_value with message: %s', ex.message)
-#     return result
-
-
 def write_update_value(bytes_command):
     result = False
     try:
@@ -458,3 +487,21 @@ def write_update_value(bytes_command):
         LOGGER.error('Error at function write_update_value with message: %s', ex.message)
     return result
 
+
+def write_to_json(body, file_url):
+    try:
+        json_last_trace = json.dumps(body)
+        with io.open(file_url, 'wb') as last_trace_file:
+            last_trace_file.write(json_last_trace)
+        LOGGER.info('Command information just send: %s', body)
+    except Exception as ex:
+        LOGGER.error('Error at write_to_json function with message: %s', ex.message)
+
+
+def read_to_json(file_url):
+    try:
+        json_file = open(file_url, )
+        json_info = json.load(json_file)
+    except Exception as ex:
+        LOGGER.error('Error at call function in read_to_json with message: %s', ex.message)
+    return json_info
