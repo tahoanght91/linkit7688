@@ -95,7 +95,7 @@ def rfid_setting_listen_key(keycode):
 
             call_screen_confirm(p_idx=0)
         else:
-            return
+            call_screen_rfid_setting(pointer_idx)
     except Exception as ex:
         LOGGER.error('Error at call function ats_setting_listen_key with message: %s', ex.message)
 
@@ -118,7 +118,8 @@ def confirm_listen_key(keycode):
                 update_to_file_json_setting(setting_rfid_allow)
             if pointer_idx == 1:
                 call_screen_rfid_setting(p_idx=0)
-
+        else:
+            call_screen_confirm(pointer_idx)
     except Exception as ex:
         LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
 

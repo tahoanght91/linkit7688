@@ -156,7 +156,7 @@ def ats_setting_listen_key(keycode):
             # ok
             call_screen_with_screen_id(pointer_idx + 1)
         else:
-            return
+            call_screen_ats_setting(pointer_idx)
     except Exception as ex:
         LOGGER.error('Error at call function ats_setting_listen_key with message: %s', ex.message)
 
@@ -167,12 +167,12 @@ def ats_deactivate_mode_listen_key(keycode):
         if keycode == BUTTON_34_EVENT_UP:
             # down
             pointer_idx = 1 if pointer_idx == 1 else pointer_idx = pointer_idx + 1
-            call_screen_ats_setting(pointer_idx)
+            call_screen_deactivate_mode(pointer_idx)
 
         elif keycode == BUTTON_14_EVENT_UP:
             # up
             pointer_idx = 0 if pointer_idx == 0 else pointer_idx = pointer_idx - 1
-            call_screen_ats_setting(pointer_idx)
+            call_screen_deactivate_mode(pointer_idx)
 
         elif keycode == BUTTON_24_EVENT_UP:
             # ok
@@ -183,7 +183,7 @@ def ats_deactivate_mode_listen_key(keycode):
 
             call_screen_with_screen_id([screens_info["confirmDeactivateMode"]])
         else:
-            return
+            call_screen_deactivate_mode(pointer_idx)
     except Exception as ex:
         LOGGER.error('Error at call function ats_deactivate_mode_listen_key with message: %s', ex.message)
 
@@ -231,7 +231,8 @@ def confirm_listen_key(keycode):
                 elif screen_idx == screens_info["confirmInactiveEndTime"]:
                     ats_body_setting["atsGenInactiveEndTime"] = 0
                     call_screen_ats_setting(p_idx=2)
-
+        else:
+            call_screen_confirm(pointer_idx)
     except Exception as ex:
         LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
 
