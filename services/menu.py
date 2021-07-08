@@ -9,6 +9,9 @@ from services.lcd import rfid_screen_lcd_sevices
 from services.lcd.sensor_screen_lcd_services import *
 from time import time
 
+# SonTH
+from services.lcd.setting_screen_lcd_services import *
+
 TIME_OUT = 600
 ROW = [ROW_1, ROW_2, ROW_3, ROW_4]
 section_lv_1 = 0
@@ -253,119 +256,131 @@ def thoi_gian():
 
 
 def thong_so_mang():
-    global section_lv_3
-    global section_lv_4
+    # global section_lv_3
+    # global section_lv_4
     global button
+    global section_lv_2
 
     LOGGER.info('Enter thong_so_mang function')
-    if button == OK:
-        section_lv_4 += 1
 
-    if section_lv_4 == 1:
-        if section_lv_3 == 0:
-            print_lcd('cai IP address')
-            # goi ham xu ly
-        elif section_lv_3 == 1:
-            print_lcd('cai subnet mask')
-            # goi ham xu ly
-        elif section_lv_3 == 2:
-            print_lcd('cai Default gateway')
-            # goi ham xy ly
-        elif section_lv_3 == 3:
-            print_lcd('cai Prefered DNS')
-            # goi ham xu ly
-        elif section_lv_3 == 4:
-            print_lcd('cai AlternateDNS')
-            # goi ham xu ly
-        return
+    # Call function xu ly keycode
+    choose_config(section_lv_2 + 1)
+    listen_key_code(button)
 
-    if button == DOWN:
-        section_lv_3 += 1
-    elif button == UP:
-        section_lv_3 -= 1
-    if button == RIGHT:
-        section_lv_3 = 3
-    elif button == LEFT:
-        section_lv_3 = 0
-    if section_lv_3 > 4:
-        section_lv_3 = 4
-    elif section_lv_3 < 0:
-        section_lv_3 = 0
-    if section_lv_4 < 1:
-        if section_lv_3 == 0:
-            print_lcd('THONG SO MANG',
-                      '> IP address',
-                      'Subnet mask',
-                      'Default gateway')
-        elif section_lv_3 == 1:
-            print_lcd('THONG SO MANG',
-                      'IP address',
-                      '> Subnet mask',
-                      'Default gateway')
-        elif section_lv_3 == 2:
-            print_lcd('THONG SO MANG',
-                      'IP address',
-                      'Subnet mask',
-                      '> Default gateway')
-        elif section_lv_3 == 3:
-            print_lcd('THONG SO MANG',
-                      '> Prefered DNS',
-                      'AlternateDNS',
-                      '')
-        elif section_lv_3 == 4:
-            print_lcd('THONG SO MANG',
-                      'Prefered DNS',
-                      '> AlternateDNS',
-                      '')
-    LOGGER.info('section_lv_3: %s', str(section_lv_3))
+    # SonTH: Comment lai, man hinh con se tu render
+    # if button == OK:
+    #     section_lv_4 += 1
+    # if section_lv_4 == 1:
+    #     if section_lv_3 == 0:
+    #         print_lcd('cai IP address')
+    #         # goi ham xu ly
+    #     elif section_lv_3 == 1:
+    #         print_lcd('cai subnet mask')
+    #         # goi ham xu ly
+    #     elif section_lv_3 == 2:
+    #         print_lcd('cai Default gateway')
+    #         # goi ham xy ly
+    #     elif section_lv_3 == 3:
+    #         print_lcd('cai Prefered DNS')
+    #         # goi ham xu ly
+    #     elif section_lv_3 == 4:
+    #         print_lcd('cai AlternateDNS')
+    #         # goi ham xu ly
+    #     return
+    #
+    # if button == DOWN:
+    #     section_lv_3 += 1
+    # elif button == UP:
+    #     section_lv_3 -= 1
+    # if button == RIGHT:
+    #     section_lv_3 = 3
+    # elif button == LEFT:
+    #     section_lv_3 = 0
+    # if section_lv_3 > 4:
+    #     section_lv_3 = 4
+    # elif section_lv_3 < 0:
+    #     section_lv_3 = 0
+    # if section_lv_4 < 1:
+    #     if section_lv_3 == 0:
+    #         print_lcd('THONG SO MANG',
+    #                   '> IP address',
+    #                   'Subnet mask',
+    #                   'Default gateway')
+    #     elif section_lv_3 == 1:
+    #         print_lcd('THONG SO MANG',
+    #                   'IP address',
+    #                   '> Subnet mask',
+    #                   'Default gateway')
+    #     elif section_lv_3 == 2:
+    #         print_lcd('THONG SO MANG',
+    #                   'IP address',
+    #                   'Subnet mask',
+    #                   '> Default gateway')
+    #     elif section_lv_3 == 3:
+    #         print_lcd('THONG SO MANG',
+    #                   '> Prefered DNS',
+    #                   'AlternateDNS',
+    #                   '')
+    #     elif section_lv_3 == 4:
+    #         print_lcd('THONG SO MANG',
+    #                   'Prefered DNS',
+    #                   '> AlternateDNS',
+    #                   '')
+    # LOGGER.info('section_lv_3: %s', str(section_lv_3))
 
 
 def canh_bao():
-    global section_lv_3
-    global section_lv_4
+    # global section_lv_3
+    # global section_lv_4
     global button
+    global section_lv_2
 
-    LOGGER.info('Enter thong_so_mang function')
-    if button == OK:
-        section_lv_4 += 1
+    LOGGER.info('Enter canh_bao function')
+    # Call function xu ly keycode
+    choose_config(section_lv_2 + 1)
+    listen_key_code(button)
 
-    if button == DOWN:
-        section_lv_3 += 1
-    elif button == UP:
-        section_lv_3 -= 1
-
-    if button == LEFT:
-        section_lv_3 = 0
-    elif button == RIGHT:
-        section_lv_3 = 2
-    if section_lv_3 > 3:
-        section_lv_3 = 3
-    elif section_lv_3 < 0:
-        section_lv_3 = 0
-
-
-    if section_lv_4 < 1:
-        if section_lv_3 == 0:
-            print_lcd('CANH BAO',
-                      '> Dien ap luoi',
-                      'Dien ap may phat',
-                      '')
-        elif section_lv_3 == 1:
-            print_lcd('CANH BAO',
-                      'Dien ap luoi',
-                      '> Dien ap may phat',
-                      '')
-        elif section_lv_3 == 2:
-            print_lcd('CANH BAO',
-                      '> Nhiet do',
-                      'Do am',
-                      '')
-        elif section_lv_3 == 3:
-            print_lcd('CANH BAO',
-                      'Nhiet do',
-                      '> Do am',
-                      '')
-    LOGGER.info('section_lv_3: %s', str(section_lv_3))
+    # SonTH: Comment lai, man hinh con se tu render
+    # if button == OK:
+    #     section_lv_4 += 1
+    #
+    # if button == DOWN:
+    #     section_lv_3 += 1
+    # elif button == UP:
+    #     section_lv_3 -= 1
+    #
+    # if button == LEFT:
+    #     section_lv_3 = 0
+    # elif button == RIGHT:
+    #     section_lv_3 = 2
+    # if section_lv_3 > 3:
+    #     section_lv_3 = 3
+    # elif section_lv_3 < 0:
+    #     section_lv_3 = 0
+    #
+    #
+    # if section_lv_4 < 1:
+    #     if section_lv_3 == 0:
+    #         print_lcd('CANH BAO',
+    #                   '> Dien ap luoi',
+    #                   'Dien ap may phat',
+    #                   '')
+    #     elif section_lv_3 == 1:
+    #         print_lcd('CANH BAO',
+    #                   'Dien ap luoi',
+    #                   '> Dien ap may phat',
+    #                   '')
+    #     elif section_lv_3 == 2:
+    #         print_lcd('CANH BAO',
+    #                   '> Nhiet do',
+    #                   'Do am',
+    #                   '')
+    #     elif section_lv_3 == 3:
+    #         print_lcd('CANH BAO',
+    #                   'Nhiet do',
+    #                   '> Do am',
+    #                   '')
+    # LOGGER.info('section_lv_3: %s', str(section_lv_3))
 
 
 def thiet_bi_ats():
