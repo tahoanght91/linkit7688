@@ -15,7 +15,7 @@ def call():
                     LOGGER.info('RC of send telemetry to Thingsboard is: %s', str(response.rc()))
                     if response.rc() != 0:
                         CLIENT.disconnect()
-                set_alarm_state_to_dct(telemetries)
+                set_alarm_state_to_dct(telemetry)
                 LOGGER.info('Dictionary telemetries: %s', telemetries)
             else:
                 LOGGER.info('Telemetry is empty!!!')
