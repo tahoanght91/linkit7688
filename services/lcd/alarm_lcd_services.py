@@ -48,7 +48,6 @@ def save_to_file(str_saved, number):
 def get_alarm(row2, row3, tel_lcd):
     try:
         check_card = check_rfid()
-        check = False
         old_text = row2
         if tel_lcd:
             if tel_lcd.get(CB_CHAY) == 1:
