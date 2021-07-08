@@ -276,13 +276,13 @@ def check_arr_value(module_id, value):
     try:
         if module_id == ID_MCC:
             for index, item in enumerate(value):
-                byte = struct.pack('>H', item)
+                byte = struct.pack('<H', item)
                 arr_checked.append(byte)
                 real_length += 2
         elif module_id == ID_ACM:
             for index, item in enumerate(value):
                 if index == 1 or index == 2 or index == 3 or index == 5:
-                    byte = struct.pack('>H', item)
+                    byte = struct.pack('<H', item)
                     real_length += 2
                 else:
                     byte = struct.pack('B', item)
@@ -294,7 +294,7 @@ def check_arr_value(module_id, value):
                     byte = struct.pack('B', item)
                     real_length += 1
                 else:
-                    byte = struct.pack('>H', item)
+                    byte = struct.pack('<H', item)
                     real_length += 2
                 arr_checked.append(byte)
     except Exception as ex:

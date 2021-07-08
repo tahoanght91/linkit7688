@@ -118,4 +118,5 @@ CB_DOAM = 'acmHumidAlarm'
 CB_DIENAPLUOI = 'atsVacThresholdState'
 CB_DIENMAYPHAT = 'atsVgenThresholdState'
 CB_RFID = 'mccListRfid'
+CB_DCLow = 'mccDcLowState'
 

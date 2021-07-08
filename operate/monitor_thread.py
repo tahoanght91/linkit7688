@@ -9,7 +9,10 @@ def call():
     while True:
         time.sleep(period)
         if shared_attributes.get('acmControlAuto', default_data.acmControlAuto):
+            LOGGER.info('Running mode: Automatic')
             acm.check_status()
+        else:
+            LOGGER.info('Running mode: Manual')
         # mcc.check_status()
         # Check if device is set in Auto mode
         # if shared_attributes.get('atsControlAuto', default_data.atsControlAuto):
