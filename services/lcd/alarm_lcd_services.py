@@ -49,40 +49,32 @@ def get_alarm(row2, row3, tel_lcd):
     try:
         check_card = check_rfid()
         check = False
+        old_text = row2
         if tel_lcd:
             if tel_lcd.get(CB_CHAY) == 1:
                 row2 = create_for_each('CB Chay!')
-                check = True
             elif tel_lcd.get(CB_KHOI) == 1:
                 row2 = create_for_each('CB Khoi!')
-                check = True
             elif tel_lcd.get(CB_NGAP) == 1:
                 row2 = create_for_each('CB Ngap Nuoc!')
-                check = True
             elif CB_NHIET in tel_lcd and tel_lcd.get(CB_NHIET) != 0:
                 row2 = create_for_each('CB Nhiet Do!')
-                check = True
             elif CB_DOAM in tel_lcd and tel_lcd.get(CB_DOAM) != 0:
                 row2 = create_for_each('CB Do Am!')
-                check = True
             elif CB_DIENAPLUOI in tel_lcd and tel_lcd.get(CB_DIENAPLUOI) == 1:
                 row2 = create_for_each('CB Dien Luoi!')
-                check = True
             elif CB_DIENMAYPHAT in tel_lcd and tel_lcd.get(CB_DIENMAYPHAT) == 1:
                 row2 = create_for_each('CB Dien M.Phat!')
-                check = True
             elif tel_lcd.get(CB_CUA) == 1:
                 row2 = create_for_each('CB Cua!')
-                check = True
             elif check_card:
                 row2 = create_for_each('CB Quet The!!')
-                check = True
 
             # check = False
             # new_list = dict(filter(lambda elem: elem[0].lower().find('state') != -1, dct_alarm.items()))
             # if len(new_list) > 0:
             #     check = any(elem != 0 for elem in new_list.values())
-            if not check:
+            if row2 == old_text and (row2 == 'An Toan!' or row2 == ''):
                 row2 = create_for_each('An Toan!')
                 delete_row(ROW_3)
             get_time_alarm(row3, row2)
