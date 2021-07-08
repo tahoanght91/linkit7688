@@ -4,8 +4,8 @@ from config.common_lcd_services import *
 from services.lcd import main_screen_lcd_services
 from services.lcd.acm_sreen_lcd_services import show_temp_condition
 from services.lcd.alarm_lcd_services import check_alarm
-from services.lcd import ats_screen_lcd_services
-from services.lcd import rfid_screen_lcd_sevices
+from services.lcd import ats_screen_lcd_services, ats_setting_lcd_service
+from services.lcd import rfid_screen_lcd_sevices, rfid_setting_lcd_service
 from services.lcd.sensor_screen_lcd_services import *
 from time import time
 
@@ -181,6 +181,8 @@ def setting_display():
                           '> Thong tin',
                           'Ngay gio',
                           'Thong so mang')
+
+
             elif section_lv_2 == 1:
                 print_lcd('CAI DAT HE THONG',
                           'Thong tin',
@@ -389,36 +391,38 @@ def thiet_bi_ats():
     global section_lv_5
     global button
 
-    LOGGER.info('Enter thiet_bi_ats function')
-    if button == OK:
-        section_lv_4 += 1
+    ats_setting_lcd_service.listen_key_code(button)
 
-    if button == DOWN:
-        section_lv_3 += 1
-    elif button == UP:
-        section_lv_3 -= 1
-    if section_lv_3 > 2:
-        section_lv_3 = 2
-    elif section_lv_3 < 0:
-        section_lv_3 = 0
-
-    if section_lv_4 < 1:
-        if section_lv_3 == 0:
-            print_lcd('THIET BI ATS',
-                      '> Cam chay M.phat',
-                      'T.gian cam 1',
-                      'T.gian cam 2')
-        elif section_lv_3 == 1:
-            print_lcd('THIET BI ATS',
-                      'Cam chay M.phat',
-                      '> T.gian cam 1',
-                      'T.gian cam 2')
-        elif section_lv_3 == 2:
-            print_lcd('THIET BI ATS',
-                      'Cam chay M.phat',
-                      'T.gian cam 1',
-                      '> T.gian cam 2')
-    LOGGER.info('section_lv_3: %s', str(section_lv_3))
+    # LOGGER.info('Enter thiet_bi_ats function')
+    # if button == OK:
+    #     section_lv_4 += 1
+    #
+    # if button == DOWN:
+    #     section_lv_3 += 1
+    # elif button == UP:
+    #     section_lv_3 -= 1
+    # if section_lv_3 > 2:
+    #     section_lv_3 = 2
+    # elif section_lv_3 < 0:
+    #     section_lv_3 = 0
+    #
+    # if section_lv_4 < 1:
+    #     if section_lv_3 == 0:
+    #         print_lcd('THIET BI ATS',
+    #                   '> Cam chay M.phat',
+    #                   'T.gian cam 1',
+    #                   'T.gian cam 2')
+    #     elif section_lv_3 == 1:
+    #         print_lcd('THIET BI ATS',
+    #                   'Cam chay M.phat',
+    #                   '> T.gian cam 1',
+    #                   'T.gian cam 2')
+    #     elif section_lv_3 == 2:
+    #         print_lcd('THIET BI ATS',
+    #                   'Cam chay M.phat',
+    #                   'T.gian cam 1',
+    #                   '> T.gian cam 2')
+    # LOGGER.info('section_lv_3: %s', str(section_lv_3))
 
 
 def thiet_bi_rfid():
@@ -427,34 +431,36 @@ def thiet_bi_rfid():
     global section_lv_5
     global button
 
-    LOGGER.info('Enter thiet_bi_rfid function')
-    if button == OK:
-        section_lv_4 += 1
+    rfid_setting_lcd_service.listen_key_code(button)
 
-    if section_lv_4 == 1:
-        if section_lv_3 == 0:
-            print_lcd('cho phep doc')
-        elif section_lv_3 == 1:
-            print_lcd('Khong cho phep')
-        return
-
-    if button == DOWN:
-        section_lv_3 = 1
-    elif button == UP:
-        section_lv_3 = 0
-
-    if section_lv_4 < 1:
-        if section_lv_3 == 0:
-            print_lcd('THIET BI RFID',
-                      '> Cho phep doc',
-                      'khong doc',
-                      '')
-        elif section_lv_3 == 1:
-            print_lcd('THIET BI RFID',
-                      'Cho phep doc',
-                      '> khong doc',
-                      '')
-    LOGGER.info('section_lv_3: %s', str(section_lv_3))
+    # LOGGER.info('Enter thiet_bi_rfid function')
+    # if button == OK:
+    #     section_lv_4 += 1
+    #
+    # if section_lv_4 == 1:
+    #     if section_lv_3 == 0:
+    #         print_lcd('cho phep doc')
+    #     elif section_lv_3 == 1:
+    #         print_lcd('Khong cho phep')
+    #     return
+    #
+    # if button == DOWN:
+    #     section_lv_3 = 1
+    # elif button == UP:
+    #     section_lv_3 = 0
+    #
+    # if section_lv_4 < 1:
+    #     if section_lv_3 == 0:
+    #         print_lcd('THIET BI RFID',
+    #                   '> Cho phep doc',
+    #                   'khong doc',
+    #                   '')
+    #     elif section_lv_3 == 1:
+    #         print_lcd('THIET BI RFID',
+    #                   'Cho phep doc',
+    #                   '> khong doc',
+    #                   '')
+    # LOGGER.info('section_lv_3: %s', str(section_lv_3))
 
 
 def main_menu(bt):
