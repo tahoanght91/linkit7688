@@ -471,16 +471,16 @@ def main_menu(bt):
     try:
         if bt != -1:
             button = bt
-            time_count = time()
-            cycle_flag = True
+            # time_count = time()
+            # cycle_flag = True
 
-        if cycle_flag is True:
-            time_cycle = time() - time_count
+        # if cycle_flag is True:
+        #     time_cycle = time() - time_count
 
         LOGGER.info('Time out come back to main display: %ds', time_cycle)
-        if time_cycle > TIME_OUT:
-            time_come_back = 0
-            section_lv_1 = 0
+        # if time_cycle > TIME_OUT:
+        #     time_come_back = 0
+        #     section_lv_1 = 0
 
         if button in MENU_LV_1 and button != section_lv_1 or section_lv_5 == 1:
             section_lv_2 = 0
