@@ -1,7 +1,14 @@
+import subprocess
+import time
+
+import requests
+from config.common_api import *
 from config import *
 from config.common import UPDATE_VALUE
 from config.common_lcd_services import *
 from control import process_cmd_lcd
+
+url_send_sa = PREFIX + DOMAIN + API_UPDATE_SHARED_ATTRIBUTES
 
 
 class __IPv4:
@@ -222,7 +229,7 @@ def get_alarm_info():
     key = ""
     for k, v in set_alarm_idx:
         key = "row{}".format(v + 1) if selection_chosen[0] == v else 1
-    result.alarm = convert_to_array_number([key])
+    result.alarm = convert_to_array_number([file_json[key]])
     # Tam fake bang 77
     # result.alarm = [7, 7, '_']
     return result
@@ -341,35 +348,39 @@ def assign_ip_listen_key(keycode):
 
 
 def alarm_selection_listen_key(keycode):
-    global pointer_idx, screen_idx
-    # main co 4 dong, choose co 2 dong
-    max_pointer_idx = 3 if screen_idx == selection_setting_alarm["alarm"] else 1
-    if keycode == BUTTON_34_EVENT_UP:
-        # key down
-        pointer_idx = max_pointer_idx if pointer_idx == max_pointer_idx else pointer_idx + 1
-    elif keycode == BUTTON_14_EVENT_UP:
-        # key up
-        pointer_idx = 0 if pointer_idx == 0 else pointer_idx - 1
-    elif keycode == BUTTON_24_EVENT_UP:
-        # key ok
-        selection_chosen[screen_idx] = pointer_idx
-        pointer_idx = 0
-        if screen_idx == selection_setting_alarm["choose_high_low"]:
-            screen_idx += 1
-            refresh_screen_assign_alarm()
-            return
-        elif screen_idx == selection_setting_alarm["confirm_assign_alarm"]:
-            if pointer_idx == confirm["yes"]:
-                save_alarm()
-                screen_idx = selection_setting_alarm["main"]
-            else:
+    try:
+        global pointer_idx, screen_idx
+        # main co 4 dong, choose co 2 dong
+        max_pointer_idx = 3 if screen_idx == selection_setting_alarm["alarm"] else 1
+        if keycode == BUTTON_34_EVENT_UP:
+            # key down
+            pointer_idx = max_pointer_idx if pointer_idx == max_pointer_idx else pointer_idx + 1
+        elif keycode == BUTTON_14_EVENT_UP:
+            # key up
+            pointer_idx = 0 if pointer_idx == 0 else pointer_idx - 1
+        elif keycode == BUTTON_24_EVENT_UP:
+            # key ok
+            selection_chosen[screen_idx] = pointer_idx
+            pointer_idx = 0
+            if screen_idx == selection_setting_alarm["choose_high_low"]:
+                screen_idx += 1
+                refresh_screen_assign_alarm()
                 return
+            elif screen_idx == selection_setting_alarm["confirm_assign_alarm"]:
+                if pointer_idx == confirm["yes"]:
+                    save_alarm()
+                    screen_idx = selection_setting_alarm["main"]
+                else:
+                    return
+            else:
+                # main
+                screen_idx += 1
         else:
-            # main
-            screen_idx += 1
-    else:
-        return
-    call_screen_alarm_selection()
+            return
+        call_screen_alarm_selection()
+        LOGGER.info('Run function alarm_selection_listen_key')
+    except Exception as ex:
+        LOGGER.error('Error at call function in alarm_selection_listen_key with message: %s', ex.message)
 
 
 def assign_alarm_listen_key(keycode):
@@ -413,17 +424,19 @@ def save_ip():
 def save_alarm():
     # Luu alarm vao const
     save_to_file('./last_cmd_alarm.json', alarm.get_alarm(), selection_chosen[0] + 1)
+    # Call API de luu alarm
+    for k, v in key_attr:
+        if v["index_screen_1"] == selection_chosen[0] and v["index_screen_2"] == selection_chosen[1]:
+            # Man hinh 1 chon loai alarm
+            # Man hinh 2 chon set nguong cao hay thap
+            write_body_send_shared_attributes(alarm.get_alarm(), k)
+            break
+    # Reset cac tham so dieu huong man hinh
     reset_parameter()
     return 1
 
 
-# Nghi ti da
-# Co van de can hoi lai
-# 1. Blink chu cai o man hien thi thi dung cai gi
-
 # SonTH: Main screen alarm
-
-
 def call_screen_alarm_selection():
     try:
         row_1 = 'CANH BAO'
@@ -473,8 +486,10 @@ def call_screen_alarm_selection():
         process_cmd_lcd(ROW_1, UPDATE_VALUE, row_1)
         process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_2'])
         process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_3'])
+        LOGGER.info('Write output in function call_screen_alarm_selection: {0} - {1} - {2}', row_1,
+                    switcher[selection_chosen[screen_idx]]['row_2'], switcher[selection_chosen[screen_idx]]['row_3'])
     except Exception as ex:
-        LOGGER.error('Error at call function in screen_assign_alarm with message: %s', ex.message)
+        LOGGER.error('Error at call function in call_screen_alarm_selection with message: %s', ex.message)
 
 
 def refresh_screen_assign_alarm():
@@ -499,11 +514,11 @@ def refresh_screen_assign_alarm():
         process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx - 1]]["row_2"])
         process_cmd_lcd(ROW_2, UPDATE_VALUE, "{0}{1}".format(alarm.get_alarm(), text))
 
-        LOGGER.info('ASSIGN IP ALARM: %s', str(alarm.get_alarm()))
+        LOGGER.info('ASSIGN ALARM in func call refresh_screen_assign_alarm: %s', str(alarm.get_alarm()))
         # Update nhap nhay
         # ...
     except Exception as ex:
-        LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
+        LOGGER.error('Error at call function in refresh_screen_assign_alarm with message: %s', ex.message)
 
 
 # Helper save/read file
@@ -551,8 +566,11 @@ def save_to_set_ip(str_saved, key):
     try:
         save_to_file('./setIp.sh', row_format[key]["format"].format(str_saved), row_format[key]["number"])
         LOGGER.info('Call save file ./setIp.sh')
-        # fun bash .sh
-        # ...
+        # run bash .sh
+        bashCmd = ["./setIp.sh"]
+        process = subprocess.Popen(bashCmd, stdout=subprocess.PIPE)
+        output, error = process.communicate()
+        LOGGER.info('Run ./setIp.sh with output: {0} and error{1}', output, error)
     except Exception as ex:
         LOGGER.error('Error at call function in save_to_set_ip with message: %s', ex.message)
 
@@ -572,7 +590,6 @@ def save_to_file(file_path, str_saved, number):
             all_row['row5'] = str_saved
         write_to_json(all_row, file_path)
         LOGGER.info('Saved file {0}', file_path)
-
     except Exception as ex:
         LOGGER.error('Error at call function in save_to_file with message: %s', ex.message)
 
@@ -594,3 +611,69 @@ def read_to_json(file_url):
     except Exception as ex:
         LOGGER.error('Error at call function in read_to_json with message: %s', ex.message)
     return json_info
+
+
+# Helper call api
+key_attr = {
+    "atsVacMaxThreshold": {
+        "index_screen_1": 0,
+        "index_screen_2": 0
+    },
+    "atsVacMinThreshold": {
+        "index_screen_1": 0,
+        "index_screen_2": 1
+    },
+    "atsVgenMaxThreshold": {
+        "index_screen_1": 1,
+        "index_screen_2": 0
+    },
+    "atsVgenMinThreshold": {
+        "index_screen_1": 1,
+        "index_screen_2": 1
+    },
+    "acmMaxTempThreshold": {
+        "index_screen_1": 2,
+        "index_screen_2": 0
+    },
+    "acmMinTempThreshold": {
+        "index_screen_1": 2,
+        "index_screen_2": 1
+    },
+    "acmMaxHumidThreshold": {
+        "index_screen_1": 3,
+        "index_screen_2": 0
+    },
+    "acmMinHumidThreshold": {
+        "index_screen_1": 3,
+        "index_screen_2": 1
+    }
+}
+
+
+def write_body_send_shared_attributes(key, value):
+    body = {}
+    try:
+        now = int(time.time() * 1000)
+        body = {"tramEntityId": str(device_config['device_id']), "value": str(value), "keyName": str(key),
+                "changeAt": now}
+        LOGGER.info('Content of body send shared attributes to Smartsite: %s', body)
+    except Exception as ex:
+        LOGGER.info('Error at write_body_send_shared_attributes function with message: %s', ex.message)
+    return body
+
+
+def send_shared_attributes(body):
+    result = False
+    try:
+        response = requests.post(url=url_send_sa, json=body)
+        if response.status_code == 200:
+            LOGGER.info('Send shared attributes to Smartsite successful!')
+            result = True
+        else:
+            LOGGER.info('Fail while send shared attributes to Smartsite!')
+    except Exception as ex:
+        LOGGER.info('Error at write_log function with message: %s', ex.message)
+    return result
+
+# Co van de can hoi lai
+# 1. Blink chu cai o man hien thi thi dung cai gi
