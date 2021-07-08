@@ -14,10 +14,6 @@ def call():
                     for key, value in gw_client_attributes.items():
                         CLIENT.gw_send_attributes(key, value)
                     LOGGER.info('Sent changed client attributes')
-                    log_info = []
-                    for key, value in update_attributes.items():
-                        log_info.append('\t{:>20s}: {:>20s}'.format(str(key), str(value)))
-                    LOGGER.info('\n'.join(log_info))
                 LOGGER.info('Dictionary update client attributes: %s', update_attributes)
                 update_attributes_lock.release()
             else:
