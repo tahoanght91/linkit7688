@@ -1,12 +1,11 @@
-import time
 import requests
+
 from config.common_api import *
 from devices.utils import read_lcd_services
 from model.alarm_lcd import Alarm_lcd
-from model.lcd import Lcd
-from services.lcd.main_screen_lcd_services import write_to_json, screen_main
 from utility import bytes_to_int
 from services.menu import *
+from time import sleep
 
 url_send_sa = PREFIX + DOMAIN + API_UPDATE_SHARED_ATTRIBUTES
 url_get_staff = PREFIX + DOMAIN + API_GET_STAFF
@@ -42,7 +41,7 @@ def call():
             if lcd_services:
                 del lcd_services['key_code']
                 del lcd_services['key_event']
-            time.sleep(period)
+            sleep(period)
     except Exception as ex:
         LOGGER.error('Error at call function in lcd_thread with message: %s', ex.message)
 
