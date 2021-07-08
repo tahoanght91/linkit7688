@@ -7,17 +7,20 @@ from services.lcd.alarm_lcd_services import check_alarm
 from services.lcd import ats_screen_lcd_services
 from services.lcd import rfid_screen_lcd_sevices
 from services.lcd.sensor_screen_lcd_services import *
+from time import time
 
+TIME_OUT = 600
 ROW = [ROW_1, ROW_2, ROW_3, ROW_4]
 section_lv_1 = 0
 section_lv_2 = 0
 section_lv_3 = -1
 section_lv_4 = -1
 section_lv_5 = -1
-
+time_count = 0
 button = 0
 set_string_ok = 0
-
+cycle_flag = False
+time_cycle = 0
 def print_lcd(str1, str2, str3, str4):
     from control import process_cmd_lcd
     status = False
@@ -26,8 +29,9 @@ def print_lcd(str1, str2, str3, str4):
         LOGGER.info('Send message print_lcd on lcd')
         i = 0
         while i < 4:
-            if str[i] != '':
-                status = process_cmd_lcd(ROW[i], UPDATE_VALUE, str[i])
+            # if str[i] != '':
+            #     status = process_cmd_lcd(ROW[i], UPDATE_VALUE, str[i])
+            status = process_cmd_lcd(ROW[i], UPDATE_VALUE, str[i])
             if status:
                 i += 1
     except Exception as ex:
@@ -100,9 +104,9 @@ def air_info_display():
 def ats_display():
     global section_lv_2
 
-    if button == LEFT:
+    if button == RIGHT:
         section_lv_2 += 1
-    elif button == RIGHT:
+    elif button == LEFT:
         section_lv_2 -= 1
     if section_lv_2 > 5:
         section_lv_2 = 5
@@ -325,30 +329,41 @@ def canh_bao():
     if button == OK:
         section_lv_4 += 1
 
-    if section_lv_4 == 1:
-        if section_lv_3 == 0:
-            print_lcd('Vao cai dat Nguong AC cao')
-            # goi ham xu ly
-        elif section_lv_3 == 1:
-            print_lcd('Vao cai dat Nguong AC thap')
-            # goi ham xu ly
-        return
-
     if button == DOWN:
-        section_lv_3 = 1
+        section_lv_3 += 1
     elif button == UP:
+        section_lv_3 -= 1
+
+    if button == LEFT:
         section_lv_3 = 0
+    elif button == RIGHT:
+        section_lv_3 = 2
+    if section_lv_3 > 3:
+        section_lv_3 = 3
+    elif section_lv_3 < 0:
+        section_lv_3 = 0
+
 
     if section_lv_4 < 1:
         if section_lv_3 == 0:
-            print_lcd('CANH BAO ',
-                      '> Nguong AC cao',
-                      'Nguong AC thap',
+            print_lcd('CANH BAO',
+                      '> Dien ap luoi',
+                      'Dien ap may phat',
                       '')
         elif section_lv_3 == 1:
-            print_lcd('CANH BAO ',
-                      'Nguong AC cao',
-                      '> Nguong AC thap',
+            print_lcd('CANH BAO',
+                      'Dien ap luoi',
+                      '> Dien ap may phat',
+                      '')
+        elif section_lv_3 == 2:
+            print_lcd('CANH BAO',
+                      '> Nhiet do',
+                      'Do am',
+                      '')
+        elif section_lv_3 == 3:
+            print_lcd('CANH BAO',
+                      'Nhiet do',
+                      '> Do am',
                       '')
     LOGGER.info('section_lv_3: %s', str(section_lv_3))
 
@@ -363,18 +378,6 @@ def thiet_bi_ats():
     if button == OK:
         section_lv_4 += 1
 
-    if section_lv_4 == 1:
-        if section_lv_3 == 0:
-            print_lcd('Chay auto')
-            # goi ham xu ly
-        elif section_lv_3 == 1:
-            print_lcd('Chay dien luoi')
-            # goi ham xu ly
-        elif section_lv_3 == 2:
-            print_lcd('Chay may phat')
-
-        return
-
     if button == DOWN:
         section_lv_3 += 1
     elif button == UP:
@@ -387,19 +390,19 @@ def thiet_bi_ats():
     if section_lv_4 < 1:
         if section_lv_3 == 0:
             print_lcd('THIET BI ATS',
-                      '> Tu chay',
-                      'Dien luoi',
-                      'May phat')
+                      '> Cam chay M.phat',
+                      'T.gian cam 1',
+                      'T.gian cam 2')
         elif section_lv_3 == 1:
             print_lcd('THIET BI ATS',
-                      'Tu chay',
-                      '> Dien luoi',
-                      'May phat')
+                      'Cam chay M.phat',
+                      '> T.gian cam 1',
+                      'T.gian cam 2')
         elif section_lv_3 == 2:
             print_lcd('THIET BI ATS',
-                      'Tu chay',
-                      'Dien luoi',
-                      '> May phat')
+                      'Cam chay M.phat',
+                      'T.gian cam 1',
+                      '> T.gian cam 2')
     LOGGER.info('section_lv_3: %s', str(section_lv_3))
 
 
@@ -440,11 +443,21 @@ def thiet_bi_rfid():
 
 
 def main_menu(bt):
-    global section_lv_1, section_lv_2, section_lv_3, section_lv_4, section_lv_5, button
+    global section_lv_1, section_lv_2, section_lv_3, section_lv_4, section_lv_5, button, time_count, cycle_flag, time_cycle
     LOGGER.info('Enter main_menu function')
     try:
         if bt != -1:
             button = bt
+            time_count = time()
+            cycle_flag = True
+
+        if cycle_flag is True:
+            time_cycle = time() - time_count
+
+        LOGGER.info('Time out come back to main display: %ds', time_cycle)
+        if time_cycle > TIME_OUT:
+            time_come_back = 0
+            section_lv_1 = 0
 
         if button in MENU_LV_1 and button != section_lv_1 or section_lv_5 == 1:
             section_lv_2 = 0
@@ -452,6 +465,6 @@ def main_menu(bt):
             section_lv_4 = -1
             section_lv_5 = 0
         select_section_lv1()
-
+        button = -1
     except Exception as ex:
         LOGGER.error('Error at call function in main_menu with message: %s', ex.message)

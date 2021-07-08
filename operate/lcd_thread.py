@@ -39,11 +39,12 @@ def call():
             button = check_button(lcd_services)
             LOGGER.info('Send button value: %s', str(button))
             main_menu(button)
-            del lcd_services['key_code']
-            del lcd_services['key_event']
+            if lcd_services:
+                del lcd_services['key_code']
+                del lcd_services['key_event']
             time.sleep(period)
     except Exception as ex:
-        LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
+        LOGGER.error('Error at call function in lcd_thread with message: %s', ex.message)
 
 
 def write_body_send_shared_attributes(key, value):
@@ -101,7 +102,7 @@ def check_button(bt_info):
             button = event * index_key
             if last_stt_bt != button:
                 last_stt_bt = button
-                LOGGER.info('return button value: %s', LOG_BUTTON[str(button)])
+                LOGGER.info('return button value: %s', LOG_BUTTON[button])
             return button
         else:
             LOGGER.info('Button status: No action')
