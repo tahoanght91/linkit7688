@@ -29,7 +29,6 @@ def write_to_json(body, fileUrl):
 # HungLq
 def screen_main():
     try:
-        get_title_main()
         get_datetime_now()
         get_temp_tram()
         get_user_tram()
@@ -52,29 +51,34 @@ def get_datetime_now():
     try:
         timeNew = datetime.now().strftime("%M")
         if timeNew != timeOld:
+            title = read_to_json('./lcd_setting_data_file.json')
+            values_of_key = title['setting_info_title']
+            row1 = values_of_key
             now = datetime.now()
             dt_string = now.strftime("%d/%m/%Y %H:%M")
-            show = str(dt_string)
-            process_cmd_lcd(ROW_2, UPDATE_VALUE, show)
-            LOGGER.info('MAIN SCREEN DATETIME NOW: %s', str(show))
+            row2 = str(dt_string)
+            process_cmd_lcd(ROW_1, UPDATE_VALUE, row1)
+            process_cmd_lcd(ROW_2, UPDATE_VALUE, row2)
+            LOGGER.info('MAIN SCREEN TITLE NOW: %s', str(row1))
+            LOGGER.info('MAIN SCREEN DATETIME NOW: %s', str(row2))
             timeOld = timeNew
     except Exception as ex:
         LOGGER.error('Error at call function in check_key_code with message: %s', ex.message)
 
 
-def get_title_main():
-    from control import process_cmd_lcd
-    # global titleOld
-    try:
-        # if titleOld == '':
-        title = read_to_json('./lcd_setting_data_file.json')
-        values_of_key = title['setting_info_title']
-        show = values_of_key
-        process_cmd_lcd(ROW_1, UPDATE_VALUE, show)
-        # titleOld = 'MAKE IN MOBIFONE'
-        LOGGER.info('MAIN SCREEN TITLE: %s', str(show))
-    except Exception as ex:
-        LOGGER.error('Error at set_title_main function with message: %s', ex.message)
+# def get_title_main():
+#     from control import process_cmd_lcd
+#     # global titleOld
+#     try:
+#         # if titleOld == '':
+#         title = read_to_json('./lcd_setting_data_file.json')
+#         values_of_key = title['setting_info_title']
+#         show = values_of_key
+#         process_cmd_lcd(ROW_1, UPDATE_VALUE, show)
+#         # titleOld = 'MAKE IN MOBIFONE'
+#         LOGGER.info('MAIN SCREEN TITLE: %s', str(show))
+#     except Exception as ex:
+#         LOGGER.error('Error at set_title_main function with message: %s', ex.message)
 
 
 def get_temp_tram():
