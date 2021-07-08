@@ -6,7 +6,6 @@ from config.common_api import *
 from config import *
 from config.common import UPDATE_VALUE
 from config.common_lcd_services import *
-from control import process_cmd_lcd
 
 url_send_sa = PREFIX + DOMAIN + API_UPDATE_SHARED_ATTRIBUTES
 
