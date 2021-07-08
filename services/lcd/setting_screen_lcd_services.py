@@ -47,7 +47,8 @@ class __Alarm:
 # Man hinh setting nao
 screen_setting_idx = 0
 # Vi tri man hinh hien tai
-screen_idx = 0
+# Gia tri khoi tao la -1, se tang len thanh 0 khi lan dau tien render man hinh
+screen_idx = -1
 # con tro vi tri tren man hinh
 pointer_idx = 0
 # Network
@@ -94,7 +95,8 @@ selection_chosen = [0, 0, 0, 0]
 
 # Call khi chon setting can cau hinh
 def choose_config(setting_idx):
-    global screen_setting_idx
+    global screen_setting_idx, screen_idx
+    screen_idx = -1
     screen_setting_idx = setting_idx
 
 
@@ -166,7 +168,8 @@ def refresh_screen_assign_ip_address():
                 "row_2": 'Alternate DNS'
             }
         ]
-        confirm = [
+
+        switcher_2 = [
             {
                 "row_2": '> Co',
                 "row_3": 'Khong'
@@ -181,8 +184,8 @@ def refresh_screen_assign_ip_address():
         if screen_idx % 2:
             # Man hinh xac nhan luu
             process_cmd_lcd(ROW_1, UPDATE_VALUE, 'XAC NHAN LUU')
-            process_cmd_lcd(ROW_2, UPDATE_VALUE, confirm[pointer_idx]["row_2"])
-            process_cmd_lcd(ROW_2, UPDATE_VALUE, confirm[pointer_idx]["row_3"])
+            process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher_2[pointer_idx]["row_2"])
+            process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher_2[pointer_idx]["row_3"])
         else:
             # Man hinh nhap ip - subnet - ...
             process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
@@ -245,24 +248,9 @@ def get_next_number(keycode, number):
 # Register func nay
 def listen_key_code(keycode):
     if screen_setting_idx == selection_setting["network"]:
-        if screen_idx == selection_setting_network["main"]:
-            # Neu la man hinh main config
-            main_network_listen_key(keycode)
-        else:
-            # Neu la man hinh cau hinh thong so
-            assign_ip_listen_key(keycode)
-
-        # refresh screen
-        refresh_screen_assign_ip_address()
+        get_func_keycode(network_keycode_func_idx, keycode)
     elif screen_setting_idx == selection_setting["alarm"]:
-        if screen_idx == selection_setting_alarm["main"] or screen_idx == selection_setting_alarm[
-            "choose_high_low"] or screen_idx == selection_setting_alarm[
-            "confirm_assign_alarm"]:
-            alarm_selection_listen_key()
-        else:
-            # Neu la man hinh cau hinh thong so
-            assign_alarm_listen_key()
-        return
+        get_func_keycode(alarm_keycode_func_idx, keycode)
     else:
         return
 
@@ -279,15 +267,16 @@ def main_network_listen_key(keycode):
         pointer_idx = 0 if pointer_idx == 0 else pointer_idx - 1
     elif keycode == BUTTON_24_EVENT_UP:
         # key ok
-        selection_chosen[screen_idx] = pointer_idx
+        if screen_idx > -1:
+            # lan dau tien load man hinh screen_idx = -1, khong update gia tri chon
+            selection_chosen[screen_idx] = pointer_idx
         screen_idx = 0 if screen_idx == 2 else screen_idx + 1
         # refresh gia tri pointer index
         pointer_idx = 0
-        # refresh man hinh
-        refresh_screen_assign_ip_address()
     else:
         return
-
+    # refresh man hinh
+    get_func_render(network_screen_idx)
 
 # def main_alarm_listen_key(keycode):
 #     global pointer_idx, screen_idx
@@ -336,15 +325,12 @@ def assign_ip_listen_key(keycode):
                 save_ip()
                 pointer_idx = 0
                 screen_idx = selection_setting_network["main"]
-                # refresh screen
-                call_screen_network()
-                return
             else:
                 return
     else:
         return
     # refresh screen
-    refresh_screen_assign_ip_address()
+    get_func_render(network_screen_idx)
 
 
 def alarm_selection_listen_key(keycode):
@@ -360,24 +346,22 @@ def alarm_selection_listen_key(keycode):
             pointer_idx = 0 if pointer_idx == 0 else pointer_idx - 1
         elif keycode == BUTTON_24_EVENT_UP:
             # key ok
-            selection_chosen[screen_idx] = pointer_idx
+            if screen_idx > -1:
+                # lan dau tien load man hinh screen_idx = -1, khong update gia tri chon
+                selection_chosen[screen_idx] = pointer_idx
+            screen_idx += 1
+            # refresh gia tri pointer index
             pointer_idx = 0
-            if screen_idx == selection_setting_alarm["choose_high_low"]:
-                screen_idx += 1
-                refresh_screen_assign_alarm()
-                return
-            elif screen_idx == selection_setting_alarm["confirm_assign_alarm"]:
+            if screen_idx == selection_setting_alarm["confirm_assign_alarm"] + 1:
                 if pointer_idx == confirm["yes"]:
                     save_alarm()
                     screen_idx = selection_setting_alarm["main"]
                 else:
                     return
-            else:
-                # main
-                screen_idx += 1
         else:
             return
-        call_screen_alarm_selection()
+        # Call function render
+        get_func_render(alarm_screen_idx)
         LOGGER.info('Run function alarm_selection_listen_key')
     except Exception as ex:
         LOGGER.error('Error at call function in alarm_selection_listen_key with message: %s', ex.message)
@@ -399,11 +383,14 @@ def assign_alarm_listen_key(keycode):
         alarm.alarm[pointer_idx] = get_next_number(keycode, alarm.alarm[pointer_idx])
     elif keycode == BUTTON_24_EVENT_UP:
         # key ok
+        selection_chosen[screen_idx] = pointer_idx
         screen_idx += 1
+        # refresh gia tri pointer index
+        pointer_idx = 0
     else:
         return
     # refresh screen
-    call_screen_alarm_selection()
+    get_func_render(alarm_screen_idx)
 
 
 def save_ip():
@@ -418,7 +405,6 @@ def save_ip():
     for k, v in set_ip_idx:
         save_to_set_ip(network.get_ip(), k) if selection_chosen[0] == set_ip_idx else 1
     reset_parameter()
-    return 1
 
 
 def save_alarm():
@@ -675,5 +661,43 @@ def send_shared_attributes(body):
         LOGGER.info('Error at write_log function with message: %s', ex.message)
     return result
 
+
 # Co van de can hoi lai
 # 1. Blink chu cai o man hien thi thi dung cai gi
+
+
+network_screen_idx = {
+    0: call_screen_network,
+    1: refresh_screen_assign_ip_address,
+    2: refresh_screen_assign_ip_address
+}
+
+network_keycode_func_idx = {
+    0: main_network_listen_key,
+    1: assign_ip_listen_key,
+    2: assign_ip_listen_key
+}
+
+alarm_screen_idx = {
+    0: call_screen_alarm_selection,
+    1: call_screen_alarm_selection,
+    2: refresh_screen_assign_alarm,
+    3: call_screen_alarm_selection
+}
+
+alarm_keycode_func_idx = {
+    0: alarm_selection_listen_key,
+    1: alarm_selection_listen_key,
+    2: assign_alarm_listen_key,
+    3: alarm_selection_listen_key
+}
+
+
+def get_func_render(o):
+    func = o.get(screen_idx)
+    return func()
+
+
+def get_func_keycode(o, kc):
+    func = o.get(screen_idx)
+    return func(kc)
