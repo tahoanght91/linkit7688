@@ -374,23 +374,47 @@ def split_list_by_row(list_cmd_lcd):
     return arr_dct_split
 
 
+# def set_alarm_state_to_dct(dct_telemetry):
+#     if 'mccFireState' in dct_telemetry:
+#         dct_alarm['mccFireState'] = dct_telemetry['mccFireState']
+#     if 'mccFloodState' in dct_telemetry:
+#         dct_alarm['mccFloodState'] = dct_telemetry['mccFloodState']
+#     if 'mccSmokeState' in dct_telemetry:
+#         dct_alarm['mccSmokeState'] = dct_telemetry['mccSmokeState']
+#     if 'mccDoorState' in dct_telemetry:
+#         dct_alarm['mccDoorState'] = dct_telemetry['mccDoorState']
+#     if 'acmTempAlarm' in dct_telemetry:
+#         dct_alarm['acmTempAlarm'] = dct_telemetry['acmTempAlarm']
+#     if 'acmHumidAlarm' in dct_telemetry:
+#         dct_alarm['acmHumidAlarm'] = dct_telemetry['acmHumidAlarm']
+#     if 'atsVgenThresholdState' in dct_telemetry:
+#         dct_alarm['atsVgenThresholdState'] = dct_telemetry['atsVgenThresholdState']
+#     if 'atsVacThresholdState' in dct_telemetry:
+#         dct_alarm['atsVacThresholdState'] = dct_telemetry['atsVgenThresholdState']
+
+
 def set_alarm_state_to_dct(dct_telemetry):
-    if 'mccFireState' in dct_telemetry:
-        dct_alarm['mccFireState'] = dct_telemetry['mccFireState']
-    if 'mccFloodState' in dct_telemetry:
-        dct_alarm['mccFloodState'] = dct_telemetry['mccFloodState']
-    if 'mccSmokeState' in dct_telemetry:
-        dct_alarm['mccSmokeState'] = dct_telemetry['mccSmokeState']
-    if 'mccDoorState' in dct_telemetry:
-        dct_alarm['mccDoorState'] = dct_telemetry['mccDoorState']
-    if 'acmTempAlarm' in dct_telemetry:
-        dct_alarm['acmTempAlarm'] = dct_telemetry['acmTempAlarm']
-    if 'acmHumidAlarm' in dct_telemetry:
-        dct_alarm['acmHumidAlarm'] = dct_telemetry['acmHumidAlarm']
-    if 'atsVgenThresholdState' in dct_telemetry:
-        dct_alarm['atsVgenThresholdState'] = dct_telemetry['atsVgenThresholdState']
-    if 'atsVacThresholdState' in dct_telemetry:
-        dct_alarm['atsVacThresholdState'] = dct_telemetry['atsVgenThresholdState']
+    try:
+        if len(dct_telemetry) > 0:
+            mcc = dct_telemetry.get(DEVICE_MCC)[0]
+            acm = dct_telemetry.get(DEVICE_ACM)[0]
+            ats = dct_telemetry.get(DEVICE_ATS)[0]
+            if len(mcc) > 0:
+                dct_alarm['mccFireState'] = mcc.get('mccFireState', 0)
+                dct_alarm['mccFloodState'] = mcc.get('mccFloodState', 0)
+                dct_alarm['mccSmokeState'] = mcc.get('mccSmokeState', 0)
+                dct_alarm['mccDoorState'] = mcc.get('mccDoorState', 0)
+            if len(acm) > 0:
+                dct_alarm['acmTempAlarm'] = acm.get('acmTempAlarm', 0)
+                dct_alarm['acmHumidAlarm'] = acm.get('acmHumidAlarm', 0)
+            if len(ats) > 0:
+                dct_alarm['atsVgenThresholdState'] = ats.get('atsVgenThresholdState', 0)
+                dct_alarm['atsVacThresholdState'] = ats.get('atsVgenThresholdState', 0)
+        else:
+            LOGGER.info('Telemetry is empty!!!')
+        LOGGER.info('Dictionary alarm is: %s', dct_alarm)
+    except Exception as ex:
+        LOGGER.error('Error at set_alarm_state_to_dct function with message: %s', ex.message)
 
 
 def write_update_value(bytes_command):
