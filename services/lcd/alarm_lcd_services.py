@@ -24,7 +24,7 @@ def check_alarm():
             row1 = BAN_TIN_CANH_BAO
             LOGGER.info('Log in row 1 success: %s', row1)
             save_to_file(row1, ROW_1)
-        get_alarm(row2, row3, telemetries)
+        get_alarm(row2, row3, dct_alarm)
     except Exception as ex:
         LOGGER.error('Error at call function in check_alarm with message: %s', ex.message)
 
@@ -47,6 +47,7 @@ def save_to_file(str_saved, number):
 
 def get_alarm(row2, row3, tel_lcd):
     try:
+        LOGGER.info('List dtc_alarm: %s', tel_lcd)
         check_card = check_rfid()
         old_text = row2
         if tel_lcd:
