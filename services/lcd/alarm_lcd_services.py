@@ -64,6 +64,8 @@ def get_alarm(row2, row3, tel_lcd):
                 row2 = create_for_each('CB Dien Luoi!')
             elif CB_DIENMAYPHAT in tel_lcd and tel_lcd.get(CB_DIENMAYPHAT) == 1:
                 row2 = create_for_each('CB Dien M.Phat!')
+            elif CB_DCLow in tel_lcd and tel_lcd.get(CB_DCLow) == 1:
+                row2 = create_for_each('CB DC Low!')
             elif tel_lcd.get(CB_CUA) == 1:
                 row2 = create_for_each('CB Cua!')
             elif check_card:
@@ -88,22 +90,19 @@ def get_alarm(row2, row3, tel_lcd):
 
 
 def check_rfid():
-    if CB_RFID in shared_attributes:
-        list_card = shared_attributes['mccListRfid']
-        LOGGER.info('Check list check_rfid: %s', list_card)
-        if len(list_card) > 0:
-            if KEY_RFID in client_attributes:
-                rfid_card = client_attributes.get(KEY_RFID)
-                if isinstance(rfid_card, str) and rfid_card is not None:
-                    set_temp = set(list_card)
-                    if rfid_card in set_temp:
-                        return True
-    return False
-
-
-def check_detail_alarm(key, row2, text, tel_lcd):
-    if tel_lcd.get(key) == 1 and row2 != text:
-        return True
+    try:
+        if CB_RFID in shared_attributes:
+            list_card = shared_attributes['mccListRfid']
+            LOGGER.info('Check list check_rfid: %s', list_card)
+            if len(list_card) > 0:
+                if KEY_RFID in client_attributes:
+                    rfid_card = client_attributes.get(KEY_RFID)
+                    if isinstance(rfid_card, str) and rfid_card is not None:
+                        set_temp = set(list_card)
+                        if rfid_card in set_temp:
+                            return True
+    except Exception as ex:
+        LOGGER.error('Error at call function in check_rfid with message: %s', ex.message)
     return False
 
 
