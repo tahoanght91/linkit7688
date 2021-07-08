@@ -15,13 +15,8 @@ def call():
                     LOGGER.info('RC of send telemetry to Thingsboard is: %s', str(response.rc()))
                     if response.rc() != 0:
                         CLIENT.disconnect()
-                LOGGER.info('Sent telemetry data')
-                log_info = []
-                for key, value in telemetries.items():
-                    log_info.append('\t{:>20s}: {:>20s}'.format(str(key), str(value)))
-                LOGGER.info('\n'.join(log_info))
-                LOGGER.info('Dictionary telemetries: %s', telemetries)
                 set_alarm_state_to_dct(telemetries)
+                LOGGER.info('Dictionary telemetries: %s', telemetries)
             else:
                 LOGGER.info('Telemetry is empty!!!')
         time.sleep(period)
