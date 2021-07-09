@@ -126,7 +126,7 @@ def check_temp_alarm_acm(value):
         else:
             LOGGER.info('No acmMaxTempThreshold key in shared attributes')
         if 'acmMinTempThreshold' in shared_attributes:
-            min_temp_threshold = shared_attributes['acmMaxTempThreshold']
+            min_temp_threshold = shared_attributes['acmMinTempThreshold']
             if value < min_temp_threshold:
                 result = 1
                 LOGGER.info('Temperature indoor < acmMinTempThreshold')
