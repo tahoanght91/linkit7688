@@ -98,8 +98,7 @@ def call():
         CLIENT.gw_set_server_side_rpc_request_handler(handler=subscription_thread._gw_rpc_callback)
 
         # thread_list = [lcd_thread, io_thread, update_attributes_thread, telemetry_thread, led_thread, shared_attributes_thread, rfid_thread, monitor_thread, check_connection_thread]
-        thread_list = [lcd_thread, io_thread, update_attributes_thread, telemetry_thread, led_thread,
-                       shared_attributes_thread, rfid_thread, monitor_thread]
+        thread_list = [lcd_thread, io_thread]
         # enable when test in IDE
         # thread_list = [update_attributes_thread, telemetry_thread, led_thread, lcd_thread, shared_attributes_thread, rfid_thread, monitor_thread]
 
