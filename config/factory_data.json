@@ -1,6 +1,6 @@
 {
   "shared": {
-    "mccPeriodReadDataIO": 0.05,
+    "mccPeriodReadDataIO": 10,
     "mccPeriodSendTelemetry": 5,
     "mccPeriodUpdate": 5,
     "mccListRfid": [],
