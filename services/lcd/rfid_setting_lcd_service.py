@@ -2,7 +2,6 @@
 from config import *
 from config.common import UPDATE_VALUE
 from config.common_lcd_services import *
-from control import process_cmd_lcd
 from control.utils import read_to_json, write_to_json
 data_setting_path = '../../lcd_setting_data_file.json'
 setting_rfid_allow = 0
@@ -16,6 +15,7 @@ screens_info = {"rfid_setting": 0, "confirmRfidMode": 1}
 
 # Màn hình chính được call ở menu
 def call_screen_rfid_setting(p_idx):
+    from control import process_cmd_lcd
     global screen_idx
     try:
         screen_idx = screens_info["rfid_setting"]
@@ -39,6 +39,7 @@ def call_screen_rfid_setting(p_idx):
 
 # Màn hình xác nhận
 def call_screen_confirm(p_idx):
+    from control import process_cmd_lcd
     global screen_idx
     try:
         screen_idx = screens_info["confirmRfidMode"]

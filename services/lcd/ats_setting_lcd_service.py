@@ -2,7 +2,6 @@
 from config import *
 from config.common import UPDATE_VALUE
 from config.common_lcd_services import *
-from control import process_cmd_lcd
 from operate.lcd_thread import write_body_send_shared_attributes, send_shared_attributes
 
 # Cấu trúc body gửi api lên service khi confirm ok
@@ -21,6 +20,7 @@ screens_info = {"ats_setting": 0, "atsGenDeactivateMode": 1, "atsGenInactiveStar
 
 # Màn hình chính được call ở menu
 def call_screen_ats_setting(p_idx):
+    from control import process_cmd_lcd
     try:
         switcher = [
             {
@@ -50,6 +50,7 @@ def call_screen_ats_setting(p_idx):
 
 # Màn hình chọn khi chọn cấm chạy máy phát
 def call_screen_deactivate_mode(p_idx):
+    from control import process_cmd_lcd
     try:
         switcher = [
             {
@@ -71,6 +72,7 @@ def call_screen_deactivate_mode(p_idx):
 
 # Màn hình xác nhận
 def call_screen_confirm(p_idx):
+    from control import process_cmd_lcd
     try:
         switcher = [
             {
@@ -92,6 +94,7 @@ def call_screen_confirm(p_idx):
 
 # Màn hình thiet lap thoi gian cam
 def call_screen_inactivate_time(time_idx):
+    from control import process_cmd_lcd
     try:
         process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THIET BI ATS')
         process_cmd_lcd(ROW_2, UPDATE_VALUE, "T.gian cam {0}".format(time_idx))
