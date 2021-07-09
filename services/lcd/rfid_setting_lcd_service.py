@@ -3,11 +3,11 @@ from config import *
 from config.common import UPDATE_VALUE
 from config.common_lcd_services import *
 
-data_setting_path = '../../lcd_setting_data_file.json'
+data_setting_path = './lcd_setting_data_file.json'
 setting_rfid_allow = 0
 # Mặc định vào màn hình đầu tiên id = 0, con trỏ dòng đầu của selection
 screen_idx = 0
-pointer_idx = 0
+pointer_idx = -1
 
 # Thông tin tên id của từng màn hình
 screens_info = {"rfid_setting": 0, "confirmRfidMode": 1}
@@ -40,9 +40,10 @@ def call_screen_rfid_setting(p_idx):
 # Màn hình xác nhận
 def call_screen_confirm(p_idx):
     from control import process_cmd_lcd
-    global screen_idx
+    global screen_idx, pointer_idx
     try:
         screen_idx = screens_info["confirmRfidMode"]
+        pointer_idx = 0
         switcher = [
             {
                 "row_2": '> Co',
@@ -100,9 +101,13 @@ def rfid_setting_listen_key(keycode):
             else:
                 setting_rfid_allow = 0
 
-            call_screen_confirm(p_idx=0)
+            if pointer_idx == -1:
+                call_screen_rfid_setting(0)
+                pointer_idx = 0
+            else:
+                call_screen_confirm(pointer_idx)
         else:
-            call_screen_rfid_setting(pointer_idx)
+            pass
     except Exception as ex:
         LOGGER.error('Error at call function ats_setting_listen_key with message: %s', ex.message)
 
@@ -132,7 +137,7 @@ def confirm_listen_key(keycode):
             if pointer_idx == 1:
                 call_screen_rfid_setting(p_idx=0)
         else:
-            call_screen_confirm(pointer_idx)
+            pass
     except Exception as ex:
         LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
 

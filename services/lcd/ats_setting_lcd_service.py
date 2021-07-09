@@ -10,12 +10,12 @@ ats_body_setting_tmp = {"atsGenDeactivateMode": 0, "atsGenInactiveStartTime": 0,
 
 # Mặc định vào màn hình đầu tiên id = 0, con trỏ dòng đầu của selection
 screen_idx = 0
-pointer_idx = 0
+pointer_idx = -1
 
 # Thông tin tên id của từng màn hình
 screens_info = {"ats_setting": 0, "atsGenDeactivateMode": 1, "atsGenInactiveStartTime": 2,
                 "atsGenInactiveEndTime": 3, "confirmDeactivateMode": 4,
-                "confirmInactiveStartTime": 5, "confirmInactiveEndTime": 5}
+                "confirmInactiveStartTime": 5, "confirmInactiveEndTime": 6}
 
 
 # Màn hình chính được call ở menu
@@ -50,8 +50,10 @@ def call_screen_ats_setting(p_idx):
 
 # Màn hình chọn khi chọn cấm chạy máy phát
 def call_screen_deactivate_mode(p_idx):
+    global pointer_idx
     from control import process_cmd_lcd
     try:
+        pointer_idx = 0
         switcher = [
             {
                 "row_2": '> Cam chay',
@@ -72,8 +74,10 @@ def call_screen_deactivate_mode(p_idx):
 
 # Màn hình xác nhận
 def call_screen_confirm(p_idx):
+    global pointer_idx
     from control import process_cmd_lcd
     try:
+        pointer_idx = 0
         switcher = [
             {
                 "row_2": '> Co',
@@ -94,8 +98,10 @@ def call_screen_confirm(p_idx):
 
 # Màn hình thiet lap thoi gian cam
 def call_screen_inactivate_time(time_idx):
+    global pointer_idx
     from control import process_cmd_lcd
     try:
+        pointer_idx = 0
         process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THIET BI ATS')
         process_cmd_lcd(ROW_2, UPDATE_VALUE, "T.gian cam {0}".format(time_idx))
         process_cmd_lcd(ROW_3, UPDATE_VALUE, '__')
@@ -104,18 +110,18 @@ def call_screen_inactivate_time(time_idx):
 
 
 def call_screen_with_screen_id(screen_id):
-    global screen_idx
+    global screen_idx, pointer_idx
     try:
         screen_idx = screen_id
+        if screen_id == screens_info["ats_setting"]:
+            call_screen_ats_setting(p_idx=0)
         if screen_id == screens_info["atsGenDeactivateMode"]:
             call_screen_deactivate_mode(p_idx=0)
         elif screen_id == screens_info["atsGenInactiveStartTime"]:
             call_screen_inactivate_time(time_idx=1)
         elif screen_id == screens_info["atsGenInactiveEndTime"]:
             call_screen_inactivate_time(time_idx=2)
-        elif screen_id == screens_info["confirmDeactivateMode"] \
-                or screen_id == screens_info["confirmInactiveStartTime"] \
-                or screen_id == screens_info["confirmInactiveEndTime"]:
+        elif screen_id == screens_info["confirmDeactivateMode"] or screen_id == screens_info["confirmInactiveStartTime"] or screen_id == screens_info["confirmInactiveEndTime"]:
             call_screen_confirm(p_idx=0)
     except Exception as ex:
         LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
@@ -123,6 +129,7 @@ def call_screen_with_screen_id(screen_id):
 
 # Register func nay
 def listen_key_code(keycode):
+    global screen_idx
     try:
         if screen_idx == screens_info["ats_setting"]:
             ats_setting_listen_key(keycode)
@@ -130,11 +137,9 @@ def listen_key_code(keycode):
             ats_deactivate_mode_listen_key(keycode)
         elif screen_idx == screens_info["atsGenInactiveStartTime"]:
             ats_inactive_time_listen_key(keycode, isStart=1)
-        elif screen_idx == screens_info["atsGenInactiveEndTimeTime"]:
+        elif screen_idx == screens_info["atsGenInactiveEndTime"]:
             ats_inactive_time_listen_key(keycode, isStart=0)
-        elif screen_idx == screens_info["confirmInactiveStartTime"] \
-                or screen_idx == screens_info["confirmInactiveEndTime"] \
-                or screen_idx == screens_info["confirmDeactivateMode"]:
+        elif screen_idx == screens_info["confirmInactiveStartTime"] or screen_idx == screens_info["confirmInactiveEndTime"] or screen_idx == screens_info["confirmDeactivateMode"]:
             confirm_listen_key(keycode)
         else:
             return
@@ -163,7 +168,11 @@ def ats_setting_listen_key(keycode):
 
         elif keycode == BUTTON_24_EVENT_UP:
             # ok
-            call_screen_with_screen_id(pointer_idx + 1)
+            if pointer_idx == -1:
+                call_screen_with_screen_id(pointer_idx + 1)
+                pointer_idx = 0
+            else:
+                call_screen_with_screen_id(pointer_idx + 1)
         else:
             call_screen_ats_setting(pointer_idx)
     except Exception as ex:
@@ -193,10 +202,11 @@ def ats_deactivate_mode_listen_key(keycode):
             # ok
             if pointer_idx == 0:
                 ats_body_setting_tmp["atsGenDeactivateMode"] = 1
+                call_screen_with_screen_id(screens_info["confirmDeactivateMode"])
             else:
                 ats_body_setting_tmp["atsGenDeactivateMode"] = 0
+                call_screen_with_screen_id(screens_info["confirmDeactivateMode"])
 
-            call_screen_with_screen_id([screens_info["confirmDeactivateMode"]])
         else:
             call_screen_deactivate_mode(pointer_idx)
     except Exception as ex:
@@ -243,6 +253,7 @@ def confirm_listen_key(keycode):
                 call_api_to_smart_site(ats_body_setting)
 
             if pointer_idx == 1:
+                pointer_idx = -1
                 if screen_idx == screens_info["confirmDeactivateMode"]:
                     ats_body_setting["atsGenDeactivateMode"] = 0
                     call_screen_ats_setting(p_idx=0)
