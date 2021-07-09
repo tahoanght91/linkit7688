@@ -694,10 +694,12 @@ alarm_keycode_func_idx = {
 
 
 def get_func_render(o):
-    func = o.get(screen_idx)
+    sceneIdx = 0 if screen_idx < 0 else screen_idx
+    func = o.get(sceneIdx)
     return func()
 
 
 def get_func_keycode(o, kc):
-    func = o.get(screen_idx)
+    sceneIdx = 0 if screen_idx < 0 else screen_idx
+    func = o.get(sceneIdx)
     return func(kc)
