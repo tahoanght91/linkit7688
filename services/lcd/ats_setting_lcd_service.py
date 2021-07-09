@@ -2,7 +2,7 @@
 from config import *
 from config.common import UPDATE_VALUE
 from config.common_lcd_services import *
-from operate.lcd_thread import write_body_send_shared_attributes, send_shared_attributes
+# from operate.lcd_thread import write_body_send_shared_attributes, send_shared_attributes
 
 # Cấu trúc body gửi api lên service khi confirm ok
 ats_body_setting = {"atsGenDeactivateMode": 0, "atsGenInactiveStartTime": 0, "atsGenInactiveEndTime": 0}
@@ -147,12 +147,18 @@ def ats_setting_listen_key(keycode):
     try:
         if keycode == BUTTON_34_EVENT_UP:
             # down
-            pointer_idx = 2 if pointer_idx == 2 else pointer_idx = pointer_idx + 1
+            if pointer_idx == 2:
+                pointer_idx = 2
+            else:
+                pointer_idx = pointer_idx + 1
             call_screen_ats_setting(pointer_idx)
 
         elif keycode == BUTTON_14_EVENT_UP:
             # up
-            pointer_idx = 0 if pointer_idx == 0 else pointer_idx = pointer_idx - 1
+            if pointer_idx < 0:
+                pointer_idx = 0
+            else:
+                pointer_idx = pointer_idx - 1
             call_screen_ats_setting(pointer_idx)
 
         elif keycode == BUTTON_24_EVENT_UP:
@@ -169,12 +175,18 @@ def ats_deactivate_mode_listen_key(keycode):
     try:
         if keycode == BUTTON_34_EVENT_UP:
             # down
-            pointer_idx = 1 if pointer_idx == 1 else pointer_idx = pointer_idx + 1
+            if pointer_idx == 1:
+                pointer_idx = 1
+            else:
+                pointer_idx = pointer_idx + 1
             call_screen_deactivate_mode(pointer_idx)
 
         elif keycode == BUTTON_14_EVENT_UP:
             # up
-            pointer_idx = 0 if pointer_idx == 0 else pointer_idx = pointer_idx - 1
+            if pointer_idx == 0:
+                pointer_idx = 0
+            else:
+                pointer_idx = pointer_idx - 1
             call_screen_deactivate_mode(pointer_idx)
 
         elif keycode == BUTTON_24_EVENT_UP:
@@ -209,12 +221,18 @@ def confirm_listen_key(keycode):
     try:
         if keycode == BUTTON_34_EVENT_UP:
             # down
-            pointer_idx = 1 if pointer_idx == 1 else pointer_idx = pointer_idx + 1
+            if pointer_idx == 1:
+                pointer_idx = 1
+            else:
+                pointer_idx = pointer_idx + 1
             call_screen_confirm(pointer_idx)
 
         elif keycode == BUTTON_14_EVENT_UP:
             # up
-            pointer_idx = 0 if pointer_idx == 0 else pointer_idx = pointer_idx - 1
+            if pointer_idx == 0:
+                pointer_idx = 0
+            else:
+                pointer_idx = pointer_idx - 1
             call_screen_confirm(pointer_idx)
 
         elif keycode == BUTTON_24_EVENT_UP:
@@ -252,6 +270,7 @@ def reset_params():
 
 # ats_body_setting = {"atsGenDeactivateMode": 0, "atsGenInactiveStartTime": 0, "atsGenInactiveEndTime": 0}
 def call_api_to_smart_site(body):
+    from operate.lcd_thread import write_body_send_shared_attributes, send_shared_attributes
     try:
         if screen_idx == screens_info["confirmDeactivateMode"]:
             json_body = write_body_send_shared_attributes("atsGenDeactivateMode", body["atsGenDeactivateMode"])
