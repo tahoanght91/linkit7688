@@ -6,7 +6,6 @@ from config.common_api import *
 from config import *
 from config.common import UPDATE_VALUE
 from config.common_lcd_services import *
-from control import process_cmd_lcd
 
 url_send_sa = PREFIX + DOMAIN + API_UPDATE_SHARED_ATTRIBUTES
 
@@ -110,6 +109,7 @@ def reset_parameter():
 # SonTH: Config network
 # Main cua man hinh network
 def call_screen_network():
+    from control import process_cmd_lcd
     try:
         switcher = [
             {
@@ -148,6 +148,7 @@ def call_screen_network():
 
 
 def refresh_screen_assign_ip_address():
+    from control import process_cmd_lcd
     try:
         global network
         network = get_net_info()
@@ -424,6 +425,7 @@ def save_alarm():
 
 # SonTH: Main screen alarm
 def call_screen_alarm_selection():
+    from control import process_cmd_lcd
     try:
         row_1 = 'CANH BAO'
         switcher = [
