@@ -74,7 +74,10 @@ def main_display():
 
 
 def warning_display():
-    check_alarm()
+    # check_alarm()
+    global button
+
+    ats_setting_lcd_service.listen_key_code(button)
 
 
 def security_sensor_info_display():
