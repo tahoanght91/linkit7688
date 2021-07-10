@@ -481,6 +481,7 @@ def call_screen_alarm_selection():
 
 
 def refresh_screen_assign_alarm():
+    from control import process_cmd_lcd
     try:
         global alarm
         alarm = get_alarm_info()
