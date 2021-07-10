@@ -7,7 +7,7 @@ import requests
 from config import LOGGER, CLIENT_ID
 from config.common_api import *
 
-COMMAND_RESET_SERVICE_7688 = '/etc/init.d/7688 stop && /etc/init.d/7688 start'
+COMMAND_RESET_SERVICE_7688 = 'reboot'
 url_check_connection = PREFIX + DOMAIN + API_CHECK_CONNECTION
 params = {'gatewayId': CLIENT_ID}
 
