@@ -21,7 +21,9 @@ screens_info = {"ats_setting": 0, "atsGenDeactivateMode": 1, "atsGenInactiveStar
 # Màn hình chính được call ở menu
 def call_screen_ats_setting(p_idx):
     from control import process_cmd_lcd
+    global pointer_idx
     try:
+        pointer_idx = p_idx
         switcher = [
             {
                 "row_2": '> Cam chay M.Phat',
@@ -53,7 +55,7 @@ def call_screen_deactivate_mode(p_idx):
     global pointer_idx
     from control import process_cmd_lcd
     try:
-        pointer_idx = 0
+        pointer_idx = p_idx
         switcher = [
             {
                 "row_2": '> Cam chay',
@@ -77,7 +79,7 @@ def call_screen_confirm(p_idx):
     global pointer_idx
     from control import process_cmd_lcd
     try:
-        pointer_idx = 0
+        pointer_idx = p_idx
         switcher = [
             {
                 "row_2": '> Co',
@@ -174,7 +176,7 @@ def ats_setting_listen_key(keycode):
             else:
                 call_screen_with_screen_id(pointer_idx + 1)
         else:
-            call_screen_ats_setting(pointer_idx)
+            pass
     except Exception as ex:
         LOGGER.error('Error at call function ats_setting_listen_key with message: %s', ex.message)
 
@@ -208,7 +210,7 @@ def ats_deactivate_mode_listen_key(keycode):
                 call_screen_with_screen_id(screens_info["confirmDeactivateMode"])
 
         else:
-            call_screen_deactivate_mode(pointer_idx)
+            pass
     except Exception as ex:
         LOGGER.error('Error at call function ats_deactivate_mode_listen_key with message: %s', ex.message)
 
@@ -264,7 +266,7 @@ def confirm_listen_key(keycode):
                     ats_body_setting["atsGenInactiveEndTime"] = 0
                     call_screen_ats_setting(p_idx=2)
         else:
-            call_screen_confirm(pointer_idx)
+            pass
     except Exception as ex:
         LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
 
@@ -274,7 +276,7 @@ def reset_params():
     try:
         ats_body_setting = {"atsGenDeactivateMode": 0, "atsGenInactiveStartTime": 0, "atsGenInactiveEndTime": 0}
         screen_idx = 0
-        pointer_idx = 0
+        pointer_idx = -1
     except Exception as ex:
         LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
 

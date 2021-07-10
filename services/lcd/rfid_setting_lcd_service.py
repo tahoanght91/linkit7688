@@ -16,9 +16,10 @@ screens_info = {"rfid_setting": 0, "confirmRfidMode": 1}
 # Màn hình chính được call ở menu
 def call_screen_rfid_setting(p_idx):
     from control import process_cmd_lcd
-    global screen_idx
+    global screen_idx, pointer_idx
     try:
         screen_idx = screens_info["rfid_setting"]
+        pointer_idx = p_idx
         switcher = [
             {
                 "row_2": '> Cho phep doc',
@@ -43,7 +44,7 @@ def call_screen_confirm(p_idx):
     global screen_idx, pointer_idx
     try:
         screen_idx = screens_info["confirmRfidMode"]
-        pointer_idx = 0
+        pointer_idx = p_idx
         switcher = [
             {
                 "row_2": '> Co',
@@ -103,7 +104,6 @@ def rfid_setting_listen_key(keycode):
 
             if pointer_idx == -1:
                 call_screen_rfid_setting(0)
-                pointer_idx = 0
             else:
                 call_screen_confirm(pointer_idx)
         else:
@@ -147,7 +147,7 @@ def reset_params():
         global setting_rfid_allow, screen_idx, pointer_idx
         setting_rfid_allow = 0
         screen_idx = 0
-        pointer_idx = 0
+        pointer_idx = -1
     except Exception as ex:
         LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
 
