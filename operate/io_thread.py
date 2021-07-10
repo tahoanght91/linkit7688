@@ -94,134 +94,134 @@ def call():
         # except Exception as ex:
         #     LOGGER.error('Error send lcd command to STM32 with message: %s', ex.message)
 
-        try:
-            # rpc
-            if commands:
-                commands_snap = []
-                commands_lock.acquire()
-                for item in commands.items():
-                    commands_snap.append(item)
-                commands_lock.release()
-                for device, command in commands_snap:
-                    command_formatted = {'device': device, 'command': command}
-                    write_stream = with_check_sum(control.process_command(command_formatted), BYTE_ORDER)
-                    tries = 0
-                    LOGGER.info('Send command to IO, device %s, command %s', device, command)
-                    while True:
-                        if flip == 0:
-                            flip = READ_PER_WRITE
-                            ser.write(write_stream)
-                        else:
-                            flip -= 1
-                        byte_stream = blocking_read(ser, message_break)
-                        if byte_stream:
-                            if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
-                                commands_lock.acquire()
-                                if commands[device] == command:
-                                    del commands[device]
-                                commands_lock.release()
-                                LOGGER.debug("Receive ACK rpc message with device: %s", device)
-                                break
-                            if _read_data(byte_stream):
-                                ser.write(with_check_sum(data_ack, BYTE_ORDER))
-                        if flip == 0:
-                            tries += 1
-                            if tries > MAX_TRIES:
-                                commands_lock.acquire()
-                                if commands[device] == command:
-                                    del commands[device]
-                                commands_lock.release()
-                                LOGGER.info('Time out')
-                                break
-                            LOGGER.debug('Try sending again')
-        except Exception as ex:
-            LOGGER.error('Error send rpc command to STM32 with message: %s', ex.message)
+        # try:
+        #     # rpc
+        #     if commands:
+        #         commands_snap = []
+        #         commands_lock.acquire()
+        #         for item in commands.items():
+        #             commands_snap.append(item)
+        #         commands_lock.release()
+        #         for device, command in commands_snap:
+        #             command_formatted = {'device': device, 'command': command}
+        #             write_stream = with_check_sum(control.process_command(command_formatted), BYTE_ORDER)
+        #             tries = 0
+        #             LOGGER.info('Send command to IO, device %s, command %s', device, command)
+        #             while True:
+        #                 if flip == 0:
+        #                     flip = READ_PER_WRITE
+        #                     ser.write(write_stream)
+        #                 else:
+        #                     flip -= 1
+        #                 byte_stream = blocking_read(ser, message_break)
+        #                 if byte_stream:
+        #                     if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
+        #                         commands_lock.acquire()
+        #                         if commands[device] == command:
+        #                             del commands[device]
+        #                         commands_lock.release()
+        #                         LOGGER.debug("Receive ACK rpc message with device: %s", device)
+        #                         break
+        #                     if _read_data(byte_stream):
+        #                         ser.write(with_check_sum(data_ack, BYTE_ORDER))
+        #                 if flip == 0:
+        #                     tries += 1
+        #                     if tries > MAX_TRIES:
+        #                         commands_lock.acquire()
+        #                         if commands[device] == command:
+        #                             del commands[device]
+        #                         commands_lock.release()
+        #                         LOGGER.info('Time out')
+        #                         break
+        #                     LOGGER.debug('Try sending again')
+        # except Exception as ex:
+        #     LOGGER.error('Error send rpc command to STM32 with message: %s', ex.message)
+        #
+        # try:
+        #     # led
+        #     if cmd_led:
+        #         cmd_led_snap = []
+        #         cmd_led_lock.acquire()
+        #         for item in cmd_led.items():
+        #             cmd_led_snap.append(item)
+        #         cmd_led_lock.release()
+        #         for length_led, arr_value in cmd_led_snap:
+        #             cmd_led_formatted = {'length_led': length_led, 'arr_value': arr_value}
+        #             write_stream = with_check_sum(control.process_cmd_led(cmd_led_formatted), BYTE_ORDER)
+        #             tries = 0
+        #             LOGGER.info('Send cmd led to IO, length_led: %d, arr_value: %s', length_led, arr_value)
+        #             while True:
+        #                 if flip == 0:
+        #                     flip = READ_PER_WRITE
+        #                     ser.write(write_stream)
+        #                 else:
+        #                     flip -= 1
+        #                 byte_stream = blocking_read(ser, message_break)
+        #                 if byte_stream:
+        #                     if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
+        #                         cmd_led_lock.acquire()
+        #                         if cmd_led[length_led] == arr_value:
+        #                             del cmd_led[length_led]
+        #                         cmd_led_lock.release()
+        #                         LOGGER.debug("Receive ACK led message with length_led: %d", length_led)
+        #                         break
+        #                     if _read_data(byte_stream):
+        #                         ser.write(with_check_sum(data_ack, BYTE_ORDER))
+        #                 if flip == 0:
+        #                     tries += 1
+        #                     if tries > MAX_TRIES:
+        #                         cmd_led_lock.acquire()
+        #                         if cmd_led[length_led] == arr_value:
+        #                             del cmd_led[length_led]
+        #                         cmd_led_lock.release()
+        #                         LOGGER.info('Time out')
+        #                         break
+        #                     LOGGER.debug('Try sending again')
+        # except Exception as ex:
+        #     LOGGER.error('Error send led command to STM32 with message: %s', ex.message)
 
-        try:
-            # led
-            if cmd_led:
-                cmd_led_snap = []
-                cmd_led_lock.acquire()
-                for item in cmd_led.items():
-                    cmd_led_snap.append(item)
-                cmd_led_lock.release()
-                for length_led, arr_value in cmd_led_snap:
-                    cmd_led_formatted = {'length_led': length_led, 'arr_value': arr_value}
-                    write_stream = with_check_sum(control.process_cmd_led(cmd_led_formatted), BYTE_ORDER)
-                    tries = 0
-                    LOGGER.info('Send cmd led to IO, length_led: %d, arr_value: %s', length_led, arr_value)
-                    while True:
-                        if flip == 0:
-                            flip = READ_PER_WRITE
-                            ser.write(write_stream)
-                        else:
-                            flip -= 1
-                        byte_stream = blocking_read(ser, message_break)
-                        if byte_stream:
-                            if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
-                                cmd_led_lock.acquire()
-                                if cmd_led[length_led] == arr_value:
-                                    del cmd_led[length_led]
-                                cmd_led_lock.release()
-                                LOGGER.debug("Receive ACK led message with length_led: %d", length_led)
-                                break
-                            if _read_data(byte_stream):
-                                ser.write(with_check_sum(data_ack, BYTE_ORDER))
-                        if flip == 0:
-                            tries += 1
-                            if tries > MAX_TRIES:
-                                cmd_led_lock.acquire()
-                                if cmd_led[length_led] == arr_value:
-                                    del cmd_led[length_led]
-                                cmd_led_lock.release()
-                                LOGGER.info('Time out')
-                                break
-                            LOGGER.debug('Try sending again')
-        except Exception as ex:
-            LOGGER.error('Error send led command to STM32 with message: %s', ex.message)
-
-        try:
-            # shared attributes
-            if cmd_sa:
-                cmd_sa_snap = []
-                cmd_sa_lock.acquire()
-                for item in cmd_sa.items():
-                    cmd_sa_snap.append(item)
-                cmd_sa_lock.release()
-                for module_id, value in cmd_sa_snap:
-                    cmd_sa_formatted = {'module_id': module_id, 'value': value}
-                    write_stream = with_check_sum(control.process_cmd_sa(cmd_sa_formatted), BYTE_ORDER)
-                    tries = 0
-                    LOGGER.info('Send cmd sa to IO, id_module %s, value %s', module_id, value)
-                    while True:
-                        if flip == 0:
-                            flip = READ_PER_WRITE
-                            ser.write(write_stream)
-                        else:
-                            flip -= 1
-                        byte_stream = blocking_read(ser, message_break)
-                        if byte_stream:
-                            if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
-                                cmd_sa_lock.acquire()
-                                if cmd_sa[module_id] == value:
-                                    del cmd_sa[module_id]
-                                cmd_sa_lock.release()
-                                LOGGER.debug("Receive ACK shared attributes message with module_id: %d", module_id)
-                                break
-                            if _read_data(byte_stream):
-                                ser.write(with_check_sum(data_ack, BYTE_ORDER))
-                        if flip == 0:
-                            tries += 1
-                            if tries > MAX_TRIES:
-                                cmd_sa_lock.acquire()
-                                if cmd_sa[module_id] == value:
-                                    del cmd_sa[module_id]
-                                cmd_sa_lock.release()
-                                LOGGER.info('Time out')
-                                break
-                            LOGGER.debug('Try sending again')
-        except Exception as ex:
-            LOGGER.error('Error send shared attributes command to STM32 with message: %s', ex.message)
+        # try:
+        #     # shared attributes
+        #     if cmd_sa:
+        #         cmd_sa_snap = []
+        #         cmd_sa_lock.acquire()
+        #         for item in cmd_sa.items():
+        #             cmd_sa_snap.append(item)
+        #         cmd_sa_lock.release()
+        #         for module_id, value in cmd_sa_snap:
+        #             cmd_sa_formatted = {'module_id': module_id, 'value': value}
+        #             write_stream = with_check_sum(control.process_cmd_sa(cmd_sa_formatted), BYTE_ORDER)
+        #             tries = 0
+        #             LOGGER.info('Send cmd sa to IO, id_module %s, value %s', module_id, value)
+        #             while True:
+        #                 if flip == 0:
+        #                     flip = READ_PER_WRITE
+        #                     ser.write(write_stream)
+        #                 else:
+        #                     flip -= 1
+        #                 byte_stream = blocking_read(ser, message_break)
+        #                 if byte_stream:
+        #                     if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
+        #                         cmd_sa_lock.acquire()
+        #                         if cmd_sa[module_id] == value:
+        #                             del cmd_sa[module_id]
+        #                         cmd_sa_lock.release()
+        #                         LOGGER.debug("Receive ACK shared attributes message with module_id: %d", module_id)
+        #                         break
+        #                     if _read_data(byte_stream):
+        #                         ser.write(with_check_sum(data_ack, BYTE_ORDER))
+        #                 if flip == 0:
+        #                     tries += 1
+        #                     if tries > MAX_TRIES:
+        #                         cmd_sa_lock.acquire()
+        #                         if cmd_sa[module_id] == value:
+        #                             del cmd_sa[module_id]
+        #                         cmd_sa_lock.release()
+        #                         LOGGER.info('Time out')
+        #                         break
+        #                     LOGGER.debug('Try sending again')
+        # except Exception as ex:
+        #     LOGGER.error('Error send shared attributes command to STM32 with message: %s', ex.message)
 
 
 def _read_data(byte_stream):
