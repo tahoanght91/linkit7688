@@ -16,7 +16,7 @@ ATTRIBUTES_TOPIC = 'v1/devices/me/attributes'
 ATTRIBUTES_TOPIC_REQUEST = 'v1/devices/me/attributes/request/'
 ATTRIBUTES_TOPIC_RESPONSE = 'v1/devices/me/attributes/response/'
 TELEMETRY_TOPIC = 'v1/devices/me/telemetry'
-log = logging.getLogger("tb_connection")
+log = logging.getLogger("App")
 
 
 class TBTimeoutException(Exception):
@@ -94,6 +94,7 @@ class TBDeviceMqttClient:
         self._client.on_message = self._on_message
         self._client.on_disconnect = self._on_disconnect
         self._attr_key_request_dict = {}
+        self._client.enable_logger(log)
 
     # def _on_log(self, client, userdata, level, buf):
     #     if isinstance(buf, Exception):

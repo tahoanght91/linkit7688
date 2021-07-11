@@ -67,7 +67,7 @@ ATTRIBUTES_TOPIC = 'v1/devices/me/attributes'
 ATTRIBUTES_TOPIC_REQUEST = 'v1/devices/me/attributes/request/'
 ATTRIBUTES_TOPIC_RESPONSE = 'v1/devices/me/attributes/response/'
 TELEMETRY_TOPIC = 'v1/devices/me/telemetry'
-log = logging.getLogger('MQTT client')
+log = logging.getLogger('App')
 
 GATEWAY_TELEMETRY_TOPIC = 'v1/gateway/telemetry'
 GATEWAY_ATTRIBUTES_TOPIC = 'v1/gateway/attributes'
