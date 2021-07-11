@@ -18,7 +18,7 @@ def call():
     while True:
         try:
             time.sleep(period)
-            LOGGER.info('Pinging to Google: %s', subprocess.check_output(['ping -c 4', 'google.com']))
+            LOGGER.info('Pinging to Google: %s', subprocess.check_output(['ping', '-c', '4', 'google.com']))
             response = requests.get(url=url_check_connection, params=params)
             if response.status_code == 200:
                 LOGGER.info('Send check connection request to Smartsite successful!')
