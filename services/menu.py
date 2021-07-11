@@ -60,7 +60,11 @@ def select_section_lv1():
             3: air_info_display,
             4: ats_display,
             5: setting_display,
-            6: rfid_display
+            6: rfid_display,
+            7: thong_so_mang,
+            8:  canh_bao,
+            9: thiet_bi_ats,
+            10: thiet_bi_rfid,
         }
         LOGGER.info('Send message select_section_lv1 on lcd, section_lv_1: %s', str(section_lv_1))
         func = switcher.get(section_lv_1)
@@ -216,7 +220,7 @@ def setting_display():
         LOGGER.info('Finish rfid_display function')
         LOGGER.info('section_lv_2: %s', str(section_lv_2))
     except Exception as ex:
-        LOGGER.info('setting_display function error: %s', ex.message)
+        LOGGER.error('setting_display function error: %s', ex.message)
 
 
 def cai_dat_thong_tin():

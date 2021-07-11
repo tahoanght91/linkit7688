@@ -41,6 +41,7 @@ def call_screen_ats_setting(p_idx):
                 "row_4": '> T.gian cam 2'
             }
         ]
+        LOGGER.info('Enter call_screen_ats_setting function: %s', str(switcher[p_idx]))
         # Update text
         process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THIET BI ATS')
         process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[p_idx]['row_2'])
@@ -66,6 +67,7 @@ def call_screen_deactivate_mode(p_idx):
                 "row_3": '> Khong cam chay'
             }
         ]
+        LOGGER.info('Enter call_screen_deactivate_mode function: %s', str(switcher[p_idx]))
         # Update text
         process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THIET BI ATS')
         process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[p_idx]['row_2'])
@@ -90,6 +92,7 @@ def call_screen_confirm(p_idx):
                 "row_3": '> Khong'
             }
         ]
+        LOGGER.info('Enter call_screen_confirm function: %s', str(switcher[p_idx]))
         # Update text
         process_cmd_lcd(ROW_1, UPDATE_VALUE, 'XAC NHAN LUU')
         process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[p_idx]['row_2'])
@@ -107,6 +110,7 @@ def call_screen_inactivate_time(time_idx):
         process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THIET BI ATS')
         process_cmd_lcd(ROW_2, UPDATE_VALUE, "T.gian cam {0}".format(time_idx))
         process_cmd_lcd(ROW_3, UPDATE_VALUE, '__')
+        LOGGER.info('Enter call_screen_inactivate_time function')
     except Exception as ex:
         LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
@@ -114,6 +118,7 @@ def call_screen_inactivate_time(time_idx):
 def call_screen_with_screen_id(screen_id):
     global screen_idx, pointer_idx
     try:
+        LOGGER.info('Enter call_screen_with_screen_id function, screen_id: %s', str(screen_id))
         screen_idx = screen_id
         if screen_id == screens_info["ats_setting"]:
             call_screen_ats_setting(p_idx=0)
@@ -133,6 +138,7 @@ def call_screen_with_screen_id(screen_id):
 def listen_key_code(keycode):
     global screen_idx
     try:
+        LOGGER.info('Enter listen_key_code function, screen_idx: %s, keycode: %s', str(screen_idx), str(keycode))
         if screen_idx == screens_info["ats_setting"]:
             ats_setting_listen_key(keycode)
         elif screen_idx == screens_info["atsGenDeactivateMode"]:
@@ -152,6 +158,7 @@ def listen_key_code(keycode):
 def ats_setting_listen_key(keycode):
     global screen_idx, pointer_idx
     try:
+        LOGGER.info('Enter ats_setting_listen_key function, keycode: %s', str(keycode))
         if keycode == BUTTON_34_EVENT_UP:
             # down
             if pointer_idx == 2:
@@ -184,6 +191,7 @@ def ats_setting_listen_key(keycode):
 def ats_deactivate_mode_listen_key(keycode):
     global screen_idx, pointer_idx
     try:
+        LOGGER.info('Enter ats_deactivate_mode_listen_key function, keycode: %s', str(keycode))
         if keycode == BUTTON_34_EVENT_UP:
             # down
             if pointer_idx == 1:
@@ -217,6 +225,7 @@ def ats_deactivate_mode_listen_key(keycode):
 
 def ats_inactive_time_listen_key(keycode, isStart):
     try:
+        LOGGER.info('Enter ats_inactive_time_listen_key function, isStart: %s', str(isStart))
         if keycode == BUTTON_24_EVENT_UP:
             # ok
             if isStart:
@@ -231,6 +240,7 @@ def ats_inactive_time_listen_key(keycode, isStart):
 def confirm_listen_key(keycode):
     global pointer_idx, ats_body_setting
     try:
+        LOGGER.info('Enter confirm_listen_key function, keycode: %s', str(keycode))
         if keycode == BUTTON_34_EVENT_UP:
             # down
             if pointer_idx == 1:
@@ -285,6 +295,7 @@ def reset_params():
 def call_api_to_smart_site(body):
     from operate.lcd_thread import write_body_send_shared_attributes, send_shared_attributes
     try:
+        LOGGER.info('Enter confirm_listen_key function')
         if screen_idx == screens_info["confirmDeactivateMode"]:
             json_body = write_body_send_shared_attributes("atsGenDeactivateMode", body["atsGenDeactivateMode"])
         elif screen_idx == screens_info["confirmInactiveStartTime"]:
