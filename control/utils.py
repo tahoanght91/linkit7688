@@ -454,11 +454,9 @@ def read_to_json(file_url):
 
 def test_lcd_speed():
     dt = datetime.now()
-    # compose_command_lcd(1, UPDATE_VALUE, str(dt.day) + "/" + str(dt.month) + "/" + str(dt.year))
-    print(str(dt.day) + "/" + str(dt.month) + "/" + str(dt.year))
+    compose_command_lcd(1, UPDATE_VALUE, str(dt.day) + "/" + str(dt.month) + "/" + str(dt.year))
     while True:
         dt = datetime.now()
-        # compose_command_lcd(2, UPDATE_VALUE, str(dt.hour) + ":" + str(dt.minute) + ":" + str(dt.second)
-        #                     + "." + str(dt.microsecond))
-        print(str(dt.hour) + ":" + str(dt.minute) + ":" + str(dt.second) + "." + str(dt.microsecond))
-        time.sleep(0.05)
+        compose_command_lcd(2, UPDATE_VALUE, str(dt.hour) + ":" + str(dt.minute) + ":" + str(dt.second)
+                            + "." + str(dt.microsecond / 100000))
+        time.sleep(0.5)
