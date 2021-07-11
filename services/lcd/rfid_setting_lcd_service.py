@@ -30,7 +30,6 @@ def call_screen_rfid_setting(p_idx):
                 "row_3": '> Khong doc'
             }
         ]
-        LOGGER.info('Enter call_screen_rfid_setting function, screen: %s', str(switcher[p_idx]))
         # Update text
         process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THIET BI ATS')
         process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[p_idx]['row_2'])
@@ -56,7 +55,6 @@ def call_screen_confirm(p_idx):
                 "row_3": '> Khong'
             }
         ]
-        LOGGER.info('Enter call_screen_confirm function, screen: %s', str(switcher[p_idx]))
         # Update text
         process_cmd_lcd(ROW_1, UPDATE_VALUE, 'XAC NHAN LUU')
         process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[p_idx]['row_2'])
@@ -68,7 +66,6 @@ def call_screen_confirm(p_idx):
 # Register func nay
 def listen_key_code(keycode):
     try:
-        LOGGER.info('Enter listen_key_code function, screen_idx: %s', str(screen_idx))
         if screen_idx == screens_info["rfid_setting"]:
             rfid_setting_listen_key(keycode)
         elif screen_idx == screens_info["confirmRfidMode"]:
@@ -82,7 +79,6 @@ def listen_key_code(keycode):
 def rfid_setting_listen_key(keycode):
     global screen_idx, pointer_idx, setting_rfid_allow
     try:
-        LOGGER.info('Enter rfid_setting_listen_key function, pointer_idx: %s', str(pointer_idx))
         if keycode == BUTTON_34_EVENT_UP:
             # down
             if pointer_idx == 1:
@@ -119,7 +115,6 @@ def rfid_setting_listen_key(keycode):
 def confirm_listen_key(keycode):
     global pointer_idx
     try:
-        LOGGER.info('Enter confirm_listen_key function, pointer_idx: %s', str(pointer_idx))
         if keycode == BUTTON_34_EVENT_UP:
             # down
             if pointer_idx == 1:
@@ -163,6 +158,7 @@ def update_to_file_json_setting(allow):
         data = read_to_json(data_setting_path)
         data['setting_rfid_allow'] = allow
         write_to_json(data, data_setting_path)
+        call_screen_rfid_setting(p_idx=0)
         LOGGER.info('Enter update_to_file_json_setting function, data: %s', str(data))
     except Exception as ex:
         LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
