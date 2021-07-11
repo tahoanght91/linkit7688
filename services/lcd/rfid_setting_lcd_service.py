@@ -158,5 +158,7 @@ def update_to_file_json_setting(allow):
         data = read_to_json(data_setting_path)
         data['setting_rfid_allow'] = allow
         write_to_json(data, data_setting_path)
+        call_screen_rfid_setting(p_idx=0)
     except Exception as ex:
         LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
+

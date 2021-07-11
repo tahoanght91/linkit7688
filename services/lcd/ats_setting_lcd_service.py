@@ -2,6 +2,7 @@
 from config import *
 from config.common import UPDATE_VALUE
 from config.common_lcd_services import *
+
 # from operate.lcd_thread import write_body_send_shared_attributes, send_shared_attributes
 
 # Cấu trúc body gửi api lên service khi confirm ok
@@ -11,6 +12,7 @@ ats_body_setting_tmp = {"atsGenDeactivateMode": 0, "atsGenInactiveStartTime": 0,
 # Mặc định vào màn hình đầu tiên id = 0, con trỏ dòng đầu của selection
 screen_idx = 0
 pointer_idx = -1
+time = ['_', '_']
 
 # Thông tin tên id của từng màn hình
 screens_info = {"ats_setting": 0, "atsGenDeactivateMode": 1, "atsGenInactiveStartTime": 2,
@@ -123,7 +125,8 @@ def call_screen_with_screen_id(screen_id):
             call_screen_inactivate_time(time_idx=1)
         elif screen_id == screens_info["atsGenInactiveEndTime"]:
             call_screen_inactivate_time(time_idx=2)
-        elif screen_id == screens_info["confirmDeactivateMode"] or screen_id == screens_info["confirmInactiveStartTime"] or screen_id == screens_info["confirmInactiveEndTime"]:
+        elif screen_id == screens_info["confirmDeactivateMode"] or screen_id == screens_info[
+            "confirmInactiveStartTime"] or screen_id == screens_info["confirmInactiveEndTime"]:
             call_screen_confirm(p_idx=0)
     except Exception as ex:
         LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
@@ -141,7 +144,8 @@ def listen_key_code(keycode):
             ats_inactive_time_listen_key(keycode, isStart=1)
         elif screen_idx == screens_info["atsGenInactiveEndTime"]:
             ats_inactive_time_listen_key(keycode, isStart=0)
-        elif screen_idx == screens_info["confirmInactiveStartTime"] or screen_idx == screens_info["confirmInactiveEndTime"] or screen_idx == screens_info["confirmDeactivateMode"]:
+        elif screen_idx == screens_info["confirmInactiveStartTime"] or screen_idx == screens_info[
+            "confirmInactiveEndTime"] or screen_idx == screens_info["confirmDeactivateMode"]:
             confirm_listen_key(keycode)
         else:
             return
@@ -255,16 +259,7 @@ def confirm_listen_key(keycode):
                 call_api_to_smart_site(ats_body_setting)
 
             if pointer_idx == 1:
-                pointer_idx = -1
-                if screen_idx == screens_info["confirmDeactivateMode"]:
-                    ats_body_setting["atsGenDeactivateMode"] = 0
-                    call_screen_ats_setting(p_idx=0)
-                elif screen_idx == screens_info["confirmInactiveStartTime"]:
-                    ats_body_setting["atsGenInactiveStartTime"] = 0
-                    call_screen_ats_setting(p_idx=1)
-                elif screen_idx == screens_info["confirmInactiveEndTime"]:
-                    ats_body_setting["atsGenInactiveEndTime"] = 0
-                    call_screen_ats_setting(p_idx=2)
+                call_back_ats_setting()
         else:
             pass
     except Exception as ex:
@@ -294,5 +289,24 @@ def call_api_to_smart_site(body):
 
         if len(json_body) > 0:
             send_shared_attributes(json_body)
+            call_back_ats_setting()
     except Exception as ex:
         LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
+
+
+def call_back_ats_setting():
+    global screen_idx
+    try:
+        screen_idx = screens_info["ats_setting"]
+        if screen_idx == screens_info["confirmDeactivateMode"]:
+            ats_body_setting["atsGenDeactivateMode"] = 0
+            call_screen_ats_setting(p_idx=0)
+        elif screen_idx == screens_info["confirmInactiveStartTime"]:
+            ats_body_setting["atsGenInactiveStartTime"] = 0
+            call_screen_ats_setting(p_idx=1)
+        elif screen_idx == screens_info["confirmInactiveEndTime"]:
+            ats_body_setting["atsGenInactiveEndTime"] = 0
+            call_screen_ats_setting(p_idx=2)
+
+    except Exception as ex:
+        LOGGER.error('Error at call function in call_back_ats_setting with message: %s', ex.message)
