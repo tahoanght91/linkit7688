@@ -495,6 +495,8 @@ def main_menu(bt):
             section_lv_3 = -1
             section_lv_4 = -1
             section_lv_5 = 0
+            ats_setting_lcd_service.reset_params()
+            rfid_setting_lcd_service.reset_params()
         select_section_lv1()
         button = -1
     except Exception as ex:
