@@ -1,4 +1,5 @@
 import json
+import os
 import subprocess
 import time
 
@@ -17,6 +18,8 @@ def call():
     while True:
         try:
             time.sleep(period)
+            ping_google = subprocess.check_output(['ping', 'google.com'])
+            LOGGER.info('Pinging to Google: %s', ping_google)
             response = requests.get(url=url_check_connection, params=params)
             if response.status_code == 200:
                 LOGGER.info('Send check connection request to Smartsite successful!')
