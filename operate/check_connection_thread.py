@@ -33,8 +33,7 @@ def call():
                 CLIENT.disconnect()
         except Exception as ex:
             LOGGER.info('Error when check connection with message: %s', ex.message)
-            subprocess.Popen(COMMAND_RESET_SERVICE_7688, shell=True, stdout=subprocess.PIPE)
-
+            CLIENT.disconnect()
 
 # def call():
 #     period = 120
