@@ -4,24 +4,6 @@ from config import *
 from control.utils import set_alarm_state_to_dct
 
 
-# def call():
-#     period = shared_attributes.get('mccPeriodSendTelemetry', default_data.mccPeriodSendTelemetry)
-#     while True:
-#         if CLIENT.is_connected():
-#             if len(telemetries) > 0:
-#                 telemetry = format_telemetry(telemetries)
-#                 for key, value in telemetry.items():
-#                     response = CLIENT.gw_send_telemetry(key, value)
-#                     LOGGER.info('RC of send telemetry to Thingsboard is: %s', str(response.rc()))
-#                     if response.rc() != 0:
-#                         CLIENT.disconnect()
-#                 set_alarm_state_to_dct(telemetry)
-#                 LOGGER.info('Dictionary telemetries: %s', telemetries)
-#             else:
-#                 LOGGER.info('Telemetry is empty!!!')
-#         time.sleep(period)
-
-
 def call():
     period = shared_attributes.get('mccPeriodSendTelemetry', default_data.mccPeriodSendTelemetry)
     while True:
@@ -30,6 +12,9 @@ def call():
                 telemetry = format_telemetry(telemetries)
                 for key, value in telemetry.items():
                     response = CLIENT.gw_send_telemetry(key, value)
+                    LOGGER.info('RC of send telemetry to Thingsboard is: %s', str(response.rc()))
+                    if response.rc() != 0:
+                        CLIENT.disconnect()
                 set_alarm_state_to_dct(telemetry)
                 LOGGER.info('Dictionary telemetries: %s', telemetries)
             else:

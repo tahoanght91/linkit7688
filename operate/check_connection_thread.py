@@ -14,7 +14,7 @@ params = {'gatewayId': CLIENT_ID}
 
 
 def call():
-    period = 60
+    period = 120
     while True:
         try:
             time.sleep(period)
