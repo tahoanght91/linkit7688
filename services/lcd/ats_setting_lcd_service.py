@@ -12,7 +12,7 @@ ats_body_setting_tmp = {"atsGenDeactivateMode": 0, "atsGenInactiveStartTime": 0,
 # Mặc định vào màn hình đầu tiên id = 0, con trỏ dòng đầu của selection
 screen_idx = 0
 pointer_idx = -1
-time = ['_', '_']
+time = [-1, -1]
 
 # Thông tin tên id của từng màn hình
 screens_info = {"ats_setting": 0, "atsGenDeactivateMode": 1, "atsGenInactiveStartTime": 2,
@@ -104,21 +104,27 @@ def call_screen_confirm(p_idx):
 
 
 # Màn hình thiet lap thoi gian cam
-def call_screen_inactivate_time(time_idx):
+def call_screen_inactivate_time(p_idx, isStart):
     global pointer_idx
     from control import process_cmd_lcd
     try:
-        pointer_idx = 0
+        pointer_idx = p_idx
+        if isStart == 1:
+            time_idx = 1
+        else:
+            time_idx = 2
+
+        hour = get_string_time()
         process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THIET BI ATS')
         process_cmd_lcd(ROW_2, UPDATE_VALUE, "T.gian cam {0}".format(time_idx))
-        process_cmd_lcd(ROW_3, UPDATE_VALUE, '__')
+        process_cmd_lcd(ROW_3, UPDATE_VALUE, hour)
         LOGGER.info('Enter call_screen_inactivate_time function')
     except Exception as ex:
         LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
 
 def call_screen_with_screen_id(screen_id):
-    global screen_idx, pointer_idx
+    global screen_idx, pointer_idx ,time
     try:
         LOGGER.info('Enter call_screen_with_screen_id function, screen_id: %s', str(screen_id))
         screen_idx = screen_id
@@ -127,9 +133,11 @@ def call_screen_with_screen_id(screen_id):
         if screen_id == screens_info["atsGenDeactivateMode"]:
             call_screen_deactivate_mode(p_idx=0)
         elif screen_id == screens_info["atsGenInactiveStartTime"]:
-            call_screen_inactivate_time(time_idx=1)
+            time = [-1, -1]
+            call_screen_inactivate_time(p_idx=0, isStart=1)
         elif screen_id == screens_info["atsGenInactiveEndTime"]:
-            call_screen_inactivate_time(time_idx=2)
+            time = [-1, -1]
+            call_screen_inactivate_time(p_idx=0, isStart=0)
         elif screen_id == screens_info["confirmDeactivateMode"] or screen_id == screens_info[
             "confirmInactiveStartTime"] or screen_id == screens_info["confirmInactiveEndTime"]:
             call_screen_confirm(p_idx=0)
@@ -228,14 +236,54 @@ def ats_deactivate_mode_listen_key(keycode):
 
 
 def ats_inactive_time_listen_key(keycode, isStart):
+    global time, pointer_idx
     try:
         LOGGER.info('Enter ats_inactive_time_listen_key function, isStart: %s', str(isStart))
-        if keycode == BUTTON_24_EVENT_UP:
+
+        if keycode == BUTTON_34_EVENT_UP:
+            # down
+            if time[pointer_idx] < 0:
+                time[pointer_idx] = 0
+            else:
+                time[pointer_idx] = time[pointer_idx] - 1
+
+            call_screen_inactivate_time(pointer_idx, isStart)
+
+        elif keycode == BUTTON_14_EVENT_UP:
+            # up
+            if time[pointer_idx] == 9:
+                time[pointer_idx] = 9
+            else:
+                time[pointer_idx] = time[pointer_idx] + 1
+            call_screen_inactivate_time(pointer_idx, isStart)
+        elif keycode == BUTTON_23_EVENT_UP:
+            # key left
+            if pointer_idx == 0:
+                pointer_idx = 0
+            else:
+                pointer_idx = pointer_idx - 1
+
+            time[pointer_idx] = -1
+            call_screen_inactivate_time(pointer_idx, isStart)
+        elif keycode == BUTTON_25_EVENT_UP:
+            # key right
+            if pointer_idx == 1:
+                pointer_idx = 1
+            else:
+                pointer_idx = pointer_idx + 1
+            #
+            time[pointer_idx] = -1
+            call_screen_inactivate_time(pointer_idx, isStart)
+        elif keycode == BUTTON_24_EVENT_UP:
             # ok
             if isStart:
                 call_screen_with_screen_id(screens_info["confirmInactiveStartTime"])
+                if "_" not in get_string_time():
+                    ats_body_setting_tmp["atsGenInactiveStartTime"] = get_string_time()
             else:
                 call_screen_with_screen_id(screens_info["confirmInactiveEndTime"])
+                if "_" not in get_string_time():
+                    ats_body_setting_tmp["confirmInactiveEndTime"] = get_string_time()
                 return
     except Exception as ex:
         LOGGER.error('Error at call function ats_inactive_time_listen_key with message: %s', ex.message)
@@ -276,12 +324,29 @@ def confirm_listen_key(keycode):
         LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
 
 
+def get_string_time():
+    global time
+    if time[0] == -1:
+        hour_idx1 = "_"
+    else:
+        hour_idx1 = "{0}".format(time[0])
+
+    if time[1] == -1:
+        hour_idx2 = "_"
+    else:
+        hour_idx2 = "{0}".format(time[1])
+
+    hour = "{0}{1}".format(hour_idx1, hour_idx2)
+    return hour
+
+
 def reset_params():
-    global ats_body_setting, screen_idx, pointer_idx
+    global ats_body_setting, time, screen_idx, pointer_idx
     try:
         ats_body_setting = {"atsGenDeactivateMode": 0, "atsGenInactiveStartTime": 0, "atsGenInactiveEndTime": 0}
         screen_idx = 0
         pointer_idx = -1
+        time = [-1, -1]
     except Exception as ex:
         LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
 
