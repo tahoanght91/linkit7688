@@ -74,12 +74,12 @@ def main_display():
 
 
 def warning_display():
-    # check_alarm()
-    global button
-    try:
-        ats_setting_lcd_service.listen_key_code(button)
-    except Exception as ex:
-        LOGGER.error('Error at call function in warning_display with message: %s', ex.message)
+    check_alarm()
+    # global button
+    # try:
+    #     ats_setting_lcd_service.listen_key_code(button)
+    # except Exception as ex:
+    #     LOGGER.error('Error at call function in warning_display with message: %s', ex.message)
 
 
 def security_sensor_info_display():
