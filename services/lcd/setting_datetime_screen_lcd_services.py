@@ -49,6 +49,7 @@ def date_setting_process(button):
             else:
                 process_cmd_lcd(ROW_1, UPDATE_VALUE, 'NGAY')    
                 process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(date)) 
+                confirm_status = False
         elif button == UP or button == DOWN:
             if confirm_idx == 0:
                 confirm_idx = 1
