@@ -2,7 +2,7 @@ import os
 from config import *
 from config.common import *
 from config.common_lcd_services import *
-from control import process_cmd_lcd
+
 
 
 ## Common variables
@@ -17,6 +17,7 @@ cursor_idx_time = 0
 confirm_idx = 0
 confirm_status = False
 def call_screen_confirm(p_idx):
+    from control import process_cmd_lcd
     try:
         switcher = [
             {
@@ -29,6 +30,7 @@ def call_screen_confirm(p_idx):
             }
         ]
         # Update text
+        LOGGER.info('Enter call_screen_confirm function', )
         process_cmd_lcd(ROW_1, UPDATE_VALUE, 'XAC NHAN')
         process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[p_idx]['row_2'])
         process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[p_idx]['row_3'])
@@ -36,6 +38,8 @@ def call_screen_confirm(p_idx):
         LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 # Date setting
 def date_setting_process(button):
+    from control import process_cmd_lcd
+    global confirm_status, confirm_idx, confirm_status, cursor_idx, date, time, number
     if confirm_status:
         if button == OK:
             if confirm_idx == 0:
@@ -86,6 +90,8 @@ def date_setting_process(button):
                     cursor_idx+=1
 # Time setting
 def time_setting_process(button):
+    from control import process_cmd_lcd
+    global confirm_status, confirm_idx, cursor_idx_time, time
     if confirm_status:
         if button == OK:
             if confirm_idx == 0:

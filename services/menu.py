@@ -61,10 +61,6 @@ def select_section_lv1():
             4: ats_display,
             5: setting_display,
             6: rfid_display,
-            7: thong_so_mang,
-            8:  canh_bao,
-            9: thiet_bi_ats,
-            10: thiet_bi_rfid,
         }
         LOGGER.info('Send message select_section_lv1 on lcd, section_lv_1: %s', str(section_lv_1))
         func = switcher.get(section_lv_1)
