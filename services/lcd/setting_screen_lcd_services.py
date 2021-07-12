@@ -337,7 +337,7 @@ def alarm_selection_listen_key(keycode):
     try:
         global pointer_idx, screen_idx
         # main co 4 dong, choose co 2 dong
-        max_pointer_idx = 3 if screen_idx == selection_setting_alarm["alarm"] else 1
+        max_pointer_idx = 3 if screen_idx == selection_setting_alarm["assign_alarm"] else 1
         if keycode == BUTTON_34_EVENT_UP:
             # key down
             pointer_idx = max_pointer_idx if pointer_idx == max_pointer_idx else pointer_idx + 1
