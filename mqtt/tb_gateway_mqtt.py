@@ -13,7 +13,7 @@ GATEWAY_MAIN_TOPIC = "v1/gateway/"
 GATEWAY_RPC_TOPIC = "v1/gateway/rpc"
 GATEWAY_RPC_RESPONSE_TOPIC = "v1/gateway/rpc/response"
 
-log = logging.getLogger("tb_connection")
+log = logging.getLogger("App")
 
 
 class TBGatewayAPI:
