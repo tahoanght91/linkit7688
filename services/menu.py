@@ -113,6 +113,8 @@ def print_lcd(str1, str2, str3, str4):
         LOGGER.info('Send message print_lcd on lcd')
         i = 0
         while i < 4:
+            if str[i] == '':
+                str[i] = ' '
             status = process_cmd_lcd(ROW[i], UPDATE_VALUE, str[i])
             if status:
                 i += 1
@@ -310,7 +312,6 @@ def main_menu(button):
         if button in MENU_LV_1 and last_screen_lv1_index != screen_lv1_index:
             screen_lv1_index = button
             last_screen_lv1_index = screen_lv1_index
-            clear_display()
         elif button != -1:
             event = button
         back_main_screen(button)
