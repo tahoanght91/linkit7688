@@ -47,6 +47,7 @@ def call():
                 CLIENT.gw_connect_device(DEVICE_MCC, "default")
                 CLIENT.gw_connect_device(DEVICE_ATS, "default")
                 CLIENT.gw_connect_device(DEVICE_ACM, "default")
+                period = TEN_SECONDS
                 LOGGER.info('Reconnect all devices to Thingsboard!')
         except Exception as ex:
             LOGGER.info('Error when check connection with message: %s', ex.message)
