@@ -69,7 +69,7 @@ def call():
 
         if CLIENT.is_connected():
             LOGGER.debug('Set IO time')
-            # clock.set()
+            clock.set()
             LOGGER.debug('Get original attributes')
             #shared_attributes
             #{DEVICE_MCC: {mcc: val}, DEVICE_ATS: {ats: val}, DEVICE_ACM: {acm: val}}
