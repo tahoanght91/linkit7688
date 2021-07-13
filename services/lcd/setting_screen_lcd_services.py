@@ -100,6 +100,7 @@ def choose_config(setting_idx):
     global screen_setting_idx, screen_idx, isChosen
     if isChosen:
         return
+    isChosen = 1
     screen_idx = -1
     screen_setting_idx = setting_idx
 
@@ -143,7 +144,7 @@ def call_screen_network():
                 "row_4": ''
             }
         ]
-        LOGGER.info('Enter call_screen_network function: %s', str(switcher[selection_chosen]))
+        # LOGGER.info('Enter call_screen_network function: %s', str(switcher[selection_chosen]))
         # Update text
         process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
         process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_2'])
@@ -188,7 +189,7 @@ def refresh_screen_assign_ip_address():
         ]
 
         # Update text
-        if screen_idx % 2:
+        if screen_idx % 2 == 0:
             # Man hinh xac nhan luu
             LOGGER.info('Enter refresh_screen_assign_ip_address function: %s', str(switcher_2[pointer_idx]))
             process_cmd_lcd(ROW_1, UPDATE_VALUE, 'XAC NHAN LUU')
@@ -201,7 +202,7 @@ def refresh_screen_assign_ip_address():
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]])
             process_cmd_lcd(ROW_3, UPDATE_VALUE, network.get_ip())
 
-        LOGGER.info('ASSIGN IP SCREEN: %s', str(network.get_ip()))
+        # LOGGER.info('ASSIGN IP SCREEN: %s', str(network.get_ip()))
         # Update nhap nhay
         # ...
     except Exception as ex:
@@ -220,7 +221,7 @@ def get_net_info():
         return
     array = file_json[key].split(".")
     result = __IPv4()
-    if array.length > 0 and array[0] != '':
+    if len(array) > 0 and array[0] != '':
         result.ip = convert_to_array_number(array)
 
     # Tam fake bang 192.168.1.11
@@ -256,7 +257,9 @@ def get_alarm_info():
 
 
 def get_next_number(keycode, number):
-    if keycode == BUTTON_34_EVENT_UP:
+    if number == '_':
+        number = 0
+    if keycode == BUTTON_14_EVENT_UP:
         return 0 if number > 9 else number + 1
     else:
         return 9 if number == 0 else number - 1
