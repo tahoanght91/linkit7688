@@ -4,7 +4,7 @@ from config.common import *
 from config.common_lcd_services import *
 
 BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
-last_cmd_alarm = './last_cmd_alarm.json'
+last_cmd_alarm = './last_cmd_screen_alarm.json'
 KEY_RFID = 'mccRfidCard'
 
 

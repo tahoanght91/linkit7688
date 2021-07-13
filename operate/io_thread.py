@@ -31,7 +31,7 @@ def call():
         current_cycle = int((time.time()) / 60)
         if not (current_cycle - original_cycle) and not (current_cycle - original_cycle) % 2:
             LOGGER.info("Send clock set")
-            clock.set()
+            # clock.set()
 
         # Read data
         byte_stream = blocking_read_datablock(ser, message_break)

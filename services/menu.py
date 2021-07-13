@@ -4,8 +4,8 @@ from config.common_lcd_services import *
 from services.lcd import main_screen_lcd_services
 from services.lcd.acm_sreen_lcd_services import show_temp_condition
 from services.lcd.alarm_lcd_services import check_alarm
-from services.lcd import ats_screen_lcd_services#, ats_setting_lcd_service
-from services.lcd import rfid_screen_lcd_sevices#, rfid_setting_lcd_service
+from services.lcd import ats_screen_lcd_services, ats_setting_lcd_service
+from services.lcd import rfid_screen_lcd_sevices, rfid_setting_lcd_service
 from services.lcd.sensor_screen_lcd_services import *
 from time import time
 
@@ -60,7 +60,7 @@ def select_section_lv1():
             3: air_info_display,
             4: ats_display,
             5: setting_display,
-            6: rfid_display
+            6: rfid_display,
         }
         LOGGER.info('Send message select_section_lv1 on lcd, section_lv_1: %s', str(section_lv_1))
         func = switcher.get(section_lv_1)
@@ -75,6 +75,11 @@ def main_display():
 
 def warning_display():
     check_alarm()
+    # global button
+    # try:
+    #     ats_setting_lcd_service.listen_key_code(button)
+    # except Exception as ex:
+    #     LOGGER.error('Error at call function in warning_display with message: %s', ex.message)
 
 
 def security_sensor_info_display():
@@ -211,7 +216,7 @@ def setting_display():
         LOGGER.info('Finish rfid_display function')
         LOGGER.info('section_lv_2: %s', str(section_lv_2))
     except Exception as ex:
-        LOGGER.info('setting_display function error: %s', ex.message)
+        LOGGER.error('setting_display function error: %s', ex.message)
 
 
 def cai_dat_thong_tin():
@@ -386,7 +391,6 @@ def canh_bao():
 
 
 def thiet_bi_ats():
-    from services.lcd import ats_setting_lcd_service
     global section_lv_3
     global section_lv_4
     global section_lv_5
@@ -427,7 +431,7 @@ def thiet_bi_ats():
 
 
 def thiet_bi_rfid():
-    from services.lcd import rfid_setting_lcd_service
+    # from services.lcd import rfid_setting_lcd_service
     global section_lv_3
     global section_lv_4
     global section_lv_5
@@ -471,22 +475,25 @@ def main_menu(bt):
     try:
         if bt != -1:
             button = bt
-            # time_count = time()
-            # cycle_flag = True
+            time_count = time()
+            cycle_flag = True
 
-        # if cycle_flag is True:
-        #     time_cycle = time() - time_count
+        if cycle_flag is True:
+            time_cycle = time() - time_count
 
         LOGGER.info('Time out come back to main display: %ds', time_cycle)
-        # if time_cycle > TIME_OUT:
-        #     time_come_back = 0
-        #     section_lv_1 = 0
+        if time_cycle > TIME_OUT:
+            time_count = 0
+            time_cycle = 0
+            section_lv_1 = 0
 
         if button in MENU_LV_1 and button != section_lv_1 or section_lv_5 == 1:
             section_lv_2 = 0
             section_lv_3 = -1
             section_lv_4 = -1
             section_lv_5 = 0
+            ats_setting_lcd_service.reset_params()
+            rfid_setting_lcd_service.reset_params()
         select_section_lv1()
         button = -1
     except Exception as ex:
