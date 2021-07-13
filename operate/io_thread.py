@@ -2,6 +2,7 @@ import serial
 
 import control
 from config import *
+from config import _OpData
 from config.common_lcd_services import *
 from devices import ats, crmu, clock, acm, mcc
 from operate.lcd_thread import extract_lcd_service
@@ -18,7 +19,10 @@ def call():
 
     data_ack = b'\xa0\x02\x11\x00'
     control_ack = b'\xa0\x01\x21'
-    message_break = shared_attributes.get('mccPeriodReadDataIO', default_data.mccPeriodReadDataIO)  # time read data from IO
+    led_ack = b'\xa0\x01\x77'
+    shared_att_ack = b'\xa0\x01\x42'
+    message_break = shared_attributes.get('mccPeriodReadDataIO',
+                                          default_data.mccPeriodReadDataIO)  # time read data from IO
     flip = READ_PER_WRITE
 
     original_cycle = int((time.time()) / 60)
@@ -27,15 +31,15 @@ def call():
         current_cycle = int((time.time()) / 60)
         if not (current_cycle - original_cycle) and not (current_cycle - original_cycle) % 2:
             LOGGER.info("Send clock set")
-            # clock.set()
+            clock.set()
 
         # Read data
-        byte_stream = blocking_read(ser, message_break)
-        if byte_stream and _read_data(byte_stream):
+        byte_stream = blocking_read_datablock(ser, message_break)
+        if byte_stream:
+            _read_data(byte_stream)
             ser.write(with_check_sum(data_ack, BYTE_ORDER))
 
         # read button status
-
 
         # Write command
         # try:
@@ -105,40 +109,57 @@ def call():
                 for device, command in commands_snap:
                     command_formatted = {'device': device, 'command': command}
                     write_stream = with_check_sum(control.process_command(command_formatted), BYTE_ORDER)
-                    tries = 0
                     LOGGER.info('Send command to IO, device %s, command %s', device, command)
-                    while True:
-                        if flip == 0:
-                            flip = READ_PER_WRITE
-                            ser.write(write_stream)
-                        else:
-                            flip -= 1
-                        byte_stream = blocking_read(ser, message_break)
-                        if byte_stream:
-                            if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
-                                commands_lock.acquire()
-                                if commands[device] == command:
-                                    del commands[device]
-                                commands_lock.release()
-                                LOGGER.debug("Receive ACK rpc message with device: %s", device)
-                                break
-                            if _read_data(byte_stream):
-                                ser.write(with_check_sum(data_ack, BYTE_ORDER))
-                        if flip == 0:
-                            tries += 1
-                            if tries > MAX_TRIES:
-                                commands_lock.acquire()
-                                if commands[device] == command:
-                                    del commands[device]
-                                commands_lock.release()
-                                LOGGER.info('Time out')
-                                break
-                            LOGGER.debug('Try sending again')
+                    ser.write(write_stream)
+                    commands_lock.acquire()
+                    if commands[device] == command:
+                        del commands[device]
+                    commands_lock.release()
+
+                    # while True:
+                    #     if flip == 0:
+                    #         flip = READ_PER_WRITE
+                    #         ser.write(write_stream)
+                    #         commands_lock.acquire()
+                    #         if commands[device] == command:
+                    #             del commands[device]
+                    #         commands_lock.release()
+                    #     else:
+                    #         flip -= 1
+                    #     # byte_stream = blocking_read_number_of_byte(ser, 5)
+                    #     # byte_stream = blocking_read_datablock(ser, message_break)
+                    #     # if byte_stream:
+                    #     #     op_code = byte_stream[2]
+                    #     #     if op_code == _OpData.IO_STATUS_RPC and byte_stream == with_check_sum(control_ack, BYTE_ORDER):
+                    #     #         commands_lock.acquire()
+                    #     #         if commands[device] == command:
+                    #     #             del commands[device]
+                    #     #         commands_lock.release()
+                    #     #         LOGGER.debug("Receive ACK rpc message with device: %s", device)
+                    #     #         break
+                    #     #     elif op_code == _OpData.IO_STATUS_ACM or \
+                    #     #             op_code == _OpData.IO_STATUS_ATS or \
+                    #     #             op_code == _OpData.IO_STATUS_CRMU or \
+                    #     #             op_code == _OpData.IO_STATUS_KEY_PRESS or \
+                    #     #             op_code == _OpData.IO_STATUS_MCC:
+                    #     #         _read_data(byte_stream)
+                    #     #         ser.write(with_check_sum(data_ack, BYTE_ORDER))
+                    #     if flip == 0:
+                    #         tries += 1
+                    #         if tries > MAX_TRIES:
+                    #             commands_lock.acquire()
+                    #             if commands[device] == command:
+                    #                 del commands[device]
+                    #             commands_lock.release()
+                    #             LOGGER.info('Time out')
+                    #             break
+                    #         LOGGER.debug('Try sending again')
         except Exception as ex:
             LOGGER.error('Error send rpc command to STM32 with message: %s', ex.message)
 
         try:
             # led
+            flip = READ_PER_WRITE
             if cmd_led:
                 cmd_led_snap = []
                 cmd_led_lock.acquire()
@@ -148,40 +169,68 @@ def call():
                 for length_led, arr_value in cmd_led_snap:
                     cmd_led_formatted = {'length_led': length_led, 'arr_value': arr_value}
                     write_stream = with_check_sum(control.process_cmd_led(cmd_led_formatted), BYTE_ORDER)
-                    tries = 0
-                    LOGGER.info('Send cmd led to IO, length_led: %d, arr_value: %s', length_led, arr_value)
-                    while True:
-                        if flip == 0:
-                            flip = READ_PER_WRITE
-                            ser.write(write_stream)
-                        else:
-                            flip -= 1
-                        byte_stream = blocking_read(ser, message_break)
-                        if byte_stream:
-                            if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
-                                cmd_led_lock.acquire()
-                                if cmd_led[length_led] == arr_value:
-                                    del cmd_led[length_led]
-                                cmd_led_lock.release()
-                                LOGGER.debug("Receive ACK led message with length_led: %d", length_led)
-                                break
-                            if _read_data(byte_stream):
-                                ser.write(with_check_sum(data_ack, BYTE_ORDER))
-                        if flip == 0:
-                            tries += 1
-                            if tries > MAX_TRIES:
-                                cmd_led_lock.acquire()
-                                if cmd_led[length_led] == arr_value:
-                                    del cmd_led[length_led]
-                                cmd_led_lock.release()
-                                LOGGER.info('Time out')
-                                break
-                            LOGGER.debug('Try sending again')
+                    ser.write(write_stream)
+                    cmd_led_lock.acquire()
+                    if cmd_led[device] == arr_value:
+                        del cmd_led[device]
+                    cmd_led_lock.release()
+
+                    # tries = 0
+                    # LOGGER.info('Send cmd led to IO, length_led: %d, arr_value: %s', length_led, arr_value)
+                    # while True:
+                    #     if flip == 0:
+                    #         flip = READ_PER_WRITE
+                    #         ser.write(write_stream)
+                    #         cmd_led_lock.acquire()
+                    #         if cmd_led[device] == arr_value:
+                    #             del cmd_led[device]
+                    #         cmd_led_lock.release()
+                    #     else:
+                    #         flip -= 1
+                    #     byte_stream = blocking_read_datablock(ser, message_break)
+                    #     if byte_stream:
+                    #         op_code = byte_stream[2]
+                    #         if op_code == _OpData.IO_STATUS_ACK_LED and byte_stream == with_check_sum(led_ack, BYTE_ORDER):
+                    #             cmd_led_lock.acquire()
+                    #             if cmd_led[device] == arr_value:
+                    #                 del cmd_led[device]
+                    #             cmd_led_lock.release()
+                    #             LOGGER.debug("Receive ACK rpc message with device: %s", device)
+                    #             break
+                    #         elif op_code == _OpData.IO_STATUS_ACM or \
+                    #                 op_code == _OpData.IO_STATUS_ATS or \
+                    #                 op_code == _OpData.IO_STATUS_CRMU or \
+                    #                 op_code == _OpData.IO_STATUS_KEY_PRESS or \
+                    #                 op_code == _OpData.IO_STATUS_MCC:
+                    #             _read_data(byte_stream)
+                    #             ser.write(with_check_sum(data_ack, BYTE_ORDER))
+                    #     # byte_stream = blocking_read_number_of_byte(ser, 5)
+                    #     # if byte_stream:
+                    #     #     if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
+                    #     #         cmd_led_lock.acquire()
+                    #     #         if cmd_led[length_led] == arr_value:
+                    #     #             del cmd_led[length_led]
+                    #     #         cmd_led_lock.release()
+                    #     #         LOGGER.debug("Receive ACK led message with length_led: %d", length_led)
+                    #     #         break
+                    #     #     if _read_data(byte_stream):
+                    #     #         ser.write(with_check_sum(data_ack, BYTE_ORDER))
+                    #     if flip == 0:
+                    #         tries += 1
+                    #         if tries > MAX_TRIES:
+                    #             cmd_led_lock.acquire()
+                    #             if cmd_led[length_led] == arr_value:
+                    #                 del cmd_led[length_led]
+                    #             cmd_led_lock.release()
+                    #             LOGGER.info('Time out')
+                    #             break
+                    #         LOGGER.debug('Try sending again')
         except Exception as ex:
             LOGGER.error('Error send led command to STM32 with message: %s', ex.message)
 
         try:
             # shared attributes
+            # flip = READ_PER_WRITE
             if cmd_sa:
                 cmd_sa_snap = []
                 cmd_sa_lock.acquire()
@@ -191,35 +240,59 @@ def call():
                 for module_id, value in cmd_sa_snap:
                     cmd_sa_formatted = {'module_id': module_id, 'value': value}
                     write_stream = with_check_sum(control.process_cmd_sa(cmd_sa_formatted), BYTE_ORDER)
-                    tries = 0
-                    LOGGER.info('Send cmd sa to IO, id_module %s, value %s', module_id, value)
-                    while True:
-                        if flip == 0:
-                            flip = READ_PER_WRITE
-                            ser.write(write_stream)
-                        else:
-                            flip -= 1
-                        byte_stream = blocking_read(ser, message_break)
-                        if byte_stream:
-                            if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
-                                cmd_sa_lock.acquire()
-                                if cmd_sa[module_id] == value:
-                                    del cmd_sa[module_id]
-                                cmd_sa_lock.release()
-                                LOGGER.debug("Receive ACK shared attributes message with module_id: %d", module_id)
-                                break
-                            if _read_data(byte_stream):
-                                ser.write(with_check_sum(data_ack, BYTE_ORDER))
-                        if flip == 0:
-                            tries += 1
-                            if tries > MAX_TRIES:
-                                cmd_sa_lock.acquire()
-                                if cmd_sa[module_id] == value:
-                                    del cmd_sa[module_id]
-                                cmd_sa_lock.release()
-                                LOGGER.info('Time out')
-                                break
-                            LOGGER.debug('Try sending again')
+                    ser.write(write_stream)
+                    cmd_sa_lock.acquire()
+                    if cmd_sa[device] == value:
+                        del cmd_sa[device]
+                    cmd_sa_lock.release()
+
+                    # tries = 0
+                    # LOGGER.info('Send cmd sa to IO, id_module %s, value %s', module_id, value)
+                    # while True:
+                    #     if flip == 0:
+                    #         flip = READ_PER_WRITE
+                    #         ser.write(write_stream)
+                    #     else:
+                    #         flip -= 1
+                    #
+                    #     byte_stream = blocking_read_datablock(ser, message_break)
+                    #     if byte_stream:
+                    #         op_code = byte_stream[2]
+                    #         if op_code == _OpData.IO_STATUS_ACK_SHARED_ATT_LED and byte_stream == with_check_sum(shared_att_ack, BYTE_ORDER):
+                    #             cmd_sa_lock.acquire()
+                    #             if cmd_sa[device] == value:
+                    #                 del cmd_sa[device]
+                    #             cmd_sa_lock.release()
+                    #             LOGGER.debug("Receive ACK rpc message with device: %s", device)
+                    #             break
+                    #         elif op_code == _OpData.IO_STATUS_ACM or \
+                    #                 op_code == _OpData.IO_STATUS_ATS or \
+                    #                 op_code == _OpData.IO_STATUS_CRMU or \
+                    #                 op_code == _OpData.IO_STATUS_KEY_PRESS or \
+                    #                 op_code == _OpData.IO_STATUS_MCC:
+                    #             _read_data(byte_stream)
+                    #             ser.write(with_check_sum(data_ack, BYTE_ORDER))
+                    #     # byte_stream = blocking_read_number_of_byte(ser, 5)
+                    #     # if byte_stream:
+                    #     #     if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
+                    #     #         cmd_sa_lock.acquire()
+                    #     #         if cmd_sa[module_id] == value:
+                    #     #             del cmd_sa[module_id]
+                    #     #         cmd_sa_lock.release()
+                    #     #         LOGGER.debug("Receive ACK shared attributes message with module_id: %d", module_id)
+                    #     #         break
+                    #     #     if _read_data(byte_stream):
+                    #     #         ser.write(with_check_sum(data_ack, BYTE_ORDER))
+                    #     if flip == 0:
+                    #         tries += 1
+                    #         if tries > MAX_TRIES:
+                    #             cmd_sa_lock.acquire()
+                    #             if cmd_sa[module_id] == value:
+                    #                 del cmd_sa[module_id]
+                    #             cmd_sa_lock.release()
+                    #             LOGGER.info('Time out')
+                    #             break
+                    #         LOGGER.debug('Try sending again')
         except Exception as ex:
             LOGGER.error('Error send shared attributes command to STM32 with message: %s', ex.message)
 
@@ -275,7 +348,7 @@ def _read_data(byte_stream):
         LOGGER.info('RPC message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
                     len(data), _OpData.RPC_SIZE)
         return True
-    elif op_code == _OpData.IO_STATUS_LCD:  # LCD
+    elif op_code == _OpData.IO_STATUS_KEY_PRESS:  # LCD
         LOGGER.info('LCD message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
                     len(data), _OpData.LCD_SIZE)
         if _check_data(frame_length, data, _OpData.LCD_SIZE):
@@ -299,37 +372,3 @@ def _check_data(frame_length, data, expected_data_length):
             return True
     except Exception as ex:
         LOGGER.error('Error at function _check_data with message: %s', ex.message)
-
-
-class _OpData:
-    # current
-    # ACM_SIZE = 26
-    # ATS_SIZE = 51
-    # MCC_SIZE = 58
-    # CRMU_SIZE = 19
-    # LCD_SIZE = 4
-    # RPC_SIZE = 10
-    # IO_STATUS_MCC = b'\x11'
-    # IO_STATUS_ATS = b'\x13'
-    # IO_STATUS_ACM = b'\x14'
-    # IO_STATUS_CRMU = b'\x16'
-    # IO_STATUS_RPC = b'\x21'
-    # IO_STATUS_LCD = b'\x32'
-
-    # new
-    # uncomment when update STM32
-    ACM_SIZE = 29
-    ATS_SIZE = 53
-    MCC_SIZE = 59
-    CRMU_SIZE = 19
-    LCD_SIZE = 4
-    RPC_SIZE = 10
-    IO_STATUS_MCC = b'\x11'
-    IO_STATUS_ATS = b'\x13'
-    IO_STATUS_ACM = b'\x14'
-    IO_STATUS_CRMU = b'\x16'
-    IO_STATUS_RPC = b'\x21'
-    IO_STATUS_LCD = b'\x32'
-
-
-
