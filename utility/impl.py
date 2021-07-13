@@ -57,7 +57,7 @@ def blocking_read_datablock(ser, message_break):
             if (op_code == _OpData.IO_STATUS_ACM or
                     op_code == _OpData.IO_STATUS_ATS or
                     op_code == _OpData.IO_STATUS_CRMU or
-                    op_code == _OpData.IO_STATUS_LCD or
+                    op_code == _OpData.IO_STATUS_KEY_PRESS or
                     op_code == _OpData.IO_STATUS_MCC or
                     op_code == _OpData.IO_STATUS_RPC or
                     op_code == _OpData.IO_STATUS_ACK_LED or
