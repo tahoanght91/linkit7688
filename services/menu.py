@@ -307,7 +307,7 @@ def main_menu(button):
             RFID: rfid_display
         }
 
-        if button in MENU_LV_1 and last_screen_lv1_index != screen_lv1_index:
+        if button in MENU_LV_1 and last_screen_lv1_index != button:
             screen_lv1_index = button
             last_screen_lv1_index = screen_lv1_index
         elif button != -1:
