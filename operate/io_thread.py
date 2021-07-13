@@ -36,14 +36,8 @@ def call():
         # Read data
         byte_stream = blocking_read_datablock(ser, message_break)
         if byte_stream:
-            op_code = byte_stream[2]
-            if op_code == _OpData.IO_STATUS_ACM or \
-                    op_code == _OpData.IO_STATUS_ATS or \
-                    op_code == _OpData.IO_STATUS_CRMU or \
-                    op_code == _OpData.IO_STATUS_KEY_PRESS or \
-                    op_code == _OpData.IO_STATUS_MCC:
-                _read_data(byte_stream)
-                ser.write(with_check_sum(data_ack, BYTE_ORDER))
+            _read_data(byte_stream)
+            ser.write(with_check_sum(data_ack, BYTE_ORDER))
 
         # read button status
 
