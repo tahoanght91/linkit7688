@@ -55,6 +55,9 @@ pointer_idx = 0
 network = 0
 # Alarm
 alarm = 0
+# Fix loi goi choose_config nhieu lan khi dang trong man hinh nay roi
+isChosen = 0
+
 # Idx man hinh
 selection_setting = {
     "main": 0,
@@ -95,7 +98,9 @@ selection_chosen = [0, 0, 0, 0]
 
 # Call khi chon setting can cau hinh
 def choose_config(setting_idx):
-    global screen_setting_idx, screen_idx
+    global screen_setting_idx, screen_idx, isChosen
+    if isChosen:
+        return
     screen_idx = -1
     screen_setting_idx = setting_idx
 
@@ -247,6 +252,14 @@ def get_next_number(keycode, number):
 
 # Register func nay
 def listen_key_code(keycode):
+    global isChosen
+    if keycode == ESC:
+        # Ben menu da xu ly thoat ve man hinh menu roi
+        # Reset lai cac gia tri de lan sau goi
+        isChosen = 0
+        reset_parameter()
+        return
+
     if screen_setting_idx == selection_setting["network"]:
         get_func_keycode(network_keycode_func_idx, keycode)
     elif screen_setting_idx == selection_setting["alarm"]:
