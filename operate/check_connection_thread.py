@@ -15,7 +15,7 @@ TEN_SECONDS = 10
 
 
 def call():
-    period = TEN_MINUTES
+    period = TEN_SECONDS
     checked = False
     while True:
         try:
