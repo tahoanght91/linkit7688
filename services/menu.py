@@ -83,6 +83,7 @@ setting_screen_index = 0
 last_setting_screen_index = -1
 screen_lv1_index = 0
 last_screen_lv1_index = -1
+start_time = 0
 time_count = 0
 cycle_flag = False
 time_setting_screen_index = 0,
@@ -272,8 +273,8 @@ def rfid_setting():
 
 
 def back_main_screen(button):
-    global cycle_flag, time_count, screen_lv1_index
-    start_time = 0
+    global cycle_flag, time_count, screen_lv1_index, start_time
+
     try:
         if button != -1:
             start_time = time.time()
@@ -284,7 +285,7 @@ def back_main_screen(button):
         if time_count > TIME_OUT:
             time_count = 0
             cycle_flag = False
-            screen_lv1_index = 0
+            screen_lv1_index = ESC
     except Exception as ex:
         LOGGER.error('back_main_screen function error: %s', ex.message)
 
