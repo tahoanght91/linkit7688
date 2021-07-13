@@ -10,6 +10,8 @@ from services.lcd.sensor_screen_lcd_services import *
 from time import time
 
 # SonTH
+from services.lcd.setting_datetime_screen_lcd_services import date_setting_process, time_setting_process
+from services.lcd.setting_info_screen_lcd_services import info_setting_process
 from services.lcd.setting_screen_lcd_services import *
 
 TIME_OUT = 600
@@ -222,7 +224,7 @@ def setting_display():
 def cai_dat_thong_tin():
     global set_string_ok
     global section_lv_4
-
+    info_setting_process(button)
     LOGGER.info('Finish cai_dat_thong_tin function')
 
 
@@ -231,20 +233,22 @@ def thoi_gian():
     global section_lv_4
     global button
 
-    if button == OK:
+    if button == OK and section_lv_4 <= 0:
         section_lv_4 += 1
 
     if section_lv_4 == 1:
         if section_lv_3 == 0:
-            print_lcd('Vao cai dat ngay')
+            # print_lcd('Vao cai dat ngay')
             # goi ham xu ly
+            date_setting_process(button)
         elif section_lv_3 == 1:
-            print_lcd('Vao cai dat gio')
+            # print_lcd('Vao cai dat gio')
             # goi ham xu ly
+            time_setting_process(button)
 
-    if button == DOWN:
+    if button == DOWN and section_lv_4 <= 0:
         section_lv_3 = 1
-    elif button == UP:
+    elif button == UP and section_lv_4 <= 0:
         section_lv_3 = 0
     if section_lv_4 < 1:
         if section_lv_3 == 0:
@@ -470,6 +474,7 @@ def thiet_bi_rfid():
 
 
 def main_menu(bt):
+    from time import time
     global section_lv_1, section_lv_2, section_lv_3, section_lv_4, section_lv_5, button, time_count, cycle_flag, time_cycle
     LOGGER.info('Enter main_menu function')
     try:

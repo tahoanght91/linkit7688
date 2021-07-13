@@ -44,7 +44,7 @@ class __IPv4:
 
     def get_oct(self):
         for v in self.get_ip_number().split("."):
-            if v == '' or v > 225:
+            if v == '' or int(v) > 225:
                 # Chua nhap octet nay
                 # ip khong duoc lon hon 225
                 return 0

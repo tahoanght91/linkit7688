@@ -46,9 +46,12 @@ def date_setting_process(button):
         if confirm_status:
             if button == OK:
                 if confirm_idx == 0:
-                    os.system("""date +%Y%m%d "{year}{month}{day}" """.format(year=''.join(date[8:12]),
-                                                                              month=''.join(date[4:6]),
-                                                                              day=''.join(date[0:2])))
+                    try:
+                        os.system("""date +%Y%m%d "{year}{month}{day}" """.format(year=''.join(date[8:12]),
+                                                                                  month=''.join(date[4:6]),
+                                                                                  day=''.join(date[0:2])))
+                    except Exception as ex:
+                        LOGGER.error('Error at set datetime to os in os.system with message: %s', ex.message)
                     confirm_status = False
                     # ham thoat
                     process_cmd_lcd(ROW_1, UPDATE_VALUE, 'NGAY')
@@ -103,8 +106,11 @@ def time_setting_process(button):
         if confirm_status:
             if button == OK:
                 if confirm_idx == 0:
-                    os.system("""date +%T -s "{hour}:{minute}" """.format(hour=''.join(time[0:2]),
-                                                                          minute=''.join(time[4:6]), ))
+                    try:
+                        os.system("""date +%T -s "{hour}:{minute}" """.format(hour=''.join(time[0:2]),
+                                                                              minute=''.join(time[4:6]), ))
+                    except Exception as ex:
+                        LOGGER.error('Error at call function in os.system in 113 with message: %s', ex.message)
                     confirm_status = False
                     # ham thoat
                     process_cmd_lcd(ROW_1, UPDATE_VALUE, 'GIO')
@@ -119,7 +125,7 @@ def time_setting_process(button):
                     confirm_idx = 0
         else:
             if button == OK:
-                if ['_', '_', ':', ' ', '_', '_'] == date:
+                if ['_', '_', ':', ' ', '_', '_'] == time:
                     process_cmd_lcd(ROW_1, UPDATE_VALUE, 'GIO')
                     process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(time))
                 elif "_" not in time:
