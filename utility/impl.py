@@ -55,15 +55,17 @@ def blocking_read_datablock(ser, message_break):
             data_len = bytes_to_int(read_buffer[1])
             op_code = read_buffer[2]
             if data_len > 0 and (op_code == _OpData.IO_STATUS_ACM or
-                                 op_code == _OpData.IO_STATUS_ATS or
-                                 op_code == _OpData.IO_STATUS_CRMU or
-                                 op_code == _OpData.IO_STATUS_LCD or
-                                 op_code == _OpData.IO_STATUS_MCC or
-                                 op_code == _OpData.IO_STATUS_RPC or
-                                 op_code == _OpData.IO_STATUS_ACK_LED or
-                                 op_code == _OpData.IO_STATUS_ACK_LCD or
-                                 op_code == _OpData.IO_STATUS_ACK_SHARED_ATT_LED):
-                LOGGER.info('Found packet header, data with with len %s, opcode %s', str(data_len), str(op_code))
+                    op_code == _OpData.IO_STATUS_ATS or
+                    op_code == _OpData.IO_STATUS_CRMU or
+                    op_code == _OpData.IO_STATUS_LCD or
+                    op_code == _OpData.IO_STATUS_MCC or
+                    op_code == _OpData.IO_STATUS_RPC or
+                    op_code == _OpData.IO_STATUS_ACK_LED or
+                    op_code == _OpData.IO_STATUS_ACK_LCD or
+                    op_code == _OpData.IO_STATUS_ACK_SHARED_ATT_LED or
+                    op_code == _OpData.IO_STATUS_CLOCK_SET or
+                    op_code == _OpData.IO_STATUS_CLOCK_EXTRACT):
+                LOGGER.info('Found packet header, data with with len %s, opcode %s', data_len, op_code)
                 # datalen + 2 byte checksum, - 1 byte op_code
                 read_buffer += ser.read(data_len + 2 - 3)
                 read_buffer_decode = ':'.join(x.encode('hex') for x in read_buffer)
