@@ -312,8 +312,7 @@ def main_menu(button):
             last_screen_lv1_index = screen_lv1_index
         elif button != -1:
             event = button
-        else:
-            0
+
         back_main_screen(button)
         func = menu_function_list.get(screen_lv1_index)
 
