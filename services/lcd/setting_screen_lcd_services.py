@@ -158,7 +158,7 @@ def refresh_screen_assign_ip_address():
     from control import process_cmd_lcd
     try:
         global network
-        network = get_net_info()
+        network = get_net_info() if network == 0 else network
         switcher = [
             {
                 "row_2": 'IP address'
@@ -520,7 +520,7 @@ def refresh_screen_assign_alarm():
     from control import process_cmd_lcd
     try:
         global alarm
-        alarm = get_alarm_info()
+        alarm = get_alarm_info() if alarm == 0 else alarm
         switcher = [
             {
                 "row_2": 'Nguong cao'
