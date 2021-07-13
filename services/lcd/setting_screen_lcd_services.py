@@ -87,7 +87,10 @@ class __Alarm:
         return 0 if result == '___' else result
 
     def get_alarm(self):
-        return ''.join(self.alarm)
+        array = []
+        for v in self.alarm:
+            array.append('_' if v == '' else v)
+        return ''.join(array)
 
 
 # Man hinh setting nao
@@ -279,9 +282,10 @@ def get_net_info():
 def convert_to_array_number(array):
     result = []
     for v in array:
-        while int(v) >= 10:
-            v = int(int(v) / 10)
-            result.append(int(v) % 10)
+        if v != '':
+            while int(v) >= 10:
+                v = int(int(v) / 10)
+                result.append(int(v) % 10)
 
     return result
 
