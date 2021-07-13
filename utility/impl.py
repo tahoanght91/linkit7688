@@ -67,20 +67,13 @@ def blocking_read_datablock(ser, message_break):
                     op_code == _OpData.IO_STATUS_CLOCK_EXTRACT):
                 LOGGER.info('Found packet header, data with with len %s, opcode %s', data_len, op_code)
                 # datalen + 2 byte checksum, - 1 byte op_code
-                read_buffer += ser.read(data_len + 2 - 3)
+                read_buffer += ser.read(data_len + 2 - 1)
                 read_buffer_decode = ':'.join(x.encode('hex') for x in read_buffer)
-                LOGGER.info('Received packet: %s', str(read_buffer_decode))
-                # crc = read_buffer[-2] << 8 | read_buffer[-1]
-                # if check_check_sum(read_buffer, BYTE_ORDER):
-                #     LOGGER.info('Check sum successfully')
-                #     break
-                # else:
-                #     LOGGER.info('Drop frame')
-                if not check_check_sum(read_buffer, BYTE_ORDER):
-                    LOGGER.debug('Check sum not right, expected check sum %s, received check sum %s',
-                                 with_check_sum(read_buffer[:-2], BYTE_ORDER)[-2:].encode('hex'),
-                                 read_buffer[-2:].encode('hex'))
-                else:
+                LOGGER.debug('expected check sum %s, received check sum %s',
+                             with_check_sum(read_buffer[:-2], BYTE_ORDER)[-2:].encode('hex'),
+                             read_buffer[-2:].encode('hex'))
+                if check_check_sum(read_buffer, BYTE_ORDER):
+                    LOGGER.info('Received packet: %s', str(read_buffer_decode))
                     break
             else:
                 LOGGER.info('Not found header+len+opcode in 3 byte %s', str(read_buffer_decode))
