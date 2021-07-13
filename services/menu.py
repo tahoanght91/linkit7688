@@ -19,15 +19,6 @@ from services.lcd.setting_screen_lcd_services import *
 ROW = [ROW_1, ROW_2, ROW_3, ROW_4]
 TIME_OUT = 600
 
-ats_display_func = {
-    0: ats_screen_lcd_services.get_screen_ats,
-    1: ats_screen_lcd_services.get_detail_screen1_ats,
-    2: ats_screen_lcd_services.get_detail_screen2_ats,
-    3: ats_screen_lcd_services.get_detail_screen3_ats,
-    4: ats_screen_lcd_services.get_detail_screen4_ats,
-    5: ats_screen_lcd_services.get_detail_screen5_ats
-}
-
 setting_display_print = {
     0: {
         'row1': 'CAI DAT HE THONG',
@@ -107,7 +98,6 @@ def clear_display():
 
 def print_lcd(str1, str2, str3, str4):
     from control import process_cmd_lcd
-    status = False
     try:
         str = [str1, str2, str3, str4]
         LOGGER.info('Send message print_lcd on lcd')
@@ -146,8 +136,15 @@ def air_info_display():
 
 
 def ats_display():
-    global ats_screen_index, ats_display_func
-
+    global ats_screen_index
+    ats_display_func = {
+        0: ats_screen_lcd_services.get_screen_ats,
+        1: ats_screen_lcd_services.get_detail_screen1_ats,
+        2: ats_screen_lcd_services.get_detail_screen2_ats,
+        3: ats_screen_lcd_services.get_detail_screen3_ats,
+        4: ats_screen_lcd_services.get_detail_screen4_ats,
+        5: ats_screen_lcd_services.get_detail_screen5_ats
+    }
     try:
         if event == RIGHT:
             ats_screen_index += 1
@@ -158,7 +155,7 @@ def ats_display():
         elif ats_screen_index < 0:
             ats_screen_index = 0
 
-        func = ats_display_func(ats_screen_index)
+        func = ats_display_func[ats_screen_index]
         LOGGER.info('ATS DISPLAY DETAIL %s', str(ats_screen_index))
         return func()
     except Exception as ex:
@@ -276,7 +273,7 @@ def rfid_setting():
 
 def back_main_screen(button):
     global cycle_flag, time_count, screen_lv1_index
-
+    start_time = 0
     try:
         if button != -1:
             start_time = time.time()
