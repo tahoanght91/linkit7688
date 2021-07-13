@@ -80,3 +80,5 @@ class _OpData:
     IO_STATUS_ACK_LCD = b'\x99'
     IO_STATUS_ACK_LED = b'\x77' # todo add led ack
     IO_STATUS_ACK_SHARED_ATT_LED = b'\x42'
+    IO_STATUS_CLOCK_SET = b'\x02'
+    IO_STATUS_CLOCK_EXTRACT = b'\x01'

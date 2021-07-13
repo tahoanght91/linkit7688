@@ -62,7 +62,9 @@ def blocking_read_datablock(ser, message_break):
                     op_code == _OpData.IO_STATUS_RPC or
                     op_code == _OpData.IO_STATUS_ACK_LED or
                     op_code == _OpData.IO_STATUS_ACK_LCD or
-                    op_code == _OpData.IO_STATUS_ACK_SHARED_ATT_LED):
+                    op_code == _OpData.IO_STATUS_ACK_SHARED_ATT_LED or
+                    op_code == _OpData.IO_STATUS_CLOCK_SET or
+                    op_code == _OpData.IO_STATUS_CLOCK_EXTRACT):
                 LOGGER.info('Found packet header, data with with len %s, opcode %s', data_len, op_code)
                 # datalen + 2 byte checksum, - 1 byte op_code
                 read_buffer += ser.read(data_len + 2 - 1)
