@@ -282,10 +282,11 @@ def get_net_info():
 def convert_to_array_number(array):
     result = []
     for v in array:
-        if v != '':
+        if v != '' and v != '_':
             while int(v) >= 10:
-                v = int(int(v) / 10)
                 result.append(int(v) % 10)
+                v = int(int(v) / 10)
+            result.append(int(v))
 
     return result
 
@@ -301,7 +302,8 @@ def get_alarm_info():
             continue
     if len(key) == 0:
         return
-    result.alarm = convert_to_array_number([file_json[key]])
+    if file_json[key] != '':
+        result.alarm = convert_to_array_number([file_json[key]])
     # Tam fake bang 77
     # result.alarm = [7, 7, '_']
     return result
