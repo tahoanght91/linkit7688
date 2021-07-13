@@ -277,11 +277,11 @@ def get_net_info():
 
 
 def convert_to_array_number(array):
-    result = [];
+    result = []
     for v in array:
-        while v >= 10:
-            v = int(v / 10)
-            result.push(v % 10)
+        while int(v) >= 10:
+            v = int(int(v) / 10)
+            result.append(int(v) % 10)
 
     return result
 
@@ -676,17 +676,8 @@ def save_to_file(file_path, str_saved, number):
 def save_to_file_txt(file_path, str_saved, number):
     try:
         all_row = read_from_txt(file_path)
-        if number == ROW_1:
-            all_row['row1'] = str_saved
-        elif number == ROW_2:
-            all_row['row2'] = str_saved
-        elif number == ROW_3:
-            all_row['row3'] = str_saved
-        elif number == ROW_4:
-            all_row['row4'] = str_saved
-        elif number == ROW_5:
-            all_row['row5'] = str_saved
-        write_to_txt(all_row, file_path)
+        all_row[number - 1] = str_saved
+        write_to_txt(''.join(all_row), file_path)
         LOGGER.info('Saved file {0}', file_path)
     except Exception as ex:
         LOGGER.error('Error at call function in save_to_file with message: %s', ex.message)
@@ -723,7 +714,7 @@ def write_to_txt(body, file_url):
 def read_from_txt(file_url):
     try:
         with io.open(file_url) as last_trace_file:
-            bash_info = list(last_trace_file)
+            bash_info = last_trace_file.readlines()
     except Exception as ex:
         LOGGER.error('Error at call function in read_from_txt with message: %s', ex.message)
     return bash_info
