@@ -656,25 +656,6 @@ def save_to_set_ip(str_saved, key):
 
 def save_to_file(file_path, str_saved, number):
     try:
-        all_row = read_from_txt(file_path)
-        if number == ROW_1:
-            all_row['row1'] = str_saved
-        elif number == ROW_2:
-            all_row['row2'] = str_saved
-        elif number == ROW_3:
-            all_row['row3'] = str_saved
-        elif number == ROW_4:
-            all_row['row4'] = str_saved
-        elif number == ROW_5:
-            all_row['row5'] = str_saved
-        write_to_txt(all_row, file_path)
-        LOGGER.info('Saved file {0}', file_path)
-    except Exception as ex:
-        LOGGER.error('Error at call function in save_to_file with message: %s', ex.message)
-
-
-def save_to_file_txt(file_path, str_saved, number):
-    try:
         all_row = read_from_json(file_path)
         if number == ROW_1:
             all_row['row1'] = str_saved
@@ -687,6 +668,25 @@ def save_to_file_txt(file_path, str_saved, number):
         elif number == ROW_5:
             all_row['row5'] = str_saved
         write_to_json(all_row, file_path)
+        LOGGER.info('Saved file {0}', file_path)
+    except Exception as ex:
+        LOGGER.error('Error at call function in save_to_file with message: %s', ex.message)
+
+
+def save_to_file_txt(file_path, str_saved, number):
+    try:
+        all_row = read_from_txt(file_path)
+        if number == ROW_1:
+            all_row['row1'] = str_saved
+        elif number == ROW_2:
+            all_row['row2'] = str_saved
+        elif number == ROW_3:
+            all_row['row3'] = str_saved
+        elif number == ROW_4:
+            all_row['row4'] = str_saved
+        elif number == ROW_5:
+            all_row['row5'] = str_saved
+        write_to_txt(all_row, file_path)
         LOGGER.info('Saved file {0}', file_path)
     except Exception as ex:
         LOGGER.error('Error at call function in save_to_file with message: %s', ex.message)
