@@ -1,6 +1,6 @@
 import time
 import struct
-from config import _OpData
+from config import _OpData, BYTE_ORDER
 from config import LOGGER
 
 
@@ -70,11 +70,18 @@ def blocking_read_datablock(ser, message_break):
                 read_buffer += ser.read(data_len + 2 - 3)
                 read_buffer_decode = ':'.join(x.encode('hex') for x in read_buffer)
                 LOGGER.info('Received packet: %s', str(read_buffer_decode))
-                if check_check_sum(read_buffer):
-                    LOGGER.info('Check sum successfully')
-                    break
+                # crc = read_buffer[-2] << 8 | read_buffer[-1]
+                # if check_check_sum(read_buffer, BYTE_ORDER):
+                #     LOGGER.info('Check sum successfully')
+                #     break
+                # else:
+                #     LOGGER.info('Drop frame')
+                if not check_check_sum(read_buffer, BYTE_ORDER):
+                    LOGGER.debug('Check sum not right, expected check sum %s, received check sum %s',
+                                 with_check_sum(read_buffer[:-2], BYTE_ORDER)[-2:].encode('hex'),
+                                 read_buffer[-2:].encode('hex'))
                 else:
-                    LOGGER.info('Drop frame')
+                    break
             else:
                 LOGGER.info('Not found header+len+opcode in 3 byte %s', str(read_buffer_decode))
                 read_buffer = b''
@@ -125,3 +132,15 @@ def _check_sum(byte_stream, byteorder):
     else:
         raise ValueError()
     return struct.pack(fmt, crc16)
+
+# def check_sum_frame(frame):
+#     crc16 = 0xFFFF
+#     for i in frame:
+#         crc16 ^= i
+#         for index in range(8, 0, -1):
+#             tmp = crc16 & 0x0001
+#             crc16 >>= 1
+#             if tmp == 1:
+#                 crc16 ^= 0xA001
+#     return crc16
+
