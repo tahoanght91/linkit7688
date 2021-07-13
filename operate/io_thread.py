@@ -27,7 +27,7 @@ def call():
         current_cycle = int((time.time()) / 60)
         if not (current_cycle - original_cycle) and not (current_cycle - original_cycle) % 2:
             LOGGER.info("Send clock set")
-            # clock.set()
+            clock.set()
 
         # Read data
         byte_stream = blocking_read_datablock(ser, message_break)
@@ -69,8 +69,8 @@ def call():
                     write_stream = with_check_sum(control.process_cmd_led(cmd_led_formatted), BYTE_ORDER)
                     ser.write(write_stream)
                     cmd_led_lock.acquire()
-                    if cmd_led[device] == arr_value:
-                        del cmd_led[device]
+                    if cmd_led[length_led] == arr_value:
+                        del cmd_led[length_led]
                     cmd_led_lock.release()
         except Exception as ex:
             LOGGER.error('Error send led command to STM32 with message: %s', ex.message)
@@ -88,8 +88,8 @@ def call():
                     write_stream = with_check_sum(control.process_cmd_sa(cmd_sa_formatted), BYTE_ORDER)
                     ser.write(write_stream)
                     cmd_sa_lock.acquire()
-                    if cmd_sa[device] == value:
-                        del cmd_sa[device]
+                    if cmd_sa[module_id] == value:
+                        del cmd_sa[module_id]
                     cmd_sa_lock.release()
         except Exception as ex:
             LOGGER.error('Error send shared attributes command to STM32 with message: %s', ex.message)
@@ -144,6 +144,10 @@ def _read_data(byte_stream):
     elif op_code == _OpData.IO_STATUS_RPC:  # RPC response
         LOGGER.info('RPC message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
                     len(data), _OpData.RPC_SIZE)
+        return True
+    elif op_code == _OpData.IO_STATUS_ACK_LCD:  # LCD response
+        LOGGER.info('RPC message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
+                    len(data), _OpData.LCD_SIZE)
         return True
     elif op_code == _OpData.IO_STATUS_KEY_PRESS:  # LCD
         LOGGER.info('LCD message, declared length: %d, real length: %d, expected length: %d', frame_length - 1,
