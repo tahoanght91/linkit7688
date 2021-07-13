@@ -2,6 +2,7 @@ import serial
 
 import control
 from config import *
+from config import _OpData
 from config.common_lcd_services import *
 from devices import ats, crmu, clock, acm, mcc
 from operate.lcd_thread import extract_lcd_service
@@ -30,7 +31,7 @@ def call():
             clock.set()
 
         # Read data
-        byte_stream = blocking_read(ser, message_break)
+        byte_stream = blocking_read_datablock(ser, message_break)
         if byte_stream and _read_data(byte_stream):
             ser.write(with_check_sum(data_ack, BYTE_ORDER))
 
@@ -113,7 +114,7 @@ def call():
                             ser.write(write_stream)
                         else:
                             flip -= 1
-                        byte_stream = blocking_read(ser, message_break)
+                        byte_stream = blocking_read_number_of_byte(ser,5)
                         if byte_stream:
                             if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
                                 commands_lock.acquire()
@@ -156,7 +157,7 @@ def call():
                             ser.write(write_stream)
                         else:
                             flip -= 1
-                        byte_stream = blocking_read(ser, message_break)
+                        byte_stream = blocking_read_number_of_byte(ser,5)
                         if byte_stream:
                             if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
                                 cmd_led_lock.acquire()
@@ -199,7 +200,7 @@ def call():
                             ser.write(write_stream)
                         else:
                             flip -= 1
-                        byte_stream = blocking_read(ser, message_break)
+                        byte_stream = blocking_read_number_of_byte(ser,5)
                         if byte_stream:
                             if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
                                 cmd_sa_lock.acquire()
@@ -301,35 +302,7 @@ def _check_data(frame_length, data, expected_data_length):
         LOGGER.error('Error at function _check_data with message: %s', ex.message)
 
 
-class _OpData:
-    # current
-    # ACM_SIZE = 26
-    # ATS_SIZE = 51
-    # MCC_SIZE = 58
-    # CRMU_SIZE = 19
-    # LCD_SIZE = 4
-    # RPC_SIZE = 10
-    # IO_STATUS_MCC = b'\x11'
-    # IO_STATUS_ATS = b'\x13'
-    # IO_STATUS_ACM = b'\x14'
-    # IO_STATUS_CRMU = b'\x16'
-    # IO_STATUS_RPC = b'\x21'
-    # IO_STATUS_LCD = b'\x32'
 
-    # new
-    # uncomment when update STM32
-    ACM_SIZE = 29
-    ATS_SIZE = 53
-    MCC_SIZE = 59
-    CRMU_SIZE = 19
-    LCD_SIZE = 4
-    RPC_SIZE = 10
-    IO_STATUS_MCC = b'\x11'
-    IO_STATUS_ATS = b'\x13'
-    IO_STATUS_ACM = b'\x14'
-    IO_STATUS_CRMU = b'\x16'
-    IO_STATUS_RPC = b'\x21'
-    IO_STATUS_LCD = b'\x32'
 
 
 
