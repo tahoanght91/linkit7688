@@ -246,9 +246,9 @@ def thoi_gian():
             # goi ham xu ly
             time_setting_process(button)
 
-    if button == DOWN:
+    if button == DOWN and section_lv_4 <= 0:
         section_lv_3 = 1
-    elif button == UP:
+    elif button == UP and section_lv_4 <= 0:
         section_lv_3 = 0
     if section_lv_4 < 1:
         if section_lv_3 == 0:
