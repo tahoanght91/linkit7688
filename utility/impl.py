@@ -3,6 +3,7 @@ import struct
 from config import _OpData
 from config import LOGGER
 
+
 # from numba import jit
 
 def bytes_to_int(data, byteorder=None):
@@ -27,8 +28,10 @@ def with_check_sum(byte_stream, byteorder):
 def check_check_sum(byte_stream, byteorder):
     return _check_sum(byte_stream[:-2], byteorder) == byte_stream[-2:]
 
+
 def blocking_read_number_of_byte(ser, number_of_byte):
     ser.read(number_of_byte)
+
 
 def blocking_read_datablock(ser, message_break):
     initial_break = message_break / 10
@@ -38,10 +41,10 @@ def blocking_read_datablock(ser, message_break):
         read_buffer = b''
 
         # quit if no telemetry packet in duration
-        duration = time.time() - start;
+        duration = time.time() - start
         if duration > initial_break:
             LOGGER.info('Not found any data packet in: % ms', duration)
-            break;
+            break
 
         read_buffer = ser.read(1)
 
@@ -52,11 +55,14 @@ def blocking_read_datablock(ser, message_break):
             data_len = bytes_to_int([1])
             op_code = read_buffer[2]
             if (op_code == _OpData.IO_STATUS_ACM or
-                op_code == _OpData.IO_STATUS_ATS or
-                op_code == _OpData.IO_STATUS_CRMU or
-                op_code == _OpData.IO_STATUS_LCD or
-                op_code == _OpData.IO_STATUS_MCC or
-                op_code == _OpData.IO_STATUS_RPC):
+                    op_code == _OpData.IO_STATUS_ATS or
+                    op_code == _OpData.IO_STATUS_CRMU or
+                    op_code == _OpData.IO_STATUS_LCD or
+                    op_code == _OpData.IO_STATUS_MCC or
+                    op_code == _OpData.IO_STATUS_RPC or
+                    op_code == _OpData.IO_STATUS_ACK_LED or
+                    op_code == _OpData.IO_STATUS_ACK_LCD or
+                    op_code == _OpData.IO_STATUS_ACK_SHARED_ATT_LED):
                 LOGGER.info('Found packet header, data with with len %s, opcode %s', data_len, op_code)
                 # datalen + 2 byte checksum, - 1 byte op_code
                 read_buffer += ser.read(data_len + 2 - 1)
@@ -67,11 +73,12 @@ def blocking_read_datablock(ser, message_break):
                 LOGGER.info('Not found header+len+opcode in 3 byte %s', read_buffer_decode)
                 read_buffer = b''
         else:
-            LOGGER.debug('Mark byte not right, expected mark byte A0, received mark byte %s', read_buffer[0].encode('hex'))
+            LOGGER.debug('Mark byte not right, expected mark byte A0, received mark byte %s',
+                         read_buffer[0].encode('hex'))
             read_buffer = b''
 
+    return read_buffer
 
-    return read_buffer;
 
 def _check_sum(byte_stream, byteorder):
     '''

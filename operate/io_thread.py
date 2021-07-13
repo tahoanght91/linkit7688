@@ -19,7 +19,10 @@ def call():
 
     data_ack = b'\xa0\x02\x11\x00'
     control_ack = b'\xa0\x01\x21'
-    message_break = shared_attributes.get('mccPeriodReadDataIO', default_data.mccPeriodReadDataIO)  # time read data from IO
+    led_ack = b'\xa0\x01\x77'
+    shared_att_ack = b'\xa0\x01\x42'
+    message_break = shared_attributes.get('mccPeriodReadDataIO',
+                                          default_data.mccPeriodReadDataIO)  # time read data from IO
     flip = READ_PER_WRITE
 
     original_cycle = int((time.time()) / 60)
@@ -32,11 +35,17 @@ def call():
 
         # Read data
         byte_stream = blocking_read_datablock(ser, message_break)
-        if byte_stream and _read_data(byte_stream):
-            ser.write(with_check_sum(data_ack, BYTE_ORDER))
+        if byte_stream:
+            op_code = byte_stream[2]
+            if op_code == _OpData.IO_STATUS_ACM or \
+                    op_code == _OpData.IO_STATUS_ATS or \
+                    op_code == _OpData.IO_STATUS_CRMU or \
+                    op_code == _OpData.IO_STATUS_LCD or \
+                    op_code == _OpData.IO_STATUS_MCC:
+                _read_data(byte_stream)
+                ser.write(with_check_sum(data_ack, BYTE_ORDER))
 
         # read button status
-
 
         # Write command
         # try:
@@ -97,6 +106,7 @@ def call():
 
         try:
             # rpc
+            flip = READ_PER_WRITE
             if commands:
                 commands_snap = []
                 commands_lock.acquire()
@@ -114,16 +124,23 @@ def call():
                             ser.write(write_stream)
                         else:
                             flip -= 1
-                        byte_stream = blocking_read_number_of_byte(ser,5)
+                        # byte_stream = blocking_read_number_of_byte(ser, 5)
+                        byte_stream = blocking_read_datablock(ser, message_break)
                         if byte_stream:
-                            if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
+                            op_code = byte_stream[2]
+                            if op_code == _OpData.IO_STATUS_RPC and byte_stream == with_check_sum(control_ack, BYTE_ORDER):
                                 commands_lock.acquire()
                                 if commands[device] == command:
                                     del commands[device]
                                 commands_lock.release()
                                 LOGGER.debug("Receive ACK rpc message with device: %s", device)
                                 break
-                            if _read_data(byte_stream):
+                            elif op_code == _OpData.IO_STATUS_ACM or \
+                                    op_code == _OpData.IO_STATUS_ATS or \
+                                    op_code == _OpData.IO_STATUS_CRMU or \
+                                    op_code == _OpData.IO_STATUS_LCD or \
+                                    op_code == _OpData.IO_STATUS_MCC:
+                                _read_data(byte_stream)
                                 ser.write(with_check_sum(data_ack, BYTE_ORDER))
                         if flip == 0:
                             tries += 1
@@ -140,6 +157,7 @@ def call():
 
         try:
             # led
+            flip = READ_PER_WRITE
             if cmd_led:
                 cmd_led_snap = []
                 cmd_led_lock.acquire()
@@ -157,17 +175,34 @@ def call():
                             ser.write(write_stream)
                         else:
                             flip -= 1
-                        byte_stream = blocking_read_number_of_byte(ser,5)
+                        byte_stream = blocking_read_datablock(ser, message_break)
                         if byte_stream:
-                            if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
+                            op_code = byte_stream[2]
+                            if op_code == _OpData.IO_STATUS_ACK_LED and byte_stream == with_check_sum(led_ack, BYTE_ORDER):
                                 cmd_led_lock.acquire()
-                                if cmd_led[length_led] == arr_value:
-                                    del cmd_led[length_led]
+                                if cmd_led[device] == arr_value:
+                                    del cmd_led[device]
                                 cmd_led_lock.release()
-                                LOGGER.debug("Receive ACK led message with length_led: %d", length_led)
+                                LOGGER.debug("Receive ACK rpc message with device: %s", device)
                                 break
-                            if _read_data(byte_stream):
+                            elif op_code == _OpData.IO_STATUS_ACM or \
+                                    op_code == _OpData.IO_STATUS_ATS or \
+                                    op_code == _OpData.IO_STATUS_CRMU or \
+                                    op_code == _OpData.IO_STATUS_LCD or \
+                                    op_code == _OpData.IO_STATUS_MCC:
+                                _read_data(byte_stream)
                                 ser.write(with_check_sum(data_ack, BYTE_ORDER))
+                        # byte_stream = blocking_read_number_of_byte(ser, 5)
+                        # if byte_stream:
+                        #     if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
+                        #         cmd_led_lock.acquire()
+                        #         if cmd_led[length_led] == arr_value:
+                        #             del cmd_led[length_led]
+                        #         cmd_led_lock.release()
+                        #         LOGGER.debug("Receive ACK led message with length_led: %d", length_led)
+                        #         break
+                        #     if _read_data(byte_stream):
+                        #         ser.write(with_check_sum(data_ack, BYTE_ORDER))
                         if flip == 0:
                             tries += 1
                             if tries > MAX_TRIES:
@@ -183,6 +218,7 @@ def call():
 
         try:
             # shared attributes
+            flip = READ_PER_WRITE
             if cmd_sa:
                 cmd_sa_snap = []
                 cmd_sa_lock.acquire()
@@ -200,17 +236,35 @@ def call():
                             ser.write(write_stream)
                         else:
                             flip -= 1
-                        byte_stream = blocking_read_number_of_byte(ser,5)
+
+                        byte_stream = blocking_read_datablock(ser, message_break)
                         if byte_stream:
-                            if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
+                            op_code = byte_stream[2]
+                            if op_code == _OpData.IO_STATUS_ACK_SHARED_ATT_LED and byte_stream == with_check_sum(shared_att_ack, BYTE_ORDER):
                                 cmd_sa_lock.acquire()
-                                if cmd_sa[module_id] == value:
-                                    del cmd_sa[module_id]
+                                if cmd_sa[device] == value:
+                                    del cmd_sa[device]
                                 cmd_sa_lock.release()
-                                LOGGER.debug("Receive ACK shared attributes message with module_id: %d", module_id)
+                                LOGGER.debug("Receive ACK rpc message with device: %s", device)
                                 break
-                            if _read_data(byte_stream):
+                            elif op_code == _OpData.IO_STATUS_ACM or \
+                                    op_code == _OpData.IO_STATUS_ATS or \
+                                    op_code == _OpData.IO_STATUS_CRMU or \
+                                    op_code == _OpData.IO_STATUS_LCD or \
+                                    op_code == _OpData.IO_STATUS_MCC:
+                                _read_data(byte_stream)
                                 ser.write(with_check_sum(data_ack, BYTE_ORDER))
+                        # byte_stream = blocking_read_number_of_byte(ser, 5)
+                        # if byte_stream:
+                        #     if byte_stream == with_check_sum(control_ack, BYTE_ORDER):
+                        #         cmd_sa_lock.acquire()
+                        #         if cmd_sa[module_id] == value:
+                        #             del cmd_sa[module_id]
+                        #         cmd_sa_lock.release()
+                        #         LOGGER.debug("Receive ACK shared attributes message with module_id: %d", module_id)
+                        #         break
+                        #     if _read_data(byte_stream):
+                        #         ser.write(with_check_sum(data_ack, BYTE_ORDER))
                         if flip == 0:
                             tries += 1
                             if tries > MAX_TRIES:
@@ -300,9 +354,3 @@ def _check_data(frame_length, data, expected_data_length):
             return True
     except Exception as ex:
         LOGGER.error('Error at function _check_data with message: %s', ex.message)
-
-
-
-
-
-
