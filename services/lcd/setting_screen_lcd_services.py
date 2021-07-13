@@ -15,29 +15,76 @@ class __IPv4:
         self.ip = ['_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_']
 
     def get_ip(self):
-        return "{0}{1}{2}.{3}{4}{5}.{6}{7}{8}.{9}{10}{11}".format(self.ip[0], self.ip[1], self.ip[2]
-                                                                  , self.ip[3], self.ip[4], self.ip[5]
-                                                                  , self.ip[6], self.ip[7], self.ip[8]
-                                                                  , self.ip[9], self.ip[10], self.ip[11])
+        return "{0}{1}{2}.{3}{4}{5}.{6}{7}{8}.{9}{10}{11}".format(self.ip[0]
+                                                                  , self.ip[1]
+                                                                  , self.ip[2]
+                                                                  , self.ip[3]
+                                                                  , self.ip[4]
+                                                                  , self.ip[5]
+                                                                  , self.ip[6]
+                                                                  , self.ip[7]
+                                                                  , self.ip[8]
+                                                                  , self.ip[9]
+                                                                  , self.ip[10]
+                                                                  , self.ip[11])
+
+    def get_ip_number(self):
+        return "{0}{1}{2}.{3}{4}{5}.{6}{7}{8}.{9}{10}{11}".format(self.ip[0] if self.ip[0] != '_' else ''
+                                                                  , self.ip[1] if self.ip[1] != '_' else ''
+                                                                  , self.ip[2] if self.ip[2] != '_' else ''
+                                                                  , self.ip[3] if self.ip[3] != '_' else ''
+                                                                  , self.ip[4] if self.ip[4] != '_' else ''
+                                                                  , self.ip[5] if self.ip[5] != '_' else ''
+                                                                  , self.ip[6] if self.ip[6] != '_' else ''
+                                                                  , self.ip[7] if self.ip[7] != '_' else ''
+                                                                  , self.ip[8] if self.ip[8] != '_' else ''
+                                                                  , self.ip[9] if self.ip[9] != '_' else ''
+                                                                  , self.ip[10] if self.ip[10] != '_' else ''
+                                                                  , self.ip[11] if self.ip[11] != '_' else '')
 
     def get_oct(self):
-        return [int("{0}{1}{2}".format(self.ip[0] if self.ip[0] != '_' else 0
-                                       , self.ip[1] if self.ip[1] != '_' else 0
-                                       , self.ip[2] if self.ip[2] != '_' else 0))
-            , int("{0}{1}{2}".format(self.ip[3] if self.ip[3] != '_' else 0
-                                     , self.ip[4] if self.ip[4] != '_' else 0
-                                     , self.ip[5] if self.ip[5] != '_' else 0))
-            , int("{0}{1}{2}".format(self.ip[6] if self.ip[6] != '_' else 0
-                                     , self.ip[7] if self.ip[7] != '_' else 0
-                                     , self.ip[8] if self.ip[8] != '_' else 0))
-            , int("{0}{1}{2}".format(self.ip[9] if self.ip[9] != '_' else 0
-                                     , self.ip[10] if self.ip[10] != '_' else 0
-                                     , self.ip[11] if self.ip[11] != '_' else 0))]
+        for v in self.get_ip_number().split("."):
+            if v == '' or v > 225:
+                # Chua nhap octet nay
+                # ip khong duoc lon hon 225
+                return 0
+
+        return self.get_ip().split(".")
+
+        # return [int("{0}{1}{2}".format(self.ip[0]
+        #                                , self.ip[1]
+        #                                , self.ip[2]))
+        #     , int("{0}{1}{2}".format(self.ip[3]
+        #                              , self.ip[4]
+        #                              , self.ip[5]))
+        #     , int("{0}{1}{2}".format(self.ip[6]
+        #                              , self.ip[7]
+        #                              , self.ip[8]))
+        #     , int("{0}{1}{2}".format(self.ip[9]
+        #                              , self.ip[10]
+        #                              , self.ip[11]))]
+
+        # return [int("{0}{1}{2}".format(self.ip[0] if self.ip[0] != '_' else 0
+        #                                , self.ip[1] if self.ip[1] != '_' else 0
+        #                                , self.ip[2] if self.ip[2] != '_' else 0))
+        #     , int("{0}{1}{2}".format(self.ip[3] if self.ip[3] != '_' else 0
+        #                              , self.ip[4] if self.ip[4] != '_' else 0
+        #                              , self.ip[5] if self.ip[5] != '_' else 0))
+        #     , int("{0}{1}{2}".format(self.ip[6] if self.ip[6] != '_' else 0
+        #                              , self.ip[7] if self.ip[7] != '_' else 0
+        #                              , self.ip[8] if self.ip[8] != '_' else 0))
+        #     , int("{0}{1}{2}".format(self.ip[9] if self.ip[9] != '_' else 0
+        #                              , self.ip[10] if self.ip[10] != '_' else 0
+        #                              , self.ip[11] if self.ip[11] != '_' else 0))]
 
 
 class __Alarm:
     def __init__(self):
         self.alarm = ['_', '_', '_']
+
+    def get_alarm_number(self):
+        result = ''.join(self.alarm)
+        return 0 if result == '___' else result
 
     def get_alarm(self):
         return ''.join(self.alarm)
@@ -100,6 +147,7 @@ def choose_config(setting_idx):
     global screen_setting_idx, screen_idx, isChosen
     if isChosen:
         return
+    isChosen = 1
     screen_idx = -1
     screen_setting_idx = setting_idx
 
@@ -143,7 +191,7 @@ def call_screen_network():
                 "row_4": ''
             }
         ]
-        LOGGER.info('Enter call_screen_network function: %s', str(switcher[selection_chosen]))
+        # LOGGER.info('Enter call_screen_network function: %s', str(switcher[selection_chosen]))
         # Update text
         process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
         process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_2'])
@@ -157,7 +205,7 @@ def refresh_screen_assign_ip_address():
     from control import process_cmd_lcd
     try:
         global network
-        network = get_net_info()
+        network = get_net_info() if network == 0 else network
         switcher = [
             {
                 "row_2": 'IP address'
@@ -188,7 +236,7 @@ def refresh_screen_assign_ip_address():
         ]
 
         # Update text
-        if screen_idx % 2:
+        if screen_idx % 2 == 0:
             # Man hinh xac nhan luu
             LOGGER.info('Enter refresh_screen_assign_ip_address function: %s', str(switcher_2[pointer_idx]))
             process_cmd_lcd(ROW_1, UPDATE_VALUE, 'XAC NHAN LUU')
@@ -201,7 +249,7 @@ def refresh_screen_assign_ip_address():
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]])
             process_cmd_lcd(ROW_3, UPDATE_VALUE, network.get_ip())
 
-        LOGGER.info('ASSIGN IP SCREEN: %s', str(network.get_ip()))
+        # LOGGER.info('ASSIGN IP SCREEN: %s', str(network.get_ip()))
         # Update nhap nhay
         # ...
     except Exception as ex:
@@ -212,11 +260,15 @@ def get_net_info():
     # Todo: Get thong tin ip dang su dung, neu khong co thi tra ve null
     file_json = read_to_json('./last_cmd_network.json')
     key = ""
-    for k, v in set_ip_idx:
-        key = "row{}".format(v + 1) if selection_chosen[0] == v else 1
+    for k in set_ip_idx:
+        if selection_chosen[0] == set_ip_idx[k]:
+            key = "row{}".format(set_ip_idx[k] + 1)
+            continue
+    if len(key) == 0:
+        return
     array = file_json[key].split(".")
     result = __IPv4()
-    if array.length > 0 and array[0] != '':
+    if len(array) > 0 and array[0] != '':
         result.ip = convert_to_array_number(array)
 
     # Tam fake bang 192.168.1.11
@@ -226,7 +278,7 @@ def get_net_info():
 
 def convert_to_array_number(array):
     result = [];
-    for i, v in array:
+    for v in array:
         while v >= 10:
             v = int(v / 10)
             result.push(v % 10)
@@ -239,8 +291,12 @@ def get_alarm_info():
     result = __Alarm()
     file_json = read_to_json('./last_cmd_alarm.json')
     key = ""
-    for k, v in set_alarm_idx:
-        key = "row{}".format(v + 1) if selection_chosen[0] == v else 1
+    for k in set_alarm_idx:
+        if selection_chosen[0] == set_alarm_idx[k]:
+            key = "row{}".format(set_alarm_idx[k] + 1)
+            continue
+    if len(key) == 0:
+        return
     result.alarm = convert_to_array_number([file_json[key]])
     # Tam fake bang 77
     # result.alarm = [7, 7, '_']
@@ -248,7 +304,9 @@ def get_alarm_info():
 
 
 def get_next_number(keycode, number):
-    if keycode == BUTTON_34_EVENT_UP:
+    if number == '_':
+        number = 0
+    if keycode == BUTTON_14_EVENT_UP:
         return 0 if number > 9 else number + 1
     else:
         return 9 if number == 0 else number - 1
@@ -340,7 +398,8 @@ def assign_ip_listen_key(keycode):
             pointer_idx = 0
         else:
             if pointer_idx == confirm["yes"]:
-                save_ip()
+                if save_ip() == 0:
+                    return
                 pointer_idx = 0
                 screen_idx = selection_setting_network["main"]
             else:
@@ -374,7 +433,8 @@ def alarm_selection_listen_key(keycode):
             pointer_idx = 0
             if screen_idx == selection_setting_alarm["confirm_assign_alarm"] + 1:
                 if pointer_idx == confirm["yes"]:
-                    save_alarm()
+                    if save_alarm() == 0:
+                        return
                     screen_idx = selection_setting_alarm["main"]
                 else:
                     return
@@ -419,29 +479,34 @@ def assign_alarm_listen_key(keycode):
 
 def save_ip():
     LOGGER.info('Enter assign_alarm_listen_key function')
-    for i, v in network.get_oct():
-        if v > 225 or v < 1:
-            # ip in range (1 - 225)
-            LOGGER.error('Error at octet %s: %s', i, v)
-            return 0
+    if network.get_oct() == 0:
+        return
+    # for i, v in network.get_oct():
+    #     if v > 225 or v < 0:
+    #         # ip in range (0 - 225)
+    #         LOGGER.error('Error at octet %s: %s', i, v)
+    #         return 0
     # Luu ip vao const
     save_to_file('./last_cmd_network.json', network.get_ip(), selection_chosen[0] + 1)
     # Luu ip vao bash
-    for k, v in set_ip_idx:
+    for k in set_ip_idx:
         save_to_set_ip(network.get_ip(), k) if selection_chosen[0] == set_ip_idx else 1
     reset_parameter()
+    return 1
 
 
 def save_alarm():
+    if alarm.get_alarm_number() == 0:
+        return 0
     LOGGER.info('Enter save_alarm function')
     # Luu alarm vao const
-    save_to_file('./last_cmd_alarm.json', alarm.get_alarm(), selection_chosen[0] + 1)
+    save_to_file('./last_cmd_alarm.json', alarm.get_alarm_number(), selection_chosen[0] + 1)
     # Call API de luu alarm
-    for k, v in key_attr:
-        if v["index_screen_1"] == selection_chosen[0] and v["index_screen_2"] == selection_chosen[1]:
+    for k in key_attr:
+        if key_attr[k]["index_screen_1"] == selection_chosen[0] and key_attr[k]["index_screen_2"] == selection_chosen[1]:
             # Man hinh 1 chon loai alarm
             # Man hinh 2 chon set nguong cao hay thap
-            write_body_send_shared_attributes(alarm.get_alarm(), k)
+            write_body_send_shared_attributes(alarm.get_alarm_number(), k)
             break
     # Reset cac tham so dieu huong man hinh
     reset_parameter()
@@ -509,7 +574,7 @@ def refresh_screen_assign_alarm():
     from control import process_cmd_lcd
     try:
         global alarm
-        alarm = get_alarm_info()
+        alarm = get_alarm_info() if alarm == 0 else alarm
         switcher = [
             {
                 "row_2": 'Nguong cao'

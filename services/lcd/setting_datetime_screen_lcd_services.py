@@ -46,9 +46,12 @@ def date_setting_process(button):
         if confirm_status:
             if button == OK:
                 if confirm_idx == 0:
-                    os.system("""date +%Y%m%d "{year}{month}{day}" """.format(year=''.join(date[8:12]),
-                                                                              month=''.join(date[4:6]),
-                                                                              day=''.join(date[0:2])))
+                    try:
+                        os.system("""date +%Y%m%d "{year}{month}{day}" """.format(year=''.join(date[8:12]),
+                                                                                  month=''.join(date[4:6]),
+                                                                                  day=''.join(date[0:2])))
+                    except Exception as ex:
+                        LOGGER.error('Error at set datetime to os in os.system with message: %s', ex.message)
                     confirm_status = False
                     # ham thoat
                     process_cmd_lcd(ROW_1, UPDATE_VALUE, 'NGAY')
