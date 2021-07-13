@@ -490,7 +490,7 @@ def save_ip():
     save_to_file('./last_cmd_network.json', network.get_ip(), selection_chosen[0] + 1)
     # Luu ip vao bash
     for k in set_ip_idx:
-        save_to_set_ip(network.get_ip(), k) if selection_chosen[0] == set_ip_idx else 1
+        save_to_set_ip(network.get_ip(), k) if selection_chosen[0] == set_ip_idx[k] else 1
     reset_parameter()
     return 1
 
