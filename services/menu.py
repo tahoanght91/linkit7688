@@ -1,146 +1,166 @@
-from config import *
+"""---------------------------------------------------------------------------------------------------------------------
+                                                    Include
+   ------------------------------------------------------------------------------------------------------------------"""
 from config.common import *
-from config.common_lcd_services import *
-from services.lcd import main_screen_lcd_services
+from services.lcd import main_screen_lcd_services, ats_screen_lcd_services, ats_setting_lcd_service, \
+    rfid_screen_lcd_sevices, rfid_setting_lcd_service
 from services.lcd.acm_sreen_lcd_services import show_temp_condition
 from services.lcd.alarm_lcd_services import check_alarm
-from services.lcd import ats_screen_lcd_services, ats_setting_lcd_service
-from services.lcd import rfid_screen_lcd_sevices, rfid_setting_lcd_service
 from services.lcd.sensor_screen_lcd_services import *
-from time import time
-
 # SonTH
 from services.lcd.setting_datetime_screen_lcd_services import date_setting_process, time_setting_process
 from services.lcd.setting_info_screen_lcd_services import info_setting_process
 from services.lcd.setting_screen_lcd_services import *
 
-TIME_OUT = 600
+
+"""---------------------------------------------------------------------------------------------------------------------
+                                                    Define 
+   ------------------------------------------------------------------------------------------------------------------"""
 ROW = [ROW_1, ROW_2, ROW_3, ROW_4]
-section_lv_1 = 0
-section_lv_2 = 0
-section_lv_3 = -1
-section_lv_4 = -1
-section_lv_5 = -1
+TIME_OUT = 600
+
+setting_display_print = {
+    0: {
+        'row1': 'CAI DAT HE THONG',
+        'row2': '> Thong tin',
+        'row3': 'Ngay gio',
+        'row4': 'Thong so mang'
+        },
+    1: {
+        'row1': 'CAI DAT HE THONG',
+        'row2': 'Thong tin',
+        'row3': '> Ngay gio',
+        'row4': 'Thong so mang'
+        },
+    2: {
+        'row1': 'CAI DAT HE THONG',
+        'row2': 'Thong tin',
+        'row3': 'Ngay gio',
+        'row4': '> Thong so mang'
+        },
+    3: {
+        'row1': 'CAI DAT HE THONG',
+        'row2': '> Canh bao',
+        'row3': 'Thiet bi ATS',
+        'row4': 'Thiet bi RFID'
+        },
+    4: {
+        'row1': 'CAI DAT HE THONG',
+        'row2': 'Canh bao',
+        'row3': '> Thiet bi ATS',
+        'row4': 'Thiet bi RFID'
+        },
+    5: {
+        'row1': 'CAI DAT HE THONG',
+        'row2': 'Canh bao',
+        'row3': 'Thiet bi ATS',
+        'row4': '> Thiet bi RFID'
+        }
+}
+
+time_setting_print = {
+    0: {
+        'row1': 'THOI GIAN',
+        'row2': '> Ngay',
+        'row3': 'Ngay gio',
+        'row4': ''
+    },
+    1: {
+        'row1': 'THOI GIAN',
+        'row2': 'Ngay',
+        'row3': '> Gio',
+        'row4': ''
+    }
+}
+
+
+'''---------------------------------------------------------------------------------------------------------------------
+                                                Global variable
+   ------------------------------------------------------------------------------------------------------------------'''
+event = 0
+ats_screen_index = 0
+setting_screen_index = 0
+last_setting_screen_index = -1
+screen_lv1_index = 0
+last_screen_lv1_index = -1
+start_time = 0
 time_count = 0
-button = 0
-set_string_ok = 0
 cycle_flag = False
-time_cycle = 0
+time_setting_screen_index = 0,
+last_time_setting_screen_index = -1
+
+"""---------------------------------------------------------------------------------------------------------------------
+                                                Internal function
+   ------------------------------------------------------------------------------------------------------------------"""
+''' print lcd function '''
+def clear_display():
+    cmd_lcd[CLEAR] = ''
+
+
 def print_lcd(str1, str2, str3, str4):
     from control import process_cmd_lcd
-    status = False
     try:
         str = [str1, str2, str3, str4]
         LOGGER.info('Send message print_lcd on lcd')
         i = 0
         while i < 4:
-            # if str[i] != '':
-            #     status = process_cmd_lcd(ROW[i], UPDATE_VALUE, str[i])
+            if str[i] == '':
+                str[i] = ' '
             status = process_cmd_lcd(ROW[i], UPDATE_VALUE, str[i])
             if status:
                 i += 1
     except Exception as ex:
-        LOGGER.info('print_lcd_lcd function error: %s', ex.message)
+        LOGGER.info('print_lcd function error: %s', ex.message)
 
 
-def clear_display():
-    cmd_lcd[CLEAR] = ''
-
-
-def select_section_lv1():
-    global section_lv_1
-    global section_lv_2
-    global button
-
-    try:
-        if button in MENU_LV_1:
-            section_lv_1 = MENU_LV_1.index(button)
-        switcher = {
-            0: main_display,
-            1: warning_display,
-            2: security_sensor_info_display,
-            3: air_info_display,
-            4: ats_display,
-            5: setting_display,
-            6: rfid_display,
-        }
-        LOGGER.info('Send message select_section_lv1 on lcd, section_lv_1: %s', str(section_lv_1))
-        func = switcher.get(section_lv_1)
-        return func()
-    except Exception as ex:
-        LOGGER.error('Error at call function in select_section_lv1 with message: %s', ex.message)
-
-
+''' screen level 1 implement '''
 def main_display():
     main_screen_lcd_services.screen_main()
 
 
 def warning_display():
     check_alarm()
-    # global button
-    # try:
-    #     ats_setting_lcd_service.listen_key_code(button)
-    # except Exception as ex:
-    #     LOGGER.error('Error at call function in warning_display with message: %s', ex.message)
 
 
 def security_sensor_info_display():
-    global section_lv_2
+    global event
 
-    if button == LEFT:
-        section_lv_2 = 0
-    elif button == RIGHT:
-        section_lv_2 = 1
-
-    if section_lv_2 == 0:
-        security_sensor_screen_1(telemetries)
-    if section_lv_2 == 1:
-        security_sensor_screen_2(telemetries)
     LOGGER.info('Enter security_sensor_info_display function')
-    LOGGER.info('section_lv_2: %s', str(section_lv_2))
+    if event == LEFT or event == 0:
+        security_sensor_screen_1(telemetries)
+    elif event == RIGHT:
+        security_sensor_screen_2(telemetries)
 
 
 def air_info_display():
-    # print_lcd('BAN TIN DIEU HOA',
-    #           'DH1: bat, HD2:Tat',
-    #           'Quat:Bat',
-    #           'Che do: Auto')
-    # # goi ham hien thi
     show_temp_condition(telemetries)
-    # LOGGER.info('Enter air_info_display function')
-    # LOGGER.info('section_lv_2: %s', str(section_lv_2))
 
 
 def ats_display():
-    global section_lv_2
+    global ats_screen_index
+    ats_display_func = {
+        0: ats_screen_lcd_services.get_screen_ats,
+        1: ats_screen_lcd_services.get_detail_screen1_ats,
+        2: ats_screen_lcd_services.get_detail_screen2_ats,
+        3: ats_screen_lcd_services.get_detail_screen3_ats,
+        4: ats_screen_lcd_services.get_detail_screen4_ats,
+        5: ats_screen_lcd_services.get_detail_screen5_ats
+    }
+    try:
+        if event == RIGHT:
+            ats_screen_index += 1
+        elif event == LEFT:
+            ats_screen_index -= 1
+        if ats_screen_index > 5:
+            ats_screen_index = 5
+        elif ats_screen_index < 0:
+            ats_screen_index = 0
 
-    if button == RIGHT:
-        section_lv_2 += 1
-    elif button == LEFT:
-        section_lv_2 -= 1
-    if section_lv_2 > 5:
-        section_lv_2 = 5
-    elif section_lv_2 < 0:
-        section_lv_2 = 0
-
-    if section_lv_2 == 0:
-        ats_screen_lcd_services.get_screen_ats()
-        LOGGER.info('ATS DISPLAY')
-    elif section_lv_2 == 1:
-        ats_screen_lcd_services.get_detail_screen1_ats()
-        LOGGER.info('ATS DISPLAY DETAIL1')
-    elif section_lv_2 == 2:
-        ats_screen_lcd_services.get_detail_screen2_ats()
-        LOGGER.info('ATS DISPLAY DETAIL2')
-    elif section_lv_2 == 3:
-        ats_screen_lcd_services.get_detail_screen3_ats()
-        LOGGER.info('ATS DISPLAY DETAIL3')
-    elif section_lv_2 == 4:
-        ats_screen_lcd_services.get_detail_screen4_ats()
-        LOGGER.info('ATS DISPLAY DETAIL4')
-    elif section_lv_2 == 5:
-        ats_screen_lcd_services.get_detail_screen5_ats()
-        LOGGER.info('ATS DISPLAY DETAIL5')
+        func = ats_display_func[ats_screen_index]
+        LOGGER.info('ATS DISPLAY DETAIL %s', str(ats_screen_index))
+        return func()
+    except Exception as ex:
+        LOGGER.error('ats_display function error: %s', ex.message)
 
 
 def rfid_display():
@@ -149,357 +169,154 @@ def rfid_display():
 
 
 def setting_display():
-    global section_lv_2
-    global section_lv_3
-    global button
-
+    global setting_screen_index, event, last_setting_screen_index
     try:
-        if button == OK and section_lv_3 == -1:
-            section_lv_3 = 0
-
-        if section_lv_3 > -1:
-            switcher = {
-                0: cai_dat_thong_tin,
-                1: thoi_gian,
-                2: thong_so_mang,
-                3: canh_bao,
-                4: thiet_bi_ats,
-                5: thiet_bi_rfid,
-            }
-            func = switcher.get(section_lv_2)
-            return func()
-
-        elif section_lv_3 == -1:
-            if button == UP:
-                section_lv_2 -= 1
-            elif button == DOWN:
-                section_lv_2 += 1
-            if section_lv_2 > 5:
-                section_lv_2 = 5
-            elif section_lv_2 < 0:
-                section_lv_2 = 0
-            if button == LEFT:
-                section_lv_2 = 0
-            elif button == RIGHT:
-                section_lv_2 = 3
-
-            if section_lv_2 == 0:
-                print_lcd('CAI DAT HE THONG',
-                          '> Thong tin',
-                          'Ngay gio',
-                          'Thong so mang')
-
-
-            elif section_lv_2 == 1:
-                print_lcd('CAI DAT HE THONG',
-                          'Thong tin',
-                          '> Ngay gio',
-                          'Thong so mang')
-            elif section_lv_2 == 2:
-                print_lcd('CAI DAT HE THONG',
-                          'Thong tin',
-                          'Ngay gio',
-                          '> Thong so mang')
-            elif section_lv_2 == 3:
-                print_lcd('CAI DAT HE THONG',
-                          '> Canh bao',
-                          'Thiet bi ATS',
-                          'Thiet bi RFID')
-            elif section_lv_2 == 4:
-                print_lcd('CAI DAT HE THONG',
-                          'Canh bao',
-                          '> Thiet bi ATS',
-                          'Thiet bi RFID')
-            elif section_lv_2 == 5:
-                print_lcd('CAI DAT HE THONG',
-                          'Canh bao',
-                          'Thiet bi ATS',
-                          '> Thiet bi RFID')
-        LOGGER.info('Finish rfid_display function')
-        LOGGER.info('section_lv_2: %s', str(section_lv_2))
+        if event == UP:
+            setting_screen_index -= 1
+        elif event == DOWN:
+            setting_screen_index += 1
+        if setting_screen_index > 5:
+            setting_screen_index = 5
+        elif setting_screen_index < 0:
+            setting_screen_index = 0
+        if event == LEFT:
+            setting_screen_index = 0
+        elif event == RIGHT:
+            setting_screen_index = 3
+        if last_setting_screen_index != setting_screen_index:
+            print_lcd(setting_display_print[setting_screen_index]['row1'],
+                      setting_display_print[setting_screen_index]['row2'],
+                      setting_display_print[setting_screen_index]['row3'],
+                      setting_display_print[setting_screen_index]['row4'])
+            last_setting_screen_index = setting_screen_index
+        if event == OK:
+            select_setting()
+        LOGGER.info('setting menu, setting_screen_index: %s', str(setting_screen_index))
     except Exception as ex:
         LOGGER.error('setting_display function error: %s', ex.message)
 
 
-def cai_dat_thong_tin():
-    global set_string_ok
-    global section_lv_4
-    info_setting_process(button)
+''' Setting implement '''
+def select_setting():
+    global event, setting_screen_index
+    setting_function_list = {
+        0: information_setting,
+        1: time_setting,
+        2: internet_setting,
+        3: warning_setting,
+        4: ats_setting,
+        5: rfid_setting
+    }
+
+    func = setting_function_list.get(setting_screen_index)
+    return func()
+
+
+def information_setting():
+    global event
+
     LOGGER.info('Finish cai_dat_thong_tin function')
+    info_setting_process(event)
 
 
-def thoi_gian():
-    global section_lv_3
-    global section_lv_4
-    global button
+def time_setting():
+    global event, time_setting_screen_index, last_time_setting_screen_index
 
-    if button == OK and section_lv_4 <= 0:
-        section_lv_4 += 1
-
-    if section_lv_4 == 1:
-        if section_lv_3 == 0:
-            # print_lcd('Vao cai dat ngay')
-            # goi ham xu ly
-            date_setting_process(button)
-        elif section_lv_3 == 1:
-            # print_lcd('Vao cai dat gio')
-            # goi ham xu ly
-            time_setting_process(button)
-
-    if button == DOWN and section_lv_4 <= 0:
-        section_lv_3 = 1
-    elif button == UP and section_lv_4 <= 0:
-        section_lv_3 = 0
-    if section_lv_4 < 1:
-        if section_lv_3 == 0:
-            print_lcd('THOI GIAN',
-                      '> Ngay',
-                      'Gio',
-                      '')
-
-        elif section_lv_3 == 1:
-            print_lcd('THOI GIAN',
-                      'Ngay',
-                      '> Gio',
-                      '')
-    LOGGER.info('Finish thoi_gian function')
-    LOGGER.info('section_lv_3: %s', str(section_lv_3))
+    try:
+        if event == DOWN:
+            time_setting_screen_index = 1
+        elif event == UP:
+            time_setting_screen_index = 0
+        elif event == OK:
+            if time_setting_screen_index == 0:
+                date_setting_process(event)
+            else:
+                time_setting_process(event)
+        if last_time_setting_screen_index != time_setting_screen_index:
+            print_lcd(time_setting_print[time_setting_screen_index]['row1'],
+                      time_setting_print[time_setting_screen_index]['row2'],
+                      time_setting_print[time_setting_screen_index]['row3'],
+                      time_setting_print[time_setting_screen_index]['row4'])
+            last_time_setting_screen_index = time_setting_screen_index
+        LOGGER.info('finish time_setting function, time_setting_screen_index: %s', str(time_setting_screen_index))
+    except Exception as ex:
+        LOGGER.error('time_setting function error: %s', ex.message)
 
 
-def thong_so_mang():
-    # global section_lv_3
-    # global section_lv_4
-    global button
-    global section_lv_2
+def internet_setting():
+    global event, screen_lv1_index
 
     LOGGER.info('Enter thong_so_mang function')
-
     # Call function xu ly keycode
-    choose_config(section_lv_2 + 1)
-    listen_key_code(button)
+    choose_config(screen_lv1_index + 1)
+    listen_key_code(event)
 
-    # SonTH: Comment lai, man hinh con se tu render
-    # if button == OK:
-    #     section_lv_4 += 1
-    # if section_lv_4 == 1:
-    #     if section_lv_3 == 0:
-    #         print_lcd('cai IP address')
-    #         # goi ham xu ly
-    #     elif section_lv_3 == 1:
-    #         print_lcd('cai subnet mask')
-    #         # goi ham xu ly
-    #     elif section_lv_3 == 2:
-    #         print_lcd('cai Default gateway')
-    #         # goi ham xy ly
-    #     elif section_lv_3 == 3:
-    #         print_lcd('cai Prefered DNS')
-    #         # goi ham xu ly
-    #     elif section_lv_3 == 4:
-    #         print_lcd('cai AlternateDNS')
-    #         # goi ham xu ly
-    #     return
-    #
-    # if button == DOWN:
-    #     section_lv_3 += 1
-    # elif button == UP:
-    #     section_lv_3 -= 1
-    # if button == RIGHT:
-    #     section_lv_3 = 3
-    # elif button == LEFT:
-    #     section_lv_3 = 0
-    # if section_lv_3 > 4:
-    #     section_lv_3 = 4
-    # elif section_lv_3 < 0:
-    #     section_lv_3 = 0
-    # if section_lv_4 < 1:
-    #     if section_lv_3 == 0:
-    #         print_lcd('THONG SO MANG',
-    #                   '> IP address',
-    #                   'Subnet mask',
-    #                   'Default gateway')
-    #     elif section_lv_3 == 1:
-    #         print_lcd('THONG SO MANG',
-    #                   'IP address',
-    #                   '> Subnet mask',
-    #                   'Default gateway')
-    #     elif section_lv_3 == 2:
-    #         print_lcd('THONG SO MANG',
-    #                   'IP address',
-    #                   'Subnet mask',
-    #                   '> Default gateway')
-    #     elif section_lv_3 == 3:
-    #         print_lcd('THONG SO MANG',
-    #                   '> Prefered DNS',
-    #                   'AlternateDNS',
-    #                   '')
-    #     elif section_lv_3 == 4:
-    #         print_lcd('THONG SO MANG',
-    #                   'Prefered DNS',
-    #                   '> AlternateDNS',
-    #                   '')
-    # LOGGER.info('section_lv_3: %s', str(section_lv_3))
-
-
-def canh_bao():
-    # global section_lv_3
-    # global section_lv_4
-    global button
-    global section_lv_2
+def warning_setting():
+    global event, screen_lv1_index
 
     LOGGER.info('Enter canh_bao function')
     # Call function xu ly keycode
-    choose_config(section_lv_2 + 1)
-    listen_key_code(button)
-
-    # SonTH: Comment lai, man hinh con se tu render
-    # if button == OK:
-    #     section_lv_4 += 1
-    #
-    # if button == DOWN:
-    #     section_lv_3 += 1
-    # elif button == UP:
-    #     section_lv_3 -= 1
-    #
-    # if button == LEFT:
-    #     section_lv_3 = 0
-    # elif button == RIGHT:
-    #     section_lv_3 = 2
-    # if section_lv_3 > 3:
-    #     section_lv_3 = 3
-    # elif section_lv_3 < 0:
-    #     section_lv_3 = 0
-    #
-    #
-    # if section_lv_4 < 1:
-    #     if section_lv_3 == 0:
-    #         print_lcd('CANH BAO',
-    #                   '> Dien ap luoi',
-    #                   'Dien ap may phat',
-    #                   '')
-    #     elif section_lv_3 == 1:
-    #         print_lcd('CANH BAO',
-    #                   'Dien ap luoi',
-    #                   '> Dien ap may phat',
-    #                   '')
-    #     elif section_lv_3 == 2:
-    #         print_lcd('CANH BAO',
-    #                   '> Nhiet do',
-    #                   'Do am',
-    #                   '')
-    #     elif section_lv_3 == 3:
-    #         print_lcd('CANH BAO',
-    #                   'Nhiet do',
-    #                   '> Do am',
-    #                   '')
-    # LOGGER.info('section_lv_3: %s', str(section_lv_3))
+    choose_config(screen_lv1_index + 1)
+    listen_key_code(event)
 
 
-def thiet_bi_ats():
-    global section_lv_3
-    global section_lv_4
-    global section_lv_5
-    global button
+def ats_setting():
+    global event
 
-    ats_setting_lcd_service.listen_key_code(button)
-
-    # LOGGER.info('Enter thiet_bi_ats function')
-    # if button == OK:
-    #     section_lv_4 += 1
-    #
-    # if button == DOWN:
-    #     section_lv_3 += 1
-    # elif button == UP:
-    #     section_lv_3 -= 1
-    # if section_lv_3 > 2:
-    #     section_lv_3 = 2
-    # elif section_lv_3 < 0:
-    #     section_lv_3 = 0
-    #
-    # if section_lv_4 < 1:
-    #     if section_lv_3 == 0:
-    #         print_lcd('THIET BI ATS',
-    #                   '> Cam chay M.phat',
-    #                   'T.gian cam 1',
-    #                   'T.gian cam 2')
-    #     elif section_lv_3 == 1:
-    #         print_lcd('THIET BI ATS',
-    #                   'Cam chay M.phat',
-    #                   '> T.gian cam 1',
-    #                   'T.gian cam 2')
-    #     elif section_lv_3 == 2:
-    #         print_lcd('THIET BI ATS',
-    #                   'Cam chay M.phat',
-    #                   'T.gian cam 1',
-    #                   '> T.gian cam 2')
-    # LOGGER.info('section_lv_3: %s', str(section_lv_3))
+    ats_setting_lcd_service.listen_key_code(event)
 
 
-def thiet_bi_rfid():
-    # from services.lcd import rfid_setting_lcd_service
-    global section_lv_3
-    global section_lv_4
-    global section_lv_5
-    global button
+def rfid_setting():
+    global event
 
-    rfid_setting_lcd_service.listen_key_code(button)
-
-    # LOGGER.info('Enter thiet_bi_rfid function')
-    # if button == OK:
-    #     section_lv_4 += 1
-    #
-    # if section_lv_4 == 1:
-    #     if section_lv_3 == 0:
-    #         print_lcd('cho phep doc')
-    #     elif section_lv_3 == 1:
-    #         print_lcd('Khong cho phep')
-    #     return
-    #
-    # if button == DOWN:
-    #     section_lv_3 = 1
-    # elif button == UP:
-    #     section_lv_3 = 0
-    #
-    # if section_lv_4 < 1:
-    #     if section_lv_3 == 0:
-    #         print_lcd('THIET BI RFID',
-    #                   '> Cho phep doc',
-    #                   'khong doc',
-    #                   '')
-    #     elif section_lv_3 == 1:
-    #         print_lcd('THIET BI RFID',
-    #                   'Cho phep doc',
-    #                   '> khong doc',
-    #                   '')
-    # LOGGER.info('section_lv_3: %s', str(section_lv_3))
+    rfid_setting_lcd_service.listen_key_code(event)
 
 
-def main_menu(bt):
-    from time import time
-    global section_lv_1, section_lv_2, section_lv_3, section_lv_4, section_lv_5, button, time_count, cycle_flag, time_cycle
-    LOGGER.info('Enter main_menu function')
+def back_main_screen(button):
+    global cycle_flag, time_count, screen_lv1_index, start_time
+
     try:
-        if bt != -1:
-            button = bt
-            time_count = time()
+        if button != -1:
+            start_time = time.time()
             cycle_flag = True
-
         if cycle_flag is True:
-            time_cycle = time() - time_count
-
-        LOGGER.info('Time out come back to main display: %ds', time_cycle)
-        if time_cycle > TIME_OUT:
+            time_count = time.time() - start_time
+            LOGGER.info('Time out come back to main display: %ds', time_count)
+        if time_count > TIME_OUT:
             time_count = 0
-            time_cycle = 0
-            section_lv_1 = 0
-
-        if button in MENU_LV_1 and button != section_lv_1 or section_lv_5 == 1:
-            section_lv_2 = 0
-            section_lv_3 = -1
-            section_lv_4 = -1
-            section_lv_5 = 0
-            ats_setting_lcd_service.reset_params()
-            rfid_setting_lcd_service.reset_params()
-        select_section_lv1()
-        button = -1
+            cycle_flag = False
+            screen_lv1_index = ESC
     except Exception as ex:
-        LOGGER.error('Error at call function in main_menu with message: %s', ex.message)
+        LOGGER.error('back_main_screen function error: %s', ex.message)
+
+
+'''---------------------------------------------------------------------------------------------------------------------
+                                                 External function
+   ------------------------------------------------------------------------------------------------------------------'''
+def main_menu(button):
+    global screen_lv1_index, event, last_screen_lv1_index
+
+    try:
+        menu_function_list = {
+            ESC: main_display,
+            CANH_BAO: warning_display,
+            CAM_BIEN: security_sensor_info_display,
+            DIEU_HOA: air_info_display,
+            ATS: ats_display,
+            SETTING: setting_display,
+            RFID: rfid_display
+        }
+
+        if button in MENU_LV_1 and last_screen_lv1_index != button:
+            screen_lv1_index = button
+            last_screen_lv1_index = screen_lv1_index
+        elif button != -1:
+            event = button
+        else:
+            0
+        back_main_screen(button)
+        func = menu_function_list.get(screen_lv1_index)
+
+        return func()
+    except Exception as ex:
+        LOGGER.error('print_screen function error: %s', ex.message)
