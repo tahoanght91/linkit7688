@@ -291,13 +291,19 @@ def compose_command_lcd(row, key_lcd, content):
                 result = struct.pack(FORMAT_LCD + prefix, 0xA0, length, OP_CODE_SEND_LCD, key_lcd, row, *arr_char)
                 LOGGER.info('String in LCD success: %s', str_content)
                 result_encode = ':'.join(x.encode('hex') for x in result)
-                LOGGER.debug('Process lcd command: key_lcd: %s, content: %s, after decode is: %s', key_lcd, content, result_encode)
+                LOGGER.debug('Process lcd command: key_lcd: %s, content: %s, after decode is: %s', key_lcd, content,
+                             result_encode)
                 resp_write_cmd = write_update_value(result)
                 return resp_write_cmd
             elif key_lcd == CLEAR:
                 length = 2
                 result = struct.pack('BBBB', 0xA0, length, OP_CODE_SEND_LCD, key_lcd)
-                return result
+                LOGGER.info('String in LCD success: %s', str_content)
+                result_encode = ':'.join(x.encode('hex') for x in result)
+                LOGGER.debug('Process lcd command: key_lcd: %s, content: %s, after decode is: %s', key_lcd, content,
+                             result_encode)
+                resp_write_cmd = write_update_value(result)
+                return resp_write_cmd
         else:
             str_empty = ''.join([char * 16 for char in CHAR_SPACE])
             arr_char = [char for char in str_empty]

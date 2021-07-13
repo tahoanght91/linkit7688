@@ -1,9 +1,8 @@
 import time
 import struct
-from config import _OpData
+from config import _OpData, BYTE_ORDER
 from config import LOGGER
 
-# from numba import jit
 
 def bytes_to_int(data, byteorder=None):
     if len(data) == 1:
@@ -27,8 +26,10 @@ def with_check_sum(byte_stream, byteorder):
 def check_check_sum(byte_stream, byteorder):
     return _check_sum(byte_stream[:-2], byteorder) == byte_stream[-2:]
 
+
 def blocking_read_number_of_byte(ser, number_of_byte):
     ser.read(number_of_byte)
+
 
 def blocking_read_datablock(ser, message_break):
     initial_break = message_break / 10
@@ -38,40 +39,54 @@ def blocking_read_datablock(ser, message_break):
         read_buffer = b''
 
         # quit if no telemetry packet in duration
-        duration = time.time() - start;
+        duration = time.time() - start
         if duration > initial_break:
-            LOGGER.info('Not found any data packet in: % ms', duration)
-            break;
+            LOGGER.info('Not found any data packet in: %s ms', str(duration))
+            break
 
         read_buffer = ser.read(1)
 
         if read_buffer[0] == b'\xa0':
             read_buffer += ser.read(2)
             read_buffer_decode = ':'.join(x.encode('hex') for x in read_buffer)
-            LOGGER.info('Found header. Checking next 2 byte for len+opcode in read_buffer: %s', read_buffer_decode)
-            data_len = bytes_to_int([1])
+            LOGGER.info('Found header. Checking next 2 byte for len+opcode in read_buffer: %s', str(read_buffer_decode))
+            data_len = bytes_to_int(read_buffer[1])
             op_code = read_buffer[2]
             if (op_code == _OpData.IO_STATUS_ACM or
-                op_code == _OpData.IO_STATUS_ATS or
-                op_code == _OpData.IO_STATUS_CRMU or
-                op_code == _OpData.IO_STATUS_LCD or
-                op_code == _OpData.IO_STATUS_MCC or
-                op_code == _OpData.IO_STATUS_RPC):
+                    op_code == _OpData.IO_STATUS_ATS or
+                    op_code == _OpData.IO_STATUS_CRMU or
+                    op_code == _OpData.IO_STATUS_KEY_PRESS or
+                    op_code == _OpData.IO_STATUS_MCC or
+                    op_code == _OpData.IO_STATUS_RPC or
+                    op_code == _OpData.IO_STATUS_ACK_LED or
+                    op_code == _OpData.IO_STATUS_ACK_LCD or
+                    op_code == _OpData.IO_STATUS_ACK_SHARED_ATT_LED or
+                    op_code == _OpData.IO_STATUS_CLOCK_SET or
+                    op_code == _OpData.IO_STATUS_CLOCK_EXTRACT):
                 LOGGER.info('Found packet header, data with with len %s, opcode %s', data_len, op_code)
                 # datalen + 2 byte checksum, - 1 byte op_code
-                read_buffer += ser.read(data_len + 2 - 1)
-                read_buffer_decode = ':'.join(x.encode('hex') for x in read_buffer)
-                LOGGER.info('Received packet: %s', read_buffer_decode)
-                break
+                if data_len > 0 :
+                    read_buffer += ser.read(data_len + 2 - 1)
+                    read_buffer_decode = ':'.join(x.encode('hex') for x in read_buffer)
+                    LOGGER.debug('expected check sum %s, received check sum %s',
+                                 with_check_sum(read_buffer[:-2], BYTE_ORDER)[-2:].encode('hex'),
+                                 read_buffer[-2:].encode('hex'))
+                    if check_check_sum(read_buffer, BYTE_ORDER):
+                        LOGGER.info('Received packet: %s', str(read_buffer_decode))
+                        break
+                else : # a0:00:31:CRC1:CRC2
+                    ser.read(2) # remove 2 byte CRC of  IO_STATUS_ACK_LCD
+
             else:
-                LOGGER.info('Not found header+len+opcode in 3 byte %s', read_buffer_decode)
+                LOGGER.info('Not found header+len+opcode in 3 byte %s', str(read_buffer_decode))
                 read_buffer = b''
         else:
-            LOGGER.debug('Mark byte not right, expected mark byte A0, received mark byte %s', read_buffer[0].encode('hex'))
+            LOGGER.debug('Mark byte not right, expected mark byte A0, received mark byte %s',
+                         str(read_buffer[0].encode('hex')))
             read_buffer = b''
 
+    return read_buffer
 
-    return read_buffer;
 
 def _check_sum(byte_stream, byteorder):
     '''
@@ -112,3 +127,15 @@ def _check_sum(byte_stream, byteorder):
     else:
         raise ValueError()
     return struct.pack(fmt, crc16)
+
+# def check_sum_frame(frame):
+#     crc16 = 0xFFFF
+#     for i in frame:
+#         crc16 ^= i
+#         for index in range(8, 0, -1):
+#             tmp = crc16 & 0x0001
+#             crc16 >>= 1
+#             if tmp == 1:
+#                 crc16 ^= 0xA001
+#     return crc16
+

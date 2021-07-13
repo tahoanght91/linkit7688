@@ -17,8 +17,8 @@ DEVICE_MCC = device_config['mcc']
 DEVICE_ACM = device_config['acm']
 DEVICE_ATS = device_config['ats']
 CLIENT = mqtt.TBGatewayMqttClient(host=HOST, port=8001, token=ACCESS_TOKEN)
-#IO_PORT = '/dev/ttyS0'
-IO_PORT = 'COM4'
+IO_PORT = '/dev/ttyS0'
+# IO_PORT = 'COM4'
 BAUDRATE = 115200
 # uncomment when test auto update firmware
 UPDATE_PERIOD = 600
@@ -61,7 +61,7 @@ class _OpData:
     # IO_STATUS_ACM = b'\x14'
     # IO_STATUS_CRMU = b'\x16'
     # IO_STATUS_RPC = b'\x21'
-    # IO_STATUS_LCD = b'\x32'
+    # IO_STATUS_KEY_PRESS = b'\x32'
 
     # new
     # uncomment when update STM32
@@ -76,4 +76,9 @@ class _OpData:
     IO_STATUS_ACM = b'\x14'
     IO_STATUS_CRMU = b'\x16'
     IO_STATUS_RPC = b'\x21'
-    IO_STATUS_LCD = b'\x32'
+    IO_STATUS_KEY_PRESS = b'\x32'
+    IO_STATUS_ACK_LCD = b'\x31'
+    IO_STATUS_ACK_LED = b'\x77' # todo add led ack
+    IO_STATUS_ACK_SHARED_ATT_LED = b'\x42'
+    IO_STATUS_CLOCK_SET = b'\x02'
+    IO_STATUS_CLOCK_EXTRACT = b'\x01'

@@ -54,6 +54,9 @@ pointer_idx = 0
 network = 0
 # Alarm
 alarm = 0
+# Fix loi goi choose_config nhieu lan khi dang trong man hinh nay roi
+isChosen = 0
+
 # Idx man hinh
 selection_setting = {
     "main": 0,
@@ -94,7 +97,9 @@ selection_chosen = [0, 0, 0, 0]
 
 # Call khi chon setting can cau hinh
 def choose_config(setting_idx):
-    global screen_setting_idx, screen_idx
+    global screen_setting_idx, screen_idx, isChosen
+    if isChosen:
+        return
     screen_idx = -1
     screen_setting_idx = setting_idx
 
@@ -109,6 +114,7 @@ def reset_parameter():
 # SonTH: Config network
 # Main cua man hinh network
 def call_screen_network():
+    from control import process_cmd_lcd
     try:
         switcher = [
             {
@@ -137,6 +143,7 @@ def call_screen_network():
                 "row_4": ''
             }
         ]
+        LOGGER.info('Enter call_screen_network function: %s', str(switcher[selection_chosen]))
         # Update text
         process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
         process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_2'])
@@ -147,6 +154,7 @@ def call_screen_network():
 
 
 def refresh_screen_assign_ip_address():
+    from control import process_cmd_lcd
     try:
         global network
         network = get_net_info()
@@ -182,11 +190,13 @@ def refresh_screen_assign_ip_address():
         # Update text
         if screen_idx % 2:
             # Man hinh xac nhan luu
+            LOGGER.info('Enter refresh_screen_assign_ip_address function: %s', str(switcher_2[pointer_idx]))
             process_cmd_lcd(ROW_1, UPDATE_VALUE, 'XAC NHAN LUU')
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher_2[pointer_idx]["row_2"])
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher_2[pointer_idx]["row_3"])
         else:
             # Man hinh nhap ip - subnet - ...
+            LOGGER.info('Enter refresh_screen_assign_ip_address function: %s', str(switcher[selection_chosen[screen_idx]]))
             process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]])
             process_cmd_lcd(ROW_3, UPDATE_VALUE, network.get_ip())
@@ -246,6 +256,14 @@ def get_next_number(keycode, number):
 
 # Register func nay
 def listen_key_code(keycode):
+    global isChosen
+    if keycode == ESC:
+        # Ben menu da xu ly thoat ve man hinh menu roi
+        # Reset lai cac gia tri de lan sau goi
+        isChosen = 0
+        reset_parameter()
+        return
+
     if screen_setting_idx == selection_setting["network"]:
         get_func_keycode(network_keycode_func_idx, keycode)
     elif screen_setting_idx == selection_setting["alarm"]:
@@ -274,6 +292,7 @@ def main_network_listen_key(keycode):
         pointer_idx = 0
     else:
         return
+    LOGGER.info('Enter main_network_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx), str(pointer_idx))
     # refresh man hinh
     get_func_render(network_screen_idx)
 
@@ -328,6 +347,8 @@ def assign_ip_listen_key(keycode):
                 return
     else:
         return
+
+    LOGGER.info('Enter assign_ip_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx), str(pointer_idx))
     # refresh screen
     get_func_render(network_screen_idx)
 
@@ -336,7 +357,7 @@ def alarm_selection_listen_key(keycode):
     try:
         global pointer_idx, screen_idx
         # main co 4 dong, choose co 2 dong
-        max_pointer_idx = 3 if screen_idx == selection_setting_alarm["alarm"] else 1
+        max_pointer_idx = 3 if screen_idx == selection_setting_alarm["assign_alarm"] else 1
         if keycode == BUTTON_34_EVENT_UP:
             # key down
             pointer_idx = max_pointer_idx if pointer_idx == max_pointer_idx else pointer_idx + 1
@@ -361,6 +382,8 @@ def alarm_selection_listen_key(keycode):
             return
         # Call function render
         get_func_render(alarm_screen_idx)
+        LOGGER.info('Enter alarm_selection_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx),
+                    str(pointer_idx))
         LOGGER.info('Run function alarm_selection_listen_key')
     except Exception as ex:
         LOGGER.error('Error at call function in alarm_selection_listen_key with message: %s', ex.message)
@@ -389,10 +412,13 @@ def assign_alarm_listen_key(keycode):
     else:
         return
     # refresh screen
+    LOGGER.info('Enter assign_alarm_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx),
+                str(pointer_idx))
     get_func_render(alarm_screen_idx)
 
 
 def save_ip():
+    LOGGER.info('Enter assign_alarm_listen_key function')
     for i, v in network.get_oct():
         if v > 225 or v < 1:
             # ip in range (1 - 225)
@@ -407,6 +433,7 @@ def save_ip():
 
 
 def save_alarm():
+    LOGGER.info('Enter save_alarm function')
     # Luu alarm vao const
     save_to_file('./last_cmd_alarm.json', alarm.get_alarm(), selection_chosen[0] + 1)
     # Call API de luu alarm
@@ -423,6 +450,7 @@ def save_alarm():
 
 # SonTH: Main screen alarm
 def call_screen_alarm_selection():
+    from control import process_cmd_lcd
     try:
         row_1 = 'CANH BAO'
         switcher = [
@@ -478,6 +506,7 @@ def call_screen_alarm_selection():
 
 
 def refresh_screen_assign_alarm():
+    from control import process_cmd_lcd
     try:
         global alarm
         alarm = get_alarm_info()
@@ -693,10 +722,12 @@ alarm_keycode_func_idx = {
 
 
 def get_func_render(o):
-    func = o.get(screen_idx)
+    sceneIdx = 0 if screen_idx < 0 else screen_idx
+    func = o.get(sceneIdx)
     return func()
 
 
 def get_func_keycode(o, kc):
-    func = o.get(screen_idx)
+    sceneIdx = 0 if screen_idx < 0 else screen_idx
+    func = o.get(sceneIdx)
     return func(kc)

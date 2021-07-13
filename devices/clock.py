@@ -5,7 +5,7 @@ import datetime
 import struct
 
 from config import *
-from utility import bytes_to_int, with_check_sum, check_check_sum, blocking_read_number_of_byte
+from utility import bytes_to_int, with_check_sum, check_check_sum, blocking_read_datablock
 
 
 def set():
@@ -30,7 +30,7 @@ def set():
             ser.write(with_check_sum(message, BYTE_ORDER))
         else:
             flip -= 1
-        response = blocking_read_number_of_byte(ser, 5)
+        response = blocking_read_datablock(ser, message_break)
         if response == with_check_sum(b'\xa0\x01\x02', BYTE_ORDER):
             LOGGER.debug('Receive ACK clock message')
             break
@@ -53,7 +53,7 @@ def extract():
             ser.write(with_check_sum(b'\xa0\x01\x01', BYTE_ORDER))
         else:
             flip -= 1
-        byte_stream = blocking_read_number_of_byte(ser, 5)
+        byte_stream = blocking_read_datablock(ser, message_break)
         if _handle(byte_stream):
             LOGGER.debug('Receive time info from IO')
             break
