@@ -61,7 +61,7 @@ class _OpData:
     # IO_STATUS_ACM = b'\x14'
     # IO_STATUS_CRMU = b'\x16'
     # IO_STATUS_RPC = b'\x21'
-    # IO_STATUS_LCD = b'\x32'
+    # IO_STATUS_KEY_PRESS = b'\x32'
 
     # new
     # uncomment when update STM32
@@ -76,8 +76,8 @@ class _OpData:
     IO_STATUS_ACM = b'\x14'
     IO_STATUS_CRMU = b'\x16'
     IO_STATUS_RPC = b'\x21'
-    IO_STATUS_LCD = b'\x32'
-    IO_STATUS_ACK_LCD = b'\x99'
+    IO_STATUS_KEY_PRESS = b'\x32'
+    IO_STATUS_ACK_LCD = b'\x31'
     IO_STATUS_ACK_LED = b'\x77' # todo add led ack
     IO_STATUS_ACK_SHARED_ATT_LED = b'\x42'
     IO_STATUS_CLOCK_SET = b'\x02'
