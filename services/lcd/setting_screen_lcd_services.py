@@ -208,8 +208,12 @@ def get_net_info():
     # Todo: Get thong tin ip dang su dung, neu khong co thi tra ve null
     file_json = read_to_json('./last_cmd_network.json')
     key = ""
-    for k, v in set_ip_idx:
-        key = "row{}".format(v + 1) if selection_chosen[0] == v else 1
+    for k in set_ip_idx:
+        if selection_chosen[0] == set_ip_idx[k]:
+            key = "row{}".format(set_ip_idx[k] + 1)
+            continue
+    if len(key) == 0:
+        return
     array = file_json[key].split(".")
     result = __IPv4()
     if array.length > 0 and array[0] != '':
@@ -235,8 +239,12 @@ def get_alarm_info():
     result = __Alarm()
     file_json = read_to_json('./last_cmd_alarm.json')
     key = ""
-    for k, v in set_alarm_idx:
-        key = "row{}".format(v + 1) if selection_chosen[0] == v else 1
+    for k in set_alarm_idx:
+        if selection_chosen[0] == set_alarm_idx[k]:
+            key = "row{}".format(set_alarm_idx[k] + 1)
+            continue
+    if len(key) == 0:
+        return
     result.alarm = convert_to_array_number([file_json[key]])
     # Tam fake bang 77
     # result.alarm = [7, 7, '_']
@@ -415,7 +423,7 @@ def save_ip():
     # Luu ip vao const
     save_to_file('./last_cmd_network.json', network.get_ip(), selection_chosen[0] + 1)
     # Luu ip vao bash
-    for k, v in set_ip_idx:
+    for k in set_ip_idx:
         save_to_set_ip(network.get_ip(), k) if selection_chosen[0] == set_ip_idx else 1
     reset_parameter()
 
@@ -424,8 +432,8 @@ def save_alarm():
     # Luu alarm vao const
     save_to_file('./last_cmd_alarm.json', alarm.get_alarm(), selection_chosen[0] + 1)
     # Call API de luu alarm
-    for k, v in key_attr:
-        if v["index_screen_1"] == selection_chosen[0] and v["index_screen_2"] == selection_chosen[1]:
+    for k in key_attr:
+        if key_attr[k]["index_screen_1"] == selection_chosen[0] and key_attr[k]["index_screen_2"] == selection_chosen[1]:
             # Man hinh 1 chon loai alarm
             # Man hinh 2 chon set nguong cao hay thap
             write_body_send_shared_attributes(alarm.get_alarm(), k)
