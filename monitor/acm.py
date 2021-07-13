@@ -70,7 +70,7 @@ def check_status():
     # acmT4TempUser = telemetries.get('acmT4Temp', default_data.acmT4Temp)
 
     mccSmokeState = telemetries.get('mccSmokeState', default_data.mccSmokeState)
-    mccFireState = telemetries('mccFireState', default_data.mccFireState)
+    mccFireState = telemetries.get('mccFireState', default_data.mccFireState)
 
     atsAcState = telemetries.get('atsAcState', default_data.atsAcState)
 
