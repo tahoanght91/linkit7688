@@ -60,7 +60,7 @@ def check_status():
     # Telemetry
     acmTempIndoor = telemetries.get('acmTempIndoor', default_data.acmTempIndoor)
     acmTempOutdoor = telemetries.get('acmTempOutdoor', default_data.acmTempOutdoor)
-    acmHumidIndoor = telemetries('acmHumidIndoor', default_data.acmHumidIndoor)
+    acmHumidIndoor = telemetries.get('acmHumidIndoor', default_data.acmHumidIndoor)
     # acmTempIndoor = telemetries['acmTempIndoor']
     # acmTempOutdoor = telemetries['acmTempOutdoor']
     # acmHumidIndoor = telemetries['acmHumidIndoor']
