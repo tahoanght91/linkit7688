@@ -51,7 +51,6 @@ def info_setting_process(button):
             confirm_status = True
         if confirm_status:
             if button == OK:
-
                 if confirm_idx == 0:
                     a_file = open("./lcd_setting_data_file.json", "r")
                     json_object = json.load(a_file)
@@ -65,21 +64,26 @@ def info_setting_process(button):
                     process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG TIN')
                     process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(info))
                     ok_time = 1
+                    confirm_idx = -1
                 else:
                     process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG TIN')
                     process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(info))
                     ok_time = 1
+                    confirm_idx = -1
                     confirm_status = False
             elif button == UP or button == DOWN:
-                if confirm_idx == 0:
+                if confirm_idx == 0 or confirm_idx == -1:
                     confirm_idx = 1
                 else:
                     confirm_idx = 0
         else:
             if button == OK:
+                if ok_time == 1:
+                    call_screen_confirm(0)
+
                 ok_time += 1
-                process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG TIN')
-                process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(info))
+                # process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG TIN')
+                # process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(info))
 
                 # confirm_status = True
 
