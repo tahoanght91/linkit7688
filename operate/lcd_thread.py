@@ -13,13 +13,11 @@ LIST_KEY_EVENT = [EVENT_NONE, EVENT_DOWN, EVENT_UP, EVENT_HOLD, EVENT_POWER]
 LIST_KEY_CODE = [KEYCODE_11, KEYCODE_16, KEYCODE_14, KEYCODE_34, KEYCODE_26, KEYCODE_24, KEYCODE_13, KEYCODE_12]
 json_file = open('config/lcd.json')
 last_trace_lcd = './last_trace_lcd.json'
-last_cmd_alarm = './last_cmd_alarm.json'
 dct_lcd = json.load(json_file)
 dct_lcd_menu = dct_lcd['lcd']['category']['menu']
 dct_lcd_menu_level = dct_lcd_menu['level']
 dct_lcd_menu_level_lv1 = dct_lcd_menu_level['lv1']
 last_alarm_update = Alarm_lcd()
-BAN_TIN_CANH_BAO = 'BAN TIN CANH BAO'
 timeOld = '61'
 time_pre = '61'
 titleOld = ''
@@ -33,7 +31,6 @@ last_stt_bt = 0
 
 def call():
     try:
-        period = 1
         while True:
             button = check_button(lcd_services)
             LOGGER.info('Send button value: %s', str(button))
@@ -41,7 +38,7 @@ def call():
             if lcd_services:
                 del lcd_services['key_code']
                 del lcd_services['key_event']
-            sleep(period)
+            sleep(0.3)
     except Exception as ex:
         LOGGER.error('Error at call function in lcd_thread with message: %s', ex.message)
 

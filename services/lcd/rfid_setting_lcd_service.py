@@ -2,13 +2,12 @@
 from config import *
 from config.common import UPDATE_VALUE
 from config.common_lcd_services import *
-from control import process_cmd_lcd
-from control.utils import read_to_json, write_to_json
-data_setting_path = '../../lcd_setting_data_file.json'
+
+data_setting_path = './lcd_setting_data_file.json'
 setting_rfid_allow = 0
 # Mặc định vào màn hình đầu tiên id = 0, con trỏ dòng đầu của selection
 screen_idx = 0
-pointer_idx = 0
+pointer_idx = -1
 
 # Thông tin tên id của từng màn hình
 screens_info = {"rfid_setting": 0, "confirmRfidMode": 1}
@@ -16,9 +15,11 @@ screens_info = {"rfid_setting": 0, "confirmRfidMode": 1}
 
 # Màn hình chính được call ở menu
 def call_screen_rfid_setting(p_idx):
-    global screen_idx
+    from control import process_cmd_lcd
+    global screen_idx, pointer_idx
     try:
         screen_idx = screens_info["rfid_setting"]
+        pointer_idx = p_idx
         switcher = [
             {
                 "row_2": '> Cho phep doc',
@@ -39,9 +40,11 @@ def call_screen_rfid_setting(p_idx):
 
 # Màn hình xác nhận
 def call_screen_confirm(p_idx):
-    global screen_idx
+    from control import process_cmd_lcd
+    global screen_idx, pointer_idx
     try:
         screen_idx = screens_info["confirmRfidMode"]
+        pointer_idx = p_idx
         switcher = [
             {
                 "row_2": '> Co',
@@ -78,12 +81,18 @@ def rfid_setting_listen_key(keycode):
     try:
         if keycode == BUTTON_34_EVENT_UP:
             # down
-            pointer_idx = 1 if pointer_idx == 1 else pointer_idx = pointer_idx + 1
+            if pointer_idx == 1:
+                pointer_idx = 1
+            else:
+                pointer_idx = pointer_idx + 1
             call_screen_rfid_setting(pointer_idx)
 
         elif keycode == BUTTON_14_EVENT_UP:
             # up
-            pointer_idx = 0 if pointer_idx == 0 else pointer_idx = pointer_idx - 1
+            if pointer_idx == 0:
+                pointer_idx = 0
+            else:
+                pointer_idx = pointer_idx - 1
             call_screen_rfid_setting(pointer_idx)
 
         elif keycode == BUTTON_24_EVENT_UP:
@@ -93,9 +102,12 @@ def rfid_setting_listen_key(keycode):
             else:
                 setting_rfid_allow = 0
 
-            call_screen_confirm(p_idx=0)
+            if pointer_idx == -1:
+                call_screen_rfid_setting(0)
+            else:
+                call_screen_confirm(pointer_idx)
         else:
-            call_screen_rfid_setting(pointer_idx)
+            pass
     except Exception as ex:
         LOGGER.error('Error at call function ats_setting_listen_key with message: %s', ex.message)
 
@@ -105,12 +117,18 @@ def confirm_listen_key(keycode):
     try:
         if keycode == BUTTON_34_EVENT_UP:
             # down
-            pointer_idx = 1 if pointer_idx == 1 else pointer_idx = pointer_idx + 1
+            if pointer_idx == 1:
+                pointer_idx = 1
+            else:
+                pointer_idx = pointer_idx + 1
             call_screen_confirm(pointer_idx)
 
         elif keycode == BUTTON_14_EVENT_UP:
             # up
-            pointer_idx = 0 if pointer_idx == 0 else pointer_idx = pointer_idx - 1
+            if pointer_idx == 0:
+                pointer_idx = 0
+            else:
+                pointer_idx = pointer_idx - 1
             call_screen_confirm(pointer_idx)
 
         elif keycode == BUTTON_24_EVENT_UP:
@@ -119,7 +137,7 @@ def confirm_listen_key(keycode):
             if pointer_idx == 1:
                 call_screen_rfid_setting(p_idx=0)
         else:
-            call_screen_confirm(pointer_idx)
+            pass
     except Exception as ex:
         LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
 
@@ -129,15 +147,18 @@ def reset_params():
         global setting_rfid_allow, screen_idx, pointer_idx
         setting_rfid_allow = 0
         screen_idx = 0
-        pointer_idx = 0
+        pointer_idx = -1
     except Exception as ex:
         LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
 
 
 def update_to_file_json_setting(allow):
+    from control.utils import read_to_json, write_to_json
     try:
         data = read_to_json(data_setting_path)
         data['setting_rfid_allow'] = allow
         write_to_json(data, data_setting_path)
+        call_screen_rfid_setting(p_idx=0)
+        LOGGER.info('Enter update_to_file_json_setting function, data: %s', str(data))
     except Exception as ex:
         LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
