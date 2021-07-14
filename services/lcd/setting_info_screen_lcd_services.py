@@ -68,6 +68,7 @@ def info_setting_process(button):
                 else:
                     process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG TIN')
                     process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(info))
+                    process_cmd_lcd(ROW_3, UPDATE_VALUE, ' ')
                     ok_time = 1
                     confirm_idx = -1
                     confirm_status = False
@@ -81,7 +82,7 @@ def info_setting_process(button):
             if button == OK:
                 if ok_time == 1:
                     call_screen_confirm(0)
-
+                confirm_idx = 0
                 ok_time += 1
                 if first_access_flag:
                     process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG TIN')
