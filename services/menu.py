@@ -88,6 +88,7 @@ time_count = 0
 cycle_flag = False
 time_setting_screen_index = 0,
 last_time_setting_screen_index = -1
+last_cmd_lcd = './last_cmd_lcd.json'
 
 """---------------------------------------------------------------------------------------------------------------------
                                                 Internal function
@@ -114,26 +115,26 @@ def print_lcd(str1, str2, str3, str4):
         LOGGER.info('print_lcd function error: %s', ex.message)
 
 
-def remove_file_last_json(button):
+def remove_json_file():
     try:
-        if button == ESC:
-            LOGGER.info('Remove file ESC')
-        elif button == CANH_BAO:
-            LOGGER.info('Remove file CANH_BAO')
-            remove_json_file_alarm()
-        elif button == CAM_BIEN:
-            LOGGER.info('Remove file CAM_BIEN')
-        elif button == DIEU_HOA:
-            LOGGER.info('Remove file DIEU_HOA')
-        elif button == ATS:
-            LOGGER.info('Remove file ATS')
-        elif button == SETTING:
-            LOGGER.info('Remove file SETTING')
-        elif button == RFID:
-            LOGGER.info('Remove file RFID')
-
+        file_json = read_to_json(last_cmd_lcd)
+        file_json['row1'] = ""
+        file_json['row2'] = ""
+        file_json['row3'] = ""
+        file_json['row4'] = ""
+        write_to_json(file_json, last_cmd_lcd)
     except Exception as ex:
-        LOGGER.error('remove_file_last_json function error: %s', ex.message)
+        LOGGER.error('Error at remove_json_file_alarm function with message: %s', ex.message)
+
+
+def read_to_json(file_url):
+    try:
+        json_file = open(file_url, )
+        json_info = json.load(json_file)
+    except Exception as ex:
+        LOGGER.error('Error at call function in read_to_json with message: %s', ex.message)
+    return json_info
+
 
 ''' screen level 1 implement '''
 def main_display():
@@ -273,6 +274,7 @@ def internet_setting():
     choose_config(screen_lv1_index + 1)
     listen_key_code(event)
 
+
 def warning_setting():
     global event, screen_lv1_index
 
@@ -311,6 +313,7 @@ def back_main_screen(button):
     except Exception as ex:
         LOGGER.error('back_main_screen function error: %s', ex.message)
 
+
 def clear_event():
     global event
 
@@ -338,8 +341,8 @@ def main_menu(button):
             screen_lv1_index = button
             last_screen_lv1_index = screen_lv1_index
             # clear display
+            remove_json_file()
             clear_display()
-            remove_file_last_json(button)
         elif button != -1:
             event = button
 
