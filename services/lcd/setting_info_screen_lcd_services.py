@@ -4,7 +4,7 @@ from config.common_lcd_services import *
 
 info = ['_'] * 16
 
-level_at_index = [0] * 16
+level_at_index = [-1] * 16
 
 char = [chr(i) for i in range(ord('A'), ord('A') + 26)]
 char.append(" ")
@@ -16,7 +16,7 @@ confirm_idx = 0
 cursor_idx = 0
 
 ok_time = 0
-
+first_access_flag = True
 
 def call_screen_confirm(p_idx):
     from control import process_cmd_lcd
@@ -46,6 +46,7 @@ def info_setting_process(button):
     global cursor_idx
     global confirm_status
     global char
+    global first_access_flag
     try:
         if ok_time > 1:
             confirm_status = True
@@ -82,8 +83,10 @@ def info_setting_process(button):
                     call_screen_confirm(0)
 
                 ok_time += 1
-                # process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG TIN')
-                # process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(info))
+                if first_access_flag:
+                    process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG TIN')
+                    process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(info))
+                    first_access_flag = False
 
                 # confirm_status = True
 
