@@ -7,17 +7,14 @@ def call():
     period = shared_attributes.get('mccPeriodSendTelemetry', default_data.mccPeriodSendTelemetry)
     while True:
         if CLIENT.is_connected():
-            if len(update_attributes) > 0:
-                update_attributes_lock.acquire()
-                gw_client_attributes = format_client_attributes(update_attributes)
-                if gw_client_attributes:
-                    for key, value in gw_client_attributes.items():
-                        CLIENT.gw_send_attributes(key, value)
-                    LOGGER.info('Sent changed client attributes')
-                LOGGER.info('Dictionary update client attributes: %s', update_attributes)
-                update_attributes_lock.release()
-            else:
-                LOGGER.info('Client attributes is empty!!!')
+            update_attributes_lock.acquire()
+            gw_client_attributes = format_client_attributes(update_attributes)
+            if gw_client_attributes:
+                for key, value in gw_client_attributes.items():
+                    CLIENT.gw_send_attributes(key, value)
+                LOGGER.info('Sent changed client attributes')
+            LOGGER.info('Dictionary update client attributes: %s', update_attributes)
+            update_attributes_lock.release()
         time.sleep(period)
 
 
@@ -65,7 +62,7 @@ def replica_client_attributes():
         "atsErrorState": 0,
         "atsMode": 0,
         "atsConnect": 1,
-        }
+    }
 
     return attributes
 
