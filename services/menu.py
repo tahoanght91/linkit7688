@@ -361,7 +361,7 @@ def main_menu(button):
             move_default_var()
             # clear display
             remove_json_file()
-            # clear_display()
+            clear_display()
         elif button != -1:
             event = button
 
