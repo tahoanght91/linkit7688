@@ -11,7 +11,10 @@ def show_temp_condition(_telemetries):
 
     try:
         all_row = read_to_json(last_cmd_lcd)
-        process_cmd_lcd(ROW_1, UPDATE_VALUE, 'BAN TIN DIEU HOA')
+        title = 'BAN TIN DIEU HOA'
+        if all_row['row1'] != title:
+            process_cmd_lcd(ROW_1, UPDATE_VALUE, title)
+            all_row['row1'] = title
         LOGGER.info('Check Telemetries: %s', _telemetries)
 
         if 'acmAirc1RunState' and 'acmAirc2RunState' in _telemetries:
