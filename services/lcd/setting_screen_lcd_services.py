@@ -44,7 +44,7 @@ class __IPv4:
 
     def get_oct(self):
         for v in self.get_ip_number().split("."):
-            if v == '' or v > 225:
+            if v == '' or int(v) > 225:
                 # Chua nhap octet nay
                 # ip khong duoc lon hon 225
                 return 0
@@ -87,7 +87,10 @@ class __Alarm:
         return 0 if result == '___' else result
 
     def get_alarm(self):
-        return ''.join(self.alarm)
+        array = []
+        for v in self.alarm:
+            array.append('_' if v == '' else v)
+        return ''.join(array)
 
 
 # Man hinh setting nao
@@ -161,7 +164,7 @@ def reset_parameter():
 
 # SonTH: Config network
 # Main cua man hinh network
-def call_screen_network():
+def call_screen_network(keycode):
     from control import process_cmd_lcd
     try:
         switcher = [
@@ -193,7 +196,8 @@ def call_screen_network():
         ]
         # LOGGER.info('Enter call_screen_network function: %s', str(switcher[selection_chosen]))
         # Update text
-        process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
+        if keycode == OK:
+            process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
         process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_2'])
         process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_3'])
         process_cmd_lcd(ROW_4, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_4'])
@@ -201,7 +205,7 @@ def call_screen_network():
         LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
 
-def refresh_screen_assign_ip_address():
+def refresh_screen_assign_ip_address(keycode):
     from control import process_cmd_lcd
     try:
         global network
@@ -239,14 +243,16 @@ def refresh_screen_assign_ip_address():
         if screen_idx % 2 == 0:
             # Man hinh xac nhan luu
             LOGGER.info('Enter refresh_screen_assign_ip_address function: %s', str(switcher_2[pointer_idx]))
-            process_cmd_lcd(ROW_1, UPDATE_VALUE, 'XAC NHAN LUU')
+            if keycode == OK:
+                process_cmd_lcd(ROW_1, UPDATE_VALUE, 'XAC NHAN LUU')
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher_2[pointer_idx]["row_2"])
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher_2[pointer_idx]["row_3"])
         else:
             # Man hinh nhap ip - subnet - ...
             LOGGER.info('Enter refresh_screen_assign_ip_address function: %s', str(switcher[selection_chosen[screen_idx]]))
-            process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
-            process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]])
+            if keycode == OK:
+                process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
+                process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]])
             process_cmd_lcd(ROW_3, UPDATE_VALUE, network.get_ip())
 
         # LOGGER.info('ASSIGN IP SCREEN: %s', str(network.get_ip()))
@@ -258,7 +264,7 @@ def refresh_screen_assign_ip_address():
 
 def get_net_info():
     # Todo: Get thong tin ip dang su dung, neu khong co thi tra ve null
-    file_json = read_to_json('./last_cmd_network.json')
+    file_json = read_from_json('./last_cmd_network.json')
     key = ""
     for k in set_ip_idx:
         if selection_chosen[0] == set_ip_idx[k]:
@@ -277,11 +283,13 @@ def get_net_info():
 
 
 def convert_to_array_number(array):
-    result = [];
+    result = []
     for v in array:
-        while v >= 10:
-            v = int(v / 10)
-            result.push(v % 10)
+        if v != '' and v != '_':
+            while int(v) >= 10:
+                result.append(int(v) % 10)
+                v = int(int(v) / 10)
+            result.append(int(v))
 
     return result
 
@@ -289,7 +297,7 @@ def convert_to_array_number(array):
 def get_alarm_info():
     # Todo: Get thong tin alarm dang su dung, neu khong co thi tra ve null
     result = __Alarm()
-    file_json = read_to_json('./last_cmd_alarm.json')
+    file_json = read_from_json('./last_cmd_alarm.json')
     key = ""
     for k in set_alarm_idx:
         if selection_chosen[0] == set_alarm_idx[k]:
@@ -297,7 +305,8 @@ def get_alarm_info():
             continue
     if len(key) == 0:
         return
-    result.alarm = convert_to_array_number([file_json[key]])
+    if file_json[key] != '':
+        result.alarm = convert_to_array_number([file_json[key]])
     # Tam fake bang 77
     # result.alarm = [7, 7, '_']
     return result
@@ -352,7 +361,7 @@ def main_network_listen_key(keycode):
         return
     LOGGER.info('Enter main_network_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx), str(pointer_idx))
     # refresh man hinh
-    get_func_render(network_screen_idx)
+    get_func_render(network_screen_idx, keycode)
 
 # def main_alarm_listen_key(keycode):
 #     global pointer_idx, screen_idx
@@ -409,7 +418,7 @@ def assign_ip_listen_key(keycode):
 
     LOGGER.info('Enter assign_ip_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx), str(pointer_idx))
     # refresh screen
-    get_func_render(network_screen_idx)
+    get_func_render(network_screen_idx, keycode)
 
 
 def alarm_selection_listen_key(keycode):
@@ -441,7 +450,7 @@ def alarm_selection_listen_key(keycode):
         else:
             return
         # Call function render
-        get_func_render(alarm_screen_idx)
+        get_func_render(alarm_screen_idx, keycode)
         LOGGER.info('Enter alarm_selection_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx),
                     str(pointer_idx))
         LOGGER.info('Run function alarm_selection_listen_key')
@@ -474,7 +483,7 @@ def assign_alarm_listen_key(keycode):
     # refresh screen
     LOGGER.info('Enter assign_alarm_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx),
                 str(pointer_idx))
-    get_func_render(alarm_screen_idx)
+    get_func_render(alarm_screen_idx, keycode)
 
 
 def save_ip():
@@ -490,7 +499,7 @@ def save_ip():
     save_to_file('./last_cmd_network.json', network.get_ip(), selection_chosen[0] + 1)
     # Luu ip vao bash
     for k in set_ip_idx:
-        save_to_set_ip(network.get_ip(), k) if selection_chosen[0] == set_ip_idx else 1
+        save_to_set_ip(network.get_ip(), k) if selection_chosen[0] == set_ip_idx[k] else 1
     reset_parameter()
     return 1
 
@@ -514,7 +523,7 @@ def save_alarm():
 
 
 # SonTH: Main screen alarm
-def call_screen_alarm_selection():
+def call_screen_alarm_selection(keycode):
     from control import process_cmd_lcd
     try:
         row_1 = 'CANH BAO'
@@ -561,7 +570,8 @@ def call_screen_alarm_selection():
             ]
             row_1 = 'XAC NHAN LUU'
         # Update text
-        process_cmd_lcd(ROW_1, UPDATE_VALUE, row_1)
+        if keycode == OK:
+            process_cmd_lcd(ROW_1, UPDATE_VALUE, row_1)
         process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_2'])
         process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_3'])
         LOGGER.info('Write output in function call_screen_alarm_selection: {0} - {1} - {2}', row_1,
@@ -570,7 +580,7 @@ def call_screen_alarm_selection():
         LOGGER.error('Error at call function in call_screen_alarm_selection with message: %s', ex.message)
 
 
-def refresh_screen_assign_alarm():
+def refresh_screen_assign_alarm(keycode):
     from control import process_cmd_lcd
     try:
         global alarm
@@ -589,8 +599,9 @@ def refresh_screen_assign_alarm():
         elif selection_chosen[0] == screen_setting_alarm["humidity"]:
             text = '%'
         # Update text
-        process_cmd_lcd(ROW_1, UPDATE_VALUE, 'CANH BAO')
-        process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx - 1]]["row_2"])
+        if keycode == OK:
+            process_cmd_lcd(ROW_1, UPDATE_VALUE, 'CANH BAO')
+            process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx - 1]]["row_2"])
         process_cmd_lcd(ROW_2, UPDATE_VALUE, "{0}{1}".format(alarm.get_alarm(), text))
 
         LOGGER.info('ASSIGN ALARM in func call refresh_screen_assign_alarm: %s', str(alarm.get_alarm()))
@@ -620,30 +631,30 @@ set_alarm_idx = {
 row_format = {
     "ip": {
         "number": 1,
-        "format": "uci set network.lan.ipaddr=\'{0}\'"
+        "format": "uci set network.lan.ipaddr=\'{0}\'\r\n"
     },
     "gateway": {
         "number": 2,
-        "format": "uci set network.lan.gateway=\'{0}\'"
+        "format": "uci set network.lan.gateway=\'{0}\'\r\n"
     },
     "subnet": {
         "number": 3,
-        "format": "uci set network.lan.netmask=\'{0}\'"
+        "format": "uci set network.lan.netmask=\'{0}\'\r\n"
     },
     "primary_dns": {
         "number": 5,
-        "format": "uci add_list network.lan.dns=\'{0}\'"
+        "format": "uci add_list network.lan.dns=\'{0}\'\r\n"
     },
     "secondary_dns": {
         "number": 6,
-        "format": "uci add_list network.lan.dns=\'{0}\'"
+        "format": "uci add_list network.lan.dns=\'{0}\'\r\n"
     }
 }
 
 
 def save_to_set_ip(str_saved, key):
     try:
-        save_to_file('./setIp.sh', row_format[key]["format"].format(str_saved), row_format[key]["number"])
+        save_to_file_txt('./setIp.sh', row_format[key]["format"].format(str_saved), row_format[key]["number"])
         LOGGER.info('Call save file ./setIp.sh')
         # run bash .sh
         bashCmd = ["./setIp.sh"]
@@ -656,7 +667,7 @@ def save_to_set_ip(str_saved, key):
 
 def save_to_file(file_path, str_saved, number):
     try:
-        all_row = read_to_json(file_path)
+        all_row = read_from_json(file_path)
         if number == ROW_1:
             all_row['row1'] = str_saved
         elif number == ROW_2:
@@ -673,6 +684,16 @@ def save_to_file(file_path, str_saved, number):
         LOGGER.error('Error at call function in save_to_file with message: %s', ex.message)
 
 
+def save_to_file_txt(file_path, str_saved, number):
+    try:
+        all_row = read_from_txt(file_path)
+        all_row[number - 1] = str_saved
+        write_to_txt(''.join(all_row), file_path)
+        LOGGER.info('Saved file {0}', file_path)
+    except Exception as ex:
+        LOGGER.error('Error at call function in save_to_file with message: %s', ex.message)
+
+
 def write_to_json(body, file_url):
     try:
         json_last_trace = json.dumps(body)
@@ -683,13 +704,31 @@ def write_to_json(body, file_url):
         LOGGER.error('Error at write_to_json function with message: %s', ex.message)
 
 
-def read_to_json(file_url):
+def read_from_json(file_url):
     try:
         json_file = open(file_url, )
         json_info = json.load(json_file)
     except Exception as ex:
         LOGGER.error('Error at call function in read_to_json with message: %s', ex.message)
     return json_info
+
+
+def write_to_txt(body, file_url):
+    try:
+        with io.open(file_url, 'wb') as last_trace_file:
+            last_trace_file.write(body)
+        LOGGER.info('Command information just send: %s', body)
+    except Exception as ex:
+        LOGGER.error('Error at write_to_txt function with message: %s', ex.message)
+
+
+def read_from_txt(file_url):
+    try:
+        with io.open(file_url) as last_trace_file:
+            bash_info = last_trace_file.readlines()
+    except Exception as ex:
+        LOGGER.error('Error at call function in read_from_txt with message: %s', ex.message)
+    return bash_info
 
 
 # Helper call api
@@ -786,13 +825,13 @@ alarm_keycode_func_idx = {
 }
 
 
-def get_func_render(o):
-    sceneIdx = 0 if screen_idx < 0 else screen_idx
-    func = o.get(sceneIdx)
-    return func()
+def get_func_render(o, keycode):
+    scene_idx = 0 if screen_idx < 0 else screen_idx
+    func = o.get(scene_idx)
+    return func(keycode)
 
 
 def get_func_keycode(o, kc):
-    sceneIdx = 0 if screen_idx < 0 else screen_idx
-    func = o.get(sceneIdx)
+    scene_idx = 0 if screen_idx < 0 else screen_idx
+    func = o.get(scene_idx)
     return func(kc)

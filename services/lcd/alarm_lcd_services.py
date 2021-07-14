@@ -10,15 +10,11 @@ KEY_RFID = 'mccRfidCard'
 
 def check_alarm():
     from control import process_cmd_lcd
-    remove_json_file_alarm()
     try:
         all_row = read_to_json(last_cmd_alarm)
         row1 = all_row['row1']
         row2 = all_row['row2']
         row3 = all_row['row3']
-        delete_row(ROW_2)
-        delete_row(ROW_3)
-        delete_row(ROW_4)
         if row1 != BAN_TIN_CANH_BAO:
             process_cmd_lcd(ROW_1, UPDATE_VALUE, BAN_TIN_CANH_BAO)
             row1 = BAN_TIN_CANH_BAO
@@ -51,25 +47,25 @@ def get_alarm(row2, row3, tel_lcd):
         check_card = check_rfid()
         old_text = row2
         if tel_lcd:
-            if tel_lcd.get(CB_CHAY) == 1:
+            if tel_lcd.get(CB_CHAY) == 1 and row2 != 'CB Chay!':
                 row2 = create_for_each('CB Chay!')
-            elif tel_lcd.get(CB_KHOI) == 1:
+            elif tel_lcd.get(CB_KHOI) == 1 and row2 != 'CB Khoi!':
                 row2 = create_for_each('CB Khoi!')
-            elif tel_lcd.get(CB_NGAP) == 1:
+            elif tel_lcd.get(CB_NGAP) == 1 and row2 != 'CB Ngap Nuoc!':
                 row2 = create_for_each('CB Ngap Nuoc!')
-            elif CB_NHIET in tel_lcd and tel_lcd.get(CB_NHIET) != 0:
+            elif CB_NHIET in tel_lcd and tel_lcd.get(CB_NHIET) != 0 and row2 != 'CB Nhiet Do!':
                 row2 = create_for_each('CB Nhiet Do!')
-            elif CB_DOAM in tel_lcd and tel_lcd.get(CB_DOAM) != 0:
+            elif CB_DOAM in tel_lcd and tel_lcd.get(CB_DOAM) != 0 and row2 != 'CB Do Am!':
                 row2 = create_for_each('CB Do Am!')
-            elif CB_DIENAPLUOI in tel_lcd and tel_lcd.get(CB_DIENAPLUOI) == 1:
+            elif CB_DIENAPLUOI in tel_lcd and tel_lcd.get(CB_DIENAPLUOI) == 1 and row2 != 'CB Dien Luoi!':
                 row2 = create_for_each('CB Dien Luoi!')
-            elif CB_DIENMAYPHAT in tel_lcd and tel_lcd.get(CB_DIENMAYPHAT) == 1:
+            elif CB_DIENMAYPHAT in tel_lcd and tel_lcd.get(CB_DIENMAYPHAT) == 1 and row2 != 'CB Dien M.Phat!':
                 row2 = create_for_each('CB Dien M.Phat!')
-            elif CB_DCLow in tel_lcd and tel_lcd.get(CB_DCLow) == 1:
+            elif CB_DCLow in tel_lcd and tel_lcd.get(CB_DCLow) == 1 and row2 != 'CB DC Low!':
                 row2 = create_for_each('CB DC Low!')
-            elif tel_lcd.get(CB_CUA) == 1:
+            elif tel_lcd.get(CB_CUA) == 1 and row2 != 'CB Cua!':
                 row2 = create_for_each('CB Cua!')
-            elif check_card:
+            elif check_card and row2 != 'CB Quet The!!':
                 row2 = create_for_each('CB Quet The!!')
 
             # check = False
