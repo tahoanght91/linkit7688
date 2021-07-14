@@ -88,7 +88,7 @@ time_count = 0
 cycle_flag = False
 time_setting_screen_index = 0,
 last_time_setting_screen_index = -1
-last_cmd_lcd = './last_cmd_lcd.json'
+last_cmd_lcd = './last_cmd_screen.json'
 security_screen_index = 0
 
 
