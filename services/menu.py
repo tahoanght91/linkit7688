@@ -5,7 +5,7 @@ from config.common import *
 from services.lcd import main_screen_lcd_services, ats_screen_lcd_services, ats_setting_lcd_service, \
     rfid_screen_lcd_sevices, rfid_setting_lcd_service
 from services.lcd.acm_sreen_lcd_services import show_temp_condition
-from services.lcd.alarm_lcd_services import check_alarm, remove_json_file_alarm
+from services.lcd.alarm_lcd_services import check_alarm
 from services.lcd.sensor_screen_lcd_services import *
 # SonTH
 from services.lcd.setting_datetime_screen_lcd_services import date_setting_process, time_setting_process
@@ -104,13 +104,13 @@ def clear_display():
 def print_lcd(str1, str2, str3, str4):
     from control import process_cmd_lcd
     try:
-        str = [str1, str2, str3, str4]
+        string = [str1, str2, str3, str4]
         LOGGER.info('Send message print_lcd on lcd')
         i = 0
         while i < 4:
-            if str[i] == '':
-                str[i] = ' '
-            status = process_cmd_lcd(ROW[i], UPDATE_VALUE, str[i])
+            if string[i] == '':
+                string[i] = ' '
+            status = process_cmd_lcd(ROW[i], UPDATE_VALUE, string[i])
             if status:
                 i += 1
     except Exception as ex:
@@ -133,9 +133,9 @@ def read_to_json(file_url):
     try:
         json_file = open(file_url, )
         json_info = json.load(json_file)
+        return json_info
     except Exception as ex:
         LOGGER.error('Error at call function in read_to_json with message: %s', ex.message)
-    return json_info
 
 
 ''' screen level 1 implement '''
