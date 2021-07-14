@@ -74,9 +74,9 @@ time_setting_print = {
 }
 
 
-'''---------------------------------------------------------------------------------------------------------------------
+"""---------------------------------------------------------------------------------------------------------------------
                                                 Global variable
-   ------------------------------------------------------------------------------------------------------------------'''
+   ------------------------------------------------------------------------------------------------------------------"""
 event = 0
 ats_screen_index = 0
 setting_screen_index = 0
@@ -89,6 +89,8 @@ cycle_flag = False
 time_setting_screen_index = 0,
 last_time_setting_screen_index = -1
 last_cmd_lcd = './last_cmd_lcd.json'
+security_screen_index = 0
+
 
 """---------------------------------------------------------------------------------------------------------------------
                                                 Internal function
@@ -146,12 +148,16 @@ def warning_display():
 
 
 def security_sensor_info_display():
-    global event
+    global event, security_screen_index
 
     LOGGER.info('Enter security_sensor_info_display function')
-    if event == LEFT or event == 0:
-        security_sensor_screen_1(telemetries)
+    if event == LEFT:
+        security_screen_index = 0
     elif event == RIGHT:
+        security_screen_index = 1
+    if security_screen_index == 0:
+        security_sensor_screen_1(telemetries)
+    elif security_screen_index == 1:
         security_sensor_screen_2(telemetries)
 
 
@@ -214,7 +220,7 @@ def setting_display():
             last_setting_screen_index = setting_screen_index
         if event == OK:
             select_setting()
-        LOGGER.info('setting menu, setting_screen_index: %s', str(setting_screen_index))
+        LOGGER.info('setting_display, setting_screen_index: %s', str(setting_screen_index))
     except Exception as ex:
         LOGGER.error('setting_display function error: %s', ex.message)
 
@@ -269,7 +275,7 @@ def time_setting():
 def internet_setting():
     global event, screen_lv1_index
 
-    LOGGER.info('Enter thong_so_mang function')
+    LOGGER.info('Enter internet_setting function')
     # Call function xu ly keycode
     choose_config(screen_lv1_index + 1)
     listen_key_code(event)
@@ -278,7 +284,7 @@ def internet_setting():
 def warning_setting():
     global event, screen_lv1_index
 
-    LOGGER.info('Enter canh_bao function')
+    LOGGER.info('Enter warning_setting function')
     # Call function xu ly keycode
     choose_config(screen_lv1_index + 1)
     listen_key_code(event)
@@ -320,11 +326,11 @@ def clear_event():
     event = 0
 
 
-'''---------------------------------------------------------------------------------------------------------------------
+"""---------------------------------------------------------------------------------------------------------------------
                                                  External function
-   ------------------------------------------------------------------------------------------------------------------'''
+   ------------------------------------------------------------------------------------------------------------------"""
 def main_menu(button):
-    global screen_lv1_index, event, last_screen_lv1_index
+    global screen_lv1_index, event, last_screen_lv1_index, security_screen_index, ats_screen_index
 
     try:
         menu_function_list = {
@@ -340,6 +346,8 @@ def main_menu(button):
         if button in MENU_LV_1 and last_screen_lv1_index != button:
             screen_lv1_index = button
             last_screen_lv1_index = screen_lv1_index
+            security_screen_index = 0
+            ats_screen_index = 0
             # clear display
             remove_json_file()
             clear_display()
@@ -351,4 +359,3 @@ def main_menu(button):
         return func()
     except Exception as ex:
         LOGGER.error('print_screen function error: %s', ex.message)
-
