@@ -249,7 +249,7 @@ def information_setting():
     global event, go_sub_setting_flag
     LOGGER.info('Finish cai_dat_thong_tin function')
     if info_setting_process(event):
-        go_sub_setting_flag = False
+        back_screen_setting()
         get_default_value()
 
 
@@ -340,6 +340,13 @@ def move_default_var():
     last_screen_lv1_index = -1
     last_time_setting_screen_index = -1
     go_sub_setting_flag = False
+
+
+def back_screen_setting():
+    global go_sub_setting_flag, last_setting_screen_index
+
+    go_sub_setting_flag = False
+    last_setting_screen_index = -1
 
 
 """---------------------------------------------------------------------------------------------------------------------

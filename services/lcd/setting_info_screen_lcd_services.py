@@ -62,9 +62,6 @@ def info_setting_process(button):
                     json.dump(json_object, a_file)
                     a_file.close()
                     confirm_status = False
-                    # ham thoat
-                    process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG TIN')
-                    process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(info))
                     ok_time = 1
                     confirm_idx = -1
                     ret = True
