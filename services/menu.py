@@ -9,7 +9,7 @@ from services.lcd.alarm_lcd_services import check_alarm
 from services.lcd.sensor_screen_lcd_services import *
 # SonTH
 from services.lcd.setting_datetime_screen_lcd_services import date_setting_process, time_setting_process
-from services.lcd.setting_info_screen_lcd_services import info_setting_process
+from services.lcd.setting_info_screen_lcd_services import info_setting_process, get_default_value
 from services.lcd.setting_screen_lcd_services import *
 
 
@@ -246,10 +246,11 @@ def select_setting():
 
 
 def information_setting():
-    global event
-
+    global event, go_sub_setting_flag
     LOGGER.info('Finish cai_dat_thong_tin function')
-    info_setting_process(event)
+    if info_setting_process(event):
+        go_sub_setting_flag = False
+        get_default_value()
 
 
 def time_setting():
@@ -277,20 +278,20 @@ def time_setting():
 
 
 def internet_setting():
-    global event, screen_lv1_index
+    global event, setting_screen_index
 
     LOGGER.info('Enter internet_setting function')
     # Call function xu ly keycode
-    choose_config(screen_lv1_index + 1)
+    choose_config(setting_screen_index + 1)
     listen_key_code(event)
 
 
 def warning_setting():
-    global event, screen_lv1_index
+    global event, setting_screen_index
 
     LOGGER.info('Enter warning_setting function')
     # Call function xu ly keycode
-    choose_config(screen_lv1_index + 1)
+    choose_config(setting_screen_index + 1)
     listen_key_code(event)
 
 
@@ -358,6 +359,7 @@ def main_menu(button):
             RFID: rfid_display
         }
         clear_event()
+        back_main_screen(button)
         if button in MENU_LV_1 and last_screen_lv1_index != button:
             screen_lv1_index = button
             last_screen_lv1_index = screen_lv1_index
@@ -365,10 +367,10 @@ def main_menu(button):
             # clear display
             remove_json_file()
             clear_display()
+            get_default_value()
         elif button != -1:
             event = button
 
-        back_main_screen(button)
         func = menu_function_list.get(screen_lv1_index)
         return func()
     except Exception as ex:
