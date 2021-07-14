@@ -71,11 +71,12 @@ def info_setting_process(button):
                     ok_time = 1
                     confirm_idx = -1
                     confirm_status = False
-            elif button == UP or button == DOWN:
-                if confirm_idx == 0 or confirm_idx == -1:
-                    confirm_idx = 1
-                else:
-                    confirm_idx = 0
+            elif button == UP:
+                confirm_idx = 0
+            elif button == DOWN:
+                confirm_idx = 1
+            if button == UP or button == DOWN:
+                call_screen_confirm(confirm_idx)
         else:
             if button == OK:
                 if ok_time == 1:
@@ -88,9 +89,6 @@ def info_setting_process(button):
                     process_cmd_lcd(ROW_3, UPDATE_VALUE, ' ')
                     process_cmd_lcd(ROW_4, UPDATE_VALUE, ' ')
                     first_access_flag = False
-
-                # confirm_status = True
-
             else:
                 if button == UP:
                     level_at_index[cursor_idx] += 1
