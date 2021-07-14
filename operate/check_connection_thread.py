@@ -10,10 +10,11 @@ COMMAND_RESET_SERVICE_7688 = 'reboot'
 url_check_connection = PREFIX + DOMAIN + API_CHECK_CONNECTION
 params = {'gatewayId': CLIENT_ID}
 TEN_SECONDS = 10
+TEN_MINUTES = 600
 
 
 def call():
-    period = TEN_SECONDS
+    period = TEN_MINUTES
     while True:
         try:
             time.sleep(period)
