@@ -164,7 +164,7 @@ def reset_parameter():
 
 # SonTH: Config network
 # Main cua man hinh network
-def call_screen_network():
+def call_screen_network(keycode):
     from control import process_cmd_lcd
     try:
         switcher = [
@@ -196,7 +196,8 @@ def call_screen_network():
         ]
         # LOGGER.info('Enter call_screen_network function: %s', str(switcher[selection_chosen]))
         # Update text
-        process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
+        if keycode == OK:
+            process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
         process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_2'])
         process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_3'])
         process_cmd_lcd(ROW_4, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_4'])
@@ -204,7 +205,7 @@ def call_screen_network():
         LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
 
-def refresh_screen_assign_ip_address():
+def refresh_screen_assign_ip_address(keycode):
     from control import process_cmd_lcd
     try:
         global network
@@ -242,14 +243,16 @@ def refresh_screen_assign_ip_address():
         if screen_idx % 2 == 0:
             # Man hinh xac nhan luu
             LOGGER.info('Enter refresh_screen_assign_ip_address function: %s', str(switcher_2[pointer_idx]))
-            process_cmd_lcd(ROW_1, UPDATE_VALUE, 'XAC NHAN LUU')
+            if keycode == OK:
+                process_cmd_lcd(ROW_1, UPDATE_VALUE, 'XAC NHAN LUU')
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher_2[pointer_idx]["row_2"])
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher_2[pointer_idx]["row_3"])
         else:
             # Man hinh nhap ip - subnet - ...
             LOGGER.info('Enter refresh_screen_assign_ip_address function: %s', str(switcher[selection_chosen[screen_idx]]))
-            process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
-            process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]])
+            if keycode == OK:
+                process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
+                process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]])
             process_cmd_lcd(ROW_3, UPDATE_VALUE, network.get_ip())
 
         # LOGGER.info('ASSIGN IP SCREEN: %s', str(network.get_ip()))
@@ -358,7 +361,7 @@ def main_network_listen_key(keycode):
         return
     LOGGER.info('Enter main_network_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx), str(pointer_idx))
     # refresh man hinh
-    get_func_render(network_screen_idx)
+    get_func_render(network_screen_idx, keycode)
 
 # def main_alarm_listen_key(keycode):
 #     global pointer_idx, screen_idx
@@ -415,7 +418,7 @@ def assign_ip_listen_key(keycode):
 
     LOGGER.info('Enter assign_ip_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx), str(pointer_idx))
     # refresh screen
-    get_func_render(network_screen_idx)
+    get_func_render(network_screen_idx, keycode)
 
 
 def alarm_selection_listen_key(keycode):
@@ -447,7 +450,7 @@ def alarm_selection_listen_key(keycode):
         else:
             return
         # Call function render
-        get_func_render(alarm_screen_idx)
+        get_func_render(alarm_screen_idx, keycode)
         LOGGER.info('Enter alarm_selection_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx),
                     str(pointer_idx))
         LOGGER.info('Run function alarm_selection_listen_key')
@@ -480,7 +483,7 @@ def assign_alarm_listen_key(keycode):
     # refresh screen
     LOGGER.info('Enter assign_alarm_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx),
                 str(pointer_idx))
-    get_func_render(alarm_screen_idx)
+    get_func_render(alarm_screen_idx, keycode)
 
 
 def save_ip():
@@ -520,7 +523,7 @@ def save_alarm():
 
 
 # SonTH: Main screen alarm
-def call_screen_alarm_selection():
+def call_screen_alarm_selection(keycode):
     from control import process_cmd_lcd
     try:
         row_1 = 'CANH BAO'
@@ -567,7 +570,8 @@ def call_screen_alarm_selection():
             ]
             row_1 = 'XAC NHAN LUU'
         # Update text
-        process_cmd_lcd(ROW_1, UPDATE_VALUE, row_1)
+        if keycode == OK:
+            process_cmd_lcd(ROW_1, UPDATE_VALUE, row_1)
         process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_2'])
         process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_3'])
         LOGGER.info('Write output in function call_screen_alarm_selection: {0} - {1} - {2}', row_1,
@@ -576,7 +580,7 @@ def call_screen_alarm_selection():
         LOGGER.error('Error at call function in call_screen_alarm_selection with message: %s', ex.message)
 
 
-def refresh_screen_assign_alarm():
+def refresh_screen_assign_alarm(keycode):
     from control import process_cmd_lcd
     try:
         global alarm
@@ -595,8 +599,9 @@ def refresh_screen_assign_alarm():
         elif selection_chosen[0] == screen_setting_alarm["humidity"]:
             text = '%'
         # Update text
-        process_cmd_lcd(ROW_1, UPDATE_VALUE, 'CANH BAO')
-        process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx - 1]]["row_2"])
+        if keycode == OK:
+            process_cmd_lcd(ROW_1, UPDATE_VALUE, 'CANH BAO')
+            process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx - 1]]["row_2"])
         process_cmd_lcd(ROW_2, UPDATE_VALUE, "{0}{1}".format(alarm.get_alarm(), text))
 
         LOGGER.info('ASSIGN ALARM in func call refresh_screen_assign_alarm: %s', str(alarm.get_alarm()))
@@ -820,13 +825,13 @@ alarm_keycode_func_idx = {
 }
 
 
-def get_func_render(o):
-    sceneIdx = 0 if screen_idx < 0 else screen_idx
-    func = o.get(sceneIdx)
-    return func()
+def get_func_render(o, keycode):
+    scene_idx = 0 if screen_idx < 0 else screen_idx
+    func = o.get(scene_idx)
+    return func(keycode)
 
 
 def get_func_keycode(o, kc):
-    sceneIdx = 0 if screen_idx < 0 else screen_idx
-    func = o.get(sceneIdx)
+    scene_idx = 0 if screen_idx < 0 else screen_idx
+    func = o.get(scene_idx)
     return func(kc)
