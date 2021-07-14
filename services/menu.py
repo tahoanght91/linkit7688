@@ -289,6 +289,11 @@ def back_main_screen(button):
     except Exception as ex:
         LOGGER.error('back_main_screen function error: %s', ex.message)
 
+def clear_event():
+    global event
+
+    event = 0
+
 
 '''---------------------------------------------------------------------------------------------------------------------
                                                  External function
@@ -306,16 +311,16 @@ def main_menu(button):
             SETTING: setting_display,
             RFID: rfid_display
         }
-
+        clear_event()
         if button in MENU_LV_1 and last_screen_lv1_index != button:
             screen_lv1_index = button
             last_screen_lv1_index = screen_lv1_index
+            # clear display 
         elif button != -1:
             event = button
 
         back_main_screen(button)
         func = menu_function_list.get(screen_lv1_index)
-
         return func()
     except Exception as ex:
         LOGGER.error('print_screen function error: %s', ex.message)
