@@ -8,17 +8,14 @@ def call():
     period = shared_attributes.get('mccPeriodSendTelemetry', default_data.mccPeriodSendTelemetry)
     while True:
         if CLIENT.is_connected():
-            if len(telemetries) > 0:
-                telemetry = format_telemetry(telemetries)
-                for key, value in telemetry.items():
-                    response = CLIENT.gw_send_telemetry(key, value)
-                    LOGGER.info('RC of send telemetry to Thingsboard is: %s', str(response.rc()))
-                    if response.rc() != 0:
-                        CLIENT.disconnect()
-                set_alarm_state_to_dct(telemetry)
-                LOGGER.info('Dictionary telemetries: %s', telemetries)
-            else:
-                LOGGER.info('Telemetry is empty!!!')
+            telemetry = format_telemetry(telemetries)
+            for key, value in telemetry.items():
+                response = CLIENT.gw_send_telemetry(key, value)
+                LOGGER.info('RC of send telemetry to Thingsboard is: %s', str(response.rc()))
+                if response.rc() != 0:
+                    CLIENT.disconnect()
+            set_alarm_state_to_dct(telemetry)
+            LOGGER.info('Dictionary telemetries: %s', telemetries)
         time.sleep(period)
 
 
@@ -36,47 +33,46 @@ def save_history_telemetry(dct_telemetry):
 def replica_telemetry():
     telemetry = {
         "mccSmokeState": 1,
-    "mccFireState": 19,
-    "mccMoveState": 60,
-    "mccDoorState": 0,
-    "mccBellState": 0,
-    "mccFloodState": 0,
-    "mccDcIbat1": 0,
-    "mccDcVbat1": 0,
-    "mccDcBat1Temp": 0,
-    "mccDcBat2Temp": 13,
-    "mccDcBat3Temp": 16,
-    "mccDcBat4Temp": 19,
-    "mccDoorButton": 0,
-    "mccDcAccuState": 0,
-    "mccDcVcabinet": 0,
-    "mccDcIcabinet": 0,
-    "mccDcPcabinet": 0,
-    "mccDcPaccumulator": 0,
-    "mccSystemClock": 0,
-    "mccNetworkParam": {},
-    "acmTempIndoor": 35,
-    "acmTempOutdoor": 85,
-    "acmHumidIndoor": 30,
-    "atsVacFreq": 13,
-    "atsVgenFreq": 17,
-    "atsVloadFreq": 23,
-    "atsVacP1": 220,
-    "atsVacP2": 10,
-    "atsVacP3": 11,
-    "atsVgenP1": 10,
-    "atsVgenP2": 11,
-    "atsVgenP3": 12,
-    "atsVloadP1": 20,
-    "atsVloadP2": 21,
-    "atsVloadP3": 22,
-    "atsIloadP1": 24,
-    "atsIloadP2": 21,
-    "atsIloadP3": 22,
-    "atsPac1": 22,
-    "atsPac2": 24,
-    "atsPac3": 25
-
+        "mccFireState": 19,
+        "mccMoveState": 60,
+        "mccDoorState": 0,
+        "mccBellState": 0,
+        "mccFloodState": 0,
+        "mccDcIbat1": 0,
+        "mccDcVbat1": 0,
+        "mccDcBat1Temp": 0,
+        "mccDcBat2Temp": 13,
+        "mccDcBat3Temp": 16,
+        "mccDcBat4Temp": 19,
+        "mccDoorButton": 0,
+        "mccDcAccuState": 0,
+        "mccDcVcabinet": 0,
+        "mccDcIcabinet": 0,
+        "mccDcPcabinet": 0,
+        "mccDcPaccumulator": 0,
+        "mccSystemClock": 0,
+        "mccNetworkParam": {},
+        "acmTempIndoor": 35,
+        "acmTempOutdoor": 85,
+        "acmHumidIndoor": 30,
+        "atsVacFreq": 13,
+        "atsVgenFreq": 17,
+        "atsVloadFreq": 23,
+        "atsVacP1": 220,
+        "atsVacP2": 10,
+        "atsVacP3": 11,
+        "atsVgenP1": 10,
+        "atsVgenP2": 11,
+        "atsVgenP3": 12,
+        "atsVloadP1": 20,
+        "atsVloadP2": 21,
+        "atsVloadP3": 22,
+        "atsIloadP1": 24,
+        "atsIloadP2": 21,
+        "atsIloadP3": 22,
+        "atsPac1": 22,
+        "atsPac2": 24,
+        "atsPac3": 25
     }
 
     return telemetry
@@ -189,4 +185,3 @@ def check_vac_alarm_ats(value):
     except Exception as ex:
         LOGGER.error('Error at check_vac_alarm_ats function with message: %s', ex.message)
     return result
-
