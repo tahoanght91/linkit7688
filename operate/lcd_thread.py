@@ -28,6 +28,7 @@ warningOld = ''
 
 last_stt_bt = 0
 
+
 def call():
     try:
         while True:
@@ -37,6 +38,7 @@ def call():
             if lcd_services:
                 del lcd_services['key_code']
                 del lcd_services['key_event']
+            sleep(0.3)
     except Exception as ex:
         LOGGER.error('Error at call function in lcd_thread with message: %s', ex.message)
 
