@@ -32,10 +32,10 @@ def get_info_rfid(row2, row3, row4):
             row2 = str(status)
         if row3 != str(rfid_info['Time']):
             process_cmd_lcd(ROW_3, UPDATE_VALUE, str(rfid_info['Time']))
-            row2 = str(rfid_info['Time'])
+            row3 = str(rfid_info['Time'])
         if row4 != str(rfid_info['StaffCode']):
             process_cmd_lcd(ROW_4, UPDATE_VALUE, str(rfid_info['StaffCode']))
-            row2 = str(rfid_info['StaffCode'])
+            row4 = str(rfid_info['StaffCode'])
 
         list_row.append(row2)
         list_row.append(row3)
