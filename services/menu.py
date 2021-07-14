@@ -90,7 +90,7 @@ time_setting_screen_index = 0,
 last_time_setting_screen_index = -1
 last_cmd_lcd = './last_cmd_screen.json'
 security_screen_index = 0
-go_select_flag = False
+go_sub_setting_flag = False
 
 
 """---------------------------------------------------------------------------------------------------------------------
@@ -199,11 +199,11 @@ def rfid_display():
 
 
 def setting_display():
-    global setting_screen_index, event, last_setting_screen_index, go_select_flag
+    global setting_screen_index, event, last_setting_screen_index, go_sub_setting_flag
     try:
-        if not go_select_flag:
+        if not go_sub_setting_flag:
             if event == OK:
-                go_select_flag = True
+                go_sub_setting_flag = True
             elif event == UP:
                 setting_screen_index -= 1
             elif event == DOWN:
@@ -216,13 +216,13 @@ def setting_display():
                 setting_screen_index = 0
             elif event == RIGHT:
                 setting_screen_index = 3
-            if last_setting_screen_index != setting_screen_index and not go_select_flag:
+            if last_setting_screen_index != setting_screen_index and not go_sub_setting_flag:
                 print_lcd(setting_display_print[setting_screen_index]['row1'],
                           setting_display_print[setting_screen_index]['row2'],
                           setting_display_print[setting_screen_index]['row3'],
                           setting_display_print[setting_screen_index]['row4'])
                 last_setting_screen_index = setting_screen_index
-        if go_select_flag:
+        if go_sub_setting_flag:
             select_setting()
         LOGGER.info('setting_display, setting_screen_index: %s', str(setting_screen_index))
     except Exception as ex:
