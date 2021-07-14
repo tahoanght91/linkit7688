@@ -23,7 +23,7 @@ def get_info_ats(row2_old, row3_old, row4_old):
         list_row = []
         row2 = 'Ket noi' if client_attributes.get('atsConnect') > 0 else 'Mat ket noi'
         row3 = 'Nguon: May phat' if client_attributes.get('atsContactorGenState') > 0 else 'Nguon: Dien luoi'
-        row4 = 'Che do: ' + str(telemetries.get('atsState', default=''))
+        row4 = 'Che do: ' + convert_to_string_default('atsState', 1)
         if row2_old != row2:
             process_cmd_lcd(ROW_2, UPDATE_VALUE, str(row2))
             row2_old = row2
@@ -50,9 +50,9 @@ def get_detail_screen1_ats():
     try:
         all_row = read_to_json(last_cmd_lcd)
 
-        row2 = 'Dien luoi: ' + str(telemetries.get('atsAcState', default=''))
-        row3 = 'May phat: ' + str(telemetries.get('atsGenState', default=''))
-        row4 = 'Che do M.Phat: ' + str(telemetries.get('atsState', default=''))
+        row2 = 'Dien luoi: ' + convert_to_string_default('atsAcState', 1)
+        row3 = 'May phat: ' + convert_to_string_default('atsGenState', 1)
+        row4 = 'Che do M.Phat: ' + convert_to_string_default('atsState', 1)
         if all_row['row2'] != row2:
             process_cmd_lcd(ROW_2, UPDATE_VALUE, str(row2))
             all_row['row2'] = row2
@@ -75,15 +75,12 @@ def get_detail_screen2_ats():
     try:
         all_row = read_to_json(last_cmd_lcd)
 
-        row2 = telemetries.get('atsVacP1', default=0) + 'V ' + telemetries.get('atsVacP2',
-                                                                               default=0) + 'V ' + telemetries.get(
-            'atsVacP3', default=0) + 'V'
-        row3 = telemetries.get('atsVgenP1', default=0) + 'V ' + telemetries.get('atsVgenP2',
-                                                                                default=0) + 'V ' + telemetries.get(
-            'atsVgenP3', default=0) + 'V'
-        row4 = telemetries.get('atsVloadP1', default=0) + 'V ' + telemetries.get('atsVloadP2',
-                                                                                 default=0) + 'V ' + telemetries.get(
-            'atsVloadP3', default=0) + 'V'
+        row2 = convert_to_string_default('atsVacP1', 2) + 'V ' + convert_to_string_default('atsVacP2', 2) + 'V ' \
+               + convert_to_string_default('atsVacP3', 2) + 'V'
+        row3 = convert_to_string_default('atsVgenP1', 2) + 'V ' + convert_to_string_default('atsVgenP2', 2) + 'V ' \
+               + convert_to_string_default('atsVgenP3', 2) + 'V'
+        row4 = convert_to_string_default('atsVloadP1', 2) + 'V ' + convert_to_string_default('atsVloadP2', 2) + 'V ' \
+               + convert_to_string_default('atsVloadP3', 2) + 'V'
         if all_row['row2'] != row2:
             process_cmd_lcd(ROW_2, UPDATE_VALUE, str(row2))
             all_row['row2'] = row2
@@ -104,16 +101,16 @@ def get_detail_screen3_ats():
     from control.utils import read_to_json, write_to_json
     try:
         all_row = read_to_json(last_cmd_lcd)
-        row2 = telemetries.get('atsIloadP1', default=0) + 'A ' + telemetries.get('atsIloadP2',
-                                                                                 default=0) + 'A ' + telemetries.get(
-            'atsIloadP3', default=0) + 'A'
-        row3 = telemetries.get('atsPac1', default=0) + 'W ' + telemetries.get('atsPac2',
-                                                                              default=0) + 'W ' + telemetries.get(
-            'atsPac3', default=0) + 'W'
+        row2 = convert_to_string_default('atsIloadP1', 2) + 'A ' + convert_to_string_default('atsIloadP2',
+                                                                                 2) + 'A ' + convert_to_string_default(
+            'atsIloadP3', 2) + 'A'
+        row3 = convert_to_string_default('atsPac1', 2) + 'W ' + convert_to_string_default('atsPac2',
+                                                                              2) + 'W ' + convert_to_string_default(
+            'atsPac3', 2) + 'W'
 
-        row4 = telemetries.get('atsVacFreq', default=0) + 'Hz ' + telemetries.get('atsVgenFreq',
-                                                                                  default=0) + 'Hz ' + telemetries.get(
-            'atsVloadFreq', default=0) + 'Hz'
+        row4 = convert_to_string_default('atsVacFreq', 2) + 'Hz ' + convert_to_string_default('atsVgenFreq',
+                                                                                  2) + 'Hz ' + convert_to_string_default(
+            'atsVloadFreq', 2) + 'Hz'
         if all_row['row2'] != row2:
             process_cmd_lcd(ROW_2, UPDATE_VALUE, str(row2))
             all_row['row2'] = row2
@@ -134,15 +131,15 @@ def get_detail_screen4_ats():
     from control.utils import read_to_json, write_to_json
     try:
         all_row = read_to_json(last_cmd_lcd)
-        row2 = telemetries.get('mccDcBat1Temp', default=0) + 'C ' + telemetries.get('mccDcBat2Temp',
-                                                                                    default=0) + 'C ' + telemetries.get(
-            'mccDcBat3Temp', default=0) + 'C'
-        row3 = telemetries.get('mccDcV1', default=0) + 'V ' + telemetries.get('mccDcI1',
-                                                                              default=0) + 'A ' + telemetries.get(
-            'mccDcP1', default=0) + 'W'
-        row4 = telemetries.get('mccDcV2', default=0) + 'V ' + telemetries.get('mccDcI2',
-                                                                              default=0) + 'A ' + telemetries.get(
-            'mccDcP2', default=0) + 'W'
+        row2 = convert_to_string_default('mccDcBat1Temp', 2) + 'C ' + convert_to_string_default('mccDcBat2Temp',
+                                                                                    2) + 'C ' + convert_to_string_default(
+            'mccDcBat3Temp', 2) + 'C'
+        row3 = convert_to_string_default('mccDcV1', 2) + 'V ' + convert_to_string_default('mccDcI1',
+                                                                              2) + 'A ' + convert_to_string_default(
+            'mccDcP1', 2) + 'W'
+        row4 = convert_to_string_default('mccDcV2', 2) + 'V ' + convert_to_string_default('mccDcI2',
+                                                                              2) + 'A ' + convert_to_string_default(
+            'mccDcP2', 2) + 'W'
         if all_row['row2'] != row2:
             process_cmd_lcd(ROW_2, UPDATE_VALUE, str(row2))
             all_row['row2'] = row2
@@ -163,15 +160,15 @@ def get_detail_screen5_ats():
     from control.utils import read_to_json, write_to_json
     try:
         all_row = read_to_json(last_cmd_lcd)
-        row2 = telemetries.get('mccDcV3', default=0) + 'V ' + telemetries.get('mccDcI3',
-                                                                              default=0) + 'A ' + telemetries.get(
-            'mccDcP3', default=0) + 'W'
-        row3 = telemetries.get('mccDcV4', default=0) + 'V ' + telemetries.get('mccDcI4',
-                                                                              default=0) + 'A ' + telemetries.get(
-            'mccDcP4', default=0) + 'W'
-        row4 = telemetries.get('mccDcV5', default=0) + 'V ' + telemetries.get('mccDcI5',
-                                                                              default=0) + 'A ' + telemetries.get(
-            'mccDcP5', default=0) + 'W'
+        row2 = convert_to_string_default('mccDcV3', 2) + 'V ' + convert_to_string_default('mccDcI3',
+                                                                              2) + 'A ' + convert_to_string_default(
+            'mccDcP3', 2) + 'W'
+        row3 = convert_to_string_default('mccDcV4', 2) + 'V ' + convert_to_string_default('mccDcI4',
+                                                                              2) + 'A ' + convert_to_string_default(
+            'mccDcP4', 2) + 'W'
+        row4 = convert_to_string_default('mccDcV5', 2) + 'V ' + convert_to_string_default('mccDcI5',
+                                                                              2) + 'A ' + convert_to_string_default(
+            'mccDcP5', 2) + 'W'
         if all_row['row2'] != row2:
             process_cmd_lcd(ROW_2, UPDATE_VALUE, str(row2))
             all_row['row2'] = row2
@@ -206,3 +203,13 @@ def get_screen_ats():
         write_to_json(all_row, last_cmd_lcd)
     except Exception as ex:
         LOGGER.error('Error at get_screen_ats function with message: %s', ex.message)
+
+
+def convert_to_string_default(key_tel, type_check):
+    try:
+        if type_check == 1:
+            return str(telemetries.get(key_tel, default='')) if key_tel in telemetries else ''
+        else:
+            return str(telemetries.get(key_tel, default='')) if key_tel in telemetries else '0'
+    except Exception as ex:
+        LOGGER.error('Error at convert_to_string_default function with message: %s', ex.message)

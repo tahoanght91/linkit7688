@@ -12,6 +12,7 @@ def security_sensor_screen_1(_telemitries):
     from control.utils import read_to_json, write_to_json
 
     try:
+        LOGGER.info('List telemetries in sensor_screen: %s', _telemitries)
         mcc_smoke_tate = ''
         mcc_fire_state = ''
         mcc_flood_state = ''
