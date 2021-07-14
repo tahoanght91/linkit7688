@@ -90,6 +90,7 @@ time_setting_screen_index = 0,
 last_time_setting_screen_index = -1
 last_cmd_lcd = './last_cmd_screen.json'
 security_screen_index = 0
+go_select_flag = False
 
 
 """---------------------------------------------------------------------------------------------------------------------
@@ -198,30 +199,31 @@ def rfid_display():
 
 
 def setting_display():
-    global setting_screen_index, event, last_setting_screen_index
+    global setting_screen_index, event, last_setting_screen_index, go_select_flag
     try:
-        if event == OK:
+        if not go_select_flag:
+            if event == OK:
+                go_select_flag = True
+            elif event == UP:
+                setting_screen_index -= 1
+            elif event == DOWN:
+                setting_screen_index += 1
+            if setting_screen_index > 5:
+                setting_screen_index = 5
+            elif setting_screen_index < 0:
+                setting_screen_index = 0
+            if event == LEFT:
+                setting_screen_index = 0
+            elif event == RIGHT:
+                setting_screen_index = 3
+            if last_setting_screen_index != setting_screen_index and not go_select_flag:
+                print_lcd(setting_display_print[setting_screen_index]['row1'],
+                          setting_display_print[setting_screen_index]['row2'],
+                          setting_display_print[setting_screen_index]['row3'],
+                          setting_display_print[setting_screen_index]['row4'])
+                last_setting_screen_index = setting_screen_index
+        if go_select_flag:
             select_setting()
-            return
-        elif event == UP:
-            setting_screen_index -= 1
-        elif event == DOWN:
-            setting_screen_index += 1
-        if setting_screen_index > 5:
-            setting_screen_index = 5
-        elif setting_screen_index < 0:
-            setting_screen_index = 0
-        if event == LEFT:
-            setting_screen_index = 0
-        elif event == RIGHT:
-            setting_screen_index = 3
-        if last_setting_screen_index != setting_screen_index:
-            print_lcd(setting_display_print[setting_screen_index]['row1'],
-                      setting_display_print[setting_screen_index]['row2'],
-                      setting_display_print[setting_screen_index]['row3'],
-                      setting_display_print[setting_screen_index]['row4'])
-            last_setting_screen_index = setting_screen_index
-
         LOGGER.info('setting_display, setting_screen_index: %s', str(setting_screen_index))
     except Exception as ex:
         LOGGER.error('setting_display function error: %s', ex.message)
@@ -329,13 +331,14 @@ def clear_event():
 
 def move_default_var():
     global event, security_screen_index, ats_screen_index, last_setting_screen_index, last_screen_lv1_index, \
-        last_time_setting_screen_index
+        last_time_setting_screen_index, go_sub_setting_flag
 
     security_screen_index = 0
     ats_screen_index = 0
     last_setting_screen_index = -1
     last_screen_lv1_index = -1
     last_time_setting_screen_index = -1
+    go_sub_setting_flag = False
 
 
 """---------------------------------------------------------------------------------------------------------------------
