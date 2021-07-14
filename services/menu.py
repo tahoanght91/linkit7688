@@ -200,7 +200,10 @@ def rfid_display():
 def setting_display():
     global setting_screen_index, event, last_setting_screen_index
     try:
-        if event == UP:
+        if event == OK:
+            select_setting()
+            return
+        elif event == UP:
             setting_screen_index -= 1
         elif event == DOWN:
             setting_screen_index += 1
@@ -218,8 +221,7 @@ def setting_display():
                       setting_display_print[setting_screen_index]['row3'],
                       setting_display_print[setting_screen_index]['row4'])
             last_setting_screen_index = setting_screen_index
-        if event == OK:
-            select_setting()
+
         LOGGER.info('setting_display, setting_screen_index: %s', str(setting_screen_index))
     except Exception as ex:
         LOGGER.error('setting_display function error: %s', ex.message)
@@ -325,6 +327,16 @@ def clear_event():
 
     event = 0
 
+def move_default_var():
+    global event, security_screen_index, ats_screen_index, last_setting_screen_index, last_screen_lv1_index, \
+        last_time_setting_screen_index
+
+    security_screen_index = 0
+    ats_screen_index = 0
+    last_setting_screen_index = -1
+    last_screen_lv1_index = -1
+    last_time_setting_screen_index = -1
+
 
 """---------------------------------------------------------------------------------------------------------------------
                                                  External function
@@ -346,8 +358,7 @@ def main_menu(button):
         if button in MENU_LV_1 and last_screen_lv1_index != button:
             screen_lv1_index = button
             last_screen_lv1_index = screen_lv1_index
-            security_screen_index = 0
-            ats_screen_index = 0
+            move_default_var()
             # clear display
             remove_json_file()
             clear_display()
