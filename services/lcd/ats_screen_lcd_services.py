@@ -208,8 +208,14 @@ def get_screen_ats():
 def convert_to_string_default(key_tel, type_check):
     try:
         if type_check == 1:
-            return str(telemetries.get(key_tel, default='')) if key_tel in telemetries else ''
+            if key_tel in telemetries:
+                return str(telemetries[key_tel])
+            else:
+                return ''
         else:
-            return str(telemetries.get(key_tel, default='')) if key_tel in telemetries else '0'
+            if key_tel in telemetries:
+                return str(telemetries[key_tel])
+            else:
+                return '0'
     except Exception as ex:
         LOGGER.error('Error at convert_to_string_default function with message: %s', ex.message)
