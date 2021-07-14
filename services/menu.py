@@ -5,7 +5,7 @@ from config.common import *
 from services.lcd import main_screen_lcd_services, ats_screen_lcd_services, ats_setting_lcd_service, \
     rfid_screen_lcd_sevices, rfid_setting_lcd_service
 from services.lcd.acm_sreen_lcd_services import show_temp_condition
-from services.lcd.alarm_lcd_services import check_alarm
+from services.lcd.alarm_lcd_services import check_alarm, remove_json_file_alarm
 from services.lcd.sensor_screen_lcd_services import *
 # SonTH
 from services.lcd.setting_datetime_screen_lcd_services import date_setting_process, time_setting_process
@@ -94,7 +94,8 @@ last_time_setting_screen_index = -1
    ------------------------------------------------------------------------------------------------------------------"""
 ''' print lcd function '''
 def clear_display():
-    cmd_lcd[CLEAR] = ''
+    from control import process_cmd_lcd
+    process_cmd_lcd(ROW_1, CLEAR, '')
 
 
 def print_lcd(str1, str2, str3, str4):
@@ -112,6 +113,27 @@ def print_lcd(str1, str2, str3, str4):
     except Exception as ex:
         LOGGER.info('print_lcd function error: %s', ex.message)
 
+
+def remove_file_last_json(button):
+    try:
+        if button == ESC:
+            LOGGER.info('Remove file ESC')
+        elif button == CANH_BAO:
+            LOGGER.info('Remove file CANH_BAO')
+            remove_json_file_alarm()
+        elif button == CAM_BIEN:
+            LOGGER.info('Remove file CAM_BIEN')
+        elif button == DIEU_HOA:
+            LOGGER.info('Remove file DIEU_HOA')
+        elif button == ATS:
+            LOGGER.info('Remove file ATS')
+        elif button == SETTING:
+            LOGGER.info('Remove file SETTING')
+        elif button == RFID:
+            LOGGER.info('Remove file RFID')
+
+    except Exception as ex:
+        LOGGER.error('remove_file_last_json function error: %s', ex.message)
 
 ''' screen level 1 implement '''
 def main_display():
@@ -289,6 +311,11 @@ def back_main_screen(button):
     except Exception as ex:
         LOGGER.error('back_main_screen function error: %s', ex.message)
 
+def clear_event():
+    global event
+
+    event = 0
+
 
 '''---------------------------------------------------------------------------------------------------------------------
                                                  External function
@@ -306,17 +333,19 @@ def main_menu(button):
             SETTING: setting_display,
             RFID: rfid_display
         }
-
+        clear_event()
         if button in MENU_LV_1 and last_screen_lv1_index != button:
             screen_lv1_index = button
             last_screen_lv1_index = screen_lv1_index
+            # clear display
+            clear_display()
+            remove_file_last_json(button)
         elif button != -1:
             event = button
-        else:
-            0
+
         back_main_screen(button)
         func = menu_function_list.get(screen_lv1_index)
-
         return func()
     except Exception as ex:
         LOGGER.error('print_screen function error: %s', ex.message)
+
