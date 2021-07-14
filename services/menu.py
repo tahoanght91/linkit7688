@@ -126,7 +126,7 @@ def security_sensor_info_display():
     global event
 
     LOGGER.info('Enter security_sensor_info_display function')
-    if event == LEFT:
+    if event == LEFT or event == 0:
         security_sensor_screen_1(telemetries)
     elif event == RIGHT:
         security_sensor_screen_2(telemetries)
@@ -312,6 +312,8 @@ def main_menu(button):
             last_screen_lv1_index = screen_lv1_index
         elif button != -1:
             event = button
+        else:
+            0
         back_main_screen(button)
         func = menu_function_list.get(screen_lv1_index)
 
