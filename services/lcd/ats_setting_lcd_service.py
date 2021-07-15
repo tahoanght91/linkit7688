@@ -22,8 +22,8 @@ screens_info = {"ats_setting": 0, "atsGenDeactivateMode": 1, "atsGenInactiveStar
 
 # Màn hình chính được call ở menu
 def call_screen_ats_setting(p_idx):
-    refresh_screen()
     global screen_idx
+    refresh_screen()
 
     from control import process_cmd_lcd
     global pointer_idx
@@ -394,7 +394,6 @@ def call_api_to_smart_site(body):
 def call_back_ats_setting():
     global screen_idx
     try:
-        screen_idx = screens_info["ats_setting"]
         if screen_idx == screens_info["confirmDeactivateMode"]:
             ats_body_setting["atsGenDeactivateMode"] = 0
             call_screen_ats_setting(p_idx=0)
