@@ -237,6 +237,8 @@ def select_setting():
 def information_setting():
     global event, go_sub_setting_flag
     LOGGER.info('Finish cai_dat_thong_tin function')
+    if event == 0:
+        return
     if info_setting_process(event):
         back_screen_setting()
         get_default_value()
@@ -245,6 +247,8 @@ def information_setting():
 def time_setting():
     global event
 
+    if event == 0:
+        return
     datetime_setting(event)
 
 
