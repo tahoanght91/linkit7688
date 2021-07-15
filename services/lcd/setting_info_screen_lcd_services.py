@@ -60,6 +60,15 @@ def process_confirm(button):
     return save
 
 
+def first_screen():
+    from control import process_cmd_lcd
+
+    process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG TIN')
+    process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(info))
+    process_cmd_lcd(ROW_3, UPDATE_VALUE, ' ')
+    process_cmd_lcd(ROW_4, UPDATE_VALUE, ' ')
+
+
 def info_setting_process(button):
     from control import process_cmd_lcd
     global ok_time, cursor_idx, show_confirm_screen_flag, confirm_idx, first_access_flag, confirm_flag, \
@@ -99,29 +108,22 @@ def info_setting_process(button):
                 json.dump(json_object, a_file)
                 a_file.close()
                 ret = True
-            elif save is False:
-                show_confirm_screen_flag = True
-                first_access_confirm_flag = True
-                confirm_idx = 0
-                process_cmd_lcd(ROW_3, UPDATE_VALUE, ' ')
+            elif save is False: 
+                ret = True
+                # show_confirm_screen_flag = True
+                # first_access_confirm_flag = True
+                # first_access_flag = True
+                # confirm_idx = 0
+                # process_cmd_lcd(ROW_3, UPDATE_VALUE, ' ')
             else:
-                show_confirm_screen_flag = False
+                show_confirm_screen_flag = True
         else:
             first_access_flag = False
-            process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(info))
+            first_screen()
 
         return ret
     except Exception as ex:
         LOGGER.error('Error at call function in info_setting_process with message: %s', ex.message)
-
-
-def first_access():
-    from control import process_cmd_lcd
-
-    process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG TIN')
-    process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(info))
-    process_cmd_lcd(ROW_3, UPDATE_VALUE, ' ')
-    process_cmd_lcd(ROW_4, UPDATE_VALUE, ' ')
 
 
 def get_default_value():

@@ -7,6 +7,7 @@ from services.lcd import main_screen_lcd_services, ats_screen_lcd_services, ats_
 from services.lcd.acm_sreen_lcd_services import show_temp_condition
 from services.lcd.alarm_lcd_services import check_alarm
 from services.lcd.ats_setting_lcd_service import reset_params as ats_reset_params
+from services.lcd.main_screen_lcd_services import reset_params_main_display
 from services.lcd.rfid_setting_lcd_service import reset_params as rfid_reset_params
 from services.lcd.sensor_screen_lcd_services import *
 # SonTH
@@ -378,6 +379,7 @@ def main_menu(button):
             remove_json_file()
             clear_display()
             get_default_value()
+            reset_params_main_display()
             ats_reset_params()
             rfid_reset_params()
         elif button != -1:
