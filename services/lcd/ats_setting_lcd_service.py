@@ -23,9 +23,12 @@ screens_info = {"ats_setting": 0, "atsGenDeactivateMode": 1, "atsGenInactiveStar
 # Màn hình chính được call ở menu
 def call_screen_ats_setting(p_idx):
     refresh_screen()
+    global screen_idx
+
     from control import process_cmd_lcd
     global pointer_idx
     try:
+        screen_idx = screens_info["ats_setting"]
         pointer_idx = p_idx
         switcher = [
             {
