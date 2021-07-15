@@ -411,7 +411,10 @@ def assign_ip_listen_key(keycode):
         pointer_idx = pointer_idx if pointer_idx < max_pointer_idx else max_pointer_idx
     elif keycode == BUTTON_14_EVENT_UP or keycode == BUTTON_34_EVENT_UP:
         # key up or key down
-        network.ip[pointer_idx] = get_next_number(keycode, network.ip[pointer_idx])
+        if screen_idx == selection_setting_network["confirm_assign_ip"]:
+            pointer_idx = pointer_idx + 1 if keycode == DOWN else pointer_idx - 1
+        else:
+            network.ip[pointer_idx] = get_next_number(keycode, network.ip[pointer_idx])
     elif keycode == OK:
         # key ok
         selection_chosen[screen_idx] = pointer_idx
@@ -501,7 +504,7 @@ def assign_alarm_listen_key(keycode):
 def save_ip():
     LOGGER.info('Enter assign_alarm_listen_key function')
     if network.get_oct() == 0:
-        return
+        return 0
     # for i, v in network.get_oct():
     #     if v > 225 or v < 0:
     #         # ip in range (0 - 225)
