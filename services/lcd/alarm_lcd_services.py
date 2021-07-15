@@ -78,21 +78,14 @@ def get_alarm(row2, row3, tel_lcd):
                 if row2 != 'CB Quet The!!':
                     row2 = create_for_each('CB Quet The!!')
 
-            # check = False
-            # new_list = dict(filter(lambda elem: elem[0].lower().find('state') != -1, dct_alarm.items()))
-            # if len(new_list) > 0:
-            #     check = any(elem != 0 for elem in new_list.values())
+            if row2 == old_text and (row2 == 'An Toan!' or row2 == ''):
+                row2 = create_for_each('An Toan!')
+                delete_row(ROW_3)
             get_time_alarm(row3, row2)
         else:
             if row2 == old_text and (row2 == 'An Toan!' or row2 == ''):
                 row2 = create_for_each('An Toan!')
                 delete_row(ROW_3)
-        #     else:
-        #         row2 = create_for_each(row2)
-        #         get_time_alarm(row3, row2)
-        # else:
-        #     row2 = create_for_each(row2)
-        #     get_time_alarm(row3, row2)
     except Exception as ex:
         LOGGER.error('Error at call function in get_alarm with message: %s', ex.message)
 
