@@ -7,7 +7,6 @@ import requests
 
 from config import *
 from config.default_data import data_dict
-from control.utils import test_lcd_speed
 from devices import clock
 from . import subscription_thread, monitor_thread, io_thread, telemetry_thread, update_attributes_thread, ui_thread, \
     shared_attributes_thread, rfid_thread, led_thread, lcd_thread, check_connection_thread
@@ -60,7 +59,6 @@ def _on_receive_client_attributes_callback(content, exception):
 
 
 def call():
-    # test_lcd_speed()
     try:
         LOGGER.info('Start main thread')
         try:
