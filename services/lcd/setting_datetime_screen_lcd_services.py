@@ -18,7 +18,6 @@ last_time_setting_screen_index = -1
 time_setting_screen_index = 0
 go_setting_flag = False
 screen_confirm_flag = False
-confirm_flag = False
 first_access_flag = True
 time_setting_print = {
     0: {
@@ -68,13 +67,13 @@ def date_setting_screen(cursor_index):
 
 def date_setting_process(button):
     from control import process_cmd_lcd
-    global cursor_idx, level_at_index_date, date, confirm_idx, screen_confirm_flag, confirm_flag, first_access_flag
+    global cursor_idx, level_at_index_date, date, confirm_idx, screen_confirm_flag, first_access_flag, go_setting_flag
 
     try:
         if first_access_flag is True:
             process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(date))
             first_access_flag = False
-            return confirm_flag
+            return
         if button == UP:
             level_at_index_date[cursor_idx] += 1
 
@@ -104,22 +103,21 @@ def date_setting_process(button):
                 confirm_idx = 0
             elif button == DOWN:
                 confirm_idx = 1
-            if button == OK and confirm_idx == 0:
-                confirm_flag = True
+            if button == OK:
+                if confirm_idx == 0:
+                    try:
+                        os.system("""date +%Y%m%d "{year}{month}{day}" """.format(year=''.join(date[6:9]),
+                                                                                  month=''.join(date[3:4]),
+                                                                                  day=''.join(date[0:1])))
+                    except Exception as ex:
+                        LOGGER.error('Error at set datetime to os in os.system with message: %s', ex.message)
+                get_default_value()
             call_screen_confirm(confirm_idx)
         elif screen_confirm_flag is False and first_access_flag is False and button != -1 \
                 and button != RIGHT and button != LEFT:
             date_setting_screen(cursor_idx)
         if button == OK and cursor_idx == 9:
             screen_confirm_flag = True
-        if confirm_flag is True:
-            try:
-                os.system("""date +%Y%m%d "{year}{month}{day}" """.format(year=''.join(date[6:9]),
-                                                                          month=''.join(date[3:4]),
-                                                                          day=''.join(date[0:1])))
-            except Exception as ex:
-                LOGGER.error('Error at set datetime to os in os.system with message: %s', ex.message)
-        return confirm_flag
     except Exception as ex:
         LOGGER.error('Error at call function in date_setting_process with message: %s', ex.message)
 
@@ -221,7 +219,7 @@ def datetime_setting(button):
 def get_default_value():
     global date, time, level_at_index_date, level_at_index_time, level_at_index_time, number, ok_time, cursor_idx, \
         cursor_idx_time, confirm_idx, confirm_status, last_time_setting_screen_index, time_setting_screen_index, \
-        go_setting_flag, screen_confirm_flag, confirm_flag, first_access_flag
+        go_setting_flag, screen_confirm_flag, first_access_flag
 
     date = ['_', '_', '/', '_', '_', '/', '_', '_', '_', '_']
     time = ['_', '_', ':', '_', '_']
@@ -237,5 +235,4 @@ def get_default_value():
     time_setting_screen_index = 0
     go_setting_flag = False
     screen_confirm_flag = False
-    confirm_flag = False
     first_access_flag = True
