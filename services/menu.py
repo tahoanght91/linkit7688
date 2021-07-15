@@ -251,7 +251,7 @@ def time_setting():
 def internet_setting():
     global event, setting_screen_index
     LOGGER.info('event in internet_setting: %s', str(event))
-    if event == -1:
+    if event == 0:
         return
     LOGGER.info('Enter internet_setting function')
     # Call function xu ly keycode
@@ -261,7 +261,7 @@ def internet_setting():
 
 def warning_setting():
     global event, setting_screen_index
-    if event == -1:
+    if event == 0:
         return
     LOGGER.info('Enter warning_setting function')
     # Call function xu ly keycode
