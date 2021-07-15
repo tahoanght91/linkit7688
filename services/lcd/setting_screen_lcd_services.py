@@ -233,11 +233,13 @@ def refresh_screen_assign_ip_address(keycode):
         switcher_2 = [
             {
                 "row_2": '> Co',
-                "row_3": 'Khong'
+                "row_3": 'Khong',
+                "row_4": ''
             },
             {
                 "row_2": 'Co',
-                "row_3": '> Khong'
+                "row_3": '> Khong',
+                "row_4": ''
             }
         ]
 
@@ -248,14 +250,16 @@ def refresh_screen_assign_ip_address(keycode):
             if keycode == OK:
                 process_cmd_lcd(ROW_1, UPDATE_VALUE, 'XAC NHAN LUU')
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher_2[pointer_idx]["row_2"])
-            process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher_2[pointer_idx]["row_3"])
+            process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher_2[pointer_idx]["row_3"])
+            process_cmd_lcd(ROW_4, UPDATE_VALUE, switcher_2[pointer_idx]["row_4"])
         else:
             # Man hinh nhap ip - subnet - ...
             LOGGER.info('Enter refresh_screen_assign_ip_address function: %s', str(switcher[selection_chosen[screen_idx]]))
             if keycode == OK:
                 process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
-                process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_2'])
+            process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_2'])
             process_cmd_lcd(ROW_3, UPDATE_VALUE, network.get_ip())
+            process_cmd_lcd(ROW_4, UPDATE_VALUE, '')
 
         # LOGGER.info('ASSIGN IP SCREEN: %s', str(network.get_ip()))
         # Update nhap nhay
@@ -317,9 +321,9 @@ def get_alarm_info():
 def get_next_number(keycode, number):
     if number == '_':
         number = 0
-    if keycode == BUTTON_14_EVENT_UP:
-        return 0 if number > 9 else number + 1
-    else:
+    if keycode == UP:
+        return 0 if number >= 9 else number + 1
+    elif keycode == DOWN:
         return 9 if number == 0 else number - 1
 
 
