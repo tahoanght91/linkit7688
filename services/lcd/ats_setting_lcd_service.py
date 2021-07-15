@@ -22,6 +22,7 @@ screens_info = {"ats_setting": 0, "atsGenDeactivateMode": 1, "atsGenInactiveStar
 
 # Màn hình chính được call ở menu
 def call_screen_ats_setting(p_idx):
+    refresh_screen()
     from control import process_cmd_lcd
     global pointer_idx
     try:
@@ -55,6 +56,7 @@ def call_screen_ats_setting(p_idx):
 
 # Màn hình chọn khi chọn cấm chạy máy phát
 def call_screen_deactivate_mode(p_idx):
+    refresh_screen()
     global pointer_idx
     from control import process_cmd_lcd
     try:
@@ -80,6 +82,8 @@ def call_screen_deactivate_mode(p_idx):
 
 # Màn hình xác nhận
 def call_screen_confirm(p_idx):
+    refresh_screen()
+
     global pointer_idx
     from control import process_cmd_lcd
     try:
@@ -105,6 +109,8 @@ def call_screen_confirm(p_idx):
 
 # Màn hình thiet lap thoi gian cam
 def call_screen_inactivate_time(p_idx, isStart):
+    refresh_screen()
+
     global pointer_idx
     from control import process_cmd_lcd
     try:
@@ -124,7 +130,7 @@ def call_screen_inactivate_time(p_idx, isStart):
 
 
 def call_screen_with_screen_id(screen_id):
-    global screen_idx, pointer_idx ,time
+    global screen_idx, pointer_idx, time
     try:
         LOGGER.info('Enter call_screen_with_screen_id function, screen_id: %s', str(screen_id))
         screen_idx = screen_id
@@ -141,6 +147,18 @@ def call_screen_with_screen_id(screen_id):
         elif screen_id == screens_info["confirmDeactivateMode"] or screen_id == screens_info[
             "confirmInactiveStartTime"] or screen_id == screens_info["confirmInactiveEndTime"]:
             call_screen_confirm(p_idx=0)
+    except Exception as ex:
+        LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
+
+
+def refresh_screen():
+    from control import process_cmd_lcd
+    try:
+        # Update text
+        process_cmd_lcd(ROW_1, UPDATE_VALUE, '')
+        process_cmd_lcd(ROW_2, UPDATE_VALUE, '')
+        process_cmd_lcd(ROW_3, UPDATE_VALUE, '')
+        process_cmd_lcd(ROW_4, UPDATE_VALUE, '')
     except Exception as ex:
         LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
