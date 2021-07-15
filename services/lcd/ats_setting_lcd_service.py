@@ -390,7 +390,8 @@ def call_api_to_smart_site(body):
 
         if len(json_body) > 0 and '_' not in json_body:
             send_shared_attributes(json_body)
-            call_back_ats_setting()
+
+        call_back_ats_setting()
     except Exception as ex:
         LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
 
