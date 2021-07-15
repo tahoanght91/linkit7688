@@ -55,6 +55,7 @@ def write_body_send_shared_attributes(key, value):
 def send_shared_attributes(body):
     result = False
     try:
+        LOGGER.info('Enter func send_shared_attributes body: %s', str(body))
         response = requests.post(url=url_send_sa, json=body)
         if response.status_code == 200:
             LOGGER.info('Send shared attributes to Smartsite successful!')
