@@ -108,7 +108,7 @@ def info_setting_process(button):
                 json.dump(json_object, a_file)
                 a_file.close()
                 ret = True
-            elif save is False: 
+            elif save is False:
                 ret = True
                 # show_confirm_screen_flag = True
                 # first_access_confirm_flag = True
