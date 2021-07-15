@@ -297,14 +297,18 @@ def ats_inactive_time_listen_key(keycode, isStart):
             call_screen_inactivate_time(pointer_idx, isStart)
         elif keycode == BUTTON_24_EVENT_UP:
             # ok
-            if isStart:
-                call_screen_with_screen_id(screens_info["confirmInactiveStartTime"])
+            if isStart == 1:
                 if "_" not in get_string_time():
                     ats_body_setting_tmp["atsGenInactiveStartTime"] = get_string_time()
-            else:
-                call_screen_with_screen_id(screens_info["confirmInactiveEndTime"])
+
+                call_screen_with_screen_id(screens_info["confirmInactiveStartTime"])
+
+            elif isStart == 0:
                 if "_" not in get_string_time():
-                    ats_body_setting_tmp["confirmInactiveEndTime"] = get_string_time()
+                    ats_body_setting_tmp["atsGenInactiveEndTime"] = get_string_time()
+
+                call_screen_with_screen_id(screens_info["confirmInactiveEndTime"])
+
                 return
     except Exception as ex:
         LOGGER.error('Error at call function ats_inactive_time_listen_key with message: %s', ex.message)
@@ -384,9 +388,10 @@ def call_api_to_smart_site(body):
         elif screen_idx == screens_info["confirmInactiveEndTime"]:
             json_body = write_body_send_shared_attributes("atsGenInactiveEndTime", body["atsGenInactiveEndTime"])
 
-        if len(json_body) > 0:
+        if len(json_body) > 0 and '_' not in json_body:
             send_shared_attributes(json_body)
-            call_back_ats_setting()
+
+        call_back_ats_setting()
     except Exception as ex:
         LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
 
