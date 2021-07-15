@@ -246,7 +246,7 @@ def refresh_screen_assign_ip_address(keycode):
         ]
         LOGGER.info('screen_idx in refresh_screen_assign_ip_address: %s', str(screen_idx))
         # Update text
-        if screen_idx == selection_setting_network['assign_ip']:
+        if screen_idx == selection_setting_network['confirm_assign_ip']:
             # Man hinh xac nhan luu
             LOGGER.info('Enter refresh_screen_assign_ip_address function: %s', str(switcher_2[pointer_idx]))
             if keycode == OK:
@@ -256,7 +256,7 @@ def refresh_screen_assign_ip_address(keycode):
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher_2[pointer_idx]["row_2"])
             process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher_2[pointer_idx]["row_3"])
             process_cmd_lcd(ROW_4, UPDATE_VALUE, switcher_2[pointer_idx]["row_4"])
-        elif screen_idx == selection_setting_network['confirm_assign_ip']:
+        elif screen_idx == selection_setting_network['assign_ip']:
             # Man hinh nhap ip - subnet - ...
             LOGGER.info('Enter refresh_screen_assign_ip_address function: %s', str(switcher[selection_chosen[screen_idx]]))
             if keycode == OK:
@@ -412,7 +412,7 @@ def assign_ip_listen_key(keycode):
     elif keycode == BUTTON_14_EVENT_UP or keycode == BUTTON_34_EVENT_UP:
         # key up or key down
         network.ip[pointer_idx] = get_next_number(keycode, network.ip[pointer_idx])
-    elif keycode == BUTTON_24_EVENT_UP:
+    elif keycode == OK:
         # key ok
         selection_chosen[screen_idx] = pointer_idx
         if screen_idx == selection_setting_network["assign_ip"]:
