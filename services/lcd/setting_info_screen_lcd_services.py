@@ -125,87 +125,15 @@ def first_access():
 
 
 def get_default_value():
-    global confirm_status, confirm_idx, cursor_idx, ok_time, first_access_flag, info, level_at_index, \
-        show_confirm_screen_flag, first_access_confirm_flag
+    global confirm_idx, cursor_idx, ok_time, first_access_flag, info, level_at_index, \
+        show_confirm_screen_flag, first_access_confirm_flag, confirm_flag
 
     info = ['_'] * 16
     level_at_index = [-1] * 16
-    confirm_status = False
     confirm_idx = 0
     cursor_idx = 0
     ok_time = 0
+    confirm_flag = False
     first_access_flag = True
     show_confirm_screen_flag = True
     first_access_confirm_flag = True
-
-# def info_setting_process(button):
-#     from control import process_cmd_lcd
-#     global ok_time
-#     global confirm_idx
-#     global cursor_idx
-#     global confirm_status
-#     global char
-#     global first_access_flag
-#     try:
-#         ret = False
-#         if ok_time > 1:
-#             confirm_status = True
-#         if confirm_status:
-#             if button == OK:
-#                 if confirm_idx == 0:
-#                     a_file = open("./lcd_setting_data_file.json", "r")
-#                     json_object = json.load(a_file)
-#                     a_file.close()
-#                     json_object["setting_info_title"] = ''.join(info)
-#                     a_file = open("./lcd_setting_data_file.json", "w")
-#                     json.dump(json_object, a_file)
-#                     a_file.close()
-#                     confirm_status = False
-#                     ok_time = 1
-#                     confirm_idx = -1
-#                     ret = True
-#                 else:
-#                     process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG TIN')
-#                     process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(info))
-#                     process_cmd_lcd(ROW_3, UPDATE_VALUE, ' ')
-#                     ok_time = 1
-#                     confirm_idx = -1
-#                     confirm_status = False
-#             elif button == UP:
-#                 confirm_idx = 0
-#             elif button == DOWN:
-#                 confirm_idx = 1
-#             if button == UP or button == DOWN:
-#                 call_screen_confirm(confirm_idx)
-#         else:
-#             if button == OK:
-#                 if ok_time == 1:
-#                     call_screen_confirm(0)
-#                 confirm_idx = 0
-#                 ok_time += 1
-#                 if first_access_flag:
-#                     process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG TIN')
-#                     process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(info))
-#                     process_cmd_lcd(ROW_3, UPDATE_VALUE, ' ')
-#                     process_cmd_lcd(ROW_4, UPDATE_VALUE, ' ')
-#                     first_access_flag = False
-#             else:
-#                 if button == UP:
-#                     level_at_index[cursor_idx] += 1
-#
-#                     if level_at_index[cursor_idx] > len(char) - 1:
-#                         level_at_index[cursor_idx] = 0
-#
-#                     info[cursor_idx] = char[level_at_index[cursor_idx]]
-#                     process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(info))
-#                 elif button == DOWN:
-#                     level_at_index[cursor_idx] -= 1
-#                     if level_at_index[cursor_idx] < 0:
-#                         level_at_index[cursor_idx] = len(char) - 1
-#                     info[cursor_idx] = char[level_at_index[cursor_idx]]
-#                     process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(info))
-#                 elif button == RIGHT:
-#                     cursor_idx += 1
-#         return ret
-#     except Exception as ex:
-#         LOGGER.error('Error at call function in info_setting_process with message: %s', ex.message)
