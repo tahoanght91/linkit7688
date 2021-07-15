@@ -104,9 +104,9 @@ def get_detail_screen3_ats():
         row2 = convert_to_string_default('atsIloadP1', 3) + 'A ' + convert_to_string_default('atsIloadP2',
                                                                                  3) + 'A ' + convert_to_string_default(
             'atsIloadP3', 3) + 'A'
-        row3 = convert_to_string_default('atsPac1', 3) + 'W ' + convert_to_string_default('atsPac2',
-                                                                              3) + 'W ' + convert_to_string_default(
-            'atsPac3', 3) + 'W'
+        row3 = convert_to_string_default('atsPac1', 3) + 'kW ' + convert_to_string_default('atsPac2',
+                                                                              3) + 'kW ' + convert_to_string_default(
+            'atsPac3', 3) + 'kW'
 
         row4 = convert_to_string_default('atsVacFreq', 2) + 'Hz ' + convert_to_string_default('atsVgenFreq',
                                                                                   2) + 'Hz ' + convert_to_string_default(
@@ -136,10 +136,10 @@ def get_detail_screen4_ats():
             'mccDcBat3Temp', 2) + 'C'
         row3 = convert_to_string_default('mccDcV1', 2) + 'V ' + convert_to_string_default('mccDcI1',
                                                                               3) + 'A ' + convert_to_string_default(
-            'mccDcP1', 3) + 'W'
+            'mccDcP1', 3) + 'kW'
         row4 = convert_to_string_default('mccDcV2', 2) + 'V ' + convert_to_string_default('mccDcI2',
                                                                               3) + 'A ' + convert_to_string_default(
-            'mccDcP2', 3) + 'W'
+            'mccDcP2', 3) + 'kW'
         if all_row['row2'] != row2:
             process_cmd_lcd(ROW_2, UPDATE_VALUE, str(row2))
             all_row['row2'] = row2
@@ -162,13 +162,13 @@ def get_detail_screen5_ats():
         all_row = read_to_json(last_cmd_lcd)
         row2 = convert_to_string_default('mccDcV3', 2) + 'V ' + convert_to_string_default('mccDcI3',
                                                                               3) + 'A ' + convert_to_string_default(
-            'mccDcP3', 3) + 'W'
+            'mccDcP3', 3) + 'kW'
         row3 = convert_to_string_default('mccDcV4', 2) + 'V ' + convert_to_string_default('mccDcI4',
                                                                               3) + 'A ' + convert_to_string_default(
-            'mccDcP4', 3) + 'W'
+            'mccDcP4', 3) + 'kW'
         row4 = convert_to_string_default('mccDcV5', 2) + 'V ' + convert_to_string_default('mccDcI5',
                                                                               3) + 'A ' + convert_to_string_default(
-            'mccDcP5', 3) + 'W'
+            'mccDcP5', 3) + 'kW'
         if all_row['row2'] != row2:
             process_cmd_lcd(ROW_2, UPDATE_VALUE, str(row2))
             all_row['row2'] = row2
@@ -222,6 +222,7 @@ def convert_to_string_default(key_tel, type_check):
                 return str(telemetries[key_tel] // 1000)
             else:
                 return '0'
-        else: return '0'
+        else:
+            return '0'
     except Exception as ex:
         LOGGER.error('Error at convert_to_string_default function with message: %s', ex.message)

@@ -15,6 +15,7 @@ screens_info = {"rfid_setting": 0, "confirmRfidMode": 1}
 
 # Màn hình chính được call ở menu
 def call_screen_rfid_setting(p_idx):
+    refresh_screen()
     from control import process_cmd_lcd
     global screen_idx, pointer_idx
     try:
@@ -31,7 +32,7 @@ def call_screen_rfid_setting(p_idx):
             }
         ]
         # Update text
-        process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THIET BI ATS')
+        process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THIET BI RFID')
         process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[p_idx]['row_2'])
         process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[p_idx]['row_3'])
     except Exception as ex:
@@ -40,6 +41,7 @@ def call_screen_rfid_setting(p_idx):
 
 # Màn hình xác nhận
 def call_screen_confirm(p_idx):
+    refresh_screen()
     from control import process_cmd_lcd
     global screen_idx, pointer_idx
     try:
@@ -59,6 +61,18 @@ def call_screen_confirm(p_idx):
         process_cmd_lcd(ROW_1, UPDATE_VALUE, 'XAC NHAN LUU')
         process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[p_idx]['row_2'])
         process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[p_idx]['row_3'])
+    except Exception as ex:
+        LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
+
+
+def refresh_screen():
+    from control import process_cmd_lcd
+    try:
+        # Update text
+        process_cmd_lcd(ROW_1, UPDATE_VALUE, '')
+        process_cmd_lcd(ROW_2, UPDATE_VALUE, '')
+        process_cmd_lcd(ROW_3, UPDATE_VALUE, '')
+        process_cmd_lcd(ROW_4, UPDATE_VALUE, '')
     except Exception as ex:
         LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
