@@ -3,7 +3,8 @@
    ------------------------------------------------------------------------------------------------------------------"""
 from config.common import *
 from services.lcd import main_screen_lcd_services, ats_screen_lcd_services, ats_setting_lcd_service, \
-    rfid_screen_lcd_sevices, rfid_setting_lcd_service
+    rfid_screen_lcd_sevices, rfid_setting_lcd_service, setting_info_screen_lcd_services, \
+    setting_datetime_screen_lcd_services
 from services.lcd.acm_sreen_lcd_services import show_temp_condition
 from services.lcd.alarm_lcd_services import check_alarm
 from services.lcd.ats_setting_lcd_service import reset_params as ats_reset_params
@@ -11,8 +12,6 @@ from services.lcd.main_screen_lcd_services import reset_params_main_display
 from services.lcd.rfid_setting_lcd_service import reset_params as rfid_reset_params
 from services.lcd.sensor_screen_lcd_services import *
 # SonTH
-from services.lcd.setting_datetime_screen_lcd_services import datetime_setting
-from services.lcd.setting_info_screen_lcd_services import info_setting_process, get_default_value
 from services.lcd.setting_screen_lcd_services import *
 
 
@@ -237,21 +236,28 @@ def select_setting():
 def information_setting():
     global event, go_sub_setting_flag
     LOGGER.info('Finish cai_dat_thong_tin function')
-    if info_setting_process(event):
+    if event == 0:
+        return
+    if setting_info_screen_lcd_services.info_setting_process(event):
         back_screen_setting()
-        get_default_value()
+        setting_info_screen_lcd_services.get_default_value()
 
 
 def time_setting():
     global event
 
-    datetime_setting(event)
+    if event == 0:
+        return
+    if setting_datetime_screen_lcd_services.datetime_setting(event):
+        setting_datetime_screen_lcd_services.get_default_value()
 
 
 def internet_setting():
     global event, setting_screen_index
-
-    LOGGER.info('Enter internet_setting function')
+    LOGGER.info('event in internet_setting: %s', str(event))
+    if event == 0:
+        return
+    LOGGER.info('Enter internet_setting function, setting_screen_index: %s', str(setting_screen_index))
     # Call function xu ly keycode
     choose_config(setting_screen_index + 1)
     listen_key_code(event)
@@ -259,8 +265,9 @@ def internet_setting():
 
 def warning_setting():
     global event, setting_screen_index
-
-    LOGGER.info('Enter warning_setting function')
+    if event == 0:
+        return
+    LOGGER.info('Enter warning_setting function, setting_screen_index: %s', str(setting_screen_index))
     # Call function xu ly keycode
     choose_config(setting_screen_index + 1)
     listen_key_code(event)
@@ -324,7 +331,8 @@ def back_screen_setting():
                                                  External function
    ------------------------------------------------------------------------------------------------------------------"""
 def main_menu(button):
-    global screen_lv1_index, event, last_screen_lv1_index, security_screen_index, ats_screen_index, start_flag
+    global screen_lv1_index, event, last_screen_lv1_index, security_screen_index, ats_screen_index,\
+        start_flag, setting_screen_index
 
     try:
         menu_function_list = {
@@ -337,16 +345,18 @@ def main_menu(button):
             RFID: rfid_display
         }
         if start_flag is True:
-            clear_event()
+            clear_display()
             start_flag = False
+        clear_event()
         back_main_screen(button)
         if button in MENU_LV_1 and last_screen_lv1_index != button:
             screen_lv1_index = button
+            setting_screen_index = 0
             last_screen_lv1_index = screen_lv1_index
             move_default_var()
             clear_display()
             remove_json_file()
-            get_default_value()
+            # get_default_value()
             reset_params_main_display()
             ats_reset_params()
             rfid_reset_params()
