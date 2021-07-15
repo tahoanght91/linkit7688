@@ -305,7 +305,7 @@ def ats_inactive_time_listen_key(keycode, isStart):
 
             elif isStart == 0:
                 if "_" not in get_string_time():
-                    ats_body_setting_tmp["confirmInactiveEndTime"] = get_string_time()
+                    ats_body_setting_tmp["atsGenInactiveEndTime"] = get_string_time()
 
                 call_screen_with_screen_id(screens_info["confirmInactiveEndTime"])
 
