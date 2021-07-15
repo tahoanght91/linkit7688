@@ -589,10 +589,8 @@ def call_screen_alarm_selection(keycode):
         # Update text
         if keycode == OK:
             process_cmd_lcd(ROW_1, UPDATE_VALUE, row_1)
-        process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_2'])
-        process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_3'])
-        LOGGER.info('Write output in function call_screen_alarm_selection: {0} - {1} - {2}', row_1,
-                    switcher[selection_chosen[screen_idx]]['row_2'], switcher[selection_chosen[screen_idx]]['row_3'])
+        process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[pointer_idx]['row_2'])
+        process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[pointer_idx]['row_3'])
     except Exception as ex:
         LOGGER.error('Error at call function in call_screen_alarm_selection with message: %s', ex.message)
 
