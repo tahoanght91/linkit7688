@@ -204,9 +204,9 @@ def call_screen_network(keycode):
         # Update text
         if keycode == OK:
             process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
-        process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_2'])
-        process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_3'])
-        process_cmd_lcd(ROW_4, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_4'])
+        process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[pointer_ìdx]['row_2'])
+        process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[pointer_ìdx]['row_3'])
+        process_cmd_lcd(ROW_4, UPDATE_VALUE, switcher[pointer_ìdx]['row_4'])
     except Exception as ex:
         LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
