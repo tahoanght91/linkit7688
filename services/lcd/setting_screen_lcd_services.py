@@ -204,7 +204,7 @@ def call_screen_network(keycode):
             }
         ]
         LOGGER.info('Enter call_screen_network function, screen_idx: %s', str(screen_idx))
-        LOGGER.info('Enter call_screen_network function, pointer_ìdx: %s', str(pointer_idx))
+        LOGGER.info('Enter call_screen_network function, pointer_idx: %s', str(pointer_idx))
         # Update text
         if keycode == OK:
             process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
