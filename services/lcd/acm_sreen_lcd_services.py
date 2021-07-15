@@ -56,18 +56,18 @@ def show_temp_condition(_telemetries):
                     process_cmd_lcd(ROW_3, UPDATE_VALUE, fan2)
                     all_row['row3'] = fan2
 
-        auto1 = 'Che do: Auto'
-        auto2 = 'Che do: Manual'
+        auto = 'Che do: Auto'
+        manual = 'Che do: Manual'
         if 'acmAutoMode' in _telemetries:
             mode_auto = _telemetries['acmAutoMode']
-            if mode_auto == 1:
-                if all_row['row4'] != auto1:
-                    process_cmd_lcd(ROW_4, UPDATE_VALUE, auto1)
-                    all_row['row4'] = auto1
-            elif mode_auto == 0:
-                if all_row['row4'] != auto2:
-                    process_cmd_lcd(ROW_4, UPDATE_VALUE, auto2)
-                    all_row['row4'] = auto2
+            if mode_auto != 0:
+                if all_row['row4'] != auto:
+                    process_cmd_lcd(ROW_4, UPDATE_VALUE, auto)
+                    all_row['row4'] = auto
+            else:
+                if all_row['row4'] != manual:
+                    process_cmd_lcd(ROW_4, UPDATE_VALUE, manual)
+                    all_row['row4'] = manual
 
         # save to file
         write_to_json(all_row, last_cmd_lcd)

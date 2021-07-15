@@ -149,10 +149,12 @@ selection_chosen = [0, 0, 0, 0]
 def choose_config(setting_idx):
     global screen_setting_idx, screen_idx, isChosen
     if isChosen:
+        LOGGER.info('Do nothing and return in choose_config')
         return
     isChosen = 1
     screen_idx = -1
     screen_setting_idx = setting_idx
+    LOGGER.info('IN choose_config: %s, %s', screen_idx, screen_setting_idx)
 
 
 def reset_parameter():
@@ -252,7 +254,7 @@ def refresh_screen_assign_ip_address(keycode):
             LOGGER.info('Enter refresh_screen_assign_ip_address function: %s', str(switcher[selection_chosen[screen_idx]]))
             if keycode == OK:
                 process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
-                process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]])
+                process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_2'])
             process_cmd_lcd(ROW_3, UPDATE_VALUE, network.get_ip())
 
         # LOGGER.info('ASSIGN IP SCREEN: %s', str(network.get_ip()))
@@ -342,6 +344,7 @@ def listen_key_code(keycode):
 def main_network_listen_key(keycode):
     global pointer_idx, screen_idx
     # 5 dong
+    LOGGER.info('SHOW key_code NOW: %s', str(keycode))
     max_pointer_idx = 4
     if keycode == BUTTON_34_EVENT_UP:
         # key down
@@ -351,6 +354,7 @@ def main_network_listen_key(keycode):
         pointer_idx = 0 if pointer_idx == 0 else pointer_idx - 1
     elif keycode == BUTTON_24_EVENT_UP:
         # key ok
+        LOGGER.info('Show screen_idx: %s', str(screen_idx))
         if screen_idx > -1:
             # lan dau tien load man hinh screen_idx = -1, khong update gia tri chon
             selection_chosen[screen_idx] = pointer_idx

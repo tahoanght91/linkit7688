@@ -1,6 +1,3 @@
-import requests
-
-from config.common_api import *
 from devices.utils import read_lcd_services
 from model.alarm_lcd import Alarm_lcd
 from utility import bytes_to_int
@@ -58,6 +55,7 @@ def write_body_send_shared_attributes(key, value):
 def send_shared_attributes(body):
     result = False
     try:
+        LOGGER.info('Enter func send_shared_attributes body: %s', str(body))
         response = requests.post(url=url_send_sa, json=body)
         if response.status_code == 200:
             LOGGER.info('Send shared attributes to Smartsite successful!')
@@ -82,6 +80,8 @@ def extract_lcd_service(byte_data):
 
 def check_button(bt_info):
     global last_stt_bt
+    event_bt = 0
+    index_key = 0
     try:
         LOGGER.info('Enter check_button function')
         if bt_info:
@@ -92,10 +92,10 @@ def check_button(bt_info):
                 index_key = int(LIST_KEYCODE.index(key_code))
                 LOGGER.info('Key code exist in list key code')
             if key_event == EVENT_UP:
-                event = EVENT_UP_BT
+                event_bt = EVENT_UP_BT
             elif key_event == EVENT_HOLD:
-                event = EVENT_HOLD_BT
-            button = event * index_key
+                event_bt = EVENT_HOLD_BT
+            button = event_bt * index_key
             if last_stt_bt != button:
                 last_stt_bt = button
                 LOGGER.info('return button value: %s', LOG_BUTTON[button])
@@ -105,4 +105,3 @@ def check_button(bt_info):
             return -1
     except Exception as ex:
         LOGGER.error('check_button function error: %s', ex.message)
-

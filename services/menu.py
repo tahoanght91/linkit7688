@@ -6,10 +6,13 @@ from services.lcd import main_screen_lcd_services, ats_screen_lcd_services, ats_
     rfid_screen_lcd_sevices, rfid_setting_lcd_service
 from services.lcd.acm_sreen_lcd_services import show_temp_condition
 from services.lcd.alarm_lcd_services import check_alarm
+from services.lcd.ats_setting_lcd_service import reset_params as ats_reset_params
+from services.lcd.main_screen_lcd_services import reset_params_main_display
+from services.lcd.rfid_setting_lcd_service import reset_params as rfid_reset_params
 from services.lcd.sensor_screen_lcd_services import *
 # SonTH
-from services.lcd.setting_datetime_screen_lcd_services import date_setting_process, time_setting_process
-from services.lcd.setting_info_screen_lcd_services import info_setting_process
+from services.lcd.setting_datetime_screen_lcd_services import datetime_setting
+from services.lcd.setting_info_screen_lcd_services import info_setting_process, get_default_value
 from services.lcd.setting_screen_lcd_services import *
 
 
@@ -58,21 +61,6 @@ setting_display_print = {
         }
 }
 
-time_setting_print = {
-    0: {
-        'row1': 'THOI GIAN',
-        'row2': '> Ngay',
-        'row3': 'Ngay gio',
-        'row4': ''
-    },
-    1: {
-        'row1': 'THOI GIAN',
-        'row2': 'Ngay',
-        'row3': '> Gio',
-        'row4': ''
-    }
-}
-
 
 """---------------------------------------------------------------------------------------------------------------------
                                                 Global variable
@@ -86,12 +74,12 @@ last_screen_lv1_index = -1
 start_time = 0
 time_count = 0
 cycle_flag = False
-time_setting_screen_index = 0,
+time_setting_screen_index = 0
 last_time_setting_screen_index = -1
 last_cmd_lcd = './last_cmd_screen.json'
 security_screen_index = 0
-go_select_flag = False
-
+go_sub_setting_flag = False
+start_flag = True
 
 """---------------------------------------------------------------------------------------------------------------------
                                                 Internal function
@@ -199,11 +187,12 @@ def rfid_display():
 
 
 def setting_display():
-    global setting_screen_index, event, last_setting_screen_index, go_select_flag
+    global setting_screen_index, event, last_setting_screen_index, go_sub_setting_flag
     try:
-        if not go_select_flag:
+
+        if not go_sub_setting_flag:
             if event == OK:
-                go_select_flag = True
+                go_sub_setting_flag = True
             elif event == UP:
                 setting_screen_index -= 1
             elif event == DOWN:
@@ -216,13 +205,13 @@ def setting_display():
                 setting_screen_index = 0
             elif event == RIGHT:
                 setting_screen_index = 3
-            if last_setting_screen_index != setting_screen_index and not go_select_flag:
+            if last_setting_screen_index != setting_screen_index and not go_sub_setting_flag:
                 print_lcd(setting_display_print[setting_screen_index]['row1'],
                           setting_display_print[setting_screen_index]['row2'],
                           setting_display_print[setting_screen_index]['row3'],
                           setting_display_print[setting_screen_index]['row4'])
                 last_setting_screen_index = setting_screen_index
-        if go_select_flag:
+        if go_sub_setting_flag:
             select_setting()
         LOGGER.info('setting_display, setting_screen_index: %s', str(setting_screen_index))
     except Exception as ex:
@@ -246,51 +235,34 @@ def select_setting():
 
 
 def information_setting():
-    global event
-
+    global event, go_sub_setting_flag
     LOGGER.info('Finish cai_dat_thong_tin function')
-    info_setting_process(event)
+    if info_setting_process(event):
+        back_screen_setting()
+        get_default_value()
 
 
 def time_setting():
-    global event, time_setting_screen_index, last_time_setting_screen_index
+    global event
 
-    try:
-        if event == DOWN:
-            time_setting_screen_index = 1
-        elif event == UP:
-            time_setting_screen_index = 0
-        elif event == OK:
-            if time_setting_screen_index == 0:
-                date_setting_process(event)
-            else:
-                time_setting_process(event)
-        if last_time_setting_screen_index != time_setting_screen_index:
-            print_lcd(time_setting_print[time_setting_screen_index]['row1'],
-                      time_setting_print[time_setting_screen_index]['row2'],
-                      time_setting_print[time_setting_screen_index]['row3'],
-                      time_setting_print[time_setting_screen_index]['row4'])
-            last_time_setting_screen_index = time_setting_screen_index
-        LOGGER.info('finish time_setting function, time_setting_screen_index: %s', str(time_setting_screen_index))
-    except Exception as ex:
-        LOGGER.error('time_setting function error: %s', ex.message)
+    datetime_setting(event)
 
 
 def internet_setting():
-    global event, screen_lv1_index
+    global event, setting_screen_index
 
     LOGGER.info('Enter internet_setting function')
     # Call function xu ly keycode
-    choose_config(screen_lv1_index + 1)
+    choose_config(setting_screen_index + 1)
     listen_key_code(event)
 
 
 def warning_setting():
-    global event, screen_lv1_index
+    global event, setting_screen_index
 
     LOGGER.info('Enter warning_setting function')
     # Call function xu ly keycode
-    choose_config(screen_lv1_index + 1)
+    choose_config(setting_screen_index + 1)
     listen_key_code(event)
 
 
@@ -341,11 +313,18 @@ def move_default_var():
     go_sub_setting_flag = False
 
 
+def back_screen_setting():
+    global go_sub_setting_flag, last_setting_screen_index
+
+    go_sub_setting_flag = False
+    last_setting_screen_index = -1
+
+
 """---------------------------------------------------------------------------------------------------------------------
                                                  External function
    ------------------------------------------------------------------------------------------------------------------"""
 def main_menu(button):
-    global screen_lv1_index, event, last_screen_lv1_index, security_screen_index, ats_screen_index
+    global screen_lv1_index, event, last_screen_lv1_index, security_screen_index, ats_screen_index, start_flag
 
     try:
         menu_function_list = {
@@ -357,18 +336,23 @@ def main_menu(button):
             SETTING: setting_display,
             RFID: rfid_display
         }
-        clear_event()
+        if start_flag is True:
+            clear_event()
+            start_flag = False
+        back_main_screen(button)
         if button in MENU_LV_1 and last_screen_lv1_index != button:
             screen_lv1_index = button
             last_screen_lv1_index = screen_lv1_index
             move_default_var()
-            # clear display
-            remove_json_file()
             clear_display()
+            remove_json_file()
+            get_default_value()
+            reset_params_main_display()
+            ats_reset_params()
+            rfid_reset_params()
         elif button != -1:
             event = button
 
-        back_main_screen(button)
         func = menu_function_list.get(screen_lv1_index)
         return func()
     except Exception as ex:
