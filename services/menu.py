@@ -324,7 +324,8 @@ def back_screen_setting():
                                                  External function
    ------------------------------------------------------------------------------------------------------------------"""
 def main_menu(button):
-    global screen_lv1_index, event, last_screen_lv1_index, security_screen_index, ats_screen_index, start_flag
+    global screen_lv1_index, event, last_screen_lv1_index, security_screen_index, ats_screen_index,\
+        start_flag, setting_screen_index
 
     try:
         menu_function_list = {
@@ -343,6 +344,7 @@ def main_menu(button):
         back_main_screen(button)
         if button in MENU_LV_1 and last_screen_lv1_index != button:
             screen_lv1_index = button
+            setting_screen_index = 0
             last_screen_lv1_index = screen_lv1_index
             move_default_var()
             clear_display()
