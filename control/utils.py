@@ -9,6 +9,9 @@ from control.target import *
 from operate.io_thread import ser
 from utility import with_check_sum
 
+import time
+from datetime import datetime
+
 
 def _check_command(device, command):
     if device == DEVICE_MCC and (command == GET_STATE or command == GET_VALUE):
@@ -453,3 +456,13 @@ def read_to_json(file_url):
     except Exception as ex:
         LOGGER.error('Error at call function in read_to_json with message: %s', ex.message)
     return json_info
+
+
+def test_lcd_speed():
+    dt = datetime.now()
+    compose_command_lcd(1, UPDATE_VALUE, str(dt.day) + "/" + str(dt.month) + "/" + str(dt.year))
+    while True:
+        dt = datetime.now()
+        compose_command_lcd(2, UPDATE_VALUE, str(dt.hour) + ":" + str(dt.minute) + ":" + str(dt.second)
+                            + "." + str(dt.microsecond / 100000))
+        time.sleep(0.5)
