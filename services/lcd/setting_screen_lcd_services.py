@@ -249,7 +249,7 @@ def refresh_screen_assign_ip_address(keycode):
         # Update text
         if screen_idx == selection_setting_network['confirm_assign_ip']:
             # Man hinh xac nhan luu
-            LOGGER.info('Enter refresh_screen_assign_ip_address function: %s', str(switcher_2[pointer_idx]))
+            LOGGER.info('Enter refresh_screen_assign_ip_address function, pointer_idx: %s', pointer_idx)
             if keycode == OK:
                 if network.get_oct() == 0:
                     return
@@ -259,7 +259,7 @@ def refresh_screen_assign_ip_address(keycode):
             process_cmd_lcd(ROW_4, UPDATE_VALUE, switcher_2[pointer_idx]["row_4"])
         elif screen_idx == selection_setting_network['assign_ip']:
             # Man hinh nhap ip - subnet - ...
-            LOGGER.info('Enter refresh_screen_assign_ip_address function: %s', str(switcher[selection_chosen[screen_idx]]))
+            LOGGER.info('Enter refresh_screen_assign_ip_address function')
             if keycode == OK:
                 process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx - 1]]['row_2'])
@@ -677,7 +677,7 @@ def save_to_set_ip(str_saved, key):
         # bashCmd = ["./setIp.sh"]
         # process = subprocess.Popen(bashCmd, stdout=subprocess.PIPE)
         # output, error = process.communicate()
-        LOGGER.info('Run ./setIp.sh with output: {0} and error{1}', output, error)
+        # LOGGER.info('Run ./setIp.sh with output: {0} and error{1}', output, error)
     except Exception as ex:
         LOGGER.error('Error at call function in save_to_set_ip with message: %s', ex.message)
 
