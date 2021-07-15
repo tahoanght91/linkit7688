@@ -22,9 +22,13 @@ screens_info = {"ats_setting": 0, "atsGenDeactivateMode": 1, "atsGenInactiveStar
 
 # Màn hình chính được call ở menu
 def call_screen_ats_setting(p_idx):
+    global screen_idx
+    refresh_screen()
+
     from control import process_cmd_lcd
     global pointer_idx
     try:
+        screen_idx = screens_info["ats_setting"]
         pointer_idx = p_idx
         switcher = [
             {
@@ -55,6 +59,7 @@ def call_screen_ats_setting(p_idx):
 
 # Màn hình chọn khi chọn cấm chạy máy phát
 def call_screen_deactivate_mode(p_idx):
+    refresh_screen()
     global pointer_idx
     from control import process_cmd_lcd
     try:
@@ -80,6 +85,8 @@ def call_screen_deactivate_mode(p_idx):
 
 # Màn hình xác nhận
 def call_screen_confirm(p_idx):
+    refresh_screen()
+
     global pointer_idx
     from control import process_cmd_lcd
     try:
@@ -105,6 +112,8 @@ def call_screen_confirm(p_idx):
 
 # Màn hình thiet lap thoi gian cam
 def call_screen_inactivate_time(p_idx, isStart):
+    refresh_screen()
+
     global pointer_idx
     from control import process_cmd_lcd
     try:
@@ -124,7 +133,7 @@ def call_screen_inactivate_time(p_idx, isStart):
 
 
 def call_screen_with_screen_id(screen_id):
-    global screen_idx, pointer_idx ,time
+    global screen_idx, pointer_idx, time
     try:
         LOGGER.info('Enter call_screen_with_screen_id function, screen_id: %s', str(screen_id))
         screen_idx = screen_id
@@ -141,6 +150,18 @@ def call_screen_with_screen_id(screen_id):
         elif screen_id == screens_info["confirmDeactivateMode"] or screen_id == screens_info[
             "confirmInactiveStartTime"] or screen_id == screens_info["confirmInactiveEndTime"]:
             call_screen_confirm(p_idx=0)
+    except Exception as ex:
+        LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
+
+
+def refresh_screen():
+    from control import process_cmd_lcd
+    try:
+        # Update text
+        process_cmd_lcd(ROW_1, UPDATE_VALUE, '')
+        process_cmd_lcd(ROW_2, UPDATE_VALUE, '')
+        process_cmd_lcd(ROW_3, UPDATE_VALUE, '')
+        process_cmd_lcd(ROW_4, UPDATE_VALUE, '')
     except Exception as ex:
         LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
@@ -276,14 +297,18 @@ def ats_inactive_time_listen_key(keycode, isStart):
             call_screen_inactivate_time(pointer_idx, isStart)
         elif keycode == BUTTON_24_EVENT_UP:
             # ok
-            if isStart:
-                call_screen_with_screen_id(screens_info["confirmInactiveStartTime"])
+            if isStart == 1:
                 if "_" not in get_string_time():
                     ats_body_setting_tmp["atsGenInactiveStartTime"] = get_string_time()
-            else:
-                call_screen_with_screen_id(screens_info["confirmInactiveEndTime"])
+
+                call_screen_with_screen_id(screens_info["confirmInactiveStartTime"])
+
+            elif isStart == 0:
                 if "_" not in get_string_time():
-                    ats_body_setting_tmp["confirmInactiveEndTime"] = get_string_time()
+                    ats_body_setting_tmp["atsGenInactiveEndTime"] = get_string_time()
+
+                call_screen_with_screen_id(screens_info["confirmInactiveEndTime"])
+
                 return
     except Exception as ex:
         LOGGER.error('Error at call function ats_inactive_time_listen_key with message: %s', ex.message)
@@ -363,9 +388,10 @@ def call_api_to_smart_site(body):
         elif screen_idx == screens_info["confirmInactiveEndTime"]:
             json_body = write_body_send_shared_attributes("atsGenInactiveEndTime", body["atsGenInactiveEndTime"])
 
-        if len(json_body) > 0:
+        if len(json_body) > 0 and '_' not in json_body:
             send_shared_attributes(json_body)
-            call_back_ats_setting()
+
+        call_back_ats_setting()
     except Exception as ex:
         LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
 
@@ -373,7 +399,6 @@ def call_api_to_smart_site(body):
 def call_back_ats_setting():
     global screen_idx
     try:
-        screen_idx = screens_info["ats_setting"]
         if screen_idx == screens_info["confirmDeactivateMode"]:
             ats_body_setting["atsGenDeactivateMode"] = 0
             call_screen_ats_setting(p_idx=0)

@@ -3,13 +3,15 @@
    ------------------------------------------------------------------------------------------------------------------"""
 from config.common import *
 from services.lcd import main_screen_lcd_services, ats_screen_lcd_services, ats_setting_lcd_service, \
-    rfid_screen_lcd_sevices, rfid_setting_lcd_service
+    rfid_screen_lcd_sevices, rfid_setting_lcd_service, setting_info_screen_lcd_services, \
+    setting_datetime_screen_lcd_services
 from services.lcd.acm_sreen_lcd_services import show_temp_condition
-from services.lcd.alarm_lcd_services import check_alarm, remove_json_file_alarm
+from services.lcd.alarm_lcd_services import check_alarm
+from services.lcd.ats_setting_lcd_service import reset_params as ats_reset_params
+from services.lcd.main_screen_lcd_services import reset_params_main_display
+from services.lcd.rfid_setting_lcd_service import reset_params as rfid_reset_params
 from services.lcd.sensor_screen_lcd_services import *
 # SonTH
-from services.lcd.setting_datetime_screen_lcd_services import date_setting_process, time_setting_process
-from services.lcd.setting_info_screen_lcd_services import info_setting_process
 from services.lcd.setting_screen_lcd_services import *
 
 
@@ -58,25 +60,10 @@ setting_display_print = {
         }
 }
 
-time_setting_print = {
-    0: {
-        'row1': 'THOI GIAN',
-        'row2': '> Ngay',
-        'row3': 'Ngay gio',
-        'row4': ''
-    },
-    1: {
-        'row1': 'THOI GIAN',
-        'row2': 'Ngay',
-        'row3': '> Gio',
-        'row4': ''
-    }
-}
 
-
-'''---------------------------------------------------------------------------------------------------------------------
+"""---------------------------------------------------------------------------------------------------------------------
                                                 Global variable
-   ------------------------------------------------------------------------------------------------------------------'''
+   ------------------------------------------------------------------------------------------------------------------"""
 event = 0
 ats_screen_index = 0
 setting_screen_index = 0
@@ -86,8 +73,12 @@ last_screen_lv1_index = -1
 start_time = 0
 time_count = 0
 cycle_flag = False
-time_setting_screen_index = 0,
+time_setting_screen_index = 0
 last_time_setting_screen_index = -1
+last_cmd_lcd = './last_cmd_screen.json'
+security_screen_index = 0
+go_sub_setting_flag = False
+start_flag = True
 
 """---------------------------------------------------------------------------------------------------------------------
                                                 Internal function
@@ -101,39 +92,39 @@ def clear_display():
 def print_lcd(str1, str2, str3, str4):
     from control import process_cmd_lcd
     try:
-        str = [str1, str2, str3, str4]
+        string = [str1, str2, str3, str4]
         LOGGER.info('Send message print_lcd on lcd')
         i = 0
         while i < 4:
-            if str[i] == '':
-                str[i] = ' '
-            status = process_cmd_lcd(ROW[i], UPDATE_VALUE, str[i])
+            if string[i] == '':
+                string[i] = ' '
+            status = process_cmd_lcd(ROW[i], UPDATE_VALUE, string[i])
             if status:
                 i += 1
     except Exception as ex:
         LOGGER.info('print_lcd function error: %s', ex.message)
 
 
-def remove_file_last_json(button):
+def remove_json_file():
     try:
-        if button == ESC:
-            LOGGER.info('Remove file ESC')
-        elif button == CANH_BAO:
-            LOGGER.info('Remove file CANH_BAO')
-            remove_json_file_alarm()
-        elif button == CAM_BIEN:
-            LOGGER.info('Remove file CAM_BIEN')
-        elif button == DIEU_HOA:
-            LOGGER.info('Remove file DIEU_HOA')
-        elif button == ATS:
-            LOGGER.info('Remove file ATS')
-        elif button == SETTING:
-            LOGGER.info('Remove file SETTING')
-        elif button == RFID:
-            LOGGER.info('Remove file RFID')
-
+        file_json = read_to_json(last_cmd_lcd)
+        file_json['row1'] = ""
+        file_json['row2'] = ""
+        file_json['row3'] = ""
+        file_json['row4'] = ""
+        write_to_json(file_json, last_cmd_lcd)
     except Exception as ex:
-        LOGGER.error('remove_file_last_json function error: %s', ex.message)
+        LOGGER.error('Error at remove_json_file_alarm function with message: %s', ex.message)
+
+
+def read_to_json(file_url):
+    try:
+        json_file = open(file_url, )
+        json_info = json.load(json_file)
+        return json_info
+    except Exception as ex:
+        LOGGER.error('Error at call function in read_to_json with message: %s', ex.message)
+
 
 ''' screen level 1 implement '''
 def main_display():
@@ -145,12 +136,16 @@ def warning_display():
 
 
 def security_sensor_info_display():
-    global event
+    global event, security_screen_index
 
     LOGGER.info('Enter security_sensor_info_display function')
-    if event == LEFT or event == 0:
-        security_sensor_screen_1(telemetries)
+    if event == LEFT:
+        security_screen_index = 0
     elif event == RIGHT:
+        security_screen_index = 1
+    if security_screen_index == 0:
+        security_sensor_screen_1(telemetries)
+    elif security_screen_index == 1:
         security_sensor_screen_2(telemetries)
 
 
@@ -191,29 +186,33 @@ def rfid_display():
 
 
 def setting_display():
-    global setting_screen_index, event, last_setting_screen_index
+    global setting_screen_index, event, last_setting_screen_index, go_sub_setting_flag
     try:
-        if event == UP:
-            setting_screen_index -= 1
-        elif event == DOWN:
-            setting_screen_index += 1
-        if setting_screen_index > 5:
-            setting_screen_index = 5
-        elif setting_screen_index < 0:
-            setting_screen_index = 0
-        if event == LEFT:
-            setting_screen_index = 0
-        elif event == RIGHT:
-            setting_screen_index = 3
-        if last_setting_screen_index != setting_screen_index:
-            print_lcd(setting_display_print[setting_screen_index]['row1'],
-                      setting_display_print[setting_screen_index]['row2'],
-                      setting_display_print[setting_screen_index]['row3'],
-                      setting_display_print[setting_screen_index]['row4'])
-            last_setting_screen_index = setting_screen_index
-        if event == OK:
+
+        if not go_sub_setting_flag:
+            if event == OK:
+                go_sub_setting_flag = True
+            elif event == UP:
+                setting_screen_index -= 1
+            elif event == DOWN:
+                setting_screen_index += 1
+            if setting_screen_index > 5:
+                setting_screen_index = 5
+            elif setting_screen_index < 0:
+                setting_screen_index = 0
+            if event == LEFT:
+                setting_screen_index = 0
+            elif event == RIGHT:
+                setting_screen_index = 3
+            if last_setting_screen_index != setting_screen_index and not go_sub_setting_flag:
+                print_lcd(setting_display_print[setting_screen_index]['row1'],
+                          setting_display_print[setting_screen_index]['row2'],
+                          setting_display_print[setting_screen_index]['row3'],
+                          setting_display_print[setting_screen_index]['row4'])
+                last_setting_screen_index = setting_screen_index
+        if go_sub_setting_flag:
             select_setting()
-        LOGGER.info('setting menu, setting_screen_index: %s', str(setting_screen_index))
+        LOGGER.info('setting_display, setting_screen_index: %s', str(setting_screen_index))
     except Exception as ex:
         LOGGER.error('setting_display function error: %s', ex.message)
 
@@ -235,50 +234,42 @@ def select_setting():
 
 
 def information_setting():
-    global event
-
+    global event, go_sub_setting_flag
     LOGGER.info('Finish cai_dat_thong_tin function')
-    info_setting_process(event)
+    if event == 0:
+        return
+    if setting_info_screen_lcd_services.info_setting_process(event):
+        back_screen_setting()
+        setting_info_screen_lcd_services.get_default_value()
 
 
 def time_setting():
-    global event, time_setting_screen_index, last_time_setting_screen_index
+    global event
 
-    try:
-        if event == DOWN:
-            time_setting_screen_index = 1
-        elif event == UP:
-            time_setting_screen_index = 0
-        elif event == OK:
-            if time_setting_screen_index == 0:
-                date_setting_process(event)
-            else:
-                time_setting_process(event)
-        if last_time_setting_screen_index != time_setting_screen_index:
-            print_lcd(time_setting_print[time_setting_screen_index]['row1'],
-                      time_setting_print[time_setting_screen_index]['row2'],
-                      time_setting_print[time_setting_screen_index]['row3'],
-                      time_setting_print[time_setting_screen_index]['row4'])
-            last_time_setting_screen_index = time_setting_screen_index
-        LOGGER.info('finish time_setting function, time_setting_screen_index: %s', str(time_setting_screen_index))
-    except Exception as ex:
-        LOGGER.error('time_setting function error: %s', ex.message)
+    if event == 0:
+        return
+    if setting_datetime_screen_lcd_services.datetime_setting(event):
+        setting_datetime_screen_lcd_services.get_default_value()
 
 
 def internet_setting():
-    global event, screen_lv1_index
-
-    LOGGER.info('Enter thong_so_mang function')
+    global event, setting_screen_index
+    LOGGER.info('event in internet_setting: %s', str(event))
+    if event == 0:
+        return
+    LOGGER.info('Enter internet_setting function, setting_screen_index: %s', str(setting_screen_index))
     # Call function xu ly keycode
-    choose_config(screen_lv1_index + 1)
+    choose_config(setting_screen_index + 1)
     listen_key_code(event)
 
-def warning_setting():
-    global event, screen_lv1_index
 
-    LOGGER.info('Enter canh_bao function')
+def warning_setting():
+    global event, setting_screen_index
+    if event == 0:
+        return
+    LOGGER.info('Enter warning_setting function, setting_screen_index: %s', str(setting_screen_index))
     # Call function xu ly keycode
-    choose_config(screen_lv1_index + 1)
+    choose_config(setting_screen_index + 1)
     listen_key_code(event)
 
 
@@ -311,17 +302,37 @@ def back_main_screen(button):
     except Exception as ex:
         LOGGER.error('back_main_screen function error: %s', ex.message)
 
+
 def clear_event():
     global event
 
     event = 0
 
+def move_default_var():
+    global event, security_screen_index, ats_screen_index, last_setting_screen_index, last_screen_lv1_index, \
+        last_time_setting_screen_index, go_sub_setting_flag
 
-'''---------------------------------------------------------------------------------------------------------------------
+    security_screen_index = 0
+    ats_screen_index = 0
+    last_setting_screen_index = -1
+    last_screen_lv1_index = -1
+    last_time_setting_screen_index = -1
+    go_sub_setting_flag = False
+
+
+def back_screen_setting():
+    global go_sub_setting_flag, last_setting_screen_index
+
+    go_sub_setting_flag = False
+    last_setting_screen_index = -1
+
+
+"""---------------------------------------------------------------------------------------------------------------------
                                                  External function
-   ------------------------------------------------------------------------------------------------------------------'''
+   ------------------------------------------------------------------------------------------------------------------"""
 def main_menu(button):
-    global screen_lv1_index, event, last_screen_lv1_index
+    global screen_lv1_index, event, last_screen_lv1_index, security_screen_index, ats_screen_index,\
+        start_flag, setting_screen_index
 
     try:
         menu_function_list = {
@@ -333,19 +344,26 @@ def main_menu(button):
             SETTING: setting_display,
             RFID: rfid_display
         }
+        if start_flag is True:
+            clear_display()
+            start_flag = False
         clear_event()
+        back_main_screen(button)
         if button in MENU_LV_1 and last_screen_lv1_index != button:
             screen_lv1_index = button
+            setting_screen_index = 0
             last_screen_lv1_index = screen_lv1_index
-            # clear display
+            move_default_var()
             clear_display()
-            remove_file_last_json(button)
+            remove_json_file()
+            # get_default_value()
+            reset_params_main_display()
+            ats_reset_params()
+            rfid_reset_params()
         elif button != -1:
             event = button
 
-        back_main_screen(button)
         func = menu_function_list.get(screen_lv1_index)
         return func()
     except Exception as ex:
         LOGGER.error('print_screen function error: %s', ex.message)
-

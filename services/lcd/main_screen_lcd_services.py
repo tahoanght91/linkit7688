@@ -7,13 +7,20 @@ from config.common_lcd_services import *
 from operate.rfid_thread import KEY_RFID
 
 timeOld = '61'
-titleOld = ''
-rfidOld = ''
 acmTempInOld = ''
 acmTempOutOld = ''
 acmHumidInOld = ''
 warningOld = ''
 url_get_staff = PREFIX + DOMAIN + API_GET_STAFF
+
+
+def reset_params_main_display():
+    global timeOld, acmTempInOld, acmTempOutOld, acmHumidInOld, warningOld
+    timeOld = '61'
+    acmTempInOld = ''
+    acmTempOutOld = ''
+    acmHumidInOld = ''
+    warningOld = ''
 
 
 def write_to_json(body, fileUrl):
