@@ -6,6 +6,8 @@ from services.lcd import main_screen_lcd_services, ats_screen_lcd_services, ats_
     rfid_screen_lcd_sevices, rfid_setting_lcd_service
 from services.lcd.acm_sreen_lcd_services import show_temp_condition
 from services.lcd.alarm_lcd_services import check_alarm
+from services.lcd.ats_setting_lcd_service import reset_params as ats_reset_params
+from services.lcd.rfid_setting_lcd_service import reset_params as rfid_reset_params
 from services.lcd.sensor_screen_lcd_services import *
 # SonTH
 from services.lcd.setting_datetime_screen_lcd_services import date_setting_process, time_setting_process
@@ -201,6 +203,7 @@ def rfid_display():
 def setting_display():
     global setting_screen_index, event, last_setting_screen_index, go_sub_setting_flag
     try:
+
         if not go_sub_setting_flag:
             if event == OK:
                 go_sub_setting_flag = True
@@ -375,6 +378,8 @@ def main_menu(button):
             remove_json_file()
             clear_display()
             get_default_value()
+            ats_reset_params()
+            rfid_reset_params()
         elif button != -1:
             event = button
 
