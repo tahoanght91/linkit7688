@@ -413,6 +413,7 @@ def set_alarm_state_to_dct(dct_telemetry):
                 dct_alarm['mccFloodState'] = mcc.get('mccFloodState', 0)
                 dct_alarm['mccSmokeState'] = mcc.get('mccSmokeState', 0)
                 dct_alarm['mccDoorState'] = mcc.get('mccDoorState', 0)
+                dct_alarm['mccDcLowState'] = mcc.get('mccDcLowState', 0)
             if len(acm) > 0:
                 dct_alarm['acmTempAlarm'] = acm.get('acmTempAlarm', 0)
                 dct_alarm['acmHumidAlarm'] = acm.get('acmHumidAlarm', 0)
