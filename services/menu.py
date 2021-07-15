@@ -3,7 +3,8 @@
    ------------------------------------------------------------------------------------------------------------------"""
 from config.common import *
 from services.lcd import main_screen_lcd_services, ats_screen_lcd_services, ats_setting_lcd_service, \
-    rfid_screen_lcd_sevices, rfid_setting_lcd_service
+    rfid_screen_lcd_sevices, rfid_setting_lcd_service, setting_info_screen_lcd_services, \
+    setting_datetime_screen_lcd_services
 from services.lcd.acm_sreen_lcd_services import show_temp_condition
 from services.lcd.alarm_lcd_services import check_alarm
 from services.lcd.ats_setting_lcd_service import reset_params as ats_reset_params
@@ -11,8 +12,6 @@ from services.lcd.main_screen_lcd_services import reset_params_main_display
 from services.lcd.rfid_setting_lcd_service import reset_params as rfid_reset_params
 from services.lcd.sensor_screen_lcd_services import *
 # SonTH
-from services.lcd.setting_datetime_screen_lcd_services import datetime_setting
-from services.lcd.setting_info_screen_lcd_services import info_setting_process, get_default_value
 from services.lcd.setting_screen_lcd_services import *
 
 
@@ -239,9 +238,9 @@ def information_setting():
     LOGGER.info('Finish cai_dat_thong_tin function')
     if event == 0:
         return
-    if info_setting_process(event):
+    if setting_info_screen_lcd_services.info_setting_process(event):
         back_screen_setting()
-        get_default_value()
+        setting_info_screen_lcd_services.get_default_value()
 
 
 def time_setting():
@@ -249,7 +248,8 @@ def time_setting():
 
     if event == 0:
         return
-    datetime_setting(event)
+    if setting_datetime_screen_lcd_services.datetime_setting(event):
+        setting_datetime_screen_lcd_services.get_default_value()
 
 
 def internet_setting():
@@ -356,7 +356,7 @@ def main_menu(button):
             move_default_var()
             clear_display()
             remove_json_file()
-            get_default_value()
+            # get_default_value()
             reset_params_main_display()
             ats_reset_params()
             rfid_reset_params()
