@@ -337,8 +337,9 @@ def main_menu(button):
             RFID: rfid_display
         }
         if start_flag is True:
-            clear_event()
+            clear_display()
             start_flag = False
+        clear_event()
         back_main_screen(button)
         if button in MENU_LV_1 and last_screen_lv1_index != button:
             screen_lv1_index = button
