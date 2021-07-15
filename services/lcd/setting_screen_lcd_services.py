@@ -363,6 +363,7 @@ def main_network_listen_key(keycode):
             # lan dau tien load man hinh screen_idx = -1, khong update gia tri chon
             selection_chosen[screen_idx] = pointer_idx
         screen_idx = 0 if screen_idx == 2 else screen_idx + 1
+        LOGGER.info('--- Show screen_idx: %s', str(screen_idx))
         # refresh gia tri pointer index
         pointer_idx = 0
     else:
