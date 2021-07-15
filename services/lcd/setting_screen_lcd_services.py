@@ -170,7 +170,7 @@ def reset_parameter():
 # Main cua man hinh network
 def call_screen_network(keycode):
     from control import process_cmd_lcd
-    global selection_chosen, screen_idx
+    global selection_chosen, screen_idx, pointer_idx
     try:
         switcher = [
             {

@@ -62,12 +62,12 @@ def get_alarm(row2, row3, tel_lcd):
             elif CB_DOAM in tel_lcd and tel_lcd.get(CB_DOAM) != 0:
                 if row2 != 'CB Do Am!':
                     row2 = create_for_each('CB Do Am!')
-            elif CB_DIENAPLUOI in tel_lcd and tel_lcd.get(CB_DIENAPLUOI) == 1:
-                if row2 != 'CB Dien Luoi!':
-                    row2 = create_for_each('CB Dien Luoi!')
-            elif CB_DIENMAYPHAT in tel_lcd and tel_lcd.get(CB_DIENMAYPHAT) == 1:
-                if row2 != 'CB Dien M.Phat!':
-                    row2 = create_for_each('CB Dien M.Phat!')
+            # elif CB_DIENAPLUOI in tel_lcd and tel_lcd.get(CB_DIENAPLUOI) == 1:
+            #     if row2 != 'CB Dien Luoi!':
+            #         row2 = create_for_each('CB Dien Luoi!')
+            # elif CB_DIENMAYPHAT in tel_lcd and tel_lcd.get(CB_DIENMAYPHAT) == 1:
+            #     if row2 != 'CB Dien M.Phat!':
+            #         row2 = create_for_each('CB Dien M.Phat!')
             elif CB_DCLow in tel_lcd and tel_lcd.get(CB_DCLow) == 1:
                 if row2 != 'CB DC Low!':
                     row2 = create_for_each('CB DC Low!')
