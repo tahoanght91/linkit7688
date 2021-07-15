@@ -222,6 +222,7 @@ def convert_to_string_default(key_tel, type_check):
                 return str(telemetries[key_tel] // 1000)
             else:
                 return '0'
-        else: return '0'
+        else:
+            return '0'
     except Exception as ex:
         LOGGER.error('Error at convert_to_string_default function with message: %s', ex.message)
