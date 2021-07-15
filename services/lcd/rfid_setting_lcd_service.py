@@ -31,7 +31,7 @@ def call_screen_rfid_setting(p_idx):
             }
         ]
         # Update text
-        process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THIET BI ATS')
+        process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THIET BI RFID')
         process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[p_idx]['row_2'])
         process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[p_idx]['row_3'])
     except Exception as ex:
