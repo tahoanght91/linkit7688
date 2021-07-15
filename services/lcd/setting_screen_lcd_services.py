@@ -165,6 +165,10 @@ def reset_parameter():
     pointer_idx = 0
     screen_idx = 0
 
+def reset_all_parameter():
+    global isChosen
+    isChosen = 0
+    reset_parameter()
 
 # SonTH: Config network
 # Main cua man hinh network
@@ -335,13 +339,13 @@ def get_next_number(keycode, number):
 
 # Register func nay
 def listen_key_code(keycode):
-    global isChosen
-    if keycode == ESC:
-        # Ben menu da xu ly thoat ve man hinh menu roi
-        # Reset lai cac gia tri de lan sau goi
-        isChosen = 0
-        reset_parameter()
-        return
+    # global isChosen
+    # if keycode == ESC or keycode == BUTTON_33_EVENT_UP:
+    #     # Ben menu da xu ly thoat ve man hinh menu roi
+    #     # Reset lai cac gia tri de lan sau goi
+    #     isChosen = 0
+    #     reset_parameter()
+    #     return
 
     if screen_setting_idx == selection_setting["network"]:
         get_func_keycode(network_keycode_func_idx, keycode)
