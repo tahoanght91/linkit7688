@@ -159,16 +159,16 @@ def choose_config(setting_idx):
     LOGGER.info('IN choose_config: %s, %s', screen_idx, screen_setting_idx)
 
 
-def reset_parameter():
+def reset_param():
     # call moi khi quay lai man hinh main config
     global pointer_idx, screen_idx
     pointer_idx = 0
     screen_idx = 0
 
-def reset_all_parameter():
+def reset_parameter():
     global isChosen
     isChosen = 0
-    reset_parameter()
+    reset_param()
 
 # SonTH: Config network
 # Main cua man hinh network
@@ -431,7 +431,7 @@ def assign_ip_listen_key(keycode):
             if pointer_idx == confirm["yes"]:
                 if save_ip() == 0:
                     return
-                reset_parameter()
+                reset_param()
             else:
                 return
     else:
@@ -521,7 +521,7 @@ def save_ip():
     # Luu ip vao bash
     for k in set_ip_idx:
         save_to_set_ip(network.get_ip(), k) if selection_chosen[0] == set_ip_idx[k] else 1
-    reset_parameter()
+    reset_param()
     return 1
 
 
@@ -539,7 +539,7 @@ def save_alarm():
             write_body_send_shared_attributes(alarm.get_alarm_number(), k)
             break
     # Reset cac tham so dieu huong man hinh
-    reset_parameter()
+    reset_param()
     return 1
 
 
