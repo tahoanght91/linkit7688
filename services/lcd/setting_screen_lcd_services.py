@@ -250,6 +250,8 @@ def refresh_screen_assign_ip_address(keycode):
             # Man hinh xac nhan luu
             LOGGER.info('Enter refresh_screen_assign_ip_address function: %s', str(switcher_2[pointer_idx]))
             if keycode == OK:
+                if network.get_oct() == 0:
+                    return
                 process_cmd_lcd(ROW_1, UPDATE_VALUE, 'XAC NHAN LUU')
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher_2[pointer_idx]["row_2"])
             process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher_2[pointer_idx]["row_3"])
@@ -420,8 +422,7 @@ def assign_ip_listen_key(keycode):
             if pointer_idx == confirm["yes"]:
                 if save_ip() == 0:
                     return
-                pointer_idx = 0
-                screen_idx = selection_setting_network["main"]
+                reset_parameter()
             else:
                 return
     else:
@@ -838,12 +839,16 @@ alarm_keycode_func_idx = {
 
 
 def get_func_render(o, keycode):
+    LOGGER.info("screen_idx in get_func_render: %s", str(screen_idx))
+    LOGGER.info("pointer_idx in get_func_render: %s", str(pointer_idx))
     scene_idx = 0 if screen_idx < 0 else screen_idx
     func = o.get(scene_idx)
     return func(keycode)
 
 
 def get_func_keycode(o, kc):
+    LOGGER.info("screen_idx in get_func_keycode: %s", str(screen_idx))
+    LOGGER.info("pointer_idx in get_func_keycode: %s", str(pointer_idx))
     scene_idx = 0 if screen_idx < 0 else screen_idx
     func = o.get(scene_idx)
     return func(kc)
