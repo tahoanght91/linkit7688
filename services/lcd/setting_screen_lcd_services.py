@@ -637,26 +637,27 @@ set_alarm_idx = {
     "humidity": 3
 }
 
+
 row_format = {
     "ip": {
         "number": 1,
-        "format": "uci set network.lan.ipaddr=\'{0}\'\r\n"
+        "format": "uci set network.lan.ipaddr=\'{0}\'\n"
     },
     "gateway": {
         "number": 2,
-        "format": "uci set network.lan.gateway=\'{0}\'\r\n"
+        "format": "uci set network.lan.gateway=\'{0}\'\n"
     },
     "subnet": {
         "number": 3,
-        "format": "uci set network.lan.netmask=\'{0}\'\r\n"
+        "format": "uci set network.lan.netmask=\'{0}\'\n"
     },
     "primary_dns": {
         "number": 5,
-        "format": "uci add_list network.lan.dns=\'{0}\'\r\n"
+        "format": "uci add_list network.lan.dns=\'{0}\'\n"
     },
     "secondary_dns": {
         "number": 6,
-        "format": "uci add_list network.lan.dns=\'{0}\'\r\n"
+        "format": "uci add_list network.lan.dns=\'{0}\'\n"
     }
 }
 
