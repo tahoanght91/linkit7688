@@ -250,8 +250,10 @@ def time_setting():
 
 def internet_setting():
     global event, setting_screen_index
-
-    LOGGER.info('Enter internet_setting function')
+    LOGGER.info('event in internet_setting: %s', str(event))
+    if event == 0:
+        return
+    LOGGER.info('Enter internet_setting function, setting_screen_index: %s', str(setting_screen_index))
     # Call function xu ly keycode
     choose_config(setting_screen_index + 1)
     listen_key_code(event)
@@ -259,8 +261,9 @@ def internet_setting():
 
 def warning_setting():
     global event, setting_screen_index
-
-    LOGGER.info('Enter warning_setting function')
+    if event == 0:
+        return
+    LOGGER.info('Enter warning_setting function, setting_screen_index: %s', str(setting_screen_index))
     # Call function xu ly keycode
     choose_config(setting_screen_index + 1)
     listen_key_code(event)
