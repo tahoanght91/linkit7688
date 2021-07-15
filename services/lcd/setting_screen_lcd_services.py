@@ -170,6 +170,7 @@ def reset_parameter():
 # Main cua man hinh network
 def call_screen_network(keycode):
     from control import process_cmd_lcd
+    global selection_chosen, screen_idx
     try:
         switcher = [
             {
@@ -212,7 +213,7 @@ def call_screen_network(keycode):
 def refresh_screen_assign_ip_address(keycode):
     from control import process_cmd_lcd
     try:
-        global network
+        global network, selection_chosen
         network = get_net_info() if network == 0 else network
         switcher = [
             {
@@ -261,7 +262,7 @@ def refresh_screen_assign_ip_address(keycode):
             LOGGER.info('Enter refresh_screen_assign_ip_address function: %s', str(switcher[selection_chosen[screen_idx]]))
             if keycode == OK:
                 process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
-            process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx]]['row_2'])
+            process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx - 1]]['row_2'])
             process_cmd_lcd(ROW_3, UPDATE_VALUE, network.get_ip())
             process_cmd_lcd(ROW_4, UPDATE_VALUE, '')
 
@@ -673,9 +674,9 @@ def save_to_set_ip(str_saved, key):
         save_to_file_txt('./setIp.sh', row_format[key]["format"].format(str_saved), row_format[key]["number"])
         LOGGER.info('Call save file ./setIp.sh')
         # run bash .sh
-        bashCmd = ["./setIp.sh"]
-        process = subprocess.Popen(bashCmd, stdout=subprocess.PIPE)
-        output, error = process.communicate()
+        # bashCmd = ["./setIp.sh"]
+        # process = subprocess.Popen(bashCmd, stdout=subprocess.PIPE)
+        # output, error = process.communicate()
         LOGGER.info('Run ./setIp.sh with output: {0} and error{1}', output, error)
     except Exception as ex:
         LOGGER.error('Error at call function in save_to_set_ip with message: %s', ex.message)
