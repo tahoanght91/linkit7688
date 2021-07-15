@@ -43,7 +43,9 @@ class __IPv4:
                                                                   , self.ip[11] if self.ip[11] != '_' else '')
 
     def get_oct(self):
+        LOGGER.info('Check oct!!!')
         for v in self.get_ip_number().split("."):
+            LOGGER.info('Oct in get_oct: %s', str(v))
             if v == '' or int(v) > 225:
                 # Chua nhap octet nay
                 # ip khong duoc lon hon 225
@@ -242,9 +244,9 @@ def refresh_screen_assign_ip_address(keycode):
                 "row_4": ''
             }
         ]
-
+        LOGGER.info('screen_idx in refresh_screen_assign_ip_address: %s', str(screen_idx))
         # Update text
-        if screen_idx % 2 == 0:
+        if screen_idx == selection_setting_network['assign_ip']:
             # Man hinh xac nhan luu
             LOGGER.info('Enter refresh_screen_assign_ip_address function: %s', str(switcher_2[pointer_idx]))
             if keycode == OK:
@@ -252,7 +254,7 @@ def refresh_screen_assign_ip_address(keycode):
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher_2[pointer_idx]["row_2"])
             process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher_2[pointer_idx]["row_3"])
             process_cmd_lcd(ROW_4, UPDATE_VALUE, switcher_2[pointer_idx]["row_4"])
-        else:
+        elif screen_idx == selection_setting_network['confirm_assign_ip']:
             # Man hinh nhap ip - subnet - ...
             LOGGER.info('Enter refresh_screen_assign_ip_address function: %s', str(switcher[selection_chosen[screen_idx]]))
             if keycode == OK:
