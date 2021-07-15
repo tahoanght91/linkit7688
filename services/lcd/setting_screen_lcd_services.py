@@ -170,7 +170,7 @@ def reset_parameter():
 # Main cua man hinh network
 def call_screen_network(keycode):
     from control import process_cmd_lcd
-    global selection_chosen, screen_idx
+    global selection_chosen, screen_idx, pointer_idx
     try:
         switcher = [
             {
@@ -200,13 +200,13 @@ def call_screen_network(keycode):
             }
         ]
         LOGGER.info('Enter call_screen_network function, screen_idx: %s', str(screen_idx))
-        LOGGER.info('Enter call_screen_network function, pointer_ìdx: %s', str(pointer_ìdx))
+        LOGGER.info('Enter call_screen_network function, pointer_ìdx: %s', str(pointer_idx))
         # Update text
         if keycode == OK:
             process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
-        process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[pointer_ìdx]['row_2'])
-        process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[pointer_ìdx]['row_3'])
-        process_cmd_lcd(ROW_4, UPDATE_VALUE, switcher[pointer_ìdx]['row_4'])
+        process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[pointer_idx]['row_2'])
+        process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[pointer_idx]['row_3'])
+        process_cmd_lcd(ROW_4, UPDATE_VALUE, switcher[pointer_idx]['row_4'])
     except Exception as ex:
         LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
