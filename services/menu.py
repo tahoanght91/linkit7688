@@ -248,8 +248,7 @@ def time_setting():
 
     if event == 0:
         return
-    if setting_datetime_screen_lcd_services.datetime_setting(event):
-        setting_datetime_screen_lcd_services.get_default_value()
+    setting_datetime_screen_lcd_services.datetime_setting(event)
 
 
 def internet_setting():
