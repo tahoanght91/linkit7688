@@ -310,6 +310,8 @@ def get_alarm_info():
             continue
     if len(key) == 0:
         return
+    LOGGER.info("Selection in get_alarm_info: %s, %s", str(selection_chosen[0]), str(selection_chosen[1]))
+    LOGGER.info("Key get alarm info in get_alarm_info: %s", str(key))
     if file_json[key] != '':
         result.alarm = convert_to_array_number([file_json[key]])
     # Tam fake bang 77
@@ -454,7 +456,7 @@ def alarm_selection_listen_key(keycode):
             if screen_idx > -1:
                 # lan dau tien load man hinh screen_idx = -1, khong update gia tri chon
                 selection_chosen[screen_idx] = pointer_idx
-            if screen_idx == selection_setting_alarm["confirm_assign_alarm"] - 1:
+            if screen_idx == selection_setting_alarm["confirm_assign_alarm"]:
                 if pointer_idx == confirm["yes"]:
                     if save_alarm() == 0:
                         return
