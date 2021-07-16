@@ -306,7 +306,7 @@ def get_alarm_info():
     key = ""
     for k in set_alarm_idx:
         if selection_chosen[0] == set_alarm_idx[k]:
-            key = "row{}".format(pow(2, set_alarm_idx[k]) + 1 + selection_chosen[1])
+            key = "row{}".format(2 * set_alarm_idx[k] + 1 + selection_chosen[1])
             continue
     if len(key) == 0:
         return
@@ -532,7 +532,7 @@ def save_alarm():
         return 0
     LOGGER.info('Enter save_alarm function')
     # Luu alarm vao const
-    save_to_file('./last_cmd_alarm.json', alarm.get_alarm_number(), pow(2, selection_chosen[0]) + 1 + selection_chosen[1])
+    save_to_file('./last_cmd_alarm.json', alarm.get_alarm_number(), 2 * selection_chosen[0] + 1 + selection_chosen[1])
     # Call API de luu alarm
     for k in key_attr:
         if key_attr[k]["index_screen_1"] == selection_chosen[0] and key_attr[k]["index_screen_2"] == selection_chosen[1]:
