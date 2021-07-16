@@ -68,7 +68,7 @@ class __Alarm:
     def get_alarm(self):
         array = []
         for v in self.alarm:
-            array.append('_' if v == '' else v)
+            array.append('_' if v == '' else str(v))
         return "".join(array)
 
 
