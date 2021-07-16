@@ -138,7 +138,8 @@ def date_setting_process(button):
             elif button == OK:
                 if confirm_idx == 0:
                     try:
-                        os.system('date -s {year}-{month}-{day} {hour}:{min}'.format(year=date[0], month=date[2], day=date[4], hour=0, min=0))
+                        LOGGER.info("date -s %d.%d.%d-%d:%d", date[0], date[2], date[4], 0, 0)
+                        os.system('date -s {year}.{month}.{day}-{hour}:{min}'.format(year=date[0], month=date[2], day=date[4], hour=0, min=0))
                     except Exception as ex:
                         LOGGER.error('Error at set datetime to os in os.system with message: %s', ex.message)
                 get_default_value()
@@ -207,6 +208,7 @@ def time_setting_process(button):
             elif button == OK:
                 if confirm_idx == 0:
                     try:
+                        LOGGER.info("date -s %d:%d", time[0], time[2])
                         os.system('date -s {hour}:{minute}'.format(hour=time[0], minute=time[2]))
                     except Exception as ex:
                         LOGGER.error('Error at call function in os.system in 113 with message: %s', ex.message)
