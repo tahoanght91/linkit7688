@@ -8,15 +8,15 @@ GO_CONFIRM = True
 NOT_GO_CONFIRM = False
 HOUR = [str(u) for u in range(24)]
 MIN = [str(u) for u in range(60)]
-YEAR = [str(u) for u in range(2021, 2100)]
+YEAR = [str(u) for u in range(2021, 2101)]
 MONTH = [str(u) for u in range(1, 13)]
 DAY = [str(u) for u in range(1, 32)]
 
 # Common variables
 date = ['____', '/', '__', '/', '__']
 time = ['__', ':', '__']
-level_at_index_date = [0] * 5
-level_at_index_time = [0] * 3
+level_at_index_date = [0] * 3
+level_at_index_time = [0] * 2
 
 ok_time = 0
 cursor_idx = 0
@@ -71,11 +71,11 @@ def date_setting_screen(cursor_index):
     global level_at_index_date, date
 
     if cursor_index == 0:
-        date[cursor_index] = YEAR[level_at_index_date[cursor_index]]
+        date[cursor_index] = YEAR[level_at_index_date[cursor_index]-2021]
+    elif cursor_index == 1:
+        date[cursor_index+1] = MONTH[level_at_index_date[cursor_index]-1]
     elif cursor_index == 2:
-        date[cursor_index] = MONTH[level_at_index_date[cursor_index]]
-    elif cursor_index == 4:
-        date[cursor_index] = DAY[level_at_index_date[cursor_index]]
+        date[cursor_index+2] = DAY[level_at_index_date[cursor_index]-1]
     process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(date))
 
 
@@ -95,39 +95,32 @@ def date_setting_process(button):
                 if cursor_idx == 0:
                     if level_at_index_date[cursor_idx] > 2100:
                         level_at_index_date[cursor_idx] = 2021
-                elif cursor_idx == 2:
+                elif cursor_idx == 1:
                     if level_at_index_date[cursor_idx] > 12:
                         level_at_index_date[cursor_idx] = 0
-                elif cursor_idx == 4:
+                elif cursor_idx == 2:
                     if level_at_index_date[cursor_idx] > 31:
                         level_at_index_date[cursor_idx] = 0
-
             elif button == DOWN:
                 level_at_index_date[cursor_idx] -= 1
                 if cursor_idx == 0:
                     if level_at_index_date[cursor_idx] < 2021:
                         level_at_index_date[cursor_idx] = 2100
-                elif cursor_idx == 2:
+                elif cursor_idx == 1:
                     if level_at_index_date[cursor_idx] < 1:
                         level_at_index_date[cursor_idx] = 12
-                elif cursor_idx == 4:
+                elif cursor_idx == 2:
                     if level_at_index_date[cursor_idx] < 1:
-                        level_at_index_date[cursor_idx] = 30
+                        level_at_index_date[cursor_idx] = 31
             elif button == RIGHT:
-                if cursor_idx == 0 or cursor_idx == 2:
-                    cursor_idx += 2
-                else:
-                    cursor_idx += 1
-                if cursor_idx > 4:
-                    cursor_idx = 4
+                cursor_idx += 1
+                if cursor_idx > 2:
+                    cursor_idx = 2
             elif button == LEFT:
-                if cursor_idx == 0 or cursor_idx == 2:
-                    cursor_idx -= 2
-                else:
-                    cursor_idx -= 1
+                cursor_idx -= 1
                 if cursor_idx < 0:
                     cursor_idx = 0
-            elif button == OK and cursor_idx == 4:
+            elif button == OK and cursor_idx == 2:
                 screen_confirm_flag = True
                 call_screen_confirm(confirm_idx)
         else:
@@ -138,7 +131,7 @@ def date_setting_process(button):
             elif button == OK:
                 if confirm_idx == 0:
                     try:
-                        LOGGER.info("date -s %d.%d.%d-%d:%d", date[0], date[2], date[4], 0, 0)
+                        LOGGER.info("date -s %s.%s.%s-%s:%s", str(date[0]), str(date[2]), str(date[4]), str(0), str(0))
                         os.system('date -s {year}.{month}.{day}-{hour}:{min}'.format(year=date[0], month=date[2], day=date[4], hour=0, min=0))
                     except Exception as ex:
                         LOGGER.error('Error at set datetime to os in os.system with message: %s', ex.message)
@@ -159,8 +152,8 @@ def time_setting_screen(cursor_index):
 
     if cursor_index == 0:
         time[cursor_index] = HOUR[level_at_index_time[cursor_index]]
-    elif cursor_index == 2:
-        time[cursor_index] = MIN[level_at_index_time[cursor_index]]
+    elif cursor_index == 1:
+        time[cursor_index+1] = MIN[level_at_index_time[cursor_index]]
     process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(time))
 
 
@@ -180,24 +173,22 @@ def time_setting_process(button):
                 if cursor_idx == 0:
                     if level_at_index_time[cursor_idx] > 23:
                         level_at_index_time[cursor_idx] = 0
-                elif cursor_idx == 2:
+                elif cursor_idx == 1:
                     if level_at_index_time[cursor_idx] > 59:
                         level_at_index_time[cursor_idx] = 0
-
             elif button == DOWN:
                 level_at_index_time[cursor_idx] -= 1
                 if cursor_idx == 0:
                     if level_at_index_time[cursor_idx] < 0:
                         level_at_index_time[cursor_idx] = 23
-                elif cursor_idx == 2:
+                elif cursor_idx == 1:
                     if level_at_index_time[cursor_idx] < 0:
                         level_at_index_time[cursor_idx] = 59
             elif button == RIGHT:
-                cursor_idx = 2
-
+                cursor_idx = 1
             elif button == LEFT:
                 cursor_idx = 0
-            elif button == OK and cursor_idx == 2:
+            elif button == OK and cursor_idx == 1:
                 screen_confirm_flag = True
                 call_screen_confirm(confirm_idx)
         else:
@@ -208,7 +199,7 @@ def time_setting_process(button):
             elif button == OK:
                 if confirm_idx == 0:
                     try:
-                        LOGGER.info("date -s %d:%d", time[0], time[2])
+                        LOGGER.info("date -s %s:%s", str(time[0]), str(time[2]))
                         os.system('date -s {hour}:{minute}'.format(hour=time[0], minute=time[2]))
                     except Exception as ex:
                         LOGGER.error('Error at call function in os.system in 113 with message: %s', ex.message)
@@ -261,8 +252,8 @@ def get_default_value():
 
     date = ['____', '/', '__', '/', '__']
     time = ['__', ':', '__']
-    level_at_index_date = [0] * 5
-    level_at_index_time = [0] * 3
+    level_at_index_date = [0] * 3
+    level_at_index_time = [0] * 2
     ok_time = 0
     cursor_idx = 0
     cursor_idx_time = 0
