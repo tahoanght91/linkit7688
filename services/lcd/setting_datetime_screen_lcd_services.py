@@ -6,17 +6,18 @@ from config.common_lcd_services import *
 # Define
 GO_CONFIRM = True
 NOT_GO_CONFIRM = False
+HOUR = [str(u) for u in range(24)]
+MIN = [str(u) for u in range(60)]
+YEAR = [str(u) for u in range(2021, 2100)]
+MONTH = [str(u) for u in range(1, 13)]
+DAY = [str(u) for u in range(1, 32)]
 
 # Common variables
 date = ['____', '/', '__', '/', '__']
 time = ['__', ':', '__']
 level_at_index_date = [0] * 5
 level_at_index_time = [0] * 3
-hour = [str(u) for u in range(24)]
-min = [str(u) for u in range(60)]
-year = [str(u) for u in range(2021, 2100)]
-month = [str(u) for u in range(1, 13)]
-day = [str(u) for u in range(1, 32)]
+
 ok_time = 0
 cursor_idx = 0
 cursor_idx_time = 0
@@ -67,21 +68,20 @@ def call_screen_confirm(p_idx):
 # Date setting
 def date_setting_screen(cursor_index):
     from control import process_cmd_lcd
-    global level_at_index_date, date, year, month, day
+    global level_at_index_date, date
 
     if cursor_index == 0:
-        date[cursor_index] = year[level_at_index_date[cursor_index]]
+        date[cursor_index] = YEAR[level_at_index_date[cursor_index]]
     elif cursor_index == 2:
-        date[cursor_index] = month[level_at_index_date[cursor_index]]
+        date[cursor_index] = MONTH[level_at_index_date[cursor_index]]
     elif cursor_index == 4:
-        date[cursor_index] = day[level_at_index_date[cursor_index]]
+        date[cursor_index] = DAY[level_at_index_date[cursor_index]]
     process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(date))
 
 
 def date_setting_process(button):
-    from time import sleep
     from control import process_cmd_lcd
-    global cursor_idx, level_at_index_date, date, confirm_idx, screen_confirm_flag, first_access_flag, go_setting_flag, time
+    global cursor_idx, level_at_index_date, date, confirm_idx, screen_confirm_flag, first_access_flag, go_setting_flag
 
     try:
         if first_access_flag is True:
@@ -118,8 +118,8 @@ def date_setting_process(button):
                     cursor_idx += 2
                 else:
                     cursor_idx += 1
-                if cursor_idx > 5:
-                    cursor_idx = 5
+                if cursor_idx > 4:
+                    cursor_idx = 4
             elif button == LEFT:
                 if cursor_idx == 0 or cursor_idx == 2:
                     cursor_idx -= 2
@@ -138,11 +138,9 @@ def date_setting_process(button):
             elif button == OK:
                 if confirm_idx == 0:
                     try:
-                        os.system('date -s {year}-{month}-{day} {hour}:{min}'.format(year=date[0], month=date[2], day=date[4], hour=time[0], min=time[2]))
+                        os.system('date -s {year}-{month}-{day} {hour}:{min}'.format(year=date[0], month=date[2], day=date[4], hour=0, min=0))
                     except Exception as ex:
                         LOGGER.error('Error at set datetime to os in os.system with message: %s', ex.message)
-                    process_cmd_lcd(ROW_2, UPDATE_VALUE, 'DA LUU THOI GIAN')
-                    sleep(3)
                 get_default_value()
                 return GO_CONFIRM
             call_screen_confirm(confirm_idx)
@@ -156,17 +154,16 @@ def date_setting_process(button):
 # Time setting
 def time_setting_screen(cursor_index):
     from control import process_cmd_lcd
-    global level_at_index_time, time, hour, min
+    global level_at_index_time, time
 
     if cursor_index == 0:
-        time[cursor_index] = hour[level_at_index_time[cursor_index]]
+        time[cursor_index] = HOUR[level_at_index_time[cursor_index]]
     elif cursor_index == 2:
-        time[cursor_index] = min[level_at_index_time[cursor_index]]
+        time[cursor_index] = MIN[level_at_index_time[cursor_index]]
     process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(time))
 
 
 def time_setting_process(button):
-    from time import sleep
     from control import process_cmd_lcd
     global cursor_idx, level_at_index_time, time, confirm_idx, screen_confirm_flag, first_access_flag, go_setting_flag
 
@@ -213,8 +210,6 @@ def time_setting_process(button):
                         os.system('date -s {hour}:{minute}'.format(hour=time[0], minute=time[2]))
                     except Exception as ex:
                         LOGGER.error('Error at call function in os.system in 113 with message: %s', ex.message)
-                    process_cmd_lcd(ROW_2, UPDATE_VALUE, 'DA LUU THOI GIAN')
-                    sleep(3)
                 get_default_value()
                 return GO_CONFIRM
             call_screen_confirm(confirm_idx)
