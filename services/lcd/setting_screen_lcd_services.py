@@ -431,7 +431,8 @@ def assign_ip_listen_key(keycode):
 
 def alarm_selection_listen_key(keycode):
     try:
-        global pointer_idx, screen_idx
+        global pointer_idx, screen_idx, alarm
+        alarm = get_alarm_info() if alarm == 0 else alarm
         # main co 4 dong, choose co 2 dong
         max_pointer_idx = 3 if screen_idx == selection_setting_alarm["assign_alarm"] else 1
         if keycode == BUTTON_34_EVENT_UP:
