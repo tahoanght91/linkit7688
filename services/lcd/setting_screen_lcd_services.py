@@ -62,14 +62,14 @@ class __Alarm:
         self.alarm = ['_', '_', '_']
 
     def get_alarm_number(self):
-        result = ''.join(self.alarm)
+        result = "".join(self.alarm)
         return 0 if result == '___' else result
 
     def get_alarm(self):
         array = []
         for v in self.alarm:
             array.append('_' if v == '' else v)
-        return ''.join(array)
+        return "".join(array)
 
 
 # Man hinh setting nao
@@ -468,7 +468,8 @@ def alarm_selection_listen_key(keycode):
 
 
 def assign_alarm_listen_key(keycode):
-    global pointer_idx, screen_idx
+    global pointer_idx, screen_idx, alarm
+    alarm = get_alarm_info() if alarm == 0 else alarm
     max_pointer_idx = 2
     if keycode == BUTTON_23_EVENT_UP:
         # key left
@@ -589,7 +590,7 @@ def refresh_screen_assign_alarm(keycode):
     from control import process_cmd_lcd
     try:
         global alarm
-        alarm = get_alarm_info() if alarm == 0 else alarm
+        # alarm = get_alarm_info() if alarm == 0 else alarm
         switcher = [
             {
                 "row_2": 'Nguong cao'
@@ -607,8 +608,7 @@ def refresh_screen_assign_alarm(keycode):
         if keycode == OK:
             process_cmd_lcd(ROW_1, UPDATE_VALUE, 'CANH BAO')
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx - 1]]["row_2"])
-        # process_cmd_lcd(ROW_2, UPDATE_VALUE, "{0}{1}".format(alarm.get_alarm(), text))
-        process_cmd_lcd(ROW_2, UPDATE_VALUE, "{0}{1}".format("123", text))
+        process_cmd_lcd(ROW_2, UPDATE_VALUE, "{0}{1}".format(alarm.get_alarm(), text))
         process_cmd_lcd(ROW_3, UPDATE_VALUE, '')
 
         LOGGER.info('ASSIGN ALARM in func call refresh_screen_assign_alarm: %s', alarm.get_alarm())
