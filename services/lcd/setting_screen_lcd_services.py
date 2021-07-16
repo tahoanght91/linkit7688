@@ -453,6 +453,9 @@ def alarm_selection_listen_key(keycode):
             pointer_idx = 0 if pointer_idx == 0 else pointer_idx - 1
         elif keycode == OK:
             # key ok
+            if screen_idx == -1:
+                screen_idx = 0
+
             if screen_idx > -1:
                 # lan dau tien load man hinh screen_idx = -1, khong update gia tri chon
                 selection_chosen[screen_idx] = pointer_idx
