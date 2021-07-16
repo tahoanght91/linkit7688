@@ -456,7 +456,7 @@ def alarm_selection_listen_key(keycode):
             if screen_idx > -1:
                 # lan dau tien load man hinh screen_idx = -1, khong update gia tri chon
                 selection_chosen[screen_idx] = pointer_idx
-            if screen_idx == selection_setting_alarm["confirm_assign_alarm"]:
+            if screen_idx == selection_setting_alarm["confirm_assign_alarm"] - 1:
                 if pointer_idx == confirm["yes"]:
                     if save_alarm() == 0:
                         return
