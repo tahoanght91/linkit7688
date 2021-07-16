@@ -17,7 +17,6 @@ min = [str(u) for u in range(60)]
 year = [str(u) for u in range(2021, 2100)]
 month = [str(u) for u in range(1, 13)]
 day = [str(u) for u in range(1, 32)]
-# number = [str(u) for u in range(10)]
 ok_time = 0
 cursor_idx = 0
 cursor_idx_time = 0
@@ -259,15 +258,14 @@ def datetime_setting(button):
 
 
 def get_default_value():
-    global date, time, level_at_index_date, level_at_index_time, level_at_index_time, number, ok_time, cursor_idx, \
+    global date, time, level_at_index_date, level_at_index_time, level_at_index_time, ok_time, cursor_idx, \
         cursor_idx_time, confirm_idx, confirm_status, last_time_setting_screen_index, time_setting_screen_index, \
         go_setting_flag, screen_confirm_flag, first_access_flag
 
-    date = ['_', '_', '/', '_', '_', '/', '_', '_', '_', '_']
-    time = ['_', '_', ':', '_', '_']
-    level_at_index_date = [0] * 12
-    level_at_index_time = [0] * 6
-    number = 0
+    date = ['____', '/', '__', '/', '__']
+    time = ['__', ':', '__']
+    level_at_index_date = [0] * 5
+    level_at_index_time = [0] * 3
     ok_time = 0
     cursor_idx = 0
     cursor_idx_time = 0
