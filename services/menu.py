@@ -359,6 +359,7 @@ def main_menu(button):
             reset_params_main_display()
             ats_reset_params()
             rfid_reset_params()
+            reset_parameter()  # reset param in setting_screen_lcd
         elif button != -1:
             event = button
 
