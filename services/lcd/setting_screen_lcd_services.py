@@ -288,7 +288,10 @@ def convert_to_array_number(array):
     #             result.append(int(v) % 10)
     #             v = int(int(v) / 10)
     #         result.append(int(v))
-    return list("".join(array))
+    result = []
+    for v in array:
+        result.append(str(v))
+    return list("".join(result))
 
 
 def get_alarm_info():
@@ -459,11 +462,11 @@ def alarm_selection_listen_key(keycode):
                     pointer_idx = 0
         else:
             return
-        # Call function render
-        get_func_render(alarm_screen_idx, keycode)
         LOGGER.info('Enter alarm_selection_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx),
                     str(pointer_idx))
         LOGGER.info('Run function alarm_selection_listen_key')
+        # Call function render
+        get_func_render(alarm_screen_idx, keycode)
     except Exception as ex:
         LOGGER.error('Error at call function in alarm_selection_listen_key with message: %s', ex.message)
 
