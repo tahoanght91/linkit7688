@@ -62,14 +62,14 @@ class __Alarm:
         self.alarm = ['_', '_', '_']
 
     def get_alarm_number(self):
-        result = ''.join(self.alarm)
+        result = "".join(self.alarm)
         return 0 if result == '___' else result
 
     def get_alarm(self):
         array = []
         for v in self.alarm:
             array.append('_' if v == '' else v)
-        return ''.join(array)
+        return "".join(array)
 
 
 # Man hinh setting nao
@@ -281,15 +281,14 @@ def get_net_info():
 
 
 def convert_to_array_number(array):
-    result = []
-    for v in array:
-        if v != '' and v != '_':
-            while int(v) >= 10:
-                result.append(int(v) % 10)
-                v = int(int(v) / 10)
-            result.append(int(v))
-
-    return result
+    # result = []
+    # for v in array:
+    #     if v != '' and v != '_':
+    #         while int(v) >= 10:
+    #             result.append(int(v) % 10)
+    #             v = int(int(v) / 10)
+    #         result.append(int(v))
+    return list("".join(array))
 
 
 def get_alarm_info():
@@ -432,7 +431,8 @@ def assign_ip_listen_key(keycode):
 
 def alarm_selection_listen_key(keycode):
     try:
-        global pointer_idx, screen_idx
+        global pointer_idx, screen_idx, alarm
+        alarm = get_alarm_info() if alarm == 0 else alarm
         # main co 4 dong, choose co 2 dong
         max_pointer_idx = 3 if screen_idx == selection_setting_alarm["assign_alarm"] else 1
         if keycode == BUTTON_34_EVENT_UP:
@@ -469,7 +469,8 @@ def alarm_selection_listen_key(keycode):
 
 
 def assign_alarm_listen_key(keycode):
-    global pointer_idx, screen_idx
+    global pointer_idx, screen_idx, alarm
+    alarm = get_alarm_info() if alarm == 0 else alarm
     max_pointer_idx = 2
     if keycode == BUTTON_23_EVENT_UP:
         # key left
@@ -481,6 +482,7 @@ def assign_alarm_listen_key(keycode):
     elif keycode == BUTTON_14_EVENT_UP or keycode == BUTTON_34_EVENT_UP:
         # key up or key down
         alarm.alarm[pointer_idx] = get_next_number(keycode, alarm.alarm[pointer_idx])
+        LOGGER.info('Text number in assign alarm: %s', alarm.alarm[pointer_idx])
     elif keycode == BUTTON_24_EVENT_UP:
         # key ok
         selection_chosen[screen_idx] = pointer_idx
@@ -505,7 +507,7 @@ def save_ip():
     #         LOGGER.error('Error at octet %s: %s', i, v)
     #         return 0
     # Luu ip vao const
-    save_to_file('./last_cmd_network.json', network.get_ip_number(), selection_chosen[0] + 1)
+    save_to_file('./last_cmd_network.json', network.get_ip(), selection_chosen[0] + 1)
     # Luu ip vao bash
     for k in set_ip_idx:
         save_to_set_ip(network.get_ip_number(), k) if selection_chosen[0] == set_ip_idx[k] else 1
@@ -589,7 +591,7 @@ def refresh_screen_assign_alarm(keycode):
     from control import process_cmd_lcd
     try:
         global alarm
-        alarm = get_alarm_info() if alarm == 0 else alarm
+        # alarm = get_alarm_info() if alarm == 0 else alarm
         switcher = [
             {
                 "row_2": 'Nguong cao'
@@ -607,10 +609,10 @@ def refresh_screen_assign_alarm(keycode):
         if keycode == OK:
             process_cmd_lcd(ROW_1, UPDATE_VALUE, 'CANH BAO')
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx - 1]]["row_2"])
-        process_cmd_lcd(ROW_2, UPDATE_VALUE, "{0}{1}".format(str(alarm.get_alarm()), text))
+        process_cmd_lcd(ROW_2, UPDATE_VALUE, "{0}{1}".format(alarm.get_alarm(), text))
         process_cmd_lcd(ROW_3, UPDATE_VALUE, '')
 
-        LOGGER.info('ASSIGN ALARM in func call refresh_screen_assign_alarm: %s', str(alarm.get_alarm()))
+        LOGGER.info('ASSIGN ALARM in func call refresh_screen_assign_alarm: %s', alarm.get_alarm())
         # Update nhap nhay
         # ...
     except Exception as ex:
