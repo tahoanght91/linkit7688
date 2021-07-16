@@ -52,7 +52,7 @@ class __IPv4:
                 return 0
 
         result = []
-        for v in self.get_ip().split("."):
+        for v in self.get_ip_number().split("."):
             result.append(int(v))
         return result
 
@@ -311,12 +311,14 @@ def get_alarm_info():
 
 
 def get_next_number(keycode, number):
-    if number == '_':
-        number = 0
+    # if number == '_':
+    #     number = 0
     if keycode == UP:
-        return 0 if number >= 9 else number + 1
+        return 0 if (number >= 9 or number == '_') else number + 1
     elif keycode == DOWN:
-        return 9 if number == 0 else number - 1
+        if number == 0:
+            return '_'
+        return 9 if number == '_' else number - 1
 
 
 # Register func nay
@@ -419,7 +421,6 @@ def assign_ip_listen_key(keycode):
                 # Quay lai man hinh assign_ip
                 screen_idx -= 1
                 pointer_idx = 0
-                return
         selection_chosen[screen_idx] = pointer_idx
     else:
         return
@@ -454,7 +455,8 @@ def alarm_selection_listen_key(keycode):
                         return
                     reset_param()
                 else:
-                    return
+                    screen_idx -= 1
+                    pointer_idx = 0
         else:
             return
         # Call function render
@@ -503,10 +505,10 @@ def save_ip():
     #         LOGGER.error('Error at octet %s: %s', i, v)
     #         return 0
     # Luu ip vao const
-    save_to_file('./last_cmd_network.json', network.get_ip(), selection_chosen[0] + 1)
+    save_to_file('./last_cmd_network.json', network.get_ip_number(), selection_chosen[0] + 1)
     # Luu ip vao bash
     for k in set_ip_idx:
-        save_to_set_ip(network.get_ip(), k) if selection_chosen[0] == set_ip_idx[k] else 1
+        save_to_set_ip(network.get_ip_number(), k) if selection_chosen[0] == set_ip_idx[k] else 1
     return 1
 
 
@@ -606,6 +608,7 @@ def refresh_screen_assign_alarm(keycode):
             process_cmd_lcd(ROW_1, UPDATE_VALUE, 'CANH BAO')
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx - 1]]["row_2"])
         process_cmd_lcd(ROW_2, UPDATE_VALUE, "{0}{1}".format(str(alarm.get_alarm()), text))
+        process_cmd_lcd(ROW_3, UPDATE_VALUE, '')
 
         LOGGER.info('ASSIGN ALARM in func call refresh_screen_assign_alarm: %s', str(alarm.get_alarm()))
         # Update nhap nhay
