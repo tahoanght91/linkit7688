@@ -166,12 +166,16 @@ def reset_param():
     screen_idx = 0
     network = 0
     alarm = 0
+    LOGGER.info('Reset_param: %s, %s', screen_idx, pointer_idx)
 
 
 def reset_parameter():
+    # call moi khi quay lai man hinh main menu
     global isChosen
     isChosen = 0
+    LOGGER.info('Call reset parameter function')
     reset_param()
+
 
 # SonTH: Config network
 # Main cua man hinh network
