@@ -16,7 +16,7 @@ DAY = [str(u) for u in range(1, 32)]
 date = ['____', '/', '__', '/', '__']
 time = ['__', ':', '__']
 level_at_index_date = [0] * 3
-level_at_index_time = [0] * 2
+level_at_index_time = [-1] * 2
 
 ok_time = 0
 cursor_idx = 0
@@ -253,7 +253,7 @@ def get_default_value():
     date = ['____', '/', '__', '/', '__']
     time = ['__', ':', '__']
     level_at_index_date = [0] * 3
-    level_at_index_time = [0] * 2
+    level_at_index_time = [-1] * 2
     ok_time = 0
     cursor_idx = 0
     cursor_idx_time = 0
