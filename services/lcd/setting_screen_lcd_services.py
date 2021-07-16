@@ -108,15 +108,17 @@ selection_setting_network = {
 
 selection_setting_alarm = {
     "main": 0,
-    "choose_high_low": 1,
-    "assign_alarm": 2,
+    "choose_type_alarm": 1,
+    "choose_high_low": 2,
+    "assign_alarm": 3,
     "confirm_assign_alarm": 3
 }
 
 screen_setting_alarm = {
     "ac": 0,
-    "temp": 1,
-    "humidity": 2
+    "ac_mp": 1,
+    "temp": 2,
+    "humidity": 3
 }
 
 confirm = {
@@ -304,7 +306,7 @@ def get_alarm_info():
     key = ""
     for k in set_alarm_idx:
         if selection_chosen[0] == set_alarm_idx[k]:
-            key = "row{}".format(set_alarm_idx[k] + 1)
+            key = "row{}".format(set_alarm_idx[k] + 1 + selection_chosen[1])
             continue
     if len(key) == 0:
         return
@@ -440,7 +442,7 @@ def alarm_selection_listen_key(keycode):
         global pointer_idx, screen_idx, alarm
         alarm = get_alarm_info() if alarm == 0 else alarm
         # main co 4 dong, choose co 2 dong
-        max_pointer_idx = 3 if screen_idx == selection_setting_alarm["assign_alarm"] else 1
+        max_pointer_idx = 3 if screen_idx == selection_setting_alarm["choose_type_alarm"] - 1 else 1
         if keycode == BUTTON_34_EVENT_UP:
             # key down
             pointer_idx = max_pointer_idx if pointer_idx == max_pointer_idx else pointer_idx + 1
@@ -525,7 +527,7 @@ def save_alarm():
         return 0
     LOGGER.info('Enter save_alarm function')
     # Luu alarm vao const
-    save_to_file('./last_cmd_alarm.json', alarm.get_alarm_number(), selection_chosen[0] + 1)
+    save_to_file('./last_cmd_alarm.json', alarm.get_alarm_number(), selection_chosen[0] + 1 + selection_chosen[1])
     # Call API de luu alarm
     for k in key_attr:
         if key_attr[k]["index_screen_1"] == selection_chosen[0] and key_attr[k]["index_screen_2"] == selection_chosen[1]:
@@ -615,8 +617,8 @@ def refresh_screen_assign_alarm(keycode):
         if keycode == OK:
             process_cmd_lcd(ROW_1, UPDATE_VALUE, 'CANH BAO')
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx - 1]]["row_2"])
-        process_cmd_lcd(ROW_2, UPDATE_VALUE, "{0}{1}".format(alarm.get_alarm(), text))
-        process_cmd_lcd(ROW_3, UPDATE_VALUE, '')
+        process_cmd_lcd(ROW_3, UPDATE_VALUE, "{0}{1}".format(alarm.get_alarm(), text))
+        process_cmd_lcd(ROW_4, UPDATE_VALUE, '')
 
         LOGGER.info('ASSIGN ALARM in func call refresh_screen_assign_alarm: %s', alarm.get_alarm())
         # Update nhap nhay
