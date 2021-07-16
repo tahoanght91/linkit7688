@@ -93,6 +93,12 @@ def info_setting_process(button):
                     process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(info))
                 elif button == RIGHT:
                     cursor_idx += 1
+                    if cursor_idx > 15:
+                        cursor_idx = 15
+                elif button == LEFT:
+                    cursor_idx -= 1
+                    if cursor_idx < 0:
+                        cursor_idx = 0
                 elif button == OK:
                     confirm_flag = True
                     save = process_confirm(button)
@@ -103,18 +109,13 @@ def info_setting_process(button):
                 a_file = open("./lcd_setting_data_file.json", "r")
                 json_object = json.load(a_file)
                 a_file.close()
-                json_object["setting_info_title"] = ''.join(info)
+                json_object["setting_info_title"] = ''.join(info).replace('_', '')
                 a_file = open("./lcd_setting_data_file.json", "w")
                 json.dump(json_object, a_file)
                 a_file.close()
                 ret = True
             elif save is False:
                 ret = True
-                # show_confirm_screen_flag = True
-                # first_access_confirm_flag = True
-                # first_access_flag = True
-                # confirm_idx = 0
-                # process_cmd_lcd(ROW_3, UPDATE_VALUE, ' ')
             else:
                 show_confirm_screen_flag = True
         else:
