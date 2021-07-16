@@ -62,7 +62,10 @@ class __Alarm:
         self.alarm = ['_', '_', '_']
 
     def get_alarm_number(self):
-        result = "".join(self.alarm)
+        array = []
+        for v in self.alarm:
+            array.append('' if v == '_' else str(v))
+        result = "".join(array)
         return 0 if result == '___' else result
 
     def get_alarm(self):
@@ -482,7 +485,7 @@ def assign_alarm_listen_key(keycode):
     elif keycode == BUTTON_25_EVENT_UP:
         # key right
         pointer_idx = pointer_idx + 1 if pointer_idx < max_pointer_idx else max_pointer_idx
-    elif keycode == BUTTON_14_EVENT_UP or keycode == BUTTON_34_EVENT_UP:
+    elif keycode == UP or keycode == DOWN:
         # key up or key down
         alarm.alarm[pointer_idx] = get_next_number(keycode, alarm.alarm[pointer_idx])
         LOGGER.info('Text number in assign alarm: %s', alarm.alarm[pointer_idx])
@@ -528,7 +531,7 @@ def save_alarm():
         if key_attr[k]["index_screen_1"] == selection_chosen[0] and key_attr[k]["index_screen_2"] == selection_chosen[1]:
             # Man hinh 1 chon loai alarm
             # Man hinh 2 chon set nguong cao hay thap
-            write_body_send_shared_attributes(alarm.get_alarm_number(), k)
+            write_body_send_shared_attributes(k, alarm.get_alarm_number())
             break
     return 1
 
