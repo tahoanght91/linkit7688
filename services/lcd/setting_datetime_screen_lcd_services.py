@@ -19,6 +19,7 @@ time_setting_screen_index = 0
 go_setting_flag = False
 screen_confirm_flag = False
 first_access_flag = True
+ok_count = 0
 time_setting_print = {
     0: {
         'row1': 'THOI GIAN',
@@ -66,58 +67,65 @@ def date_setting_screen(cursor_index):
 
 
 def date_setting_process(button):
+    from time import sleep
     from control import process_cmd_lcd
-    global cursor_idx, level_at_index_date, date, confirm_idx, screen_confirm_flag, first_access_flag, go_setting_flag
+    global cursor_idx, level_at_index_date, date, confirm_idx, screen_confirm_flag, first_access_flag, go_setting_flag,\
+        ok_count
 
     try:
         if first_access_flag is True:
             process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(date))
             first_access_flag = False
             return
-        if button == UP:
-            level_at_index_date[cursor_idx] += 1
+        if screen_confirm_flag is False:
+            if button == UP:
+                level_at_index_date[cursor_idx] += 1
 
-            if level_at_index_date[cursor_idx] > 9:
-                level_at_index_date[cursor_idx] = 0
+                if level_at_index_date[cursor_idx] > 9:
+                    level_at_index_date[cursor_idx] = 0
 
-        elif button == DOWN:
-            level_at_index_date[cursor_idx] -= 1
-            if level_at_index_date[cursor_idx] < 0:
-                level_at_index_date[cursor_idx] = 9
-        elif button == RIGHT and cursor_idx < 10:
-            if cursor_idx == 1 or cursor_idx == 4:
-                cursor_idx += 2
-            else:
-                cursor_idx += 1
-            if cursor_idx > 9:
-                cursor_idx = 9
-        elif button == LEFT and cursor_idx < 10:
-            if cursor_idx == 3 or cursor_idx == 6:
-                cursor_idx -= 2
-            else:
-                cursor_idx -= 1
-            if cursor_idx < 0:
-                cursor_idx = 0
-        if screen_confirm_flag is True:
+            elif button == DOWN:
+                level_at_index_date[cursor_idx] -= 1
+                if level_at_index_date[cursor_idx] < 0:
+                    level_at_index_date[cursor_idx] = 9
+            elif button == RIGHT and cursor_idx < 10:
+                if cursor_idx == 1 or cursor_idx == 4:
+                    cursor_idx += 2
+                else:
+                    cursor_idx += 1
+                if cursor_idx > 9:
+                    cursor_idx = 9
+            elif button == LEFT and cursor_idx < 10:
+                if cursor_idx == 3 or cursor_idx == 6:
+                    cursor_idx -= 2
+                else:
+                    cursor_idx -= 1
+                if cursor_idx < 0:
+                    cursor_idx = 0
+            elif button == OK and cursor_idx == 9:
+                screen_confirm_flag = True
+                call_screen_confirm(confirm_idx)
+        else:
             if button == UP:
                 confirm_idx = 0
             elif button == DOWN:
                 confirm_idx = 1
-            if button == OK:
+            elif button == OK:
                 if confirm_idx == 0:
-                    try:
-                        os.system("""date +%Y%m%d "{year}{month}{day}" """.format(year=''.join(date[6:9]),
-                                                                                  month=''.join(date[3:4]),
-                                                                                  day=''.join(date[0:1])))
-                    except Exception as ex:
-                        LOGGER.error('Error at set datetime to os in os.system with message: %s', ex.message)
+                    # try:
+                    #     os.system("""date +%Y%m%d "{year}{month}{day}" """.format(year=''.join(date[6:9]),
+                    #                                                               month=''.join(date[3:4]),
+                    #                                                               day=''.join(date[0:1])))
+                    # except Exception as ex:
+                    #     LOGGER.error('Error at set datetime to os in os.system with message: %s', ex.message)
+                    process_cmd_lcd(ROW_2, UPDATE_VALUE, 'DA LUU THOI GIAN')
+                    sleep(3)
                 get_default_value()
+                return
             call_screen_confirm(confirm_idx)
-        elif screen_confirm_flag is False and first_access_flag is False and button != -1 \
-                and button != RIGHT and button != LEFT:
+            return
+        if button is UP or button is DOWN:
             date_setting_screen(cursor_idx)
-        if button == OK and cursor_idx == 9:
-            screen_confirm_flag = True
     except Exception as ex:
         LOGGER.error('Error at call function in date_setting_process with message: %s', ex.message)
 
