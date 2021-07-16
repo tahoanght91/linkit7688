@@ -51,33 +51,10 @@ class __IPv4:
                 # ip khong duoc lon hon 225
                 return 0
 
-        return self.get_ip().split(".")
-
-        # return [int("{0}{1}{2}".format(self.ip[0]
-        #                                , self.ip[1]
-        #                                , self.ip[2]))
-        #     , int("{0}{1}{2}".format(self.ip[3]
-        #                              , self.ip[4]
-        #                              , self.ip[5]))
-        #     , int("{0}{1}{2}".format(self.ip[6]
-        #                              , self.ip[7]
-        #                              , self.ip[8]))
-        #     , int("{0}{1}{2}".format(self.ip[9]
-        #                              , self.ip[10]
-        #                              , self.ip[11]))]
-
-        # return [int("{0}{1}{2}".format(self.ip[0] if self.ip[0] != '_' else 0
-        #                                , self.ip[1] if self.ip[1] != '_' else 0
-        #                                , self.ip[2] if self.ip[2] != '_' else 0))
-        #     , int("{0}{1}{2}".format(self.ip[3] if self.ip[3] != '_' else 0
-        #                              , self.ip[4] if self.ip[4] != '_' else 0
-        #                              , self.ip[5] if self.ip[5] != '_' else 0))
-        #     , int("{0}{1}{2}".format(self.ip[6] if self.ip[6] != '_' else 0
-        #                              , self.ip[7] if self.ip[7] != '_' else 0
-        #                              , self.ip[8] if self.ip[8] != '_' else 0))
-        #     , int("{0}{1}{2}".format(self.ip[9] if self.ip[9] != '_' else 0
-        #                              , self.ip[10] if self.ip[10] != '_' else 0
-        #                              , self.ip[11] if self.ip[11] != '_' else 0))]
+        result = []
+        for v in self.get_ip().split("."):
+            result.append(int(v))
+        return result
 
 
 class __Alarm:
@@ -263,8 +240,6 @@ def refresh_screen_assign_ip_address(keycode):
             # Man hinh xac nhan luu
             LOGGER.info('Enter refresh_screen_assign_ip_address function, pointer_idx: %s', pointer_idx)
             if keycode == OK:
-                if network.get_oct() == 0:
-                    return
                 process_cmd_lcd(ROW_1, UPDATE_VALUE, 'XAC NHAN LUU')
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher_2[pointer_idx]["row_2"])
             process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher_2[pointer_idx]["row_3"])
@@ -430,8 +405,9 @@ def assign_ip_listen_key(keycode):
             network.ip[pointer_idx] = get_next_number(keycode, network.ip[pointer_idx])
     elif keycode == OK:
         # key ok
-        selection_chosen[screen_idx] = pointer_idx
         if screen_idx == selection_setting_network["assign_ip"]:
+            if network.get_oct() == 0:
+                return
             screen_idx += 1
             pointer_idx = 0
         else:
@@ -440,7 +416,11 @@ def assign_ip_listen_key(keycode):
                     return
                 reset_param()
             else:
+                # Quay lai man hinh assign_ip
+                screen_idx -= 1
+                pointer_idx = 0
                 return
+        selection_chosen[screen_idx] = pointer_idx
     else:
         return
 
@@ -625,7 +605,7 @@ def refresh_screen_assign_alarm(keycode):
         if keycode == OK:
             process_cmd_lcd(ROW_1, UPDATE_VALUE, 'CANH BAO')
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx - 1]]["row_2"])
-        process_cmd_lcd(ROW_2, UPDATE_VALUE, "{0}{1}".format(alarm.get_alarm(), text))
+        process_cmd_lcd(ROW_2, UPDATE_VALUE, "{0}{1}".format(str(alarm.get_alarm()), text))
 
         LOGGER.info('ASSIGN ALARM in func call refresh_screen_assign_alarm: %s', str(alarm.get_alarm()))
         # Update nhap nhay
