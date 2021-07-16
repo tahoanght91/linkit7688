@@ -607,10 +607,11 @@ def refresh_screen_assign_alarm(keycode):
         if keycode == OK:
             process_cmd_lcd(ROW_1, UPDATE_VALUE, 'CANH BAO')
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx - 1]]["row_2"])
-        process_cmd_lcd(ROW_2, UPDATE_VALUE, "{0}{1}".format(str(alarm.get_alarm()), text))
+        # process_cmd_lcd(ROW_2, UPDATE_VALUE, "{0}{1}".format(alarm.get_alarm(), text))
+        process_cmd_lcd(ROW_2, UPDATE_VALUE, "{0}{1}".format("123", text))
         process_cmd_lcd(ROW_3, UPDATE_VALUE, '')
 
-        LOGGER.info('ASSIGN ALARM in func call refresh_screen_assign_alarm: %s', str(alarm.get_alarm()))
+        LOGGER.info('ASSIGN ALARM in func call refresh_screen_assign_alarm: %s', alarm.get_alarm())
         # Update nhap nhay
         # ...
     except Exception as ex:
