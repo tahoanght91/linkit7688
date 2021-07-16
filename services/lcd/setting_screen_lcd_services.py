@@ -442,7 +442,7 @@ def assign_ip_listen_key(keycode):
 def alarm_selection_listen_key(keycode):
     try:
         global pointer_idx, screen_idx, alarm
-        alarm = get_alarm_info() if alarm == 0 else alarm
+
         # main co 4 dong, choose co 2 dong
         max_pointer_idx = 3 if screen_idx == selection_setting_alarm["choose_type_alarm"] - 1 else 1
         if keycode == DOWN:
@@ -453,9 +453,6 @@ def alarm_selection_listen_key(keycode):
             pointer_idx = 0 if pointer_idx == 0 else pointer_idx - 1
         elif keycode == OK:
             # key ok
-            if screen_idx == -1:
-                screen_idx = 0
-
             if screen_idx > -1:
                 # lan dau tien load man hinh screen_idx = -1, khong update gia tri chon
                 selection_chosen[screen_idx] = pointer_idx
@@ -468,6 +465,8 @@ def alarm_selection_listen_key(keycode):
                     screen_idx -= 1
                     pointer_idx = 0
             else:
+                if screen_idx == selection_setting_alarm["choose_high_low"] - 1:
+                    alarm = get_alarm_info() if alarm == 0 else alarm
                 screen_idx += 1
                 # refresh gia tri pointer index
                 pointer_idx = 0
