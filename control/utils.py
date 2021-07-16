@@ -64,11 +64,11 @@ def get_state_acm(method):
         if method == GET_STATE_ACM_AUTO:
             value = shared_attributes.get('acmControlAuto', default_data.acmControlAuto)
         elif method == GET_SATE_ACM_AIRC_1:
-            value = client_attributes.get('acmAirc1RunState', default_data.acmAirc1RunState)
+            value = telemetries.get('acmAirc1RunState', default_data.acmAirc1RunState)
         elif method == GET_STATE_ACM_AIRC_2:
-            value = client_attributes.get('acmAirc2RunState', default_data.acmAirc2RunState)
+            value = telemetries.get('acmAirc2RunState', default_data.acmAirc2RunState)
         elif method == GET_STATE_ACM_FAN:
-            value = client_attributes.get('acmFanRunState', default_data.acmFanRunState)
+            value = telemetries.get('acmFanRunState', default_data.acmFanRunState)
         elif method == GET_SATE_ACM_SELF_PROPELLED:
             value = 0 # TODO: change client attributes of lamp
     except Exception as ex:
@@ -82,11 +82,9 @@ def get_state_mcc(method):
     value = -1
     try:
         if method == GET_STATE_MCC_DOOR:
-            value = client_attributes.get('mccDoorState', default_data.mccDoorState)
-        elif method == GET_STATE_MCC_LAMP:
-            value = 0  # TODO: change client attributes of lamp
+            value = telemetries.get('mccDoorState', default_data.mccDoorState)
         elif method == GET_STATE_MCC_BELL:
-            value = client_attributes.get('mccBellState', default_data.mccBellState)
+            value = telemetries.get('mccBellState', default_data.mccBellState)
     except Exception as ex:
         LOGGER.error('Error at get_state_mcc function with message: %s', ex.message)
     LOGGER.info('Exit get_sate_mcc function')
@@ -381,25 +379,6 @@ def split_list_by_row(list_cmd_lcd):
     except Exception as ex:
         LOGGER.error('Error at function split_list_by_row with message: %s', ex.message)
     return arr_dct_split
-
-
-# def set_alarm_state_to_dct(dct_telemetry):
-#     if 'mccFireState' in dct_telemetry:
-#         dct_alarm['mccFireState'] = dct_telemetry['mccFireState']
-#     if 'mccFloodState' in dct_telemetry:
-#         dct_alarm['mccFloodState'] = dct_telemetry['mccFloodState']
-#     if 'mccSmokeState' in dct_telemetry:
-#         dct_alarm['mccSmokeState'] = dct_telemetry['mccSmokeState']
-#     if 'mccDoorState' in dct_telemetry:
-#         dct_alarm['mccDoorState'] = dct_telemetry['mccDoorState']
-#     if 'acmTempAlarm' in dct_telemetry:
-#         dct_alarm['acmTempAlarm'] = dct_telemetry['acmTempAlarm']
-#     if 'acmHumidAlarm' in dct_telemetry:
-#         dct_alarm['acmHumidAlarm'] = dct_telemetry['acmHumidAlarm']
-#     if 'atsVgenThresholdState' in dct_telemetry:
-#         dct_alarm['atsVgenThresholdState'] = dct_telemetry['atsVgenThresholdState']
-#     if 'atsVacThresholdState' in dct_telemetry:
-#         dct_alarm['atsVacThresholdState'] = dct_telemetry['atsVgenThresholdState']
 
 
 def set_alarm_state_to_dct(dct_telemetry):
