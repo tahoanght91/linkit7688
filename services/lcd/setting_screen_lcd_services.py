@@ -281,15 +281,14 @@ def get_net_info():
 
 
 def convert_to_array_number(array):
-    result = []
-    for v in array:
-        if v != '' and v != '_':
-            while int(v) >= 10:
-                result.append(int(v) % 10)
-                v = int(int(v) / 10)
-            result.append(int(v))
-
-    return result
+    # result = []
+    # for v in array:
+    #     if v != '' and v != '_':
+    #         while int(v) >= 10:
+    #             result.append(int(v) % 10)
+    #             v = int(int(v) / 10)
+    #         result.append(int(v))
+    return list("".join(array))
 
 
 def get_alarm_info():
@@ -481,6 +480,7 @@ def assign_alarm_listen_key(keycode):
     elif keycode == BUTTON_14_EVENT_UP or keycode == BUTTON_34_EVENT_UP:
         # key up or key down
         alarm.alarm[pointer_idx] = get_next_number(keycode, alarm.alarm[pointer_idx])
+        LOGGER.info('Text number in assign alarm: %s', alarm.alarm[pointer_idx])
     elif keycode == BUTTON_24_EVENT_UP:
         # key ok
         selection_chosen[screen_idx] = pointer_idx
@@ -505,7 +505,7 @@ def save_ip():
     #         LOGGER.error('Error at octet %s: %s', i, v)
     #         return 0
     # Luu ip vao const
-    save_to_file('./last_cmd_network.json', network.get_ip_number(), selection_chosen[0] + 1)
+    save_to_file('./last_cmd_network.json', network.get_ip(), selection_chosen[0] + 1)
     # Luu ip vao bash
     for k in set_ip_idx:
         save_to_set_ip(network.get_ip_number(), k) if selection_chosen[0] == set_ip_idx[k] else 1
