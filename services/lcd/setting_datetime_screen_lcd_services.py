@@ -3,6 +3,10 @@ from config import *
 from config.common import *
 from config.common_lcd_services import *
 
+# Define
+GO_CONFIRM = True
+NOT_GO_CONFIRM = False
+
 # Common variables
 date = ['_', '_', '/', '_', '_', '/', '_', '_', '_', '_']
 time = ['_', '_', ':', '_', '_']
@@ -19,7 +23,6 @@ time_setting_screen_index = 0
 go_setting_flag = False
 screen_confirm_flag = False
 first_access_flag = True
-ok_count = 0
 time_setting_print = {
     0: {
         'row1': 'THOI GIAN',
@@ -57,7 +60,7 @@ def call_screen_confirm(p_idx):
     except Exception as ex:
         LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
-
+# Date setting
 def date_setting_screen(cursor_index):
     from control import process_cmd_lcd
     global level_at_index_date, number, date
@@ -69,14 +72,14 @@ def date_setting_screen(cursor_index):
 def date_setting_process(button):
     from time import sleep
     from control import process_cmd_lcd
-    global cursor_idx, level_at_index_date, date, confirm_idx, screen_confirm_flag, first_access_flag, go_setting_flag,\
-        ok_count
+    global cursor_idx, level_at_index_date, date, confirm_idx, screen_confirm_flag, first_access_flag, go_setting_flag
 
     try:
         if first_access_flag is True:
             process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(date))
+            process_cmd_lcd(ROW_3, UPDATE_VALUE, '')
             first_access_flag = False
-            return
+            return NOT_GO_CONFIRM
         if screen_confirm_flag is False:
             if button == UP:
                 level_at_index_date[cursor_idx] += 1
@@ -121,9 +124,9 @@ def date_setting_process(button):
                     process_cmd_lcd(ROW_2, UPDATE_VALUE, 'DA LUU THOI GIAN')
                     sleep(3)
                 get_default_value()
-                return
+                return GO_CONFIRM
             call_screen_confirm(confirm_idx)
-            return
+            return NOT_GO_CONFIRM
         if button is UP or button is DOWN:
             date_setting_screen(cursor_idx)
     except Exception as ex:
@@ -131,63 +134,73 @@ def date_setting_process(button):
 
 
 # Time setting
+def time_setting_screen(cursor_index):
+    from control import process_cmd_lcd
+    global level_at_index_time, number, time
+
+    time[cursor_index] = number[level_at_index_time[cursor_index]]
+    process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(time))
+
+
 def time_setting_process(button):
+    from time import sleep
+    from control import process_cmd_lcd
+    global cursor_idx, level_at_index_time, time, confirm_idx, screen_confirm_flag, first_access_flag, go_setting_flag
+
     try:
-        from control import process_cmd_lcd
-        global confirm_status, confirm_idx, cursor_idx_time, time
-        if confirm_status:
-            if button == OK:
-                if confirm_idx == 0:
-                    try:
-                        os.system("""date +%T -s "{hour}:{minute}" """.format(hour=''.join(time[0:1]),
-                                                                              minute=''.join(time[3:4])))
-                    except Exception as ex:
-                        LOGGER.error('Error at call function in os.system in 113 with message: %s', ex.message)
-                    confirm_status = False
-                    # ham thoat
-                    process_cmd_lcd(ROW_1, UPDATE_VALUE, 'GIO')
-                    process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(time))
+        if first_access_flag is True:
+            process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(time))
+            process_cmd_lcd(ROW_3, UPDATE_VALUE, '')
+            first_access_flag = False
+            return NOT_GO_CONFIRM
+        if screen_confirm_flag is False:
+            if button == UP:
+                level_at_index_time[cursor_idx] += 1
+
+                if level_at_index_time[cursor_idx] > 9:
+                    level_at_index_time[cursor_idx] = 0
+
+            elif button == DOWN:
+                level_at_index_time[cursor_idx] -= 1
+                if level_at_index_time[cursor_idx] < 0:
+                    level_at_index_time[cursor_idx] = 9
+            elif button == RIGHT and cursor_idx < 5:
+                if cursor_idx == 1:
+                    cursor_idx += 2
                 else:
-                    process_cmd_lcd(ROW_1, UPDATE_VALUE, 'GIO')
-                    process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(time))
-            elif button == UP or button == DOWN:
-                if confirm_idx == 0:
-                    confirm_idx = 1
+                    cursor_idx += 1
+                if cursor_idx > 4:
+                    cursor_idx = 4
+            elif button == LEFT and cursor_idx < 5:
+                if cursor_idx == 1:
+                    cursor_idx -= 2
                 else:
-                    confirm_idx = 0
+                    cursor_idx -= 1
+                if cursor_idx < 0:
+                    cursor_idx = 0
+            elif button == OK and cursor_idx == 4:
+                screen_confirm_flag = True
+                call_screen_confirm(confirm_idx)
         else:
-            if button == OK:
-                if ['_', '_', ':', ' ', '_', '_'] == time:
-                    process_cmd_lcd(ROW_1, UPDATE_VALUE, 'GIO')
-                    process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(time))
-                elif "_" not in time:
-                    confirm_status = True
-                    call_screen_confirm(0)
-            else:
-                if button == UP:
-                    level_at_index_time[cursor_idx_time] += 1
-
-                    if level_at_index_time[cursor_idx_time] > 9:
-                        level_at_index_time[cursor_idx_time] = 0
-
-                    time[cursor_idx_time] = number[level_at_index_time[cursor_idx_time]]
-                    process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(time))
-                elif button == DOWN:
-                    level_at_index_time[cursor_idx_time] -= 1
-                    if level_at_index_time[cursor_idx_time] < 0:
-                        level_at_index_time[cursor_idx_time] = 9
-                    time[cursor_idx_time] = number[level_at_index_time[cursor_idx_time]]
-                    process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(time))
-                elif button == RIGHT:
-                    if cursor_idx_time == 1:
-                        cursor_idx_time += 2
-                    else:
-                        cursor_idx_time += 1
-                elif button == LEFT:
-                    if cursor_idx_time == 3:
-                        cursor_idx_time -= 2
-                    else:
-                        cursor_idx_time -= 1
+            if button == UP:
+                confirm_idx = 0
+            elif button == DOWN:
+                confirm_idx = 1
+            elif button == OK:
+                if confirm_idx == 0:
+                    # try:
+                    #     os.system("""date +%T -s "{hour}:{minute}" """.format(hour=''.join(time[0:1]),
+                    #                                                           minute=''.join(time[3:4])))
+                    # except Exception as ex:
+                    #     LOGGER.error('Error at call function in os.system in 113 with message: %s', ex.message)
+                    process_cmd_lcd(ROW_2, UPDATE_VALUE, 'DA LUU THOI GIAN')
+                    sleep(3)
+                get_default_value()
+                return GO_CONFIRM
+            call_screen_confirm(confirm_idx)
+            return NOT_GO_CONFIRM
+        if button is UP or button is DOWN:
+            time_setting_screen(cursor_idx)
     except Exception as ex:
         LOGGER.error('Error at call function in time_setting_process with message: %s', ex.message)
 
