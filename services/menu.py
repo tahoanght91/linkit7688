@@ -364,6 +364,8 @@ def main_menu(button):
             ats_reset_params()
             rfid_reset_params()
             reset_parameter()  # reset param in setting_screen_lcd
+            setting_datetime_screen_lcd_services.get_default_value()  # reset param in datetime setting
+            setting_info_screen_lcd_services.get_default_value()  # # reset param in info setting
         elif button != -1:
             event = button
 
