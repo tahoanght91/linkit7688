@@ -150,7 +150,7 @@ def call():
                             command = 'cd /IoT && ./update.sh ' + link_update
                             subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
                         else:
-                            pass
+                            LOGGER.info('Current version is the latest')
                 except Exception as ex:
                     LOGGER.error('Cannot update repository, error %s', ex.message)
             time.sleep(period)
