@@ -161,9 +161,12 @@ def choose_config(setting_idx):
 
 def reset_param():
     # call moi khi quay lai man hinh main config
-    global pointer_idx, screen_idx
+    global pointer_idx, screen_idx, network, alarm
     pointer_idx = 0
     screen_idx = 0
+    network = 0
+    alarm = 0
+
 
 def reset_parameter():
     global isChosen
@@ -465,7 +468,7 @@ def alarm_selection_listen_key(keycode):
                 if pointer_idx == confirm["yes"]:
                     if save_alarm() == 0:
                         return
-                    screen_idx = selection_setting_alarm["main"]
+                    reset_param()
                 else:
                     return
         else:
@@ -488,8 +491,7 @@ def assign_alarm_listen_key(keycode):
         pointer_idx = pointer_idx if pointer_idx > 0 else 0
     elif keycode == BUTTON_25_EVENT_UP:
         # key right
-        pointer_idx += 1
-        pointer_idx = pointer_idx if pointer_idx < max_pointer_idx else max_pointer_idx
+        pointer_idx = pointer_idx + 1 if pointer_idx < max_pointer_idx else max_pointer_idx
     elif keycode == BUTTON_14_EVENT_UP or keycode == BUTTON_34_EVENT_UP:
         # key up or key down
         alarm.alarm[pointer_idx] = get_next_number(keycode, alarm.alarm[pointer_idx])
@@ -521,7 +523,6 @@ def save_ip():
     # Luu ip vao bash
     for k in set_ip_idx:
         save_to_set_ip(network.get_ip(), k) if selection_chosen[0] == set_ip_idx[k] else 1
-    reset_param()
     return 1
 
 
@@ -538,8 +539,6 @@ def save_alarm():
             # Man hinh 2 chon set nguong cao hay thap
             write_body_send_shared_attributes(alarm.get_alarm_number(), k)
             break
-    # Reset cac tham so dieu huong man hinh
-    reset_param()
     return 1
 
 
@@ -595,6 +594,7 @@ def call_screen_alarm_selection(keycode):
             process_cmd_lcd(ROW_1, UPDATE_VALUE, row_1)
         process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[pointer_idx]['row_2'])
         process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[pointer_idx]['row_3'])
+        process_cmd_lcd(ROW_4, UPDATE_VALUE, '')
     except Exception as ex:
         LOGGER.error('Error at call function in call_screen_alarm_selection with message: %s', ex.message)
 
@@ -699,7 +699,7 @@ def save_to_file(file_path, str_saved, number):
         elif number == ROW_5:
             all_row['row5'] = str_saved
         write_to_json(all_row, file_path)
-        LOGGER.info('Saved file {0}', file_path)
+        LOGGER.info('Saved file %s', file_path)
     except Exception as ex:
         LOGGER.error('Error at call function in save_to_file with message: %s', ex.message)
 
@@ -709,7 +709,7 @@ def save_to_file_txt(file_path, str_saved, number):
         all_row = read_from_txt(file_path)
         all_row[number - 1] = str_saved
         write_to_txt(''.join(all_row), file_path)
-        LOGGER.info('Saved file {0}', file_path)
+        LOGGER.info('Saved file: %s', file_path)
     except Exception as ex:
         LOGGER.error('Error at call function in save_to_file with message: %s', ex.message)
 
