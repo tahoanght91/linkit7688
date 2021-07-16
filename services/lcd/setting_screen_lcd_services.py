@@ -563,7 +563,7 @@ def call_screen_alarm_selection(keycode):
             }
         ]
 
-        if screen_idx == selection_setting_alarm["choose_high_low"]:
+        if screen_idx == selection_setting_alarm["choose_type_alarm"]:
             switcher = [
                 {
                     "row_2": '> Nguong cao',
@@ -574,7 +574,7 @@ def call_screen_alarm_selection(keycode):
                     "row_3": '> Nguong thap'
                 }
             ]
-        elif screen_idx == selection_setting_alarm["confirm_assign_alarm"]:
+        elif screen_idx == selection_setting_alarm["assign_alarm"]:
             switcher = [
                 {
                     "row_2": '> Co',
