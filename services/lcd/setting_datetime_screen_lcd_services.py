@@ -71,7 +71,7 @@ def date_setting_screen(cursor_index):
     global level_at_index_date, date
 
     if cursor_index == 0:
-        date[cursor_index] = YEAR[level_at_index_date[cursor_index]-2021]
+        date[cursor_index] = YEAR[level_at_index_date[cursor_index]-1]
     elif cursor_index == 1:
         date[cursor_index+1] = MONTH[level_at_index_date[cursor_index]-1]
     elif cursor_index == 2:
@@ -93,25 +93,25 @@ def date_setting_process(button):
             if button == UP:
                 level_at_index_date[cursor_idx] += 1
                 if cursor_idx == 0:
-                    if level_at_index_date[cursor_idx] > 2100:
-                        level_at_index_date[cursor_idx] = 2021
+                    if level_at_index_date[cursor_idx] > len(YEAR):
+                        level_at_index_date[cursor_idx] = 0
                 elif cursor_idx == 1:
-                    if level_at_index_date[cursor_idx] > 12:
+                    if level_at_index_date[cursor_idx] > len(MONTH):
                         level_at_index_date[cursor_idx] = 0
                 elif cursor_idx == 2:
-                    if level_at_index_date[cursor_idx] > 31:
+                    if level_at_index_date[cursor_idx] > len(DAY):
                         level_at_index_date[cursor_idx] = 0
             elif button == DOWN:
                 level_at_index_date[cursor_idx] -= 1
                 if cursor_idx == 0:
-                    if level_at_index_date[cursor_idx] < 2021:
-                        level_at_index_date[cursor_idx] = 2100
+                    if level_at_index_date[cursor_idx] < 0:
+                        level_at_index_date[cursor_idx] = len(YEAR)
                 elif cursor_idx == 1:
                     if level_at_index_date[cursor_idx] < 1:
-                        level_at_index_date[cursor_idx] = 12
+                        level_at_index_date[cursor_idx] = len(MONTH)
                 elif cursor_idx == 2:
                     if level_at_index_date[cursor_idx] < 1:
-                        level_at_index_date[cursor_idx] = 31
+                        level_at_index_date[cursor_idx] = len(DAY)
             elif button == RIGHT:
                 cursor_idx += 1
                 if cursor_idx > 2:
@@ -171,19 +171,19 @@ def time_setting_process(button):
             if button == UP:
                 level_at_index_time[cursor_idx] += 1
                 if cursor_idx == 0:
-                    if level_at_index_time[cursor_idx] > 23:
+                    if level_at_index_time[cursor_idx] > len(HOUR):
                         level_at_index_time[cursor_idx] = 0
                 elif cursor_idx == 1:
-                    if level_at_index_time[cursor_idx] > 59:
+                    if level_at_index_time[cursor_idx] > len(MIN):
                         level_at_index_time[cursor_idx] = 0
             elif button == DOWN:
                 level_at_index_time[cursor_idx] -= 1
                 if cursor_idx == 0:
                     if level_at_index_time[cursor_idx] < 0:
-                        level_at_index_time[cursor_idx] = 23
+                        level_at_index_time[cursor_idx] = len(HOUR)
                 elif cursor_idx == 1:
                     if level_at_index_time[cursor_idx] < 0:
-                        level_at_index_time[cursor_idx] = 59
+                        level_at_index_time[cursor_idx] = len(MIN)
             elif button == RIGHT:
                 cursor_idx = 1
             elif button == LEFT:
