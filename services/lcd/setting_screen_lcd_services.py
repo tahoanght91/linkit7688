@@ -111,7 +111,7 @@ selection_setting_alarm = {
     "choose_type_alarm": 1,
     "choose_high_low": 2,
     "assign_alarm": 3,
-    "confirm_assign_alarm": 3
+    "confirm_assign_alarm": 4
 }
 
 screen_setting_alarm = {
@@ -443,21 +443,18 @@ def alarm_selection_listen_key(keycode):
         alarm = get_alarm_info() if alarm == 0 else alarm
         # main co 4 dong, choose co 2 dong
         max_pointer_idx = 3 if screen_idx == selection_setting_alarm["choose_type_alarm"] - 1 else 1
-        if keycode == BUTTON_34_EVENT_UP:
+        if keycode == DOWN:
             # key down
             pointer_idx = max_pointer_idx if pointer_idx == max_pointer_idx else pointer_idx + 1
-        elif keycode == BUTTON_14_EVENT_UP:
+        elif keycode == UP:
             # key up
             pointer_idx = 0 if pointer_idx == 0 else pointer_idx - 1
-        elif keycode == BUTTON_24_EVENT_UP:
+        elif keycode == OK:
             # key ok
             if screen_idx > -1:
                 # lan dau tien load man hinh screen_idx = -1, khong update gia tri chon
                 selection_chosen[screen_idx] = pointer_idx
-            screen_idx += 1
-            # refresh gia tri pointer index
-            pointer_idx = 0
-            if screen_idx == selection_setting_alarm["confirm_assign_alarm"] + 1:
+            if screen_idx == selection_setting_alarm["confirm_assign_alarm"]:
                 if pointer_idx == confirm["yes"]:
                     if save_alarm() == 0:
                         return
@@ -465,6 +462,10 @@ def alarm_selection_listen_key(keycode):
                 else:
                     screen_idx -= 1
                     pointer_idx = 0
+            else:
+                screen_idx += 1
+                # refresh gia tri pointer index
+                pointer_idx = 0
         else:
             return
         LOGGER.info('Enter alarm_selection_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx),
