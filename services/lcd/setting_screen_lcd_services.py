@@ -554,7 +554,8 @@ def save_alarm():
         if key_attr[k]["index_screen_1"] == selection_chosen[0] and key_attr[k]["index_screen_2"] == selection_chosen[1]:
             # Man hinh 1 chon loai alarm
             # Man hinh 2 chon set nguong cao hay thap
-            write_body_send_shared_attributes(k, alarm.get_alarm_number())
+            body = write_body_send_shared_attributes(k, alarm.get_alarm_number())
+            send_shared_attributes(body)
             break
     return 1
 
