@@ -87,12 +87,13 @@ def get_alarm(row2, row3, tel_lcd):
                 check = True
                 if row2 != 'CB Quet The!!':
                     row2 = create_for_each('CB Quet The!!', row3)
-
+            LOGGER.info('check is: %s', str(check))
             if row2 == old_text and (not check or row2 == 'An Toan!' or row2 == ''):
                 process_cmd_lcd(ROW_2, UPDATE_VALUE, 'An Toan!')
                 delete_row(ROW_3)
         else:
             if row2 == old_text and (row2 == 'An Toan!' or row2 == ''):
+                LOGGER.info('check is if emty dct_alarm')
                 process_cmd_lcd(ROW_2, UPDATE_VALUE, 'An Toan!')
                 delete_row(ROW_3)
     except Exception as ex:
