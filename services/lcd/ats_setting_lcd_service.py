@@ -21,15 +21,11 @@ screens_info = {"ats_setting": 0, "atsGenDeactivateMode": 1, "atsGenInactiveStar
 
 
 # Màn hình chính được call ở menu
-def call_screen_ats_setting(p_idx):
+def call_screen_ats_setting(p_idx, isFirst):
     global screen_idx
-    refresh_screen()
-
     from control import process_cmd_lcd
     global pointer_idx
     try:
-        screen_idx = screens_info["ats_setting"]
-        pointer_idx = p_idx
         switcher = [
             {
                 "row_2": '> Cam chay M.Phat',
@@ -49,21 +45,27 @@ def call_screen_ats_setting(p_idx):
         ]
         LOGGER.info('Enter call_screen_ats_setting function: %s', str(switcher[p_idx]))
         # Update text
-        process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THIET BI ATS')
-        process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[p_idx]['row_2'])
-        process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[p_idx]['row_3'])
-        process_cmd_lcd(ROW_4, UPDATE_VALUE, switcher[p_idx]['row_4'])
+        if isFirst == 1:
+            refresh_screen()
+            process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THIET BI ATS')
+            process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[p_idx]['row_2'])
+            process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[p_idx]['row_3'])
+            process_cmd_lcd(ROW_4, UPDATE_VALUE, switcher[p_idx]['row_4'])
+        elif isFirst == 0:
+            process_cmd_lcd(pointer_idx + 2, UPDATE_VALUE, switcher[p_idx]['row_{0}'.format(pointer_idx + 2)])
+            process_cmd_lcd(p_idx + 2, UPDATE_VALUE, switcher[p_idx]['row_{0}'.format(p_idx + 2)])
+
+        screen_idx = screens_info["ats_setting"]
+        pointer_idx = p_idx
     except Exception as ex:
         LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
 
 # Màn hình chọn khi chọn cấm chạy máy phát
-def call_screen_deactivate_mode(p_idx):
-    refresh_screen()
+def call_screen_deactivate_mode(p_idx, isFirst):
     global pointer_idx
     from control import process_cmd_lcd
     try:
-        pointer_idx = p_idx
         switcher = [
             {
                 "row_2": '> Cam chay',
@@ -76,21 +78,25 @@ def call_screen_deactivate_mode(p_idx):
         ]
         LOGGER.info('Enter call_screen_deactivate_mode function: %s', str(switcher[p_idx]))
         # Update text
-        process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THIET BI ATS')
-        process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[p_idx]['row_2'])
-        process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[p_idx]['row_3'])
+        if isFirst == 1:
+            refresh_screen()
+            process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THIET BI ATS')
+            process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[p_idx]['row_2'])
+            process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[p_idx]['row_3'])
+        elif isFirst == 0:
+            process_cmd_lcd(pointer_idx + 2, UPDATE_VALUE, switcher[p_idx]['row_{0}'.format(pointer_idx + 2)])
+            process_cmd_lcd(p_idx + 2, UPDATE_VALUE, switcher[p_idx]['row_{0}'.format(p_idx + 2)])
+
+        pointer_idx = p_idx
     except Exception as ex:
         LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
 
 # Màn hình xác nhận
-def call_screen_confirm(p_idx):
-    refresh_screen()
-
+def call_screen_confirm(p_idx, isFirst):
     global pointer_idx
     from control import process_cmd_lcd
     try:
-        pointer_idx = p_idx
         switcher = [
             {
                 "row_2": '> Co',
@@ -103,31 +109,42 @@ def call_screen_confirm(p_idx):
         ]
         LOGGER.info('Enter call_screen_confirm function: %s', str(switcher[p_idx]))
         # Update text
-        process_cmd_lcd(ROW_1, UPDATE_VALUE, 'XAC NHAN LUU')
-        process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[p_idx]['row_2'])
-        process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[p_idx]['row_3'])
+        if isFirst == 1:
+            refresh_screen()
+            process_cmd_lcd(ROW_1, UPDATE_VALUE, 'XAC NHAN LUU')
+            process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[p_idx]['row_2'])
+            process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[p_idx]['row_3'])
+        elif isFirst == 0:
+            process_cmd_lcd(pointer_idx + 2, UPDATE_VALUE, switcher[p_idx]['row_{0}'.format(pointer_idx + 2)])
+            process_cmd_lcd(p_idx + 2, UPDATE_VALUE, switcher[p_idx]['row_{0}'.format(p_idx + 2)])
+
+        pointer_idx = p_idx
+
     except Exception as ex:
         LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
 
 # Màn hình thiet lap thoi gian cam
-def call_screen_inactivate_time(p_idx, isStart):
-    refresh_screen()
-
+def call_screen_inactivate_time(p_idx, isStart, isFirst):
     global pointer_idx
     from control import process_cmd_lcd
     try:
-        pointer_idx = p_idx
         if isStart == 1:
             time_idx = 1
         else:
             time_idx = 2
 
         hour = get_string_time()
-        process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THIET BI ATS')
-        process_cmd_lcd(ROW_2, UPDATE_VALUE, "T.gian cam {0}".format(time_idx))
-        process_cmd_lcd(ROW_3, UPDATE_VALUE, hour)
-        LOGGER.info('Enter call_screen_inactivate_time function')
+        if isFirst == 1:
+            refresh_screen()
+            process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THIET BI ATS')
+            process_cmd_lcd(ROW_2, UPDATE_VALUE, "T.gian cam {0}".format(time_idx))
+            process_cmd_lcd(ROW_3, UPDATE_VALUE, hour)
+            LOGGER.info('Enter call_screen_inactivate_time function')
+        elif isFirst == 0:
+            process_cmd_lcd(ROW_3, UPDATE_VALUE, hour)
+
+        pointer_idx = p_idx
     except Exception as ex:
         LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
@@ -138,18 +155,18 @@ def call_screen_with_screen_id(screen_id):
         LOGGER.info('Enter call_screen_with_screen_id function, screen_id: %s', str(screen_id))
         screen_idx = screen_id
         if screen_id == screens_info["ats_setting"]:
-            call_screen_ats_setting(p_idx=0)
+            call_screen_ats_setting(p_idx=0, isFirst=1)
         if screen_id == screens_info["atsGenDeactivateMode"]:
-            call_screen_deactivate_mode(p_idx=0)
+            call_screen_deactivate_mode(p_idx=0, isFirst=1)
         elif screen_id == screens_info["atsGenInactiveStartTime"]:
             time = [-1, -1]
-            call_screen_inactivate_time(p_idx=0, isStart=1)
+            call_screen_inactivate_time(p_idx=0, isStart=1, isFirst=1)
         elif screen_id == screens_info["atsGenInactiveEndTime"]:
             time = [-1, -1]
-            call_screen_inactivate_time(p_idx=0, isStart=0)
+            call_screen_inactivate_time(p_idx=0, isStart=0, isFirst=1)
         elif screen_id == screens_info["confirmDeactivateMode"] or screen_id == screens_info[
             "confirmInactiveStartTime"] or screen_id == screens_info["confirmInactiveEndTime"]:
-            call_screen_confirm(p_idx=0)
+            call_screen_confirm(p_idx=0, isFirst=1)
     except Exception as ex:
         LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
@@ -198,7 +215,7 @@ def ats_setting_listen_key(keycode):
                 pointer_idx = 2
             else:
                 pointer_idx = pointer_idx + 1
-            call_screen_ats_setting(pointer_idx)
+            call_screen_ats_setting(pointer_idx, isFirst=0)
 
         elif keycode == BUTTON_14_EVENT_UP:
             # up
@@ -206,7 +223,7 @@ def ats_setting_listen_key(keycode):
                 pointer_idx = 0
             else:
                 pointer_idx = pointer_idx - 1
-            call_screen_ats_setting(pointer_idx)
+            call_screen_ats_setting(pointer_idx, isFirst=0)
 
         elif keycode == BUTTON_24_EVENT_UP:
             # ok
@@ -231,7 +248,7 @@ def ats_deactivate_mode_listen_key(keycode):
                 pointer_idx = 1
             else:
                 pointer_idx = pointer_idx + 1
-            call_screen_deactivate_mode(pointer_idx)
+            call_screen_deactivate_mode(pointer_idx, isFirst=0)
 
         elif keycode == BUTTON_14_EVENT_UP:
             # up
@@ -239,7 +256,7 @@ def ats_deactivate_mode_listen_key(keycode):
                 pointer_idx = 0
             else:
                 pointer_idx = pointer_idx - 1
-            call_screen_deactivate_mode(pointer_idx)
+            call_screen_deactivate_mode(pointer_idx, isFirst=0)
 
         elif keycode == BUTTON_24_EVENT_UP:
             # ok
@@ -268,7 +285,7 @@ def ats_inactive_time_listen_key(keycode, isStart):
             else:
                 time[pointer_idx] = time[pointer_idx] - 1
 
-            call_screen_inactivate_time(pointer_idx, isStart)
+            call_screen_inactivate_time(pointer_idx, isStart, isFirst=0)
 
         elif keycode == BUTTON_14_EVENT_UP:
             # up
@@ -276,7 +293,7 @@ def ats_inactive_time_listen_key(keycode, isStart):
                 time[pointer_idx] = 9
             else:
                 time[pointer_idx] = time[pointer_idx] + 1
-            call_screen_inactivate_time(pointer_idx, isStart)
+            call_screen_inactivate_time(pointer_idx, isStart, isFirst=0)
         elif keycode == BUTTON_23_EVENT_UP:
             # key left
             if pointer_idx == 0:
@@ -285,7 +302,7 @@ def ats_inactive_time_listen_key(keycode, isStart):
                 pointer_idx = pointer_idx - 1
 
             time[pointer_idx] = -1
-            call_screen_inactivate_time(pointer_idx, isStart)
+            call_screen_inactivate_time(pointer_idx, isStart, isFirst=0)
         elif keycode == BUTTON_25_EVENT_UP:
             # key right
             if pointer_idx == 1:
@@ -294,7 +311,7 @@ def ats_inactive_time_listen_key(keycode, isStart):
                 pointer_idx = pointer_idx + 1
             #
             time[pointer_idx] = -1
-            call_screen_inactivate_time(pointer_idx, isStart)
+            call_screen_inactivate_time(pointer_idx, isStart, isFirst=0)
         elif keycode == BUTTON_24_EVENT_UP:
             # ok
             if isStart == 1:
@@ -324,7 +341,7 @@ def confirm_listen_key(keycode):
                 pointer_idx = 1
             else:
                 pointer_idx = pointer_idx + 1
-            call_screen_confirm(pointer_idx)
+            call_screen_confirm(pointer_idx, isFirst=0)
 
         elif keycode == BUTTON_14_EVENT_UP:
             # up
@@ -332,7 +349,7 @@ def confirm_listen_key(keycode):
                 pointer_idx = 0
             else:
                 pointer_idx = pointer_idx - 1
-            call_screen_confirm(pointer_idx)
+            call_screen_confirm(pointer_idx, isFirst=0)
 
         elif keycode == BUTTON_24_EVENT_UP:
             if pointer_idx == 0:
@@ -401,13 +418,13 @@ def call_back_ats_setting():
     try:
         if screen_idx == screens_info["confirmDeactivateMode"]:
             ats_body_setting["atsGenDeactivateMode"] = 0
-            call_screen_ats_setting(p_idx=0)
+            call_screen_ats_setting(p_idx=0, isFirst=1)
         elif screen_idx == screens_info["confirmInactiveStartTime"]:
             ats_body_setting["atsGenInactiveStartTime"] = 0
-            call_screen_ats_setting(p_idx=1)
+            call_screen_ats_setting(p_idx=1, isFirst=1)
         elif screen_idx == screens_info["confirmInactiveEndTime"]:
             ats_body_setting["atsGenInactiveEndTime"] = 0
-            call_screen_ats_setting(p_idx=2)
+            call_screen_ats_setting(p_idx=2, isFirst=1)
 
     except Exception as ex:
         LOGGER.error('Error at call function in call_back_ats_setting with message: %s', ex.message)
