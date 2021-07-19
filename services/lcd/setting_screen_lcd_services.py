@@ -46,7 +46,7 @@ class __IPv4:
         LOGGER.info('Check oct!!!')
         for v in self.get_ip_number().split("."):
             LOGGER.info('Oct in get_oct: %s', str(v))
-            if v == '' or int(v) > 225:
+            if v == '' or int(v) > 255:
                 # Chua nhap octet nay
                 # ip khong duoc lon hon 225
                 return 0
@@ -702,10 +702,13 @@ def save_to_set_ip(str_saved, key):
 def call_set_ip():
     try:
         # run bash .sh
-        bashCmd = ["./setIp.sh"]
-        process = subprocess.Popen(bashCmd, stdout=subprocess.PIPE)
-        output, error = process.communicate()
-        LOGGER.info('Run ./setIp.sh with output: %s and error %s', output, error)
+        pop_cmd = 'sh'
+        bash_cmd = './setIp.sh'
+        cp_setip = 'cp setIp.sh /IoT/'  # copy file to out linkit7688
+        process1 = subprocess.call(cp_setip, shell=True)
+        process2 = subprocess.call([pop_cmd, bash_cmd])
+        # output, error = process.communicate()
+        LOGGER.info('Run ./setIp.sh with output: %s and %s', str(process1), str(process2))
     except Exception as ex:
         LOGGER.error('Error at call function in save_to_set_ip with message: %s', ex.message)
 
