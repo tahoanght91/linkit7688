@@ -2,6 +2,7 @@ import os
 from config import *
 from config.common import *
 from config.common_lcd_services import *
+from datetime import datetime
 
 # Define
 GO_CONFIRM = True
@@ -65,17 +66,18 @@ def call_screen_confirm(p_idx):
     except Exception as ex:
         LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
+
 # Date setting
 def date_setting_screen(cursor_index):
     from control import process_cmd_lcd
     global level_at_index_date, date
 
     if cursor_index == 0:
-        date[cursor_index] = YEAR[level_at_index_date[cursor_index]-1]
+        date[cursor_index] = YEAR[level_at_index_date[cursor_index] - 1]
     elif cursor_index == 1:
-        date[cursor_index+1] = MONTH[level_at_index_date[cursor_index]-1]
+        date[cursor_index + 1] = MONTH[level_at_index_date[cursor_index] - 1]
     elif cursor_index == 2:
-        date[cursor_index+2] = DAY[level_at_index_date[cursor_index]-1]
+        date[cursor_index + 2] = DAY[level_at_index_date[cursor_index] - 1]
     process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(date))
 
 
@@ -131,8 +133,12 @@ def date_setting_process(button):
             elif button == OK:
                 if confirm_idx == 0:
                     try:
+                        hour_now = datetime.now().strftime("%H")
+                        min_now = datetime.now().strftime("%M")
                         LOGGER.info("date -s %s.%s.%s-%s:%s", str(date[0]), str(date[2]), str(date[4]), str(0), str(0))
-                        os.system('date -s {year}.{month}.{day}-{hour}:{min}'.format(year=date[0], month=date[2], day=date[4], hour=0, min=0))
+                        os.system('date -s {year}.{month}.{day}-{hour}:{min}'.format(year=date[0], month=date[2],
+                                                                                     day=date[4], hour=hour_now,
+                                                                                     min=min_now))
                     except Exception as ex:
                         LOGGER.error('Error at set datetime to os in os.system with message: %s', ex.message)
                 get_default_value()
@@ -153,7 +159,7 @@ def time_setting_screen(cursor_index):
     if cursor_index == 0:
         time[cursor_index] = HOUR[level_at_index_time[cursor_index]]
     elif cursor_index == 1:
-        time[cursor_index+1] = MIN[level_at_index_time[cursor_index]]
+        time[cursor_index + 1] = MIN[level_at_index_time[cursor_index]]
     process_cmd_lcd(ROW_2, UPDATE_VALUE, ''.join(time))
 
 

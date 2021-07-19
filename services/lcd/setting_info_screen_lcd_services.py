@@ -7,7 +7,7 @@ level_at_index = [-1] * 16
 # char = [chr(i) for i in range(ord('A'), ord('A') + 26)]
 # char.append(" ")
 CHAR = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
-        'W', 'X', 'Y', 'Z', ' ']
+        'W', 'X', 'Y', 'Z', ' ', '_']
 confirm_flag = False
 confirm_idx = 0
 cursor_idx = 0
