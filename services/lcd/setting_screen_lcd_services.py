@@ -88,6 +88,8 @@ network = 0
 alarm = 0
 # Fix loi goi choose_config nhieu lan khi dang trong man hinh nay roi
 isChosen = 0
+# Bo sung chay runSetIp
+isSetIP = 0
 
 # Idx man hinh
 selection_setting = {
@@ -143,11 +145,12 @@ def choose_config(setting_idx):
 
 def reset_param():
     # call moi khi quay lai man hinh main config
-    global pointer_idx, screen_idx, network, alarm
+    global pointer_idx, screen_idx, network, alarm, isSetIP
     pointer_idx = 0
     screen_idx = 0
     network = 0
     alarm = 0
+    isSetIP = 0
     LOGGER.info('Reset_param: %s, %s', screen_idx, pointer_idx)
 
 
@@ -184,12 +187,17 @@ def call_screen_network(keycode):
             {
                 "row_2": '> Prefered DNS',
                 "row_3": 'Alternate DNS',
-                "row_4": ''
+                "row_4": 'Chay cau hinh'
             },
             {
                 "row_2": 'Prefered DNS',
                 "row_3": '> Alternate DNS',
-                "row_4": ''
+                "row_4": 'Chay cau hinh'
+            },
+            {
+                "row_2": 'Prefered DNS',
+                "row_3": 'Alternate DNS',
+                "row_4": '> Chay cau hinh'
             }
         ]
         LOGGER.info('Enter call_screen_network function, screen_idx: %s', str(screen_idx))
@@ -349,10 +357,10 @@ def listen_key_code(keycode):
 
 
 def main_network_listen_key(keycode):
-    global pointer_idx, screen_idx
+    global pointer_idx, screen_idx, isSetIP
     # 5 dong
     LOGGER.info('SHOW key_code NOW: %s', str(keycode))
-    max_pointer_idx = 4
+    max_pointer_idx = 5
     if keycode == BUTTON_34_EVENT_UP:
         # key down
         pointer_idx = max_pointer_idx if pointer_idx == max_pointer_idx else pointer_idx + 1
@@ -367,6 +375,10 @@ def main_network_listen_key(keycode):
             selection_chosen[screen_idx] = pointer_idx
         screen_idx = 0 if screen_idx == 2 else screen_idx + 1
         LOGGER.info('--- Show screen_idx: %s', str(screen_idx))
+        if pointer_idx == max_pointer_idx:
+            # Man hinh chay setIp
+            screen_idx += 1
+            isSetIP = 1
         # refresh gia tri pointer index
         pointer_idx = 0
     else:
@@ -423,12 +435,16 @@ def assign_ip_listen_key(keycode):
             pointer_idx = 0
         else:
             if pointer_idx == confirm["yes"]:
+                if isSetIP:
+                    call_set_ip()
                 if save_ip() == 0:
                     return
                 reset_param()
             else:
                 # Quay lai man hinh assign_ip
                 screen_idx -= 1
+                if isSetIP:
+                    screen_idx = 0
                 pointer_idx = 0
         selection_chosen[screen_idx] = pointer_idx
     else:
@@ -678,11 +694,18 @@ def save_to_set_ip(str_saved, key):
     try:
         save_to_file_txt('./setIp.sh', row_format[key]["format"].format(str_saved), row_format[key]["number"])
         LOGGER.info('Call save file ./setIp.sh')
+        # call_set_ip()
+    except Exception as ex:
+        LOGGER.error('Error at call function in save_to_set_ip with message: %s', ex.message)
+
+
+def call_set_ip():
+    try:
         # run bash .sh
-        # bashCmd = ["./setIp.sh"]
-        # process = subprocess.Popen(bashCmd, stdout=subprocess.PIPE)
-        # output, error = process.communicate()
-        # LOGGER.info('Run ./setIp.sh with output: {0} and error{1}', output, error)
+        bashCmd = ["./setIp.sh"]
+        process = subprocess.Popen(bashCmd, stdout=subprocess.PIPE)
+        output, error = process.communicate()
+        LOGGER.info('Run ./setIp.sh with output: %s and error %s', output, error)
     except Exception as ex:
         LOGGER.error('Error at call function in save_to_set_ip with message: %s', ex.message)
 
