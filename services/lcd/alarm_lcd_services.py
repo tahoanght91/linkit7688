@@ -42,6 +42,7 @@ def save_to_file(str_saved, number):
 
 
 def get_alarm(row2, row3, tel_lcd):
+    from control import process_cmd_lcd
     try:
         LOGGER.info('List dtc_alarm: %s', tel_lcd)
         check_card = check_rfid()
@@ -88,11 +89,11 @@ def get_alarm(row2, row3, tel_lcd):
                     row2 = create_for_each('CB Quet The!!', row3)
 
             if row2 == old_text and (not check or row2 == 'An Toan!' or row2 == ''):
-                row2 = create_for_each('An Toan!')
+                process_cmd_lcd(ROW_2, UPDATE_VALUE, 'An Toan!')
                 delete_row(ROW_3)
         else:
             if row2 == old_text and (row2 == 'An Toan!' or row2 == ''):
-                row2 = create_for_each('An Toan!')
+                process_cmd_lcd(ROW_2, UPDATE_VALUE, 'An Toan!')
                 delete_row(ROW_3)
     except Exception as ex:
         LOGGER.error('Error at call function in get_alarm with message: %s', ex.message)
@@ -167,6 +168,7 @@ def delete_row(row_number):
 
     try:
         process_cmd_lcd(row_number, UPDATE_VALUE, CHAR_SPACE)
+        save_to_file('', row_number)
     except Exception as ex:
         LOGGER.error('Error at call function in delete_row4 with message: %s', ex.message)
 
