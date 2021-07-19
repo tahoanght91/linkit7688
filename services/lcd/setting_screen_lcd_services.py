@@ -694,7 +694,7 @@ def save_to_set_ip(str_saved, key):
     try:
         save_to_file_txt('./setIp.sh', row_format[key]["format"].format(str_saved), row_format[key]["number"])
         LOGGER.info('Call save file ./setIp.sh')
-        call_set_ip()
+        # call_set_ip()
     except Exception as ex:
         LOGGER.error('Error at call function in save_to_set_ip with message: %s', ex.message)
 
@@ -705,7 +705,7 @@ def call_set_ip():
         bashCmd = ["./setIp.sh"]
         process = subprocess.Popen(bashCmd, stdout=subprocess.PIPE)
         output, error = process.communicate()
-        LOGGER.info('Run ./setIp.sh with output: {0} and error{1}', output, error)
+        LOGGER.info('Run ./setIp.sh with output: %s and error %s', output, error)
     except Exception as ex:
         LOGGER.error('Error at call function in save_to_set_ip with message: %s', ex.message)
 
