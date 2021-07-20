@@ -217,6 +217,14 @@ def check_status():
                     acm_fan_only_cycle = 0
                     acm_period_start = 0            # Reset period timer
                     acm_air_alter_time = timestamp  # Reset alternative timer
+    elif not acmAirc1CurrentState and not acmAirc2CurrentState:
+        # Prevent case when both air is off and temperature falls between the delta
+        acmAirc1NextState = air_enabled and acm_air_alter_state
+        acmAirc2NextState = air_enabled and not acm_air_alter_state
+        acmFanNextState = False
+        acm_fan_only_cycle = 0
+        acm_period_start = 0  # Reset period timer
+        # Don't reset alternative timer
 
     # Counting alternative time, only if 1 airc is running:
     if (acmAirc1NextState and not acmAirc2NextState) or (not acmAirc1NextState and acmAirc2NextState):

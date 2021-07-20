@@ -1,6 +1,6 @@
+from config import BYTE_ORDER
 from utility import bytes_to_int
 from .utils import _read_attribute, _read_telemetry
-from config import BYTE_ORDER
 
 
 def extract(byte_data):
@@ -68,6 +68,7 @@ def extract(byte_data):
     _read_telemetry('atsAcState', atsAcState)
     _read_telemetry('atsGenState', atsGenState)
     _read_telemetry('atsState', atsState)
+    _read_telemetry('atsConnect', atsConnect)
 
 
     #client attributes
@@ -79,4 +80,3 @@ def extract(byte_data):
     _read_attribute('atsVgenP3State', atsVgenP3State)
     _read_attribute('atsErrorState', atsErrorState)
     _read_attribute('atsMode', atsMode)
-    _read_attribute('atsConnect', atsConnect)

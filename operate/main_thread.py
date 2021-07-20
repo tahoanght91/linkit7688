@@ -1,15 +1,15 @@
-import os
-import time
 import math
+import os
 import subprocess
+import time
 
 import requests
 
 from config import *
 from config.default_data import data_dict
 from devices import clock
-from . import subscription_thread, monitor_thread, io_thread, telemetry_thread, update_attributes_thread, ui_thread, \
-    shared_attributes_thread, rfid_thread, led_thread, lcd_thread, check_connection_thread
+from . import subscription_thread, monitor_thread, io_thread, telemetry_thread, update_attributes_thread, \
+    shared_attributes_thread, rfid_thread, led_thread, lcd_thread, update_t_acm_thread
 from .update_attributes_thread import format_client_attributes, get_list_key
 
 semaphore = threading.Semaphore(0)
@@ -71,15 +71,14 @@ def call():
             LOGGER.debug('Set IO time')
             clock.set()
             LOGGER.debug('Get original attributes')
-            #shared_attributes
-            #{DEVICE_MCC: {mcc: val}, DEVICE_ATS: {ats: val}, DEVICE_ACM: {acm: val}}
+            # shared_attributes
             device_shared_attributes_name = format_client_attributes(data_dict['shared'])
             for key, value in device_shared_attributes_name.items():
                 list_shared_keys = get_list_key(value)
                 CLIENT.gw_request_shared_attributes(key, list_shared_keys, _on_receive_shared_attributes_callback)
                 semaphore.acquire()
 
-            #client_attributes
+            # client_attributes
             device_client_attributes_name = format_client_attributes(data_dict['client'])
             for key, value in device_client_attributes_name.items():
                 list_client_keys = get_list_key(value)
@@ -97,11 +96,8 @@ def call():
         CLIENT.gw_subscribe_to_all_attributes(callback=subscription_thread._attribute_change_callback)
         CLIENT.gw_set_server_side_rpc_request_handler(handler=subscription_thread._gw_rpc_callback)
 
-        thread_list = [lcd_thread, io_thread, update_attributes_thread, telemetry_thread, led_thread, shared_attributes_thread, rfid_thread, monitor_thread, check_connection_thread]
-        # thread_list = [lcd_thread, io_thread, update_attributes_thread, telemetry_thread, led_thread,
-        #              shared_attributes_thread, rfid_thread, monitor_thread]
-        # enable when test in IDE
-        # thread_list = [update_attributes_thread, telemetry_thread, led_thread, lcd_thread, shared_attributes_thread, rfid_thread, monitor_thread]
+        thread_list = [io_thread, update_attributes_thread, telemetry_thread, led_thread, shared_attributes_thread,
+                       rfid_thread, monitor_thread, lcd_thread, update_t_acm_thread]
 
         for i, thread in enumerate(thread_list):
             thread.name = thread.__name__
@@ -117,8 +113,8 @@ def call():
                 try:
                     CLIENT.connect(callback=_connect_callback)
                     semaphore.acquire()
-                except:
-                    LOGGER.info('Fail to connect to server')
+                except Exception as ex:
+                    LOGGER.info('Fail to connect to server with message: %s', ex.message)
 
             for i, thread in enumerate(thread_list):
                 if not thread.isAlive():
@@ -155,7 +151,7 @@ def call():
                             command = 'cd /IoT && ./update.sh ' + link_update
                             subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
                         else:
-                            pass
+                            LOGGER.info('Current version is the latest')
                 except Exception as ex:
                     LOGGER.error('Cannot update repository, error %s', ex.message)
             time.sleep(period)
@@ -180,6 +176,6 @@ def _init_thread(target):
     try:
         thread.start()
         LOGGER.debug('Start thread %s successfully', thread.getName())
-    except:
-        LOGGER.debug('Fail to start thread %s', thread.getName())
+    except Exception as ex:
+        LOGGER.debug('Fail to start thread %s with message: %s', thread.getName(), ex.message)
     return thread
