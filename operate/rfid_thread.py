@@ -5,16 +5,20 @@ import requests
 from config import *
 from config.common import RESPONSE_RFID
 from config.common_api import *
+
 from monitor import mcc
 
 url_send_log_rfid = PREFIX + DOMAIN + API_SAVE_LOG_RFID
 KEY_RFID = 'mccRfidCard'
+lcd_setting_data_file = './lcd_setting_data_file.json'
 
 
 def call():
+    from control.utils import read_to_json
     period = 3
     while True:
-        if CLIENT.is_connected():
+        file_setting = read_to_json(lcd_setting_data_file)
+        if CLIENT.is_connected() and file_setting['setting_rfid_allow'] == 1:
             if 'mccListRfid' in shared_attributes:
                 LOGGER.info('List rfid existence in shared attributes')
                 list_card = shared_attributes['mccListRfid']
