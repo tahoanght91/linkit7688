@@ -104,33 +104,34 @@ def listen_key_code(keycode):
 def rfid_setting_listen_key(keycode):
     global screen_idx, pointer_idx, setting_rfid_allow
     try:
+        p_idx = pointer_idx
         if keycode == BUTTON_34_EVENT_UP:
             # down
-            if pointer_idx == 1:
-                pointer_idx = 1
+            if p_idx == 1:
+                p_idx = 1
             else:
-                pointer_idx = pointer_idx + 1
-            call_screen_rfid_setting(pointer_idx, isFirst=0)
+                p_idx = p_idx + 1
+            call_screen_rfid_setting(p_idx, isFirst=0)
 
         elif keycode == BUTTON_14_EVENT_UP:
             # up
-            if pointer_idx == 0:
-                pointer_idx = 0
+            if p_idx == 0:
+                p_idx = 0
             else:
-                pointer_idx = pointer_idx - 1
-            call_screen_rfid_setting(pointer_idx, isFirst=0)
+                p_idx = p_idx - 1
+            call_screen_rfid_setting(p_idx, isFirst=0)
 
         elif keycode == BUTTON_24_EVENT_UP:
             # ok
-            if pointer_idx == 0:
+            if p_idx == 0:
                 setting_rfid_allow = 1
             else:
                 setting_rfid_allow = 0
 
-            if pointer_idx == -1:
+            if p_idx == -1:
                 call_screen_rfid_setting(0, isFirst=1)
             else:
-                call_screen_confirm(pointer_idx, isFirst=1)
+                call_screen_confirm(p_idx, isFirst=1)
         else:
             pass
     except Exception as ex:
@@ -140,26 +141,27 @@ def rfid_setting_listen_key(keycode):
 def confirm_listen_key(keycode):
     global pointer_idx
     try:
+        p_idx = pointer_idx
         if keycode == BUTTON_34_EVENT_UP:
             # down
-            if pointer_idx == 1:
-                pointer_idx = 1
+            if p_idx == 1:
+                p_idx = 1
             else:
-                pointer_idx = pointer_idx + 1
-            call_screen_confirm(pointer_idx, isFirst=0)
+                p_idx = p_idx + 1
+            call_screen_confirm(p_idx, isFirst=0)
 
         elif keycode == BUTTON_14_EVENT_UP:
             # up
-            if pointer_idx == 0:
-                pointer_idx = 0
+            if p_idx == 0:
+                p_idx = 0
             else:
-                pointer_idx = pointer_idx - 1
-            call_screen_confirm(pointer_idx, isFirst=0)
+                p_idx = p_idx - 1
+            call_screen_confirm(p_idx, isFirst=0)
 
         elif keycode == BUTTON_24_EVENT_UP:
-            if pointer_idx == 0:
+            if p_idx == 0:
                 update_to_file_json_setting(setting_rfid_allow)
-            if pointer_idx == 1:
+            if p_idx == 1:
                 call_screen_rfid_setting(p_idx=0, isFirst=1)
         else:
             pass
