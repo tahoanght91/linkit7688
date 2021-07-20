@@ -208,30 +208,31 @@ def listen_key_code(keycode):
 def ats_setting_listen_key(keycode):
     global screen_idx, pointer_idx
     try:
+        p_idx = pointer_idx
         LOGGER.info('Enter ats_setting_listen_key function, keycode: %s', str(keycode))
         if keycode == BUTTON_34_EVENT_UP:
             # down
-            if pointer_idx == 2:
-                pointer_idx = 2
+            if p_idx == 2:
+                p_idx = 2
             else:
-                pointer_idx = pointer_idx + 1
-            call_screen_ats_setting(pointer_idx, isFirst=0)
+                p_idx = p_idx + 1
+            call_screen_ats_setting(p_idx, isFirst=0)
 
         elif keycode == BUTTON_14_EVENT_UP:
             # up
-            if pointer_idx < 0:
-                pointer_idx = 0
+            if p_idx < 0:
+                p_idx = 0
             else:
-                pointer_idx = pointer_idx - 1
-            call_screen_ats_setting(pointer_idx, isFirst=0)
+                p_idx = p_idx - 1
+            call_screen_ats_setting(p_idx, isFirst=0)
 
         elif keycode == BUTTON_24_EVENT_UP:
             # ok
-            if pointer_idx == -1:
-                call_screen_with_screen_id(pointer_idx + 1)
+            if p_idx == -1:
+                call_screen_with_screen_id(p_idx + 1)
                 pointer_idx = 0
             else:
-                call_screen_with_screen_id(pointer_idx + 1)
+                call_screen_with_screen_id(p_idx + 1)
         else:
             pass
     except Exception as ex:
@@ -241,26 +242,27 @@ def ats_setting_listen_key(keycode):
 def ats_deactivate_mode_listen_key(keycode):
     global screen_idx, pointer_idx
     try:
+        p_idx = pointer_idx
         LOGGER.info('Enter ats_deactivate_mode_listen_key function, keycode: %s', str(keycode))
         if keycode == BUTTON_34_EVENT_UP:
             # down
-            if pointer_idx == 1:
-                pointer_idx = 1
+            if p_idx == 1:
+                p_idx = 1
             else:
-                pointer_idx = pointer_idx + 1
-            call_screen_deactivate_mode(pointer_idx, isFirst=0)
+                p_idx = p_idx + 1
+            call_screen_deactivate_mode(p_idx, isFirst=0)
 
         elif keycode == BUTTON_14_EVENT_UP:
             # up
-            if pointer_idx == 0:
-                pointer_idx = 0
+            if p_idx == 0:
+                p_idx = 0
             else:
-                pointer_idx = pointer_idx - 1
-            call_screen_deactivate_mode(pointer_idx, isFirst=0)
+                p_idx = p_idx - 1
+            call_screen_deactivate_mode(p_idx, isFirst=0)
 
         elif keycode == BUTTON_24_EVENT_UP:
             # ok
-            if pointer_idx == 0:
+            if p_idx == 0:
                 ats_body_setting_tmp["atsGenDeactivateMode"] = 1
                 call_screen_with_screen_id(screens_info["confirmDeactivateMode"])
             else:
@@ -276,42 +278,43 @@ def ats_deactivate_mode_listen_key(keycode):
 def ats_inactive_time_listen_key(keycode, isStart):
     global time, pointer_idx
     try:
+        p_idx = pointer_idx
         LOGGER.info('Enter ats_inactive_time_listen_key function, isStart: %s', str(isStart))
 
         if keycode == BUTTON_34_EVENT_UP:
             # down
-            if time[pointer_idx] < 0:
-                time[pointer_idx] = 0
+            if time[p_idx] < 0:
+                time[p_idx] = 0
             else:
-                time[pointer_idx] = time[pointer_idx] - 1
+                time[p_idx] = time[p_idx] - 1
 
-            call_screen_inactivate_time(pointer_idx, isStart, isFirst=0)
+            call_screen_inactivate_time(p_idx, isStart, isFirst=0)
 
         elif keycode == BUTTON_14_EVENT_UP:
             # up
-            if time[pointer_idx] == 9:
-                time[pointer_idx] = 9
+            if time[p_idx] == 9:
+                time[p_idx] = 9
             else:
-                time[pointer_idx] = time[pointer_idx] + 1
-            call_screen_inactivate_time(pointer_idx, isStart, isFirst=0)
+                time[p_idx] = time[p_idx] + 1
+            call_screen_inactivate_time(p_idx, isStart, isFirst=0)
         elif keycode == BUTTON_23_EVENT_UP:
             # key left
-            if pointer_idx == 0:
-                pointer_idx = 0
+            if p_idx == 0:
+                p_idx = 0
             else:
-                pointer_idx = pointer_idx - 1
+                p_idx = p_idx - 1
 
-            time[pointer_idx] = -1
-            call_screen_inactivate_time(pointer_idx, isStart, isFirst=0)
+            time[p_idx] = -1
+            call_screen_inactivate_time(p_idx, isStart, isFirst=0)
         elif keycode == BUTTON_25_EVENT_UP:
             # key right
-            if pointer_idx == 1:
-                pointer_idx = 1
+            if p_idx == 1:
+                p_idx = 1
             else:
-                pointer_idx = pointer_idx + 1
+                p_idx = p_idx + 1
             #
-            time[pointer_idx] = -1
-            call_screen_inactivate_time(pointer_idx, isStart, isFirst=0)
+            time[p_idx] = -1
+            call_screen_inactivate_time(p_idx, isStart, isFirst=0)
         elif keycode == BUTTON_24_EVENT_UP:
             # ok
             if isStart == 1:
@@ -334,31 +337,32 @@ def ats_inactive_time_listen_key(keycode, isStart):
 def confirm_listen_key(keycode):
     global pointer_idx, ats_body_setting
     try:
+        p_idx = pointer_idx
         LOGGER.info('Enter confirm_listen_key function, keycode: %s', str(keycode))
         if keycode == BUTTON_34_EVENT_UP:
             # down
-            if pointer_idx == 1:
-                pointer_idx = 1
+            if p_idx == 1:
+                p_idx = 1
             else:
-                pointer_idx = pointer_idx + 1
-            call_screen_confirm(pointer_idx, isFirst=0)
+                p_idx = p_idx + 1
+            call_screen_confirm(p_idx, isFirst=0)
 
         elif keycode == BUTTON_14_EVENT_UP:
             # up
-            if pointer_idx == 0:
-                pointer_idx = 0
+            if p_idx == 0:
+                p_idx = 0
             else:
-                pointer_idx = pointer_idx - 1
-            call_screen_confirm(pointer_idx, isFirst=0)
+                p_idx = p_idx - 1
+            call_screen_confirm(p_idx, isFirst=0)
 
         elif keycode == BUTTON_24_EVENT_UP:
-            if pointer_idx == 0:
+            if p_idx == 0:
                 ats_body_setting = ats_body_setting_tmp
 
                 #     Call api method post to server
                 call_api_to_smart_site(ats_body_setting)
 
-            if pointer_idx == 1:
+            if p_idx == 1:
                 call_back_ats_setting()
         else:
             pass
