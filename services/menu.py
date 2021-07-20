@@ -244,11 +244,15 @@ def information_setting():
 
 
 def time_setting():
-    global event
+    from services.lcd.setting_datetime_screen_lcd_services import GO_CONFIRM
+    global event, go_sub_setting_flag, last_setting_screen_index, setting_screen_index
 
     if event == 0:
         return
-    setting_datetime_screen_lcd_services.datetime_setting(event)
+    if setting_datetime_screen_lcd_services.datetime_setting(event) is GO_CONFIRM:
+        last_setting_screen_index = -1
+        setting_screen_index = 0
+        go_sub_setting_flag = False
 
 
 def internet_setting():
@@ -360,6 +364,8 @@ def main_menu(button):
             ats_reset_params()
             rfid_reset_params()
             reset_parameter()  # reset param in setting_screen_lcd
+            setting_datetime_screen_lcd_services.get_default_value()  # reset param in datetime setting
+            setting_info_screen_lcd_services.get_default_value()  # # reset param in info setting
         elif button != -1:
             event = button
 

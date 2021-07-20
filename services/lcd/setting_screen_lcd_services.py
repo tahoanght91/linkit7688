@@ -46,38 +46,15 @@ class __IPv4:
         LOGGER.info('Check oct!!!')
         for v in self.get_ip_number().split("."):
             LOGGER.info('Oct in get_oct: %s', str(v))
-            if v == '' or int(v) > 225:
+            if v == '' or int(v) > 255:
                 # Chua nhap octet nay
                 # ip khong duoc lon hon 225
                 return 0
 
-        return self.get_ip().split(".")
-
-        # return [int("{0}{1}{2}".format(self.ip[0]
-        #                                , self.ip[1]
-        #                                , self.ip[2]))
-        #     , int("{0}{1}{2}".format(self.ip[3]
-        #                              , self.ip[4]
-        #                              , self.ip[5]))
-        #     , int("{0}{1}{2}".format(self.ip[6]
-        #                              , self.ip[7]
-        #                              , self.ip[8]))
-        #     , int("{0}{1}{2}".format(self.ip[9]
-        #                              , self.ip[10]
-        #                              , self.ip[11]))]
-
-        # return [int("{0}{1}{2}".format(self.ip[0] if self.ip[0] != '_' else 0
-        #                                , self.ip[1] if self.ip[1] != '_' else 0
-        #                                , self.ip[2] if self.ip[2] != '_' else 0))
-        #     , int("{0}{1}{2}".format(self.ip[3] if self.ip[3] != '_' else 0
-        #                              , self.ip[4] if self.ip[4] != '_' else 0
-        #                              , self.ip[5] if self.ip[5] != '_' else 0))
-        #     , int("{0}{1}{2}".format(self.ip[6] if self.ip[6] != '_' else 0
-        #                              , self.ip[7] if self.ip[7] != '_' else 0
-        #                              , self.ip[8] if self.ip[8] != '_' else 0))
-        #     , int("{0}{1}{2}".format(self.ip[9] if self.ip[9] != '_' else 0
-        #                              , self.ip[10] if self.ip[10] != '_' else 0
-        #                              , self.ip[11] if self.ip[11] != '_' else 0))]
+        result = []
+        for v in self.get_ip_number().split("."):
+            result.append(int(v))
+        return result
 
 
 class __Alarm:
@@ -85,14 +62,17 @@ class __Alarm:
         self.alarm = ['_', '_', '_']
 
     def get_alarm_number(self):
-        result = ''.join(self.alarm)
+        array = []
+        for v in self.alarm:
+            array.append('' if v == '_' else str(v))
+        result = "".join(array)
         return 0 if result == '___' else result
 
     def get_alarm(self):
         array = []
         for v in self.alarm:
-            array.append('_' if v == '' else v)
-        return ''.join(array)
+            array.append('_' if v == '' else str(v))
+        return "".join(array)
 
 
 # Man hinh setting nao
@@ -108,6 +88,8 @@ network = 0
 alarm = 0
 # Fix loi goi choose_config nhieu lan khi dang trong man hinh nay roi
 isChosen = 0
+# Bo sung chay runSetIp
+isSetIP = 0
 
 # Idx man hinh
 selection_setting = {
@@ -128,15 +110,17 @@ selection_setting_network = {
 
 selection_setting_alarm = {
     "main": 0,
-    "choose_high_low": 1,
-    "assign_alarm": 2,
-    "confirm_assign_alarm": 3
+    "choose_type_alarm": 1,
+    "choose_high_low": 2,
+    "assign_alarm": 3,
+    "confirm_assign_alarm": 4
 }
 
 screen_setting_alarm = {
     "ac": 0,
-    "temp": 1,
-    "humidity": 2
+    "ac_mp": 1,
+    "temp": 2,
+    "humidity": 3
 }
 
 confirm = {
@@ -161,17 +145,22 @@ def choose_config(setting_idx):
 
 def reset_param():
     # call moi khi quay lai man hinh main config
-    global pointer_idx, screen_idx, network, alarm
+    global pointer_idx, screen_idx, network, alarm, isSetIP
     pointer_idx = 0
     screen_idx = 0
     network = 0
     alarm = 0
+    isSetIP = 0
+    LOGGER.info('Reset_param: %s, %s', screen_idx, pointer_idx)
 
 
 def reset_parameter():
+    # call moi khi quay lai man hinh main menu
     global isChosen
     isChosen = 0
+    LOGGER.info('Call reset parameter function')
     reset_param()
+
 
 # SonTH: Config network
 # Main cua man hinh network
@@ -198,12 +187,17 @@ def call_screen_network(keycode):
             {
                 "row_2": '> Prefered DNS',
                 "row_3": 'Alternate DNS',
-                "row_4": ''
+                "row_4": 'Chay cau hinh'
             },
             {
                 "row_2": 'Prefered DNS',
                 "row_3": '> Alternate DNS',
-                "row_4": ''
+                "row_4": 'Chay cau hinh'
+            },
+            {
+                "row_2": 'Prefered DNS',
+                "row_3": 'Alternate DNS',
+                "row_4": '> Chay cau hinh'
             }
         ]
         LOGGER.info('Enter call_screen_network function, screen_idx: %s', str(screen_idx))
@@ -259,8 +253,6 @@ def refresh_screen_assign_ip_address(keycode):
             # Man hinh xac nhan luu
             LOGGER.info('Enter refresh_screen_assign_ip_address function, pointer_idx: %s', pointer_idx)
             if keycode == OK:
-                if network.get_oct() == 0:
-                    return
                 process_cmd_lcd(ROW_1, UPDATE_VALUE, 'XAC NHAN LUU')
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher_2[pointer_idx]["row_2"])
             process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher_2[pointer_idx]["row_3"])
@@ -302,15 +294,17 @@ def get_net_info():
 
 
 def convert_to_array_number(array):
+    # result = []
+    # for v in array:
+    #     if v != '' and v != '_':
+    #         while int(v) >= 10:
+    #             result.append(int(v) % 10)
+    #             v = int(int(v) / 10)
+    #         result.append(int(v))
     result = []
     for v in array:
-        if v != '' and v != '_':
-            while int(v) >= 10:
-                result.append(int(v) % 10)
-                v = int(int(v) / 10)
-            result.append(int(v))
-
-    return result
+        result.append(str(v))
+    return list("".join(result))
 
 
 def get_alarm_info():
@@ -320,10 +314,12 @@ def get_alarm_info():
     key = ""
     for k in set_alarm_idx:
         if selection_chosen[0] == set_alarm_idx[k]:
-            key = "row{}".format(set_alarm_idx[k] + 1)
+            key = "row{}".format(2 * set_alarm_idx[k] + 1 + selection_chosen[1])
             continue
     if len(key) == 0:
         return
+    LOGGER.info("Selection in get_alarm_info: %s, %s", str(selection_chosen[0]), str(selection_chosen[1]))
+    LOGGER.info("Key get alarm info in get_alarm_info: %s", str(key))
     if file_json[key] != '':
         result.alarm = convert_to_array_number([file_json[key]])
     # Tam fake bang 77
@@ -332,12 +328,14 @@ def get_alarm_info():
 
 
 def get_next_number(keycode, number):
-    if number == '_':
-        number = 0
+    # if number == '_':
+    #     number = 0
     if keycode == UP:
-        return 0 if number >= 9 else number + 1
+        return 0 if (number >= 9 or number == '_') else number + 1
     elif keycode == DOWN:
-        return 9 if number == 0 else number - 1
+        if number == 0:
+            return '_'
+        return 9 if number == '_' else number - 1
 
 
 # Register func nay
@@ -359,10 +357,10 @@ def listen_key_code(keycode):
 
 
 def main_network_listen_key(keycode):
-    global pointer_idx, screen_idx
+    global pointer_idx, screen_idx, isSetIP
     # 5 dong
     LOGGER.info('SHOW key_code NOW: %s', str(keycode))
-    max_pointer_idx = 4
+    max_pointer_idx = 5
     if keycode == BUTTON_34_EVENT_UP:
         # key down
         pointer_idx = max_pointer_idx if pointer_idx == max_pointer_idx else pointer_idx + 1
@@ -377,6 +375,10 @@ def main_network_listen_key(keycode):
             selection_chosen[screen_idx] = pointer_idx
         screen_idx = 0 if screen_idx == 2 else screen_idx + 1
         LOGGER.info('--- Show screen_idx: %s', str(screen_idx))
+        if pointer_idx == max_pointer_idx:
+            # Man hinh chay setIp
+            screen_idx += 1
+            isSetIP = 1
         # refresh gia tri pointer index
         pointer_idx = 0
     else:
@@ -426,17 +428,25 @@ def assign_ip_listen_key(keycode):
             network.ip[pointer_idx] = get_next_number(keycode, network.ip[pointer_idx])
     elif keycode == OK:
         # key ok
-        selection_chosen[screen_idx] = pointer_idx
         if screen_idx == selection_setting_network["assign_ip"]:
+            if network.get_oct() == 0:
+                return
             screen_idx += 1
             pointer_idx = 0
         else:
             if pointer_idx == confirm["yes"]:
+                if isSetIP:
+                    call_set_ip()
                 if save_ip() == 0:
                     return
                 reset_param()
             else:
-                return
+                # Quay lai man hinh assign_ip
+                screen_idx -= 1
+                if isSetIP:
+                    screen_idx = 0
+                pointer_idx = 0
+        selection_chosen[screen_idx] = pointer_idx
     else:
         return
 
@@ -447,43 +457,49 @@ def assign_ip_listen_key(keycode):
 
 def alarm_selection_listen_key(keycode):
     try:
-        global pointer_idx, screen_idx
+        global pointer_idx, screen_idx, alarm
+
         # main co 4 dong, choose co 2 dong
-        max_pointer_idx = 3 if screen_idx == selection_setting_alarm["assign_alarm"] else 1
-        if keycode == BUTTON_34_EVENT_UP:
+        max_pointer_idx = 3 if screen_idx == selection_setting_alarm["choose_type_alarm"] - 1 else 1
+        if keycode == DOWN:
             # key down
             pointer_idx = max_pointer_idx if pointer_idx == max_pointer_idx else pointer_idx + 1
-        elif keycode == BUTTON_14_EVENT_UP:
+        elif keycode == UP:
             # key up
             pointer_idx = 0 if pointer_idx == 0 else pointer_idx - 1
-        elif keycode == BUTTON_24_EVENT_UP:
+        elif keycode == OK:
             # key ok
             if screen_idx > -1:
                 # lan dau tien load man hinh screen_idx = -1, khong update gia tri chon
                 selection_chosen[screen_idx] = pointer_idx
-            screen_idx += 1
-            # refresh gia tri pointer index
-            pointer_idx = 0
-            if screen_idx == selection_setting_alarm["confirm_assign_alarm"] + 1:
+            if screen_idx == selection_setting_alarm["confirm_assign_alarm"] - 1:
                 if pointer_idx == confirm["yes"]:
                     if save_alarm() == 0:
                         return
                     reset_param()
                 else:
-                    return
+                    screen_idx -= 1
+                    pointer_idx = 0
+            else:
+                if screen_idx == selection_setting_alarm["choose_high_low"] - 1:
+                    alarm = get_alarm_info() if alarm == 0 else alarm
+                screen_idx += 1
+                # refresh gia tri pointer index
+                pointer_idx = 0
         else:
             return
-        # Call function render
-        get_func_render(alarm_screen_idx, keycode)
         LOGGER.info('Enter alarm_selection_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx),
                     str(pointer_idx))
         LOGGER.info('Run function alarm_selection_listen_key')
+        # Call function render
+        get_func_render(alarm_screen_idx, keycode)
     except Exception as ex:
         LOGGER.error('Error at call function in alarm_selection_listen_key with message: %s', ex.message)
 
 
 def assign_alarm_listen_key(keycode):
-    global pointer_idx, screen_idx
+    global pointer_idx, screen_idx, alarm
+    alarm = get_alarm_info() if alarm == 0 else alarm
     max_pointer_idx = 2
     if keycode == BUTTON_23_EVENT_UP:
         # key left
@@ -492,9 +508,10 @@ def assign_alarm_listen_key(keycode):
     elif keycode == BUTTON_25_EVENT_UP:
         # key right
         pointer_idx = pointer_idx + 1 if pointer_idx < max_pointer_idx else max_pointer_idx
-    elif keycode == BUTTON_14_EVENT_UP or keycode == BUTTON_34_EVENT_UP:
+    elif keycode == UP or keycode == DOWN:
         # key up or key down
         alarm.alarm[pointer_idx] = get_next_number(keycode, alarm.alarm[pointer_idx])
+        LOGGER.info('Text number in assign alarm: %s', alarm.alarm[pointer_idx])
     elif keycode == BUTTON_24_EVENT_UP:
         # key ok
         selection_chosen[screen_idx] = pointer_idx
@@ -522,7 +539,7 @@ def save_ip():
     save_to_file('./last_cmd_network.json', network.get_ip(), selection_chosen[0] + 1)
     # Luu ip vao bash
     for k in set_ip_idx:
-        save_to_set_ip(network.get_ip(), k) if selection_chosen[0] == set_ip_idx[k] else 1
+        save_to_set_ip(network.get_ip_number(), k) if selection_chosen[0] == set_ip_idx[k] else 1
     return 1
 
 
@@ -531,13 +548,14 @@ def save_alarm():
         return 0
     LOGGER.info('Enter save_alarm function')
     # Luu alarm vao const
-    save_to_file('./last_cmd_alarm.json', alarm.get_alarm_number(), selection_chosen[0] + 1)
+    save_to_file('./last_cmd_alarm.json', alarm.get_alarm_number(), 2 * selection_chosen[0] + 1 + selection_chosen[1])
     # Call API de luu alarm
     for k in key_attr:
         if key_attr[k]["index_screen_1"] == selection_chosen[0] and key_attr[k]["index_screen_2"] == selection_chosen[1]:
             # Man hinh 1 chon loai alarm
             # Man hinh 2 chon set nguong cao hay thap
-            write_body_send_shared_attributes(alarm.get_alarm_number(), k)
+            body = write_body_send_shared_attributes(k, alarm.get_alarm_number())
+            send_shared_attributes(body)
             break
     return 1
 
@@ -566,7 +584,7 @@ def call_screen_alarm_selection(keycode):
             }
         ]
 
-        if screen_idx == selection_setting_alarm["choose_high_low"]:
+        if screen_idx == selection_setting_alarm["choose_type_alarm"]:
             switcher = [
                 {
                     "row_2": '> Nguong cao',
@@ -577,7 +595,7 @@ def call_screen_alarm_selection(keycode):
                     "row_3": '> Nguong thap'
                 }
             ]
-        elif screen_idx == selection_setting_alarm["confirm_assign_alarm"]:
+        elif screen_idx == selection_setting_alarm["assign_alarm"]:
             switcher = [
                 {
                     "row_2": '> Co',
@@ -603,7 +621,7 @@ def refresh_screen_assign_alarm(keycode):
     from control import process_cmd_lcd
     try:
         global alarm
-        alarm = get_alarm_info() if alarm == 0 else alarm
+        # alarm = get_alarm_info() if alarm == 0 else alarm
         switcher = [
             {
                 "row_2": 'Nguong cao'
@@ -621,9 +639,10 @@ def refresh_screen_assign_alarm(keycode):
         if keycode == OK:
             process_cmd_lcd(ROW_1, UPDATE_VALUE, 'CANH BAO')
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx - 1]]["row_2"])
-        process_cmd_lcd(ROW_2, UPDATE_VALUE, "{0}{1}".format(alarm.get_alarm(), text))
+        process_cmd_lcd(ROW_3, UPDATE_VALUE, "{0}{1}".format(alarm.get_alarm(), text))
+        process_cmd_lcd(ROW_4, UPDATE_VALUE, '')
 
-        LOGGER.info('ASSIGN ALARM in func call refresh_screen_assign_alarm: %s', str(alarm.get_alarm()))
+        LOGGER.info('ASSIGN ALARM in func call refresh_screen_assign_alarm: %s', alarm.get_alarm())
         # Update nhap nhay
         # ...
     except Exception as ex:
@@ -676,11 +695,21 @@ def save_to_set_ip(str_saved, key):
     try:
         save_to_file_txt('./setIp.sh', row_format[key]["format"].format(str_saved), row_format[key]["number"])
         LOGGER.info('Call save file ./setIp.sh')
+        # call_set_ip()
+    except Exception as ex:
+        LOGGER.error('Error at call function in save_to_set_ip with message: %s', ex.message)
+
+
+def call_set_ip():
+    try:
         # run bash .sh
-        # bashCmd = ["./setIp.sh"]
-        # process = subprocess.Popen(bashCmd, stdout=subprocess.PIPE)
+        pop_cmd = 'sh'
+        bash_cmd = './setIp.sh'
+        cp_setip = 'cp setIp.sh /IoT/'  # copy file to out linkit7688
+        process1 = subprocess.call(cp_setip, shell=True)
+        process2 = subprocess.call([pop_cmd, bash_cmd])
         # output, error = process.communicate()
-        # LOGGER.info('Run ./setIp.sh with output: {0} and error{1}', output, error)
+        LOGGER.info('Run ./setIp.sh with output: %s and %s', str(process1), str(process2))
     except Exception as ex:
         LOGGER.error('Error at call function in save_to_set_ip with message: %s', ex.message)
 

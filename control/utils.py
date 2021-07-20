@@ -1,4 +1,6 @@
 import struct
+import time
+from datetime import datetime
 
 from config import *
 from config.common import *
@@ -8,9 +10,6 @@ from control.switcher import *
 from control.target import *
 from operate.io_thread import ser
 from utility import with_check_sum
-
-import time
-from datetime import datetime
 
 
 def _check_command(device, command):
@@ -25,7 +24,6 @@ def _check_command(device, command):
 
 
 def check_state_device(device_name, method):
-    LOGGER.info('Enter check_state_device function')
     value = -1
     try:
         if device_name == DEVICE_MCC:
@@ -41,55 +39,46 @@ def check_state_device(device_name, method):
             LOGGER.info('Status is %d, not as expected', value)
     except Exception as ex:
         LOGGER.error('Error at check_state_device function with message: %s', ex.message)
-    LOGGER.info('Exit check_state_device function')
     return value
 
 
 def get_state_ats(method):
-    LOGGER.info('Enter get_state_ats function')
     value = -1
     try:
         if method == GET_STATE_ATS:
             value = client_attributes.get('atsMode', default_data.atsMode)
     except Exception as ex:
         LOGGER.error('Error at get_state_ats function with message: %s', ex.message)
-    LOGGER.info('Exit get_state_ats function')
     return value
 
 
 def get_state_acm(method):
-    LOGGER.info('Enter get_state_acm function')
     value = -1
     try:
         if method == GET_STATE_ACM_AUTO:
             value = shared_attributes.get('acmControlAuto', default_data.acmControlAuto)
         elif method == GET_SATE_ACM_AIRC_1:
-            value = client_attributes.get('acmAirc1RunState', default_data.acmAirc1RunState)
+            value = telemetries.get('acmAirc1RunState', default_data.acmAirc1RunState)
         elif method == GET_STATE_ACM_AIRC_2:
-            value = client_attributes.get('acmAirc2RunState', default_data.acmAirc2RunState)
+            value = telemetries.get('acmAirc2RunState', default_data.acmAirc2RunState)
         elif method == GET_STATE_ACM_FAN:
-            value = client_attributes.get('acmFanRunState', default_data.acmFanRunState)
+            value = telemetries.get('acmFanRunState', default_data.acmFanRunState)
         elif method == GET_SATE_ACM_SELF_PROPELLED:
             value = 0 # TODO: change client attributes of lamp
     except Exception as ex:
         LOGGER.error('Error at get_state_acm function with message: %s', ex.message)
-    LOGGER.info('Exit get_state_acm function')
     return value
 
 
 def get_state_mcc(method):
-    LOGGER.info('Enter get_state_mcc function')
     value = -1
     try:
         if method == GET_STATE_MCC_DOOR:
-            value = client_attributes.get('mccDoorState', default_data.mccDoorState)
-        elif method == GET_STATE_MCC_LAMP:
-            value = 0  # TODO: change client attributes of lamp
+            value = telemetries.get('mccDoorState', default_data.mccDoorState)
         elif method == GET_STATE_MCC_BELL:
-            value = client_attributes.get('mccBellState', default_data.mccBellState)
+            value = telemetries.get('mccBellState', default_data.mccBellState)
     except Exception as ex:
         LOGGER.error('Error at get_state_mcc function with message: %s', ex.message)
-    LOGGER.info('Exit get_sate_mcc function')
     return value
 
 
@@ -148,7 +137,6 @@ def convert_str_command_to_int(command):
 
 
 def _check_command_send_rpc(device, command):
-    LOGGER.info('Enter _check_command_send_rpc function')
     result = False
     try:
         if device == DEVICE_ACM and check_exist_command(command):
@@ -160,12 +148,10 @@ def _check_command_send_rpc(device, command):
     except Exception as ex:
         LOGGER.error('Error at _check_command_send_rpc function with message: %s', ex.message)
     LOGGER.info('Result of check command is: %s', result)
-    LOGGER.info('Exit _check_command_send_rpc function')
     return result
 
 
 def check_exist_command(command):
-    LOGGER.info('Enter check_exist_command function')
     result = False
     try:
         if command in list_command:
@@ -173,12 +159,10 @@ def check_exist_command(command):
     except Exception as ex:
         LOGGER.error('Error at check_exist_command function with message: %s', ex.message)
     LOGGER.info('Result of check existence is: %s', result)
-    LOGGER.info('Exit check_exist_command function')
     return result
 
 
 def compose_command_rpc(device, command):
-    LOGGER.info('Enter compose_command_rpc function')
     result = -1
     try:
         if device == DEVICE_MCC:
@@ -212,7 +196,6 @@ def compose_command_rpc(device, command):
         LOGGER.info('Command send to STM32: %s', byte_stream_decode)
     else:
         LOGGER.info('Command error!')
-    LOGGER.info('Exit compose_command_rpc function')
     return result
 
 
@@ -353,61 +336,11 @@ def _process_cmd_sa(module_id, value):
         LOGGER.error('Error at _process_cmd_lcd function with message: %s', ex.message)
 
 
-def split_row_by_salt(content):
-    try:
-        arr_dct_split = []
-        if isinstance(content, str):
-            arr_content = content.split(END_CMD)
-            if len(arr_content) > 0:
-                for x in arr_content[:-1]:
-                    temp_tuple = (UPDATE_VALUE, x)
-                    arr_dct_split.append(temp_tuple)
-        LOGGER.info('Content is: %s, after split row by salt: %s', content, arr_dct_split)
-        return arr_dct_split
-    except Exception as ex:
-        LOGGER.error('Error at split_row_by_salt function with message: %s', ex.message)
-
-
-def split_list_by_row(list_cmd_lcd):
-    arr_dct_split = []
-    try:
-        if len(list_cmd_lcd) > 0:
-            dct_cmd_lcd = dict(list_cmd_lcd)
-            for key, value in dct_cmd_lcd.items():
-                temp_tuple = (key, value[0], value[-1])
-                arr_dct_split.append(temp_tuple)
-        else:
-            LOGGER.info('List command lcd = 0')
-    except Exception as ex:
-        LOGGER.error('Error at function split_list_by_row with message: %s', ex.message)
-    return arr_dct_split
-
-
-# def set_alarm_state_to_dct(dct_telemetry):
-#     if 'mccFireState' in dct_telemetry:
-#         dct_alarm['mccFireState'] = dct_telemetry['mccFireState']
-#     if 'mccFloodState' in dct_telemetry:
-#         dct_alarm['mccFloodState'] = dct_telemetry['mccFloodState']
-#     if 'mccSmokeState' in dct_telemetry:
-#         dct_alarm['mccSmokeState'] = dct_telemetry['mccSmokeState']
-#     if 'mccDoorState' in dct_telemetry:
-#         dct_alarm['mccDoorState'] = dct_telemetry['mccDoorState']
-#     if 'acmTempAlarm' in dct_telemetry:
-#         dct_alarm['acmTempAlarm'] = dct_telemetry['acmTempAlarm']
-#     if 'acmHumidAlarm' in dct_telemetry:
-#         dct_alarm['acmHumidAlarm'] = dct_telemetry['acmHumidAlarm']
-#     if 'atsVgenThresholdState' in dct_telemetry:
-#         dct_alarm['atsVgenThresholdState'] = dct_telemetry['atsVgenThresholdState']
-#     if 'atsVacThresholdState' in dct_telemetry:
-#         dct_alarm['atsVacThresholdState'] = dct_telemetry['atsVgenThresholdState']
-
-
 def set_alarm_state_to_dct(dct_telemetry):
     try:
         if len(dct_telemetry) > 0:
             mcc = dct_telemetry.get(DEVICE_MCC)[0]
             acm = dct_telemetry.get(DEVICE_ACM)[0]
-            ats = dct_telemetry.get(DEVICE_ATS)[0]
             if len(mcc) > 0:
                 dct_alarm['mccFireState'] = mcc.get('mccFireState', 0)
                 dct_alarm['mccFloodState'] = mcc.get('mccFloodState', 0)
@@ -417,9 +350,6 @@ def set_alarm_state_to_dct(dct_telemetry):
             if len(acm) > 0:
                 dct_alarm['acmTempAlarm'] = acm.get('acmTempAlarm', 0)
                 dct_alarm['acmHumidAlarm'] = acm.get('acmHumidAlarm', 0)
-            if len(ats) > 0:
-                dct_alarm['atsVgenThresholdState'] = ats.get('atsVgenThresholdState', 0)
-                dct_alarm['atsVacThresholdState'] = ats.get('atsVgenThresholdState', 0)
         else:
             LOGGER.info('Telemetry is empty!!!')
         LOGGER.info('Dictionary alarm is: %s', dct_alarm)

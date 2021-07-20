@@ -42,26 +42,33 @@ def save_to_file(str_saved, number):
 
 
 def get_alarm(row2, row3, tel_lcd):
+    from control import process_cmd_lcd
     try:
         LOGGER.info('List dtc_alarm: %s', tel_lcd)
         check_card = check_rfid()
         old_text = row2
+        check = False
         if tel_lcd:
             if tel_lcd.get(CB_CHAY) == 1:
+                check = True
                 if row2 != 'CB Chay!':
-                    row2 = create_for_each('CB Chay!')
+                    row2 = create_for_each('CB Chay!', row3)
             elif tel_lcd.get(CB_KHOI) == 1:
+                check = True
                 if row2 != 'CB Khoi!':
-                    row2 = create_for_each('CB Khoi!')
+                    row2 = create_for_each('CB Khoi!', row3)
             elif tel_lcd.get(CB_NGAP) == 1:
+                check = True
                 if row2 != 'CB Ngap Nuoc!':
-                    row2 = create_for_each('CB Ngap Nuoc!')
+                    row2 = create_for_each('CB Ngap Nuoc!', row3)
             elif CB_NHIET in tel_lcd and tel_lcd.get(CB_NHIET) != 0:
+                check = True
                 if row2 != 'CB Nhiet Do!':
-                    row2 = create_for_each('CB Nhiet Do!')
+                    row2 = create_for_each('CB Nhiet Do!', row3)
             elif CB_DOAM in tel_lcd and tel_lcd.get(CB_DOAM) != 0:
+                check = True
                 if row2 != 'CB Do Am!':
-                    row2 = create_for_each('CB Do Am!')
+                    row2 = create_for_each('CB Do Am!', row3)
             # elif CB_DIENAPLUOI in tel_lcd and tel_lcd.get(CB_DIENAPLUOI) == 1:
             #     if row2 != 'CB Dien Luoi!':
             #         row2 = create_for_each('CB Dien Luoi!')
@@ -69,22 +76,25 @@ def get_alarm(row2, row3, tel_lcd):
             #     if row2 != 'CB Dien M.Phat!':
             #         row2 = create_for_each('CB Dien M.Phat!')
             elif CB_DCLow in tel_lcd and tel_lcd.get(CB_DCLow) == 1:
+                check = True
                 if row2 != 'CB DC Low!':
-                    row2 = create_for_each('CB DC Low!')
+                    row2 = create_for_each('CB DC Low!', row3)
             elif tel_lcd.get(CB_CUA) == 1:
+                check = True
                 if row2 != 'CB Cua!':
-                    row2 = create_for_each('CB Cua!')
+                    row2 = create_for_each('CB Cua!', row3)
             elif check_card:
+                check = True
                 if row2 != 'CB Quet The!!':
-                    row2 = create_for_each('CB Quet The!!')
-
-            if row2 == old_text and (row2 == 'An Toan!' or row2 == ''):
-                row2 = create_for_each('An Toan!')
+                    row2 = create_for_each('CB Quet The!!', row3)
+            LOGGER.info('check is: %s', str(check))
+            if row2 == old_text and (not check or row2 == 'An Toan!' or row2 == ''):
+                process_cmd_lcd(ROW_2, UPDATE_VALUE, 'An Toan!')
                 delete_row(ROW_3)
-            get_time_alarm(row3, row2)
         else:
             if row2 == old_text and (row2 == 'An Toan!' or row2 == ''):
-                row2 = create_for_each('An Toan!')
+                LOGGER.info('check is if emty dct_alarm')
+                process_cmd_lcd(ROW_2, UPDATE_VALUE, 'An Toan!')
                 delete_row(ROW_3)
     except Exception as ex:
         LOGGER.error('Error at call function in get_alarm with message: %s', ex.message)
@@ -107,13 +117,13 @@ def check_rfid():
     return False
 
 
-def get_time_alarm(row3, row2):
+def get_time_alarm(row3):
     from control import process_cmd_lcd
 
     try:
         now = datetime.now()
         dt_string = now.strftime("%d/%m/%Y %H:%M")
-        if dt_string != row3 and row2 != 'An Toan!' and row2 != '':
+        if dt_string != row3:
             process_cmd_lcd(ROW_3, UPDATE_VALUE, str(dt_string))
             LOGGER.info('TIME TO ALARM: %s', str(dt_string))
             row = dt_string
@@ -122,11 +132,12 @@ def get_time_alarm(row3, row2):
         LOGGER.error('Error at call function in get_time_alarm with message: %s', ex.message)
 
 
-def create_for_each(string):
+def create_for_each(string, row3):
     from control import process_cmd_lcd
 
     try:
         process_cmd_lcd(ROW_2, UPDATE_VALUE, string)
+        get_time_alarm(row3)
         LOGGER.info('ALarm in line 2 -3 in create_for_each : %s', string)
         save_to_file(string, ROW_2)
     except Exception as ex:
@@ -158,6 +169,7 @@ def delete_row(row_number):
 
     try:
         process_cmd_lcd(row_number, UPDATE_VALUE, CHAR_SPACE)
+        save_to_file('', row_number)
     except Exception as ex:
         LOGGER.error('Error at call function in delete_row4 with message: %s', ex.message)
 
