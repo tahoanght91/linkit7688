@@ -1,4 +1,6 @@
 import struct
+import time
+from datetime import datetime
 
 from config import *
 from config.common import *
@@ -8,9 +10,6 @@ from control.switcher import *
 from control.target import *
 from operate.io_thread import ser
 from utility import with_check_sum
-
-import time
-from datetime import datetime
 
 
 def _check_command(device, command):
@@ -342,7 +341,6 @@ def set_alarm_state_to_dct(dct_telemetry):
         if len(dct_telemetry) > 0:
             mcc = dct_telemetry.get(DEVICE_MCC)[0]
             acm = dct_telemetry.get(DEVICE_ACM)[0]
-            ats = dct_telemetry.get(DEVICE_ATS)[0]
             if len(mcc) > 0:
                 dct_alarm['mccFireState'] = mcc.get('mccFireState', 0)
                 dct_alarm['mccFloodState'] = mcc.get('mccFloodState', 0)
@@ -352,9 +350,6 @@ def set_alarm_state_to_dct(dct_telemetry):
             if len(acm) > 0:
                 dct_alarm['acmTempAlarm'] = acm.get('acmTempAlarm', 0)
                 dct_alarm['acmHumidAlarm'] = acm.get('acmHumidAlarm', 0)
-            if len(ats) > 0:
-                dct_alarm['atsVgenThresholdState'] = ats.get('atsVgenThresholdState', 0)
-                dct_alarm['atsVacThresholdState'] = ats.get('atsVgenThresholdState', 0)
         else:
             LOGGER.info('Telemetry is empty!!!')
         LOGGER.info('Dictionary alarm is: %s', dct_alarm)
