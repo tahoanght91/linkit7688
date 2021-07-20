@@ -1,6 +1,6 @@
 import utility
-from . import utils
 from config import BYTE_ORDER
+from . import utils
 
 
 def extract(byte_data):
@@ -41,11 +41,11 @@ def extract(byte_data):
     utils._read_telemetry('acmAirc2RunState', acmAirc2RunState)
     utils._read_telemetry('acmFanRunState', acmFanRunState)
     utils._read_telemetry('acmAutoMode', acmAutoMode)
+    utils._read_telemetry('acmOnlineState', acmOnlineState)
 
     #client attributes
     utils._read_telemetry('acmTempError', acmTempError)
     utils._read_telemetry('acmHumidError', acmHumidError)
-    utils._read_attribute('acmOnlineState', acmOnlineState)
     utils._read_attribute('acmIState', acmIState)
     utils._read_attribute('acmAirc1Error', acmAirc1Error)
     utils._read_attribute('acmAirc2Error', acmAirc2Error)
