@@ -107,10 +107,12 @@ def check_rfid():
             LOGGER.info('Check list check_rfid: %s', list_card)
             if len(list_card) > 0:
                 if KEY_RFID in client_attributes:
+                    LOGGER.info('Key_card is in list of attributes')
                     rfid_card = client_attributes.get(KEY_RFID)
                     if isinstance(rfid_card, str) and rfid_card is not None:
                         set_temp = set(list_card)
                         if rfid_card in set_temp:
+                            LOGGER.info('Key_card is in list of card return True')
                             return True
     except Exception as ex:
         LOGGER.error('Error at call function in check_rfid with message: %s', ex.message)
