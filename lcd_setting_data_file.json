@@ -1,1 +1,8 @@
-{"setting_info_title": "MAKE IN MOBIFONE", "setting_datetime": {"day": "", "time": ""}, "setting_rfid_allow": 0, "setting_ats": {"auto": 0, "generator": 0, "grid_electric": 0}, "setting_alarm": {"ac_high": 0, "tem_high": 0, "ac_low": 0, "humid_low": 0, "humid_high": 0, "tem_low": 0}, "setting_network": {"pre_dns": "", "subnet": "", "ip_address": "", "gateway": "", "alter_dns": ""}}
+{
+  "setting_info_title": "MAKE IN MOBIFONE",
+  "setting_datetime": {"day": "", "time": ""},
+  "setting_rfid_allow": 1,
+  "setting_ats": {"auto": 0, "generator": 0, "grid_electric": 0},
+  "setting_alarm": {"ac_high": 0, "tem_high": 0, "ac_low": 0, "humid_low": 0, "humid_high": 0, "tem_low": 0},
+  "setting_network": {"pre_dns": "", "subnet": "", "ip_address": "", "gateway": "", "alter_dns": ""}
+}
