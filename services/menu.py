@@ -4,7 +4,7 @@
 from config.common import *
 from services.lcd import main_screen_lcd_services, ats_screen_lcd_services, ats_setting_lcd_service, \
     rfid_screen_lcd_sevices, rfid_setting_lcd_service, setting_info_screen_lcd_services, \
-    setting_datetime_screen_lcd_services
+    setting_datetime_screen_lcd_services, setting_acm_screen_lcd_services
 from services.lcd.acm_sreen_lcd_services import show_temp_condition
 from services.lcd.alarm_lcd_services import check_alarm
 from services.lcd.ats_setting_lcd_service import reset_params as ats_reset_params
@@ -57,6 +57,12 @@ setting_display_print = {
         'row2': 'Canh bao',
         'row3': 'Thiet bi ATS',
         'row4': '> Thiet bi RFID'
+        },
+    6: {
+        'row1': 'CAI DAT HE THONG',
+        'row2': '> Dieu hoa',
+        'row3': '',
+        'row4': ''
         }
 }
 
@@ -196,14 +202,27 @@ def setting_display():
                 setting_screen_index -= 1
             elif event == DOWN:
                 setting_screen_index += 1
-            if setting_screen_index > 5:
-                setting_screen_index = 5
+            if event == LEFT:
+                setting_screen_index -= 3
+                if setting_screen_index < 3:
+                    setting_screen_index = 0
+                elif 6 > setting_screen_index >= 3:
+                    setting_screen_index = 3
+                elif setting_screen_index >= 6:
+                    setting_screen_index = 6
+            elif event == RIGHT:
+                setting_screen_index += 3
+                if setting_screen_index < 3:
+                    setting_screen_index = 0
+                elif 6 > setting_screen_index >= 3:
+                    setting_screen_index = 3
+                elif setting_screen_index >= 6:
+                    setting_screen_index = 6
+            if setting_screen_index > 6:
+                setting_screen_index = 6
             elif setting_screen_index < 0:
                 setting_screen_index = 0
-            if event == LEFT:
-                setting_screen_index = 0
-            elif event == RIGHT:
-                setting_screen_index = 3
+
             if last_setting_screen_index != setting_screen_index and not go_sub_setting_flag:
                 print_lcd(setting_display_print[setting_screen_index]['row1'],
                           setting_display_print[setting_screen_index]['row2'],
@@ -226,7 +245,8 @@ def select_setting():
         2: internet_setting,
         3: warning_setting,
         4: ats_setting,
-        5: rfid_setting
+        5: rfid_setting,
+        6: acm_setting,
     }
 
     func = setting_function_list.get(setting_screen_index)
@@ -288,7 +308,17 @@ def rfid_setting():
     rfid_setting_lcd_service.listen_key_code(event)
 
 
+def acm_setting():
+    global event
+
+    if event == 0:
+        return
+    if setting_acm_screen_lcd_services.acm_setting(event) == setting_acm_screen_lcd_services.GO_CONFIRM:
+        setting_acm_screen_lcd_services.acm_setting_set_default_value()
+
+
 def back_main_screen(button):
+    from control import process_cmd_lcd
     global cycle_flag, time_count, screen_lv1_index, start_time
 
     try:
@@ -302,6 +332,11 @@ def back_main_screen(button):
             time_count = 0
             cycle_flag = False
             screen_lv1_index = ESC
+            process_cmd_lcd(ROW_1, CLEAR, '')
+            process_cmd_lcd(ROW_2, CLEAR, '')
+            process_cmd_lcd(ROW_3, CLEAR, '')
+            process_cmd_lcd(ROW_4, CLEAR, '')
+
     except Exception as ex:
         LOGGER.error('back_main_screen function error: %s', ex.message)
 
@@ -365,7 +400,8 @@ def main_menu(button):
             rfid_reset_params()
             reset_parameter()  # reset param in setting_screen_lcd
             setting_datetime_screen_lcd_services.get_default_value()  # reset param in datetime setting
-            setting_info_screen_lcd_services.get_default_value()  # # reset param in info setting
+            setting_info_screen_lcd_services.get_default_value()  # reset param in info setting
+            setting_acm_screen_lcd_services.acm_setting_set_default_value()  # reset param in acm setting
         elif button != -1:
             event = button
 

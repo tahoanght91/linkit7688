@@ -25,12 +25,12 @@ warningOld = ''
 
 last_stt_bt = 0
 
-
 def call():
     try:
         while True:
             button = check_button(lcd_services)
-            LOGGER.info('Send button value: %s', str(button))
+            if button != -1:
+                LOGGER.info('Send button value: %s', str(button))
             main_menu(button)
             if lcd_services:
                 del lcd_services['key_code']
@@ -83,7 +83,6 @@ def check_button(bt_info):
     event_bt = 0
     index_key = 0
     try:
-        LOGGER.info('Enter check_button function')
         if bt_info:
             key_code = bt_info['key_code']
             key_event = bt_info['key_event']
