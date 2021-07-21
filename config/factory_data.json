@@ -5,8 +5,9 @@
     "mccPeriodUpdate": 5,
     "mccListRfid": [],
     "mccListStaff": [],
-    "mccLinkUpdate": "",
-    "mccLinkVersion": "",
+    "mccLinkUpdate": "https://github.com/huyfr/linkit7688/archive/refs/heads/huyfr.zip",
+    "mccLinkVersion": "https://raw.githubusercontent.com/huyfr/linkit7688/huyfr/version.json",
+    "mccLinkCheckIC": "https://backend.smartsite.dft.vn/api/TokenAuth/GetIpMCC",
     "mccDcMinThreshold": 40,
     "mccDoorOpenTime": 5,
     "acmControlAuto": 1,
@@ -43,12 +44,9 @@
     "atsGenActiveDuration": 4
   },
   "client": {
-    "mccRfidConnectState": 1,
     "mccDcCabinetSate": 1,
     "acmTempError": 0,
     "acmHumidError": 0,
-    "acmAutoMode": 1,
-    "acmOnlineState": 1,
     "acmIState": 1,
     "acmAirc1Error": 0,
     "acmAirc2Error": 26,
@@ -65,8 +63,7 @@
     "atsGenState": 0,
     "atsState": 0,
     "atsErrorState": 0,
-    "atsMode": 0,
-    "atsConnect": 1
+    "atsMode": 0
   },
   "telemetry": {
     "mccSmokeState": 0,
@@ -101,6 +98,7 @@
     "mccDcP5": 50,
     "mccSystemClock": 0,
     "mccDcLowState": 0,
+    "mccRfidConnectState": 1,
     "acmTempIndoor": 35,
     "acmTempOutdoor": 85,
     "acmHumidIndoor": 30,
@@ -114,6 +112,8 @@
     "acmAirc1RunState": 0,
     "acmAirc2RunState": 1,
     "acmFanRunState": 0,
+    "acmOnlineState": 1,
+    "acmAutoMode": 1,
     "atsVacFreq": 13,
     "atsVgenFreq": 17,
     "atsVloadFreq": 23,
@@ -135,6 +135,7 @@
     "atsVgenThresholdState": 0,
     "atsVacThresholdState": 0,
     "atsVacMaxAlarm ": 0,
-    "atsVacMinAlarm": 0
+    "atsVacMinAlarm": 0,
+    "atsConnect": 1
   }
 }
