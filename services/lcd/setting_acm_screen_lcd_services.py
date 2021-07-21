@@ -98,15 +98,14 @@ acm_setting_confirm_screen_l = [
     }
 ]
 
-acm_setting_screen_l = {
-    0: acm_setting_list_screen_l,
-    1: acm_setting_mode_screen_l,
-    2: acm_setting_temp_setting_screen_l,
-    3: acm_setting_confirm_screen_l
-}
+acm_setting_screen_l = [acm_setting_list_screen_l,
+                        acm_setting_mode_screen_l,
+                        acm_setting_temp_setting_screen_l,
+                        acm_setting_confirm_screen_l]
 
 NOT_GO_CONFIRM = False
 GO_CONFIRM = True
+
 
 """---------------------------------------------------------------------------------------------------------------------
                                                 Global variable
@@ -122,13 +121,14 @@ temp_index = 0
 temp_number_index = 0
 set_temp = 0
 
-
 """---------------------------------------------------------------------------------------------------------------------
                                                 Internal function
    ------------------------------------------------------------------------------------------------------------------"""
+
+
 def acm_setting_print_static_lcd(screen_level_type, screen_index):
     from control import process_cmd_lcd
-    global temp_value, set_temp
+    global temp_value, set_temp, screen_level, acm_setting_screen_l
 
     screen = acm_setting_screen_l[screen_level_type]
     process_cmd_lcd(ROW_1, UPDATE_VALUE, screen[screen_index]['row_1'])
@@ -136,9 +136,8 @@ def acm_setting_print_static_lcd(screen_level_type, screen_index):
     if screen_level == 2:
         set_temp = ''.join(temp_value[screen_index])
         process_cmd_lcd(ROW_3, UPDATE_VALUE, set_temp)
-
     else:
-        process_cmd_lcd(ROW_2, UPDATE_VALUE, screen[screen_index]['row_3'])
+        process_cmd_lcd(ROW_3, UPDATE_VALUE, screen[screen_index]['row_3'])
     process_cmd_lcd(ROW_4, UPDATE_VALUE, screen[screen_index]['row_4'])
 
     # print(screen[screen_index]['row_1'])
