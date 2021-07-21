@@ -21,8 +21,8 @@ def get_info_ats(row2_old, row3_old, row4_old):
     from control import process_cmd_lcd
     try:
         list_row = []
-        row2 = 'Ket noi' if client_attributes.get('atsConnect') > 0 else 'Mat ket noi'
-        row3 = 'Nguon: May phat' if client_attributes.get('atsContactorGenState') > 0 else 'Nguon: Dien luoi'
+        row2 = 'Ket noi' if convert_to_string_default('atsConnect', 1) != '0' else 'Mat ket noi'
+        row3 = 'Nguon: May phat' if convert_to_string_default('atsContactorGenState', 1) != '0' else 'Nguon: Dien luoi'
         row4 = 'Che do: ' + convert_to_string_default('atsState', 1)
         if row2_old != row2:
             process_cmd_lcd(ROW_2, UPDATE_VALUE, str(row2))
