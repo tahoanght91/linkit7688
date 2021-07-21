@@ -118,6 +118,8 @@ def get_state_led_internet(dct_led, url_check_internet):
             LOGGER.error('Fail while wait response check internet from Smartsite with status code: %s',
                          str(response.status_code))
     except Exception as ex:
+        dct_led[LED_3G] = 0
+        dct_led[LED_ETHERNET] = 0
         LOGGER.error('Error at get_state_led_internet function with message: %s', ex.message)
     return result
 
