@@ -96,7 +96,7 @@ def get_state_led_server():
 def get_state_led_internet(dct_led, url_check_internet):
     result = False
     try:
-        response = requests.get(url_check_internet, verify=False)
+        response = requests.get(url_check_internet)
         if response.status_code == 200:
             status = response.json()['result']['trangThai']
             if status == ETHERNET:
