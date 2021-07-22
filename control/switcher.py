@@ -8,8 +8,14 @@ def parse_mcc_command_to_number(command):
         COMMAND_MCC_CLOSE_DOOR: 1,
         COMMAND_MCC_OFF_BELL: 0,
         COMMAND_MCC_ON_BELL: 1,
+        COMMAND_MCC_OFF_VMB: 0,
+        COMMAND_MCC_ON_VMB: 1,
+        COMMAND_MCC_OFF_VSENS: 0,
+        COMMAND_MCC_ON_VSENS: 1,
         COMMAND_MCC_OFF_LAMP: 0,
         COMMAND_MCC_ON_LAMP: 1,
+        COMMAND_MCC_OFF_CAM: 0,
+        COMMAND_MCC_ON_CAM: 1,
         COMMAND_MCC_OFF_DOUT_REVERSED_1: 0,
         COMMAND_MCC_ON_DOUT_REVERSED_1: 1,
         COMMAND_MCC_OFF_DOUT_REVERSED_2: 0,
@@ -29,13 +35,7 @@ def parse_mcc_command_to_number(command):
         COMMAND_MCC_OFF_DOUT_REVERSED_9: 0,
         COMMAND_MCC_ON_DOUT_REVERSED_9: 1,
         COMMAND_MCC_OFF_DOUT_REVERSED_10: 0,
-        COMMAND_MCC_ON_DOUT_REVERSED_10: 1,
-        COMMAND_MCC_OFF_VMB: 0,
-        COMMAND_MCC_ON_VMB: 1,
-        COMMAND_MCC_OFF_CAM: 0,
-        COMMAND_MCC_ON_CAM: 1,
-        COMMAND_MCC_OFF_DOUT_REVERSED_13: 0,
-        COMMAND_MCC_ON_DOUT_REVERSED_13: 1
+        COMMAND_MCC_ON_DOUT_REVERSED_10: 1
     }
     return switcher_mcc_command.get(command, "Out of range!")
 
