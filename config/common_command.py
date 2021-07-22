@@ -8,6 +8,10 @@ COMMAND_ATS_MAIN_ON = 'onMainAts'
 COMMAND_ATS_GEN_ON = 'onGenAts'
 # off
 COMMAND_ATS_OFF = 'offAts'
+# stop gen
+COMMAND_ATS_STOP_GEN = 'stopGenAts'
+# start gen
+COMMAND_ATS_START_GEN = 'startGenAts'
 
 # MCC
 # door
