@@ -55,9 +55,9 @@ COMMAND_MCC_ON_VMB = 'onVmbMcc'
 # cam
 COMMAND_MCC_OFF_CAM = 'offCamMcc'
 COMMAND_MCC_ON_CAM = 'onCamMcc'
-# dout reversed 13
-COMMAND_MCC_OFF_DOUT_REVERSED_13 = 'offDoutReversed13Mcc'
-COMMAND_MCC_ON_DOUT_REVERSED_13 = 'onDoutReversed13Mcc'
+# vsens
+COMMAND_MCC_OFF_VSENS = 'offVsensMcc'
+COMMAND_MCC_ON_VSENS = 'onVsensMcc'
 
 # ACM
 COMMAND_ACM_AUTO_OFF = 'offAutoAcm'
