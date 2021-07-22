@@ -15,7 +15,7 @@ def show_temp_condition(_telemetries):
         if all_row['row1'] != title:
             process_cmd_lcd(ROW_1, UPDATE_VALUE, title)
             all_row['row1'] = title
-        LOGGER.info('Check Telemetries: %s', _telemetries)
+        # LOGGER.info('Check Telemetries: %s', _telemetries)
 
         if 'acmAirc1RunState' and 'acmAirc2RunState' in _telemetries:
             temp1 = _telemetries['acmAirc1RunState']
@@ -85,24 +85,27 @@ def show_time_condition(_telemetries):
         if 'acmRunTimeAirc1' in _telemetries:
             time1 = _telemetries['acmRunTimeAirc1']
             cond1 = 'T.gian DH1: ' + str(time1) + 'h'
-            process_cmd_lcd(ROW_2, UPDATE_VALUE, cond1)
-            all_row['row2'] = cond1
+            if all_row['row2'] != cond1:
+                process_cmd_lcd(ROW_2, UPDATE_VALUE, cond1)
+                all_row['row2'] = cond1
         else:
             LOGGER.error("Time condition 1 is not exist in telemetries")
 
         if 'acmRunTimeAirc2' in _telemetries:
             time2 = _telemetries['acmRunTimeAirc2']
             cond2 = 'T.gian DH2: ' + str(time2) + 'h'
-            process_cmd_lcd(ROW_3, UPDATE_VALUE, cond2)
-            all_row['row3'] = cond2
+            if all_row['row3'] != cond2:
+                process_cmd_lcd(ROW_3, UPDATE_VALUE, cond2)
+                all_row['row3'] = cond2
         else:
             LOGGER.error("Time condition 2 is not exist in telemetries")
 
         if 'acmRunTimeFan' in _telemetries:
             time3 = _telemetries['acmRunTimeFan']
             fan = 'T.gian Quat: ' + str(time3) + 'h'
-            process_cmd_lcd(ROW_4, UPDATE_VALUE, fan)
-            all_row['row4'] = fan
+            if all_row['row4'] != fan:
+                process_cmd_lcd(ROW_4, UPDATE_VALUE, fan)
+                all_row['row4'] = fan
         else:
             LOGGER.error("Time fan is not exist in telemetries")
         # save to file
