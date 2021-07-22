@@ -314,6 +314,7 @@ def acm_setting():
     if event == 0:
         return
     if setting_acm_screen_lcd_services.acm_setting(event) == setting_acm_screen_lcd_services.GO_CONFIRM:
+        back_screen_setting()
         setting_acm_screen_lcd_services.acm_setting_set_default_value()
 
 
