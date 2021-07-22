@@ -113,7 +113,7 @@ GO_CONFIRM = True
 first_access_flag = True
 screen_level = 0
 index_pointer = 0
-confirm_status = False
+confirm_ok = False
 setting_level = 0
 temp_value = [['_', '_'], ['_', '_'], ['_', '_'], ['_', '_']]
 temp_value_count = [[-1, -1], [-1, -1], [-1, -1], [-1, -1]]
@@ -140,17 +140,9 @@ def acm_setting_print_static_lcd(screen_level_type, screen_index):
         process_cmd_lcd(ROW_3, UPDATE_VALUE, screen[screen_index]['row_3'])
     process_cmd_lcd(ROW_4, UPDATE_VALUE, screen[screen_index]['row_4'])
 
-    print(screen[screen_index]['row_1'])
-    print(screen[screen_index]['row_2'])
-    if screen_level == 2:
-        print(set_temp)
-    else:
-        print(screen[screen_index]['row_3'])
-    print(screen[screen_index]['row_4'])
-
 
 def acm_setting_button(button):
-    global screen_level, index_pointer, confirm_status, setting_level, temp_number_index, temp_value, temp_index, \
+    global screen_level, index_pointer, confirm_ok, setting_level, temp_number_index, temp_value, temp_index, \
         first_access_flag, goto_confirm_screen_flag
 
     if first_access_flag is True and button == OK:
@@ -201,19 +193,20 @@ def acm_setting_button(button):
             temp_value[temp_index][temp_number_index] = str(temp_value_count[temp_index][temp_number_index])
         elif button == LEFT:
             temp_number_index = 0
-        elif button == RIGHT:
+        elif button == RIGHT and temp_value[temp_index][0] != '_':
             temp_number_index = 1
-        elif button == OK and temp_number_index == 1:
+        elif button == OK and temp_value[temp_index][1] != '_':
             screen_level = 3
             index_pointer = 0
     elif screen_level_internal == 3:
-        goto_confirm_screen_flag = True
         if button == UP:
             index_pointer = 0
         elif button == DOWN:
             index_pointer = 1
         elif button == OK:
-            confirm_status = True
+            goto_confirm_screen_flag = True
+            if index_pointer == 0:
+                confirm_ok = True
 
 
 def acm_setting_mode_control(mode):
@@ -231,13 +224,13 @@ def acm_setting_temp(key_index, value):
 
 
 def acm_setting_set_default_value():
-    global first_access_flag, screen_level, index_pointer, confirm_status, setting_level, temp_value, \
+    global first_access_flag, screen_level, index_pointer, confirm_ok, setting_level, temp_value, \
         temp_number_index, temp_index, set_temp, temp_value_count, goto_confirm_screen_flag
 
     first_access_flag = True
     screen_level = 0
     index_pointer = 0
-    confirm_status = False
+    confirm_ok = False
     setting_level = 0
     temp_value = [['_', '_'], ['_', '_'], ['_', '_'], ['_', '_']]
     temp_value_count = [[-1, -1], [-1, -1], [-1, -1], [-1, -1]]
@@ -251,12 +244,12 @@ def acm_setting_set_default_value():
                                                  External function
    ------------------------------------------------------------------------------------------------------------------"""
 def acm_setting(button):
-    global screen_level, index_pointer, confirm_status, setting_level, set_temp, goto_confirm_screen_flag
+    global screen_level, index_pointer, confirm_ok, setting_level, set_temp, goto_confirm_screen_flag
 
     try:
         ret = NOT_GO_CONFIRM
         acm_setting_button(button)
-        if confirm_status is False:
+        if confirm_ok is False:
             acm_setting_print_static_lcd(screen_level, index_pointer)
         else:
             if setting_level == 0:

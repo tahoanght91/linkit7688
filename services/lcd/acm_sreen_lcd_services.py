@@ -74,3 +74,36 @@ def show_temp_condition(_telemetries):
 
     except Exception as ex:
         LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
+
+
+def show_time_condition(_telemetries):
+    from control import process_cmd_lcd
+    from control.utils import read_to_json, write_to_json
+
+    try:
+        all_row = read_to_json(last_cmd_lcd)
+        if 'acmRunTimeAirc1' in _telemetries:
+            time1 = _telemetries['acmRunTimeAirc1']
+            process_cmd_lcd(ROW_2, UPDATE_VALUE, str(time1))
+            all_row['row2'] = str(time1)
+        else:
+            LOGGER.error("Time condition 1 is not exist in telemetries")
+
+        if 'acmRunTimeAirc2' in _telemetries:
+            time2 = _telemetries['acmRunTimeAirc2']
+            process_cmd_lcd(ROW_3, UPDATE_VALUE, str(time2))
+            all_row['row3'] = str(time2)
+        else:
+            LOGGER.error("Time condition 2 is not exist in telemetries")
+
+        if 'acmRunTimeFan' in _telemetries:
+            time3 = _telemetries['acmRunTimeFan']
+            process_cmd_lcd(ROW_4, UPDATE_VALUE, str(time3))
+            all_row['row4'] = str(time3)
+        else:
+            LOGGER.error("Time fan is not exist in telemetries")
+        # save to file
+        write_to_json(all_row, last_cmd_lcd)
+
+    except Exception as ex:
+        LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)

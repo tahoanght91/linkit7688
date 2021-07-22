@@ -89,7 +89,7 @@ def check_button(bt_info):
             LOGGER.info('check_button function key code: %s, key event: %s', str(key_code), str(key_event))
             if int(key_code) in LIST_KEYCODE:
                 index_key = int(LIST_KEYCODE.index(key_code))
-                LOGGER.info('Key code exist in list key code')
+                # LOGGER.info('Key code exist in list key code')
             if key_event == EVENT_UP:
                 event_bt = EVENT_UP_BT
             elif key_event == EVENT_HOLD:
@@ -100,7 +100,7 @@ def check_button(bt_info):
                 LOGGER.info('return button value: %s', LOG_BUTTON[button])
             return button
         else:
-            LOGGER.info('Button status: No action')
+            # LOGGER.info('Button status: No action')
             return -1
     except Exception as ex:
         LOGGER.error('check_button function error: %s', ex.message)
