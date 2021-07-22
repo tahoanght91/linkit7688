@@ -173,6 +173,7 @@ def acm_setting_button(button):
             if index_pointer >= 3:
                 index_pointer = 0
         elif button == OK:
+            setting_level = index_pointer
             if index_pointer == 0:
                 screen_level = 1
             else:
@@ -187,7 +188,6 @@ def acm_setting_button(button):
         elif button == OK:
             screen_level = 3
             index_pointer = 0
-            setting_level = 0
     elif screen_level_internal == 2:
         if button == UP:
             temp_value_count[temp_index][temp_number_index] += 1
@@ -203,10 +203,9 @@ def acm_setting_button(button):
             temp_number_index = 0
         elif button == RIGHT:
             temp_number_index = 1
-        elif button == OK:
+        elif button == OK and temp_number_index == 1:
             screen_level = 3
             index_pointer = 0
-            setting_level = 0
     elif screen_level_internal == 3:
         goto_confirm_screen_flag = True
         if button == UP:
@@ -263,7 +262,7 @@ def acm_setting(button):
             if setting_level == 0:
                 acm_setting_mode_control(index_pointer ^ 1)
             else:
-                acm_setting_temp(setting_level, set_temp)
+                acm_setting_temp(setting_level - 1, int(set_temp))
         if goto_confirm_screen_flag is True:
             ret = GO_CONFIRM
 
