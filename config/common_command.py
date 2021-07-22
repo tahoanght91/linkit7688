@@ -49,12 +49,12 @@ COMMAND_MCC_ON_DOUT_REVERSED_10 = 'onDoutReversed10Mcc'
 # bell
 COMMAND_MCC_OFF_BELL = 'offBellMcc'
 COMMAND_MCC_ON_BELL = 'onBellMcc'
-# dout reversed 11
-COMMAND_MCC_OFF_DOUT_REVERSED_11 = 'offDoutReversed11Mcc'
-COMMAND_MCC_ON_DOUT_REVERSED_11 = 'onDoutReversed11Mcc'
-# dout reversed 12
-COMMAND_MCC_OFF_DOUT_REVERSED_12 = 'offDoutReversed12Mcc'
-COMMAND_MCC_ON_DOUT_REVERSED_12 = 'onDoutReversed12Mcc'
+# vmb
+COMMAND_MCC_OFF_VMB = 'offVmbMcc'
+COMMAND_MCC_ON_VMB = 'onVmbMcc'
+# cam
+COMMAND_MCC_OFF_CAM = 'offCamMcc'
+COMMAND_MCC_ON_CAM = 'onCamMcc'
 # dout reversed 13
 COMMAND_MCC_OFF_DOUT_REVERSED_13 = 'offDoutReversed13Mcc'
 COMMAND_MCC_ON_DOUT_REVERSED_13 = 'onDoutReversed13Mcc'
@@ -72,5 +72,5 @@ COMMAND_ACM_AIRC_2_ON = 'onAirc2Acm'
 COMMAND_ACM_FAN_OFF = 'offFanAcm'
 COMMAND_ACM_FAN_ON = 'onFanAcm'
 # self-propelled
-COMMAND_ACM_SELF_PROPELLED_OFF = 'offSelfPropelledAcm' #
-COMMAND_ACM_SELF_PROPELLED_ON = 'onSelfPropelledAcm' #
+COMMAND_ACM_SELF_PROPELLED_OFF = 'offSelfPropelledAcm'
+COMMAND_ACM_SELF_PROPELLED_ON = 'onSelfPropelledAcm'
