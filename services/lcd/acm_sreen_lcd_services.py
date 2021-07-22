@@ -84,22 +84,25 @@ def show_time_condition(_telemetries):
         all_row = read_to_json(last_cmd_lcd)
         if 'acmRunTimeAirc1' in _telemetries:
             time1 = _telemetries['acmRunTimeAirc1']
-            process_cmd_lcd(ROW_2, UPDATE_VALUE, str(time1))
-            all_row['row2'] = str(time1)
+            cond1 = 'T.gian DH1: ' + str(time1) + 'h'
+            process_cmd_lcd(ROW_2, UPDATE_VALUE, cond1)
+            all_row['row2'] = cond1
         else:
             LOGGER.error("Time condition 1 is not exist in telemetries")
 
         if 'acmRunTimeAirc2' in _telemetries:
             time2 = _telemetries['acmRunTimeAirc2']
-            process_cmd_lcd(ROW_3, UPDATE_VALUE, str(time2))
-            all_row['row3'] = str(time2)
+            cond2 = 'T.gian DH2: ' + str(time2) + 'h'
+            process_cmd_lcd(ROW_3, UPDATE_VALUE, cond2)
+            all_row['row3'] = cond2
         else:
             LOGGER.error("Time condition 2 is not exist in telemetries")
 
         if 'acmRunTimeFan' in _telemetries:
             time3 = _telemetries['acmRunTimeFan']
-            process_cmd_lcd(ROW_4, UPDATE_VALUE, str(time3))
-            all_row['row4'] = str(time3)
+            fan = 'T.gian Quat: ' + str(time3) + 'h'
+            process_cmd_lcd(ROW_4, UPDATE_VALUE, fan)
+            all_row['row4'] = fan
         else:
             LOGGER.error("Time fan is not exist in telemetries")
         # save to file
