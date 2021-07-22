@@ -25,12 +25,12 @@ warningOld = ''
 
 last_stt_bt = 0
 
-
 def call():
     try:
         while True:
             button = check_button(lcd_services)
-            LOGGER.info('Send button value: %s', str(button))
+            if button != -1:
+                LOGGER.info('Send button value: %s', str(button))
             main_menu(button)
             if lcd_services:
                 del lcd_services['key_code']
@@ -83,14 +83,13 @@ def check_button(bt_info):
     event_bt = 0
     index_key = 0
     try:
-        LOGGER.info('Enter check_button function')
         if bt_info:
             key_code = bt_info['key_code']
             key_event = bt_info['key_event']
             LOGGER.info('check_button function key code: %s, key event: %s', str(key_code), str(key_event))
             if int(key_code) in LIST_KEYCODE:
                 index_key = int(LIST_KEYCODE.index(key_code))
-                LOGGER.info('Key code exist in list key code')
+                # LOGGER.info('Key code exist in list key code')
             if key_event == EVENT_UP:
                 event_bt = EVENT_UP_BT
             elif key_event == EVENT_HOLD:
@@ -101,7 +100,7 @@ def check_button(bt_info):
                 LOGGER.info('return button value: %s', LOG_BUTTON[button])
             return button
         else:
-            LOGGER.info('Button status: No action')
+            # LOGGER.info('Button status: No action')
             return -1
     except Exception as ex:
         LOGGER.error('check_button function error: %s', ex.message)

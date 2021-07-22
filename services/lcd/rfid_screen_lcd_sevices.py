@@ -4,6 +4,7 @@ from config.common_lcd_services import *
 
 
 # HungLQ
+from services.lcd.ats_screen_lcd_services import convert_to_string_default
 
 last_cmd_lcd = './last_cmd_screen.json'
 
@@ -26,7 +27,7 @@ def get_info_rfid(row2, row3, row4):
         list_row = []
         json_file = open('./last_rfid_card_code.json', )
         rfid_info = json.load(json_file)
-        status = 'Ket noi' if client_attributes.get('mccRfidConnectState') > 0 else 'Mat ket noi'
+        status = 'Ket noi' if convert_to_string_default('mccRfidConnectState', 1) != '0' else 'Mat ket noi'
         if row2 != str(status):
             process_cmd_lcd(ROW_2, UPDATE_VALUE, str(status))
             row2 = str(status)

@@ -75,8 +75,8 @@ def extract(byte_data):
     _read_telemetry('mccDcI5', mccDcI5)
     _read_telemetry('mccDcP5', mccDcP5)
     _read_telemetry('mccDcLowState', mccDcLowState)
+    _read_telemetry('mccRfidConnectState', mccRfidConnectState)
 
     # client attributes
     _read_attribute('mccSystemClock', mccSystemClock)
-    _read_attribute('mccRfidConnectState', mccRfidConnectState)
     _read_attribute('mccDcCabinetSate', mccDcCabinetSate)
