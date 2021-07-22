@@ -1,4 +1,5 @@
 from config import LOGGER
+from config.common_command import *
 
 
 def get_target_by_command_mcc(command):
@@ -68,8 +69,10 @@ def get_target_by_command_acm(command):
 def get_target_by_command_ats(command):
     target = -1
     try:
-        if 'MainAts' in command or 'AutoAts' in command or 'GenAts' in command or 'Ats' in command:
+        if COMMAND_ATS_MAIN_ON in command or COMMAND_ATS_AUTO_ON in command or COMMAND_ATS_GEN_ON in command or COMMAND_ATS_OFF in command:
             target = 0
+        elif COMMAND_ATS_STOP_GEN in command or COMMAND_ATS_START_GEN in command:
+            target = 1
         else:
             LOGGER.error('Command is not a string: %s', str(command))
     except Exception as ex:
