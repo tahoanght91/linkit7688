@@ -20,7 +20,7 @@ def extract(byte_data):
     acmRunTimeAirc2 = utility.bytes_to_int(byte_data[26])
     acmRunTimeFan = utility.bytes_to_int(byte_data[27])
 
-    #telemetry
+    # telemetry
     acmTempIndoor = utility.bytes_to_int(byte_data[11:13], byteorder=BYTE_ORDER)
     acmTempOutdoor = utility.bytes_to_int(byte_data[13:15], byteorder=BYTE_ORDER)
     acmHumidIndoor = utility.bytes_to_int(byte_data[15:17], byteorder=BYTE_ORDER)
@@ -29,7 +29,7 @@ def extract(byte_data):
     acmT3Temp = utility.bytes_to_int(byte_data[21:23], byteorder=BYTE_ORDER)
     acmT4Temp = utility.bytes_to_int(byte_data[23:25], byteorder=BYTE_ORDER)
 
-    #telemetry
+    # telemetry
     utils._read_telemetry('acmTempIndoor', acmTempIndoor)
     utils._read_telemetry('acmTempOutdoor', acmTempOutdoor)
     utils._read_telemetry('acmHumidIndoor', acmHumidIndoor)
@@ -42,15 +42,15 @@ def extract(byte_data):
     utils._read_telemetry('acmFanRunState', acmFanRunState)
     utils._read_telemetry('acmAutoMode', acmAutoMode)
     utils._read_telemetry('acmOnlineState', acmOnlineState)
+    utils._read_telemetry('acmRunTimeAirc1', acmRunTimeAirc1)
+    utils._read_telemetry('acmRunTimeAirc2', acmRunTimeAirc2)
+    utils._read_telemetry('acmRunTimeFan', acmRunTimeFan)
 
-    #client attributes
+    # client attributes
     utils._read_telemetry('acmTempError', acmTempError)
     utils._read_telemetry('acmHumidError', acmHumidError)
     utils._read_attribute('acmIState', acmIState)
     utils._read_attribute('acmAirc1Error', acmAirc1Error)
     utils._read_attribute('acmAirc2Error', acmAirc2Error)
     utils._read_attribute('acmFanError', acmFanError)
-    utils._read_attribute('acmRunTimeAirc1', acmRunTimeAirc1)
-    utils._read_attribute('acmRunTimeAirc2', acmRunTimeAirc2)
-    utils._read_attribute('acmRunTimeFan', acmRunTimeFan)
 
