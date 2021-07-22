@@ -136,8 +136,8 @@ def call():
             if current_update_cycle > original_update_cycle and CLIENT.is_connected():
                 latest_version = -1
                 try:
-                    link_update = shared_attributes['mccLinkUpdate']
-                    link_version = shared_attributes['mccLinkVersion']
+                    link_update = shared_attributes.get('mccLinkUpdate', default_data.mccLinkUpdate)
+                    link_version = shared_attributes.get('mccLinkVersion', default_data.mccLinkVersion)
                     if link_version is not '':
                         response_get_version = requests.get(link_version)
                         if response_get_version.status_code == 200:
@@ -148,7 +148,8 @@ def call():
                         if latest_version > current_version:
                             LOGGER.info('Get new version: %s from server: %s', str(latest_version), link_version)
                             LOGGER.info('Update system, disconnect with server')
-                            command = 'cd /IoT && ./update.sh ' + link_update
+                            folder_name = link_update.split('/')[-1].split('.')[0]
+                            command = 'cd /IoT && ./update.sh ' + link_update + ' ' + folder_name
                             subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
                         else:
                             LOGGER.info('Current version is the latest')
