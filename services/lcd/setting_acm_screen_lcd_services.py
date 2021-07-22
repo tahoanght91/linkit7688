@@ -140,13 +140,13 @@ def acm_setting_print_static_lcd(screen_level_type, screen_index):
         process_cmd_lcd(ROW_3, UPDATE_VALUE, screen[screen_index]['row_3'])
     process_cmd_lcd(ROW_4, UPDATE_VALUE, screen[screen_index]['row_4'])
 
-    print(screen[screen_index]['row_1'])
-    print(screen[screen_index]['row_2'])
-    if screen_level == 2:
-        print(set_temp)
-    else:
-        print(screen[screen_index]['row_3'])
-    print(screen[screen_index]['row_4'])
+    # print(screen[screen_index]['row_1'])
+    # print(screen[screen_index]['row_2'])
+    # if screen_level == 2:
+    #     print(set_temp)
+    # else:
+    #     print(screen[screen_index]['row_3'])
+    # print(screen[screen_index]['row_4'])
 
 
 def acm_setting_button(button):
@@ -201,9 +201,9 @@ def acm_setting_button(button):
             temp_value[temp_index][temp_number_index] = str(temp_value_count[temp_index][temp_number_index])
         elif button == LEFT:
             temp_number_index = 0
-        elif button == RIGHT:
+        elif button == RIGHT and temp_value[temp_index][0] != '_':
             temp_number_index = 1
-        elif button == OK and temp_number_index == 1:
+        elif button == OK and temp_value[temp_index][1] != '_':
             screen_level = 3
             index_pointer = 0
     elif screen_level_internal == 3:

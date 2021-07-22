@@ -270,9 +270,7 @@ def time_setting():
     if event == 0:
         return
     if setting_datetime_screen_lcd_services.datetime_setting(event) is GO_CONFIRM:
-        last_setting_screen_index = -1
-        setting_screen_index = 0
-        go_sub_setting_flag = False
+        back_screen_setting()
 
 
 def internet_setting():
@@ -360,10 +358,11 @@ def move_default_var():
 
 
 def back_screen_setting():
-    global go_sub_setting_flag, last_setting_screen_index
+    global go_sub_setting_flag, last_setting_screen_index, setting_screen_index
 
     go_sub_setting_flag = False
     last_setting_screen_index = -1
+    setting_screen_index = 0
 
 
 """---------------------------------------------------------------------------------------------------------------------
