@@ -81,6 +81,8 @@ def get_state_mcc(method):
             value = telemetries.get('mccPwRouterState', default_data.mccPwRouterState)
         elif method == GET_STATE_MCC_VSENS:
             value = telemetries.get('mccPwSensState', default_data.mccPwSensState)
+        elif method == GET_STATE_MCC_CAM:
+            value = telemetries.get('mccPwCamState', default_data.mccPwCamState)
     except Exception as ex:
         LOGGER.error('Error at get_state_mcc function with message: %s', ex.message)
     return value
