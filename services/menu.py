@@ -5,7 +5,7 @@ from config.common import *
 from services.lcd import main_screen_lcd_services, ats_screen_lcd_services, ats_setting_lcd_service, \
     rfid_screen_lcd_sevices, rfid_setting_lcd_service, setting_info_screen_lcd_services, \
     setting_datetime_screen_lcd_services, setting_acm_screen_lcd_services
-from services.lcd.acm_sreen_lcd_services import show_temp_condition
+from services.lcd.acm_sreen_lcd_services import show_temp_condition, show_time_condition
 from services.lcd.alarm_lcd_services import check_alarm
 from services.lcd.ats_setting_lcd_service import reset_params as ats_reset_params
 from services.lcd.main_screen_lcd_services import reset_params_main_display
@@ -83,6 +83,7 @@ time_setting_screen_index = 0
 last_time_setting_screen_index = -1
 last_cmd_lcd = './last_cmd_screen.json'
 security_screen_index = 0
+air_cond_screen_index = 0
 go_sub_setting_flag = False
 start_flag = True
 
@@ -156,7 +157,17 @@ def security_sensor_info_display():
 
 
 def air_info_display():
-    show_temp_condition(telemetries)
+    global event, air_cond_screen_index
+
+    LOGGER.info('Enter air_info_display function')
+    if event == LEFT:
+        air_cond_screen_index = 0
+    elif event == RIGHT:
+        air_cond_screen_index = 1
+    if air_cond_screen_index == 0:
+        show_temp_condition(telemetries)
+    elif air_cond_screen_index == 1:
+        show_time_condition(telemetries)
 
 
 def ats_display():
@@ -345,11 +356,13 @@ def clear_event():
 
     event = 0
 
+
 def move_default_var():
     global event, security_screen_index, ats_screen_index, last_setting_screen_index, last_screen_lv1_index, \
-        last_time_setting_screen_index, go_sub_setting_flag
+        last_time_setting_screen_index, go_sub_setting_flag, air_cond_screen_index
 
     security_screen_index = 0
+    air_cond_screen_index = 0
     ats_screen_index = 0
     last_setting_screen_index = -1
     last_screen_lv1_index = -1
