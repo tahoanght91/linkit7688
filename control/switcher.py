@@ -111,16 +111,35 @@ def parse_acm_shared_attributes_to_number(key):
         'acmRestTime': 4,
         'acmGenAllow': 5,
         'acmVacThreshold': 6,
-        'acmMinTemp': 7,
-        'acmMaxTemp': 8,
-        'acmMinHumid': 9,
-        'acmMaxHumid': 10,
-        'acmExpectedTemp': 11,
-        'acmExpectedHumid': 12,
-        'acmT1Temp': 13,
-        'acmT2Temp': 14,
-        'acmT3Temp': 15,
-        'acmT4Temp': 16
+        'acmMinHumid': 7,
+        'acmMaxHumid': 8,
+        'acmExpectedTemp': 9,
+        'acmExpectedHumid': 10,
+        'acmT1Temp': 11,
+        'acmT2Temp': 12,
+        'acmT3Temp': 13,
+        'acmT4Temp': 14
     }
     return switcher_acm.get(key, -1)
 
+
+# def parse_acm_shared_attributes_to_number(key):
+#     switcher_acm = {
+#         'acmControlAuto': 1,
+#         'acmAlternativeTime': 2,
+#         'acmRunTime': 3,
+#         'acmRestTime': 4,
+#         'acmGenAllow': 5,
+#         'acmVacThreshold': 6,
+#         'acmMinTemp': 7,
+#         'acmMaxTemp': 8,
+#         'acmMinHumid': 9,
+#         'acmMaxHumid': 10,
+#         'acmExpectedTemp': 11,
+#         'acmExpectedHumid': 12,
+#         'acmT1Temp': 13,
+#         'acmT2Temp': 14,
+#         'acmT3Temp': 15,
+#         'acmT4Temp': 16
+#     }
+#     return switcher_acm.get(key, -1)
