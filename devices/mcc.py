@@ -36,10 +36,11 @@ def extract(byte_data):
     mccDcI5 = bytes_to_int(byte_data[47:49], byteorder=BYTE_ORDER)
     mccDcP5 = bytes_to_int(byte_data[49:51], byteorder=BYTE_ORDER)
     mccDcLowState = bytes_to_int(byte_data[57])
-    mccPwDoorState = bytes_to_int(byte_data[58])
-    mccPwCamState = bytes_to_int(byte_data[59])
-    mccPwRouterState = bytes_to_int(byte_data[60])
-    mccPwSensState = bytes_to_int(byte_data[61])
+    # TODO: uncomment when update code STM32
+    # mccPwDoorState = bytes_to_int(byte_data[58])
+    # mccPwCamState = bytes_to_int(byte_data[59])
+    # mccPwRouterState = bytes_to_int(byte_data[60])
+    # mccPwSensState = bytes_to_int(byte_data[61])
 
     # client attributes
     mccSystemClock = bytes_to_int(byte_data[51:55], byteorder=BYTE_ORDER)
@@ -80,10 +81,11 @@ def extract(byte_data):
     _read_telemetry('mccDcP5', mccDcP5)
     _read_telemetry('mccDcLowState', mccDcLowState)
     _read_telemetry('mccRfidConnectState', mccRfidConnectState)
-    _read_telemetry('mccPwDoorState', mccPwDoorState)
-    _read_telemetry('mccPwCamState', mccPwCamState)
-    _read_telemetry('mccPwRouterState', mccPwRouterState)
-    _read_telemetry('mccPwSensState', mccPwSensState)
+    # TODO: uncomment when update code STM32
+    # _read_telemetry('mccPwDoorState', mccPwDoorState)
+    # _read_telemetry('mccPwCamState', mccPwCamState)
+    # _read_telemetry('mccPwRouterState', mccPwRouterState)
+    # _read_telemetry('mccPwSensState', mccPwSensState)
 
     # client attributes
     _read_attribute('mccSystemClock', mccSystemClock)
