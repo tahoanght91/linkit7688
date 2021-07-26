@@ -14,7 +14,7 @@ MAX_SIZE_FILE = 1572864
 TIME_PERIOD = 30
 LOG_PATH = './app.log.1'
 DESTINATION = './log'
-URL_SEND_LOG = PREFIX + DOMAIN + API_SEND_LOG
+url_send_log = PREFIX + DOMAIN + API_SEND_LOG
 
 
 def call():
@@ -83,7 +83,7 @@ def send_log_smartsite(params, files):
     try:
         if isinstance(params, dict) and isinstance(files, dict):
             if len(params) > 0 and len(files) > 0:
-                response = requests.post(URL_SEND_LOG, params=params, files=files)
+                response = requests.post(url_send_log, params=params, files=files)
                 if response.status_code == 200:
                     result = True
                     LOGGER.info('Send log to Smartsite successful!')
