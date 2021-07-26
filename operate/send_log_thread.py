@@ -66,26 +66,24 @@ def copy_log(result, source):
 
 
 def write_body_send_log(path_file):
-    body = {}
+    params = {}
     files = {}
     try:
-        now = time.time()
         gateway_id = device_config['device_id']
-        access_token = device_config['access_token']
         files = {"uploadFile": open(path_file, 'rb')}
-        body = {"gatewayId": gateway_id, "accessToken": access_token, "createdDate": now}
-        LOGGER.info('Body send log to Smartsite: %s', body)
+        params = {"gatewayId": gateway_id}
+        LOGGER.info('Body send log to Smartsite: %s', params)
     except Exception as ex:
         LOGGER.warning('Error at write_body_send_log function with message: %s', ex.message)
-    return body, files
+    return params, files
 
 
-def send_log_smartsite(body, files):
+def send_log_smartsite(params, files):
     result = False
     try:
-        if isinstance(body, dict) and isinstance(files, dict):
-            if len(body) > 0 and len(files) > 0:
-                response = requests.post(URL_SEND_LOG, data=body, files=files)
+        if isinstance(params, dict) and isinstance(files, dict):
+            if len(params) > 0 and len(files) > 0:
+                response = requests.post(URL_SEND_LOG, params=params, files=files)
                 if response.status_code == 200:
                     result = True
                     LOGGER.info('Send log to Smartsite successful!')
