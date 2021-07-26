@@ -1,5 +1,7 @@
-import requests
 from datetime import datetime
+
+import requests
+
 from config import *
 from config.common import UPDATE_VALUE
 from config.common_api import PREFIX, DOMAIN, API_GET_STAFF
@@ -28,9 +30,9 @@ def write_to_json(body, fileUrl):
         json_last_trace = json.dumps(body)
         with io.open(fileUrl, 'wb') as last_trace_file:
             last_trace_file.write(json_last_trace)
-        LOGGER.info('write to json success: %s', str(fileUrl))
+        LOGGER.debug('write to json success: %s', str(fileUrl))
     except Exception as ex:
-        LOGGER.error('Error at write_to_json function with message: %s', ex.message)
+        LOGGER.warning('Error at write_to_json function with message: %s', ex.message)
 
 
 # HungLq
@@ -40,7 +42,7 @@ def screen_main():
         get_temp_tram()
         get_user_tram()
     except Exception as ex:
-        LOGGER.error('Error at call function in screen_main with message: %s', ex.message)
+        LOGGER.warning('Error at call function in screen_main with message: %s', ex.message)
 
 
 def read_to_json(fileUrl):
@@ -48,7 +50,7 @@ def read_to_json(fileUrl):
         json_file = open(fileUrl, )
         json_info = json.load(json_file)
     except Exception as ex:
-        LOGGER.error('Error at call function in read_to_json with message: %s', ex.message)
+        LOGGER.warning('Error at call function in read_to_json with message: %s', ex.message)
     return json_info
 
 
@@ -66,11 +68,11 @@ def get_datetime_now():
             row2 = str(dt_string)
             process_cmd_lcd(ROW_1, UPDATE_VALUE, row1)
             process_cmd_lcd(ROW_2, UPDATE_VALUE, row2)
-            LOGGER.info('MAIN SCREEN TITLE NOW: %s', str(row1))
-            LOGGER.info('MAIN SCREEN DATETIME NOW: %s', str(row2))
+            LOGGER.debug('MAIN SCREEN TITLE NOW: %s', str(row1))
+            LOGGER.debug('MAIN SCREEN DATETIME NOW: %s', str(row2))
             timeOld = timeNew
     except Exception as ex:
-        LOGGER.error('Error at call function in check_key_code with message: %s', ex.message)
+        LOGGER.warning('Error at call function in check_key_code with message: %s', ex.message)
 
 
 # def get_title_main():
@@ -115,9 +117,9 @@ def get_temp_tram():
             show = str(acmTempIn) + ' ' + str(acmTempOut) + ' ' + str(
                 acmHumidIn) + ' ' + warning
             process_cmd_lcd(ROW_3, UPDATE_VALUE, show)
-            LOGGER.info('MAIN SCREEN TEMP AND ALARM NOW: %s', str(show))
+            LOGGER.debug('MAIN SCREEN TEMP AND ALARM NOW: %s', str(show))
     except Exception as ex:
-        LOGGER.error('Error at get_temp_tram function with message: %s', ex.message)
+        LOGGER.warning('Error at get_temp_tram function with message: %s', ex.message)
 
 
 def get_user_tram():
@@ -131,7 +133,7 @@ def get_user_tram():
             param = {'input': rfid_card}
             response = requests.get(url=url_get_staff, params=param)
             if response.status_code == 200:
-                LOGGER.info('Send log request to Smartsite successful!')
+                LOGGER.debug('Send log request to Smartsite successful!')
                 staff = json.loads(response.content)['result']
                 if staff is not None:
                     staffCode = json.loads(response.content)['result']['maNhanVien']
@@ -140,6 +142,6 @@ def get_user_tram():
             dt_string = datetime.now().strftime("%d/%m/%Y %H:%M")
             rfid_info = {"Time": dt_string, "StaffCode": staffCode}
             write_to_json(rfid_info, './last_rfid_card_code.json')
-            LOGGER.info('MAIN SCREEN RFIDCODE OR STAFFCODE NOW: %s', str(show))
+            LOGGER.debug('MAIN SCREEN RFIDCODE OR STAFFCODE NOW: %s', str(show))
     except Exception as ex:
-        LOGGER.error('Error at get_user_tram function with message: %s', ex.message)
+        LOGGER.warning('Error at get_user_tram function with message: %s', ex.message)
