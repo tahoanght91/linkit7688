@@ -47,6 +47,8 @@ def get_state_ats(method):
     try:
         if method == GET_STATE_ATS:
             value = client_attributes.get('atsMode', default_data.atsMode)
+        elif method == GET_STATE_GEN_ATS:
+            value = 0  # TODO: need key for get state of generate
     except Exception as ex:
         LOGGER.error('Error at get_state_ats function with message: %s', ex.message)
     return value
@@ -64,7 +66,7 @@ def get_state_acm(method):
         elif method == GET_STATE_ACM_FAN:
             value = telemetries.get('acmFanRunState', default_data.acmFanRunState)
         elif method == GET_SATE_ACM_SELF_PROPELLED:
-            value = 0 # TODO: change client attributes of lamp
+            value = 0
     except Exception as ex:
         LOGGER.error('Error at get_state_acm function with message: %s', ex.message)
     return value
@@ -77,6 +79,12 @@ def get_state_mcc(method):
             value = telemetries.get('mccDoorState', default_data.mccDoorState)
         elif method == GET_STATE_MCC_BELL:
             value = telemetries.get('mccBellState', default_data.mccBellState)
+        elif method == GET_STATE_MCC_VMB:
+            value = telemetries.get('mccPwRouterState', default_data.mccPwRouterState)
+        elif method == GET_STATE_MCC_VSENS:
+            value = telemetries.get('mccPwSensState', default_data.mccPwSensState)
+        elif method == GET_STATE_MCC_CAM:
+            value = telemetries.get('mccPwCamState', default_data.mccPwCamState)
     except Exception as ex:
         LOGGER.error('Error at get_state_mcc function with message: %s', ex.message)
     return value
