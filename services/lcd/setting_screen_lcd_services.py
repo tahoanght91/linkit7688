@@ -2,9 +2,10 @@ import subprocess
 import time
 
 import requests
-from config.common_api import *
+
 from config import *
 from config.common import UPDATE_VALUE
+from config.common_api import *
 from config.common_lcd_services import *
 
 url_send_sa = PREFIX + DOMAIN + API_UPDATE_SHARED_ATTRIBUTES
@@ -43,9 +44,9 @@ class __IPv4:
                                                                   , self.ip[11] if self.ip[11] != '_' else '')
 
     def get_oct(self):
-        LOGGER.info('Check oct!!!')
+        LOGGER.debug('Check oct!!!')
         for v in self.get_ip_number().split("."):
-            LOGGER.info('Oct in get_oct: %s', str(v))
+            LOGGER.debug('Oct in get_oct: %s', str(v))
             if v == '' or int(v) > 255:
                 # Chua nhap octet nay
                 # ip khong duoc lon hon 225
@@ -135,12 +136,12 @@ selection_chosen = [0, 0, 0, 0]
 def choose_config(setting_idx):
     global screen_setting_idx, screen_idx, isChosen
     if isChosen:
-        LOGGER.info('Do nothing and return in choose_config')
+        LOGGER.debug('Do nothing and return in choose_config')
         return
     isChosen = 1
     screen_idx = -1
     screen_setting_idx = setting_idx
-    LOGGER.info('IN choose_config: %s, %s', screen_idx, screen_setting_idx)
+    LOGGER.debug('IN choose_config: %s, %s', screen_idx, screen_setting_idx)
 
 
 def reset_param():
@@ -151,14 +152,14 @@ def reset_param():
     network = 0
     alarm = 0
     isSetIP = 0
-    LOGGER.info('Reset_param: %s, %s', screen_idx, pointer_idx)
+    LOGGER.debug('Reset_param: %s, %s', screen_idx, pointer_idx)
 
 
 def reset_parameter():
     # call moi khi quay lai man hinh main menu
     global isChosen
     isChosen = 0
-    LOGGER.info('Call reset parameter function')
+    LOGGER.debug('Call reset parameter function')
     reset_param()
 
 
@@ -200,8 +201,8 @@ def call_screen_network(keycode):
                 "row_4": '> Chay cau hinh'
             }
         ]
-        LOGGER.info('Enter call_screen_network function, screen_idx: %s', str(screen_idx))
-        LOGGER.info('Enter call_screen_network function, pointer_idx: %s', str(pointer_idx))
+        LOGGER.debug('Enter call_screen_network function, screen_idx: %s', str(screen_idx))
+        LOGGER.debug('Enter call_screen_network function, pointer_idx: %s', str(pointer_idx))
         # Update text
         if keycode == OK:
             process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
@@ -209,7 +210,7 @@ def call_screen_network(keycode):
         process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[pointer_idx]['row_3'])
         process_cmd_lcd(ROW_4, UPDATE_VALUE, switcher[pointer_idx]['row_4'])
     except Exception as ex:
-        LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
+        LOGGER.warning('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
 
 def refresh_screen_assign_ip_address(keycode):
@@ -247,11 +248,11 @@ def refresh_screen_assign_ip_address(keycode):
                 "row_4": ''
             }
         ]
-        LOGGER.info('screen_idx in refresh_screen_assign_ip_address: %s', str(screen_idx))
+        LOGGER.debug('screen_idx in refresh_screen_assign_ip_address: %s', str(screen_idx))
         # Update text
         if screen_idx == selection_setting_network['confirm_assign_ip']:
             # Man hinh xac nhan luu
-            LOGGER.info('Enter refresh_screen_assign_ip_address function, pointer_idx: %s', pointer_idx)
+            LOGGER.debug('Enter refresh_screen_assign_ip_address function, pointer_idx: %s', pointer_idx)
             if keycode == OK:
                 process_cmd_lcd(ROW_1, UPDATE_VALUE, 'XAC NHAN LUU')
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher_2[pointer_idx]["row_2"])
@@ -259,7 +260,7 @@ def refresh_screen_assign_ip_address(keycode):
             process_cmd_lcd(ROW_4, UPDATE_VALUE, switcher_2[pointer_idx]["row_4"])
         elif screen_idx == selection_setting_network['assign_ip']:
             # Man hinh nhap ip - subnet - ...
-            LOGGER.info('Enter refresh_screen_assign_ip_address function')
+            LOGGER.debug('Enter refresh_screen_assign_ip_address function')
             if keycode == OK:
                 process_cmd_lcd(ROW_1, UPDATE_VALUE, 'THONG SO MANG')
             process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[selection_chosen[screen_idx - 1]]['row_2'])
@@ -270,7 +271,7 @@ def refresh_screen_assign_ip_address(keycode):
         # Update nhap nhay
         # ...
     except Exception as ex:
-        LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
+        LOGGER.warning('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
 
 def get_net_info():
@@ -318,8 +319,8 @@ def get_alarm_info():
             continue
     if len(key) == 0:
         return
-    LOGGER.info("Selection in get_alarm_info: %s, %s", str(selection_chosen[0]), str(selection_chosen[1]))
-    LOGGER.info("Key get alarm info in get_alarm_info: %s", str(key))
+    LOGGER.debug("Selection in get_alarm_info: %s, %s", str(selection_chosen[0]), str(selection_chosen[1]))
+    LOGGER.debug("Key get alarm info in get_alarm_info: %s", str(key))
     if file_json[key] != '':
         result.alarm = convert_to_array_number([file_json[key]])
     # Tam fake bang 77
@@ -359,7 +360,7 @@ def listen_key_code(keycode):
 def main_network_listen_key(keycode):
     global pointer_idx, screen_idx, isSetIP
     # 5 dong
-    LOGGER.info('SHOW key_code NOW: %s', str(keycode))
+    LOGGER.debug('SHOW key_code NOW: %s', str(keycode))
     max_pointer_idx = 5
     if keycode == BUTTON_34_EVENT_UP:
         # key down
@@ -369,12 +370,12 @@ def main_network_listen_key(keycode):
         pointer_idx = 0 if pointer_idx == 0 else pointer_idx - 1
     elif keycode == BUTTON_24_EVENT_UP:
         # key ok
-        LOGGER.info('Show screen_idx: %s', str(screen_idx))
+        LOGGER.debug('Show screen_idx: %s', str(screen_idx))
         if screen_idx > -1:
             # lan dau tien load man hinh screen_idx = -1, khong update gia tri chon
             selection_chosen[screen_idx] = pointer_idx
         screen_idx = 0 if screen_idx == 2 else screen_idx + 1
-        LOGGER.info('--- Show screen_idx: %s', str(screen_idx))
+        LOGGER.debug('--- Show screen_idx: %s', str(screen_idx))
         if pointer_idx == max_pointer_idx:
             # Man hinh chay setIp
             screen_idx += 1
@@ -383,7 +384,7 @@ def main_network_listen_key(keycode):
         pointer_idx = 0
     else:
         return
-    LOGGER.info('Enter main_network_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx), str(pointer_idx))
+    LOGGER.debug('Enter main_network_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx), str(pointer_idx))
     # refresh man hinh
     get_func_render(network_screen_idx, keycode)
 
@@ -450,7 +451,7 @@ def assign_ip_listen_key(keycode):
     else:
         return
 
-    LOGGER.info('Enter assign_ip_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx), str(pointer_idx))
+    LOGGER.debug('Enter assign_ip_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx), str(pointer_idx))
     # refresh screen
     get_func_render(network_screen_idx, keycode)
 
@@ -488,13 +489,13 @@ def alarm_selection_listen_key(keycode):
                 pointer_idx = 0
         else:
             return
-        LOGGER.info('Enter alarm_selection_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx),
+        LOGGER.debug('Enter alarm_selection_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx),
                     str(pointer_idx))
-        LOGGER.info('Run function alarm_selection_listen_key')
+        LOGGER.debug('Run function alarm_selection_listen_key')
         # Call function render
         get_func_render(alarm_screen_idx, keycode)
     except Exception as ex:
-        LOGGER.error('Error at call function in alarm_selection_listen_key with message: %s', ex.message)
+        LOGGER.warning('Error at call function in alarm_selection_listen_key with message: %s', ex.message)
 
 
 def assign_alarm_listen_key(keycode):
@@ -511,7 +512,7 @@ def assign_alarm_listen_key(keycode):
     elif keycode == UP or keycode == DOWN:
         # key up or key down
         alarm.alarm[pointer_idx] = get_next_number(keycode, alarm.alarm[pointer_idx])
-        LOGGER.info('Text number in assign alarm: %s', alarm.alarm[pointer_idx])
+        LOGGER.debug('Text number in assign alarm: %s', alarm.alarm[pointer_idx])
     elif keycode == BUTTON_24_EVENT_UP:
         # key ok
         selection_chosen[screen_idx] = pointer_idx
@@ -521,13 +522,13 @@ def assign_alarm_listen_key(keycode):
     else:
         return
     # refresh screen
-    LOGGER.info('Enter assign_alarm_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx),
+    LOGGER.debug('Enter assign_alarm_listen_key function, screen_idx: %s, pointer_idx: %s', str(screen_idx),
                 str(pointer_idx))
     get_func_render(alarm_screen_idx, keycode)
 
 
 def save_ip():
-    LOGGER.info('Enter assign_alarm_listen_key function')
+    LOGGER.debug('Enter assign_alarm_listen_key function')
     if network.get_oct() == 0:
         return 0
     # for i, v in network.get_oct():
@@ -614,7 +615,7 @@ def call_screen_alarm_selection(keycode):
         process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[pointer_idx]['row_3'])
         process_cmd_lcd(ROW_4, UPDATE_VALUE, '')
     except Exception as ex:
-        LOGGER.error('Error at call function in call_screen_alarm_selection with message: %s', ex.message)
+        LOGGER.warning('Error at call function in call_screen_alarm_selection with message: %s', ex.message)
 
 
 def refresh_screen_assign_alarm(keycode):
@@ -642,11 +643,11 @@ def refresh_screen_assign_alarm(keycode):
         process_cmd_lcd(ROW_3, UPDATE_VALUE, "{0}{1}".format(alarm.get_alarm(), text))
         process_cmd_lcd(ROW_4, UPDATE_VALUE, '')
 
-        LOGGER.info('ASSIGN ALARM in func call refresh_screen_assign_alarm: %s', alarm.get_alarm())
+        LOGGER.debug('ASSIGN ALARM in func call refresh_screen_assign_alarm: %s', alarm.get_alarm())
         # Update nhap nhay
         # ...
     except Exception as ex:
-        LOGGER.error('Error at call function in refresh_screen_assign_alarm with message: %s', ex.message)
+        LOGGER.warning('Error at call function in refresh_screen_assign_alarm with message: %s', ex.message)
 
 
 # Helper save/read file
@@ -694,10 +695,10 @@ row_format = {
 def save_to_set_ip(str_saved, key):
     try:
         save_to_file_txt('./setIp.sh', row_format[key]["format"].format(str_saved), row_format[key]["number"])
-        LOGGER.info('Call save file ./setIp.sh')
+        LOGGER.debug('Call save file ./setIp.sh')
         # call_set_ip()
     except Exception as ex:
-        LOGGER.error('Error at call function in save_to_set_ip with message: %s', ex.message)
+        LOGGER.warning('Error at call function in save_to_set_ip with message: %s', ex.message)
 
 
 def call_set_ip():
@@ -709,9 +710,9 @@ def call_set_ip():
         process1 = subprocess.call(cp_setip, shell=True)
         process2 = subprocess.call([pop_cmd, bash_cmd])
         # output, error = process.communicate()
-        LOGGER.info('Run ./setIp.sh with output: %s and %s', str(process1), str(process2))
+        LOGGER.debug('Run ./setIp.sh with output: %s and %s', str(process1), str(process2))
     except Exception as ex:
-        LOGGER.error('Error at call function in save_to_set_ip with message: %s', ex.message)
+        LOGGER.warning('Error at call function in save_to_set_ip with message: %s', ex.message)
 
 
 def save_to_file(file_path, str_saved, number):
@@ -728,9 +729,9 @@ def save_to_file(file_path, str_saved, number):
         elif number == ROW_5:
             all_row['row5'] = str_saved
         write_to_json(all_row, file_path)
-        LOGGER.info('Saved file %s', file_path)
+        LOGGER.debug('Saved file %s', file_path)
     except Exception as ex:
-        LOGGER.error('Error at call function in save_to_file with message: %s', ex.message)
+        LOGGER.warning('Error at call function in save_to_file with message: %s', ex.message)
 
 
 def save_to_file_txt(file_path, str_saved, number):
@@ -738,9 +739,9 @@ def save_to_file_txt(file_path, str_saved, number):
         all_row = read_from_txt(file_path)
         all_row[number - 1] = str_saved
         write_to_txt(''.join(all_row), file_path)
-        LOGGER.info('Saved file: %s', file_path)
+        LOGGER.debug('Saved file: %s', file_path)
     except Exception as ex:
-        LOGGER.error('Error at call function in save_to_file with message: %s', ex.message)
+        LOGGER.warning('Error at call function in save_to_file with message: %s', ex.message)
 
 
 def write_to_json(body, file_url):
@@ -748,9 +749,9 @@ def write_to_json(body, file_url):
         json_last_trace = json.dumps(body)
         with io.open(file_url, 'wb') as last_trace_file:
             last_trace_file.write(json_last_trace)
-        LOGGER.info('Command information just send: %s', body)
+        LOGGER.debug('Command information just send: %s', body)
     except Exception as ex:
-        LOGGER.error('Error at write_to_json function with message: %s', ex.message)
+        LOGGER.warning('Error at write_to_json function with message: %s', ex.message)
 
 
 def read_from_json(file_url):
@@ -758,7 +759,7 @@ def read_from_json(file_url):
         json_file = open(file_url, )
         json_info = json.load(json_file)
     except Exception as ex:
-        LOGGER.error('Error at call function in read_to_json with message: %s', ex.message)
+        LOGGER.warning('Error at call function in read_to_json with message: %s', ex.message)
     return json_info
 
 
@@ -766,9 +767,9 @@ def write_to_txt(body, file_url):
     try:
         with io.open(file_url, 'wb') as last_trace_file:
             last_trace_file.write(body)
-        LOGGER.info('Command information just send: %s', body)
+        LOGGER.debug('Command information just send: %s', body)
     except Exception as ex:
-        LOGGER.error('Error at write_to_txt function with message: %s', ex.message)
+        LOGGER.warning('Error at write_to_txt function with message: %s', ex.message)
 
 
 def read_from_txt(file_url):
@@ -776,7 +777,7 @@ def read_from_txt(file_url):
         with io.open(file_url) as last_trace_file:
             bash_info = last_trace_file.readlines()
     except Exception as ex:
-        LOGGER.error('Error at call function in read_from_txt with message: %s', ex.message)
+        LOGGER.warning('Error at call function in read_from_txt with message: %s', ex.message)
     return bash_info
 
 
@@ -823,9 +824,9 @@ def write_body_send_shared_attributes(key, value):
         now = int(time.time() * 1000)
         body = {"tramEntityId": str(device_config['device_id']), "value": str(value), "keyName": str(key),
                 "changeAt": now}
-        LOGGER.info('Content of body send shared attributes to Smartsite: %s', body)
+        LOGGER.debug('Content of body send shared attributes to Smartsite: %s', body)
     except Exception as ex:
-        LOGGER.info('Error at write_body_send_shared_attributes function with message: %s', ex.message)
+        LOGGER.warning('Error at write_body_send_shared_attributes function with message: %s', ex.message)
     return body
 
 
@@ -834,12 +835,12 @@ def send_shared_attributes(body):
     try:
         response = requests.post(url=url_send_sa, json=body)
         if response.status_code == 200:
-            LOGGER.info('Send shared attributes to Smartsite successful!')
+            LOGGER.warning('Send shared attributes to Smartsite successful!')
             result = True
         else:
-            LOGGER.info('Fail while send shared attributes to Smartsite!')
+            LOGGER.warning('Fail while send shared attributes to Smartsite!')
     except Exception as ex:
-        LOGGER.info('Error at write_log function with message: %s', ex.message)
+        LOGGER.warning('Error at write_log function with message: %s', ex.message)
     return result
 
 
