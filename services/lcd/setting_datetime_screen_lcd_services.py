@@ -1,8 +1,9 @@
 import os
+from datetime import datetime
+
 from config import *
 from config.common import *
 from config.common_lcd_services import *
-from datetime import datetime
 
 # Define
 GO_CONFIRM = True
@@ -59,12 +60,12 @@ def call_screen_confirm(p_idx):
             }
         ]
         # Update text
-        LOGGER.info('Enter call_screen_confirm function', )
+        LOGGER.debug('Enter call_screen_confirm function', )
         process_cmd_lcd(ROW_1, UPDATE_VALUE, 'XAC NHAN')
         process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[p_idx]['row_2'])
         process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[p_idx]['row_3'])
     except Exception as ex:
-        LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
+        LOGGER.warning('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
 
 # Date setting
@@ -135,12 +136,12 @@ def date_setting_process(button):
                     try:
                         hour_now = datetime.now().strftime("%H")
                         min_now = datetime.now().strftime("%M")
-                        LOGGER.info("date -s %s.%s.%s-%s:%s", str(date[0]), str(date[2]), str(date[4]), str(0), str(0))
+                        LOGGER.debug("date -s %s.%s.%s-%s:%s", str(date[0]), str(date[2]), str(date[4]), str(0), str(0))
                         os.system('date -s {year}.{month}.{day}-{hour}:{min}'.format(year=date[0], month=date[2],
                                                                                      day=date[4], hour=hour_now,
                                                                                      min=min_now))
                     except Exception as ex:
-                        LOGGER.error('Error at set datetime to os in os.system with message: %s', ex.message)
+                        LOGGER.warning('Error at set datetime to os in os.system with message: %s', ex.message)
                 get_default_value()
                 return GO_CONFIRM
             call_screen_confirm(confirm_idx)
@@ -148,7 +149,7 @@ def date_setting_process(button):
         if button is UP or button is DOWN:
             date_setting_screen(cursor_idx)
     except Exception as ex:
-        LOGGER.error('Error at call function in date_setting_process with message: %s', ex.message)
+        LOGGER.warning('Error at call function in date_setting_process with message: %s', ex.message)
 
 
 # Time setting
@@ -205,10 +206,10 @@ def time_setting_process(button):
             elif button == OK:
                 if confirm_idx == 0:
                     try:
-                        LOGGER.info("date -s %s:%s", str(time[0]), str(time[2]))
+                        LOGGER.debug("date -s %s:%s", str(time[0]), str(time[2]))
                         os.system('date -s {hour}:{minute}'.format(hour=time[0], minute=time[2]))
                     except Exception as ex:
-                        LOGGER.error('Error at call function in os.system in 113 with message: %s', ex.message)
+                        LOGGER.warning('Error at call function in os.system in 113 with message: %s', ex.message)
                 get_default_value()
                 return GO_CONFIRM
             call_screen_confirm(confirm_idx)
@@ -216,7 +217,7 @@ def time_setting_process(button):
         if button is UP or button is DOWN:
             time_setting_screen(cursor_idx)
     except Exception as ex:
-        LOGGER.error('Error at call function in time_setting_process with message: %s', ex.message)
+        LOGGER.warning('Error at call function in time_setting_process with message: %s', ex.message)
 
 
 def datetime_setting(button):
@@ -246,9 +247,9 @@ def datetime_setting(button):
             process_cmd_lcd(ROW_3, UPDATE_VALUE, time_setting_print[time_setting_screen_index]['row3'])
             process_cmd_lcd(ROW_4, UPDATE_VALUE, time_setting_print[time_setting_screen_index]['row4'])
             last_time_setting_screen_index = time_setting_screen_index
-        LOGGER.info('finish time_setting function, time_setting_screen_index: %s', str(time_setting_screen_index))
+        LOGGER.debug('finish time_setting function, time_setting_screen_index: %s', str(time_setting_screen_index))
     except Exception as ex:
-        LOGGER.error('time_setting function error: %s', ex.message)
+        LOGGER.warning('time_setting function error: %s', ex.message)
 
 
 def get_default_value():
