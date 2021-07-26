@@ -9,10 +9,12 @@ from control.switcher import *
 list_dict_ats = []
 list_dict_acm = []
 list_dict_mcc = []
+ONE_MINUTES = 60
+
 
 def call():
     try:
-        period = 60
+        period = ONE_MINUTES
         while True:
             if CLIENT.is_connected():
                 for key, value in shared_attributes.items():
@@ -22,7 +24,7 @@ def call():
                             classify_dict(response_classify_sa)
                 response_sorted = sort_list_dict(list_dict_mcc, list_dict_acm, list_dict_ats)
                 if len(response_sorted) > 0:
-                    LOGGER.info('Sort the list successful')
+                    LOGGER.debug('Sort the list successful')
                     for current_list in response_sorted:
                         current_list_value = get_array_value(current_list)
                         if len(current_list_value) > 0:
@@ -37,13 +39,13 @@ def call():
                                     cmd_sa[ID_ATS] = current_list_value
                                 cmd_sa_lock.release()
                             else:
-                                LOGGER.info('Get value of array failed')
+                                LOGGER.debug('Get value of array failed')
                     response_clear_list = clear_all_list(list_dict_mcc, list_dict_acm, list_dict_ats)
                 else:
-                    LOGGER.info('Sort the list failed')
+                    LOGGER.debug('Sort the list failed')
             time.sleep(period)
     except Exception as ex:
-        LOGGER.error('Error at call function in thread shared_attributes_thread with message: %s', ex.message)
+        LOGGER.warning('Error at call function in thread shared_attributes_thread with message: %s', ex.message)
 
 
 def classify_shared_attributes(key, value):
@@ -62,7 +64,7 @@ def classify_shared_attributes(key, value):
             if isinstance(number, int):
                 formatted = {TYPE: 'acm', ID_SHARED_ATTRIBUTES: number, VALUE: value}
     except Exception as ex:
-        LOGGER.error('Error at classify_shared_attributes function with message: %s', ex.message)
+        LOGGER.warning('Error at classify_shared_attributes function with message: %s', ex.message)
     return formatted
 
 
@@ -75,7 +77,7 @@ def sort_list_dict(list_dict_mcc, list_dict_acm, list_dict_ats):
         new_list_acm = sorted(list_dict_acm, key=itemgetter(ID_SHARED_ATTRIBUTES))
         new_list_ats = sorted(list_dict_ats, key=itemgetter(ID_SHARED_ATTRIBUTES))
     except Exception as ex:
-        LOGGER.error('Error at sort_list_dict function with message: %s', ex.message)
+        LOGGER.warning('Error at sort_list_dict function with message: %s', ex.message)
     return new_list_mcc, new_list_acm, new_list_ats
 
 
@@ -92,7 +94,7 @@ def classify_dict(response_classify):
             list_dict_acm.append(response_classify.copy())
             response = True
     except Exception as ex:
-        LOGGER.error('Error at classify_dict function with message: %s', ex.message)
+        LOGGER.warning('Error at classify_dict function with message: %s', ex.message)
     return response
 
 
@@ -102,7 +104,7 @@ def get_array_value(list_sorted):
         for x in list_sorted:
             list_value.append(x[VALUE])
     except Exception as ex:
-        LOGGER.error('Error at get_array_value function with message: %s', ex.message)
+        LOGGER.debug('Error at get_array_value function with message: %s', ex.message)
     return list_value
 
 
@@ -113,10 +115,10 @@ def clear_all_list(list_dict_mcc, list_dict_acm, list_dict_ats):
         del list_dict_acm[:]
         del list_dict_ats[:]
         if len(list_dict_mcc) == 0 and len(list_dict_acm) == 0 and len(list_dict_ats) == 0:
-            LOGGER.info('Clear all list successful')
+            LOGGER.debug('Clear all list successful')
             flag = True
         else:
-            LOGGER.info('Fail while clear all list')
+            LOGGER.debug('Fail while clear all list')
     except Exception as ex:
-        LOGGER.error('Error at clear_all_list function with message: %s', ex.message)
+        LOGGER.warning('Error at clear_all_list function with message: %s', ex.message)
     return flag
