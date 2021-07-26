@@ -1,3 +1,4 @@
+import glob
 import os
 import shutil
 import time
@@ -6,18 +7,25 @@ from datetime import datetime
 import requests
 
 from config import LOGGER, device_config
-from config.common_api import API_SEND_LOG
+from config.common_api import API_SEND_LOG, PREFIX, DOMAIN
 
 MIN_SIZE_FILE = 1468006.4
 MAX_SIZE_FILE = 1572864
 TIME_PERIOD = 30
 LOG_PATH = './app.log.1'
+DESTINATION = './log'
+URL_SEND_LOG = PREFIX + DOMAIN + API_SEND_LOG
 
 
 def call():
     period = TIME_PERIOD
     while True:
-
+        resp_get_size = get_size_log(LOG_PATH)
+        resp_copy_log = copy_log(resp_get_size[0], resp_get_size[2])
+        if resp_copy_log[0] and resp_copy_log[1]:
+            resp_write_body = write_body_send_log(resp_copy_log[2])
+            if len(resp_write_body[0]) > 0 and len(resp_write_body[1]) > 0:
+                resp_send_log = send_log_smartsite(resp_write_body[0], resp_write_body[1])
         time.sleep(period)
 
 
@@ -34,40 +42,50 @@ def get_size_log(path):
 
 
 def copy_log(result, source):
-    flag = False
+    copied = False
+    renamed = False
     destination = ''
     try:
         now = datetime.now()
-        file_name = now.strftime('%d/%m/%Y-%H:%M:%S') + '.txt'
-        destination = './log/' + file_name
-        if result and os.path.exists(source) and destination != '':
-            shutil.copyfile(source, destination)
-            flag = True
+        new_name = now.strftime('%d-%m-%Y-%H-%M-%S') + '.txt'
+        if result and os.path.exists(source):
+            shutil.copy(source, DESTINATION)
+            copied = True
+            LOGGER.debug('Copy log successful!')
+        if copied:
+            files = glob.glob(DESTINATION + '/*.log.1')
+            old_file = os.path.join(DESTINATION + '/' + os.path.basename(files[0]))
+            destination = os.path.join(DESTINATION + '/' + new_name)
+            os.rename(old_file, destination)
+            renamed = True
+        else:
+            LOGGER.debug('Fail while copy log to log folder')
     except Exception as ex:
         LOGGER.warning('Error at copy_log function with message: %s', ex.message)
-    return flag, destination
+    return copied, renamed, destination
 
 
-def write_body_send_log(flag, path_file):
+def write_body_send_log(path_file):
     body = {}
+    files = {}
     try:
-        if flag:
-            now = time.time()
-            gateway_id = device_config['device_id']
-            access_token = device_config['access_token']
-            body = {"gatewayId": gateway_id, "accessToken": access_token, "uploadFile": open(path_file, 'rb'), "createdDate": now}
-            LOGGER.info('Body send log to Smartsite: %s', body)
+        now = time.time()
+        gateway_id = device_config['device_id']
+        access_token = device_config['access_token']
+        files = {"uploadFile": open(path_file, 'rb')}
+        body = {"gatewayId": gateway_id, "accessToken": access_token, "createdDate": now}
+        LOGGER.info('Body send log to Smartsite: %s', body)
     except Exception as ex:
         LOGGER.warning('Error at write_body_send_log function with message: %s', ex.message)
-    return body
+    return body, files
 
 
-def send_log_smartsite(body):
+def send_log_smartsite(body, files):
     result = False
     try:
-        if isinstance(body, dict):
-            if len(body) > 0:
-                response = requests.post(API_SEND_LOG, json=body)
+        if isinstance(body, dict) and isinstance(files, dict):
+            if len(body) > 0 and len(files) > 0:
+                response = requests.post(URL_SEND_LOG, data=body, files=files)
                 if response.status_code == 200:
                     result = True
                     LOGGER.info('Send log to Smartsite successful!')
