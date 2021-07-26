@@ -41,7 +41,7 @@ def call_screen_rfid_setting(p_idx, isFirst):
         screen_idx = screens_info["rfid_setting"]
         pointer_idx = p_idx
     except Exception as ex:
-        LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
+        LOGGER.warning('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
 
 # Màn hình xác nhận
@@ -73,7 +73,7 @@ def call_screen_confirm(p_idx, isFirst):
         pointer_idx = p_idx
 
     except Exception as ex:
-        LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
+        LOGGER.warning('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
 
 def refresh_screen():
@@ -85,7 +85,7 @@ def refresh_screen():
         process_cmd_lcd(ROW_3, UPDATE_VALUE, '')
         process_cmd_lcd(ROW_4, UPDATE_VALUE, '')
     except Exception as ex:
-        LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
+        LOGGER.warning('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
 
 # Register func nay
@@ -98,7 +98,7 @@ def listen_key_code(keycode):
         else:
             return
     except Exception as ex:
-        LOGGER.error('Error at call function listen_key_code with message: %s', ex.message)
+        LOGGER.warning('Error at call function listen_key_code with message: %s', ex.message)
 
 
 def rfid_setting_listen_key(keycode):
@@ -135,7 +135,7 @@ def rfid_setting_listen_key(keycode):
         else:
             pass
     except Exception as ex:
-        LOGGER.error('Error at call function ats_setting_listen_key with message: %s', ex.message)
+        LOGGER.warning('Error at call function ats_setting_listen_key with message: %s', ex.message)
 
 
 def confirm_listen_key(keycode):
@@ -166,7 +166,7 @@ def confirm_listen_key(keycode):
         else:
             pass
     except Exception as ex:
-        LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
+        LOGGER.warning('Error at call function in confirm_listen_key with message: %s', ex.message)
 
 
 def reset_params():
@@ -176,7 +176,7 @@ def reset_params():
         screen_idx = 0
         pointer_idx = -1
     except Exception as ex:
-        LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
+        LOGGER.warning('Error at call function in confirm_listen_key with message: %s', ex.message)
 
 
 def update_to_file_json_setting(allow):
@@ -186,6 +186,6 @@ def update_to_file_json_setting(allow):
         data['setting_rfid_allow'] = allow
         write_to_json(data, data_setting_path)
         call_screen_rfid_setting(p_idx=0, isFirst=1)
-        LOGGER.info('Enter update_to_file_json_setting function, data: %s', str(data))
+        LOGGER.debug('Enter update_to_file_json_setting function, data: %s', str(data))
     except Exception as ex:
-        LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
+        LOGGER.warning('Error at call function in confirm_listen_key with message: %s', ex.message)
