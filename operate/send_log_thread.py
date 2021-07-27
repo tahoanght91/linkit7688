@@ -7,7 +7,7 @@ from datetime import datetime
 
 import requests
 
-from config import LOGGER, device_config
+from config import LOGGER, device_config, shared_attributes, default_data
 from config.common_api import API_SEND_LOG, PREFIX, DOMAIN
 from control.utils import read_to_json, write_to_json
 
@@ -25,6 +25,7 @@ def call():
     while True:
         time.sleep(period)
         existence = check_log_exist(LOG_PATH)
+
         if not existence:
             continue
 
@@ -39,9 +40,11 @@ def call():
             continue
 
         body = write_body_send_log(copied[2])
+        allow_upload = shared_attributes.get('mccUploadLog', default_data.mccUploadLog)
 
-        if len(body) > 0:
+        if len(body) > 0 and allow_upload:
             response = send_log_smartsite(body[0], body[-1])
+
             if not response:
                 continue
 
