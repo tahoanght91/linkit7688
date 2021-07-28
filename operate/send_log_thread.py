@@ -22,37 +22,36 @@ url_send_log = PREFIX + DOMAIN + API_SEND_LOG
 
 def call():
     period = TIME_PERIOD
-    while True:
-        time.sleep(period)
-        existence = check_log_exist(LOG_PATH)
-
-        if not existence:
-            continue
-
-        detected = detect_new_log(LAST_UPDATE_LOG_PATH, LOG_PATH)
-
-        if not detected[0]:
-            continue
-
-        copied = copy_log(LOG_PATH)
-
-        if not copied[0] and not copied[1]:
-            continue
-
-        body = write_body_send_log(copied[2])
-        allow_upload = shared_attributes.get('mccUploadLog', default_data.mccUploadLog)
-
-        if len(body) > 0 and allow_upload:
-            response = send_log_smartsite(body[0], body[-1])
-
-            if not response:
+    try:
+        while True:
+            time.sleep(period)
+            existence = check_log_exist(LOG_PATH)
+            if not existence:
                 continue
 
-            dct_log_file = compose_file(detected[1], SUCCESS)
+            detected = detect_new_log(LAST_UPDATE_LOG_PATH, LOG_PATH)
+            if not detected[0]:
+                continue
 
-            if len(dct_log_file) > 0:
-                write_to_json(dct_log_file, LAST_UPDATE_LOG_PATH)
-                deleted = delete_log(copied[2])
+            copied = copy_log(LOG_PATH)
+            if not copied[0] and not copied[1]:
+                continue
+
+            body = write_body_send_log(copied[2])
+            allow_upload = shared_attributes.get('mccUploadLog', default_data.mccUploadLog)
+            if len(body) > 0 and allow_upload:
+                response = send_log_smartsite(body[0], body[-1])
+                if not response:
+                    deleted = delete_log(copied[2])
+                    continue
+
+                dct_log_file = compose_file(detected[1], SUCCESS)
+                if len(dct_log_file) > 0:
+                    write_to_json(dct_log_file, LAST_UPDATE_LOG_PATH)
+
+            deleted = delete_log(copied[2])
+    except Exception as ex:
+        LOGGER.warning('Error at call function in send_log_thread with message: %s', ex.message)
 
 
 def check_log_exist(path):
