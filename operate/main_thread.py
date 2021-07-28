@@ -114,7 +114,9 @@ def call():
                     CLIENT.connect(callback=_connect_callback)
                     semaphore.acquire()
                 except Exception as ex:
-                    LOGGER.info('Fail to connect to server with message: %s', ex.message)
+                    LOGGER.warning('Fail to connect to server with message: %s', ex.message)
+            else:
+                LOGGER.info('Gateway is connected!')
 
             for i, thread in enumerate(thread_list):
                 if not thread.isAlive():

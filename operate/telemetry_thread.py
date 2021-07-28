@@ -18,8 +18,8 @@ def call():
                 set_alarm_state_to_dct(telemetry)
                 LOGGER.debug('Dictionary telemetries: %s', telemetries)
             else:
-                LOGGER.debug('Gateway is disconnect from Thingsboard!')
-                # CLIENT.disconnect()
+                LOGGER.debug('Gateway is disconnected!')
+                CLIENT.disconnect()
             time.sleep(period)
         except Exception as ex:
             LOGGER.warning('Error at call function in telemetry_thread with message: %s', ex.message)
