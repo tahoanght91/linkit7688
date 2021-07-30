@@ -411,6 +411,7 @@ def validate_log_level(sa_log_level):
                 level = logging.CRITICAL
             else:
                 level = sa_log_level
+            LOGGER.debug('Log level declared on server is: %s', str(level))
         else:
             LOGGER.warning('Log level get from server is not number')
     except Exception as ex:
