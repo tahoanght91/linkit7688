@@ -9,7 +9,7 @@ from config import *
 from config.default_data import data_dict
 from devices import clock
 from . import subscription_thread, monitor_thread, io_thread, telemetry_thread, update_attributes_thread, \
-    shared_attributes_thread, rfid_thread, led_thread, lcd_thread, update_t_acm_thread
+    shared_attributes_thread, rfid_thread, led_thread, lcd_thread, send_log_thread, update_t_acm_thread
 from .update_attributes_thread import format_client_attributes, get_list_key
 
 semaphore = threading.Semaphore(0)
@@ -97,7 +97,7 @@ def call():
         CLIENT.gw_set_server_side_rpc_request_handler(handler=subscription_thread._gw_rpc_callback)
 
         thread_list = [io_thread, update_attributes_thread, telemetry_thread, led_thread, shared_attributes_thread,
-                       rfid_thread, monitor_thread, lcd_thread, update_t_acm_thread]
+                       rfid_thread, monitor_thread, lcd_thread, send_log_thread, update_t_acm_thread]
 
         for i, thread in enumerate(thread_list):
             thread.name = thread.__name__
@@ -114,7 +114,9 @@ def call():
                     CLIENT.connect(callback=_connect_callback)
                     semaphore.acquire()
                 except Exception as ex:
-                    LOGGER.info('Fail to connect to server with message: %s', ex.message)
+                    LOGGER.warning('Fail to connect to server with message: %s', ex.message)
+            else:
+                LOGGER.info('Gateway is connected!')
 
             for i, thread in enumerate(thread_list):
                 if not thread.isAlive():
@@ -136,8 +138,8 @@ def call():
             if current_update_cycle > original_update_cycle and CLIENT.is_connected():
                 latest_version = -1
                 try:
-                    link_update = shared_attributes['mccLinkUpdate']
-                    link_version = shared_attributes['mccLinkVersion']
+                    link_update = shared_attributes.get('mccLinkUpdate', default_data.mccLinkUpdate)
+                    link_version = shared_attributes.get('mccLinkVersion', default_data.mccLinkVersion)
                     if link_version is not '':
                         response_get_version = requests.get(link_version)
                         if response_get_version.status_code == 200:
@@ -148,7 +150,8 @@ def call():
                         if latest_version > current_version:
                             LOGGER.info('Get new version: %s from server: %s', str(latest_version), link_version)
                             LOGGER.info('Update system, disconnect with server')
-                            command = 'cd /IoT && ./update.sh ' + link_update
+                            folder_name = link_update.split('/')[-1].split('.')[0]
+                            command = 'cd /IoT && ./update.sh ' + link_update + ' ' + folder_name
                             subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
                         else:
                             LOGGER.info('Current version is the latest')

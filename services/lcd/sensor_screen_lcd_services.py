@@ -12,7 +12,7 @@ def security_sensor_screen_1(_telemitries):
     from control.utils import read_to_json, write_to_json
 
     try:
-        LOGGER.info('List telemetries in sensor_screen: %s', _telemitries)
+        LOGGER.debug('List telemetries in sensor_screen: %s', _telemitries)
         mcc_smoke_tate = ''
         mcc_fire_state = ''
         mcc_flood_state = ''
@@ -22,19 +22,19 @@ def security_sensor_screen_1(_telemitries):
         if "mccSmokeState" in _telemitries.keys():
             mcc_smoke_tate = _telemitries.get("mccSmokeState")
         else:
-            LOGGER.error(
+            LOGGER.warning(
                 "operate > icd_thread > security_sensor_screen_1: key 'mccSmokeState' is not in Telemetries")
 
         if "mccFireState" in _telemitries.keys():
             mcc_fire_state = _telemitries.get("mccFireState")
         else:
-            LOGGER.error(
+            LOGGER.warning(
                 "operate > icd_thread > security_sensor_screen_1: key 'mccFireState' is not in Telemetries")
 
         if "mccFloodState" in _telemitries.keys():
             mcc_flood_state = _telemitries.get("mccFloodState")
         else:
-            LOGGER.error(
+            LOGGER.warning(
                 "operate > icd_thread > security_sensor_screen_1: key 'mccFloodState' is not in Telemetries")
 
         # In ra man hinh
@@ -58,7 +58,7 @@ def security_sensor_screen_1(_telemitries):
         # save to file
         write_to_json(all_row, last_cmd_lcd)
     except Exception as ex:
-        LOGGER.error('operate > icd_thread > default_security_sensor_screen: %s', ex.message)
+        LOGGER.warning('operate > icd_thread > default_security_sensor_screen: %s', ex.message)
 
 
 def security_sensor_screen_2(_telemitries):
@@ -75,19 +75,19 @@ def security_sensor_screen_2(_telemitries):
         if "mccFloodState" in _telemitries.keys():
             mcc_flood_state = _telemitries.get("mccFloodState")
         else:
-            LOGGER.error(
+            LOGGER.warning(
                 "operate > icd_thread > security_sensor_screen_2: key 'mccFloodState' is not in Telemetries")
 
         if "mccDoorButton" in _telemitries.keys():
             mcc_door_button = _telemitries.get("mccDoorButton")
         else:
-            LOGGER.error(
+            LOGGER.warning(
                 "operate > icd_thread > security_sensor_screen_2: key 'mccDoorButton' is not in Telemetries")
 
         if "mccMoveState" in _telemitries.keys():
             mcc_move_state = _telemitries.get("mccMoveState")
         else:
-            LOGGER.error(
+            LOGGER.warning(
                 "operate > icd_thread > security_sensor_screen_2: key 'mccMoveState' is not in Telemetries")
 
         # In ra man hinh
@@ -111,4 +111,4 @@ def security_sensor_screen_2(_telemitries):
         # save to file
         write_to_json(all_row, last_cmd_lcd)
     except Exception as ex:
-        LOGGER.error('operate > icd_thread > chance_security_sensor_screen: %s', ex.message)
+        LOGGER.warning('operate > icd_thread > chance_security_sensor_screen: %s', ex.message)

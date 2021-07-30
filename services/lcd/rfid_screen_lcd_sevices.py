@@ -17,7 +17,7 @@ def get_title_rfid(row1):
             process_cmd_lcd(ROW_1, UPDATE_VALUE, show)
             row1 = show
     except Exception as ex:
-        LOGGER.error('Error at get_title_rfid function with message: %s', ex.message)
+        LOGGER.warning('Error at get_title_rfid function with message: %s', ex.message)
     return row1
 
 
@@ -43,7 +43,7 @@ def get_info_rfid(row2, row3, row4):
         list_row.append(row4)
 
     except Exception as ex:
-        LOGGER.error('Error at get_info_rfid function with message: %s', ex.message)
+        LOGGER.warning('Error at get_info_rfid function with message: %s', ex.message)
     return list_row
 
 
@@ -66,4 +66,4 @@ def get_screen_rfid():
         all_row['row4'] = list_row[2]
         write_to_json(all_row, last_cmd_lcd)
     except Exception as ex:
-        LOGGER.error('Error at get_screen_rfid function with message: %s', ex.message)
+        LOGGER.warning('Error at get_screen_rfid function with message: %s', ex.message)

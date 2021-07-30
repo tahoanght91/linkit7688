@@ -43,7 +43,7 @@ def call_screen_ats_setting(p_idx, isFirst):
                 "row_4": '> T.gian cam 2'
             }
         ]
-        LOGGER.info('Enter call_screen_ats_setting function: %s', str(switcher[p_idx]))
+        LOGGER.debug('Enter call_screen_ats_setting function: %s', str(switcher[p_idx]))
         # Update text
         if isFirst == 1:
             refresh_screen()
@@ -58,7 +58,7 @@ def call_screen_ats_setting(p_idx, isFirst):
         screen_idx = screens_info["ats_setting"]
         pointer_idx = p_idx
     except Exception as ex:
-        LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
+        LOGGER.warning('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
 
 # Màn hình chọn khi chọn cấm chạy máy phát
@@ -76,7 +76,7 @@ def call_screen_deactivate_mode(p_idx, isFirst):
                 "row_3": '> Khong cam chay'
             }
         ]
-        LOGGER.info('Enter call_screen_deactivate_mode function: %s', str(switcher[p_idx]))
+        LOGGER.debug('Enter call_screen_deactivate_mode function: %s', str(switcher[p_idx]))
         # Update text
         if isFirst == 1:
             refresh_screen()
@@ -89,7 +89,7 @@ def call_screen_deactivate_mode(p_idx, isFirst):
 
         pointer_idx = p_idx
     except Exception as ex:
-        LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
+        LOGGER.warning('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
 
 # Màn hình xác nhận
@@ -107,7 +107,7 @@ def call_screen_confirm(p_idx, isFirst):
                 "row_3": '> Khong'
             }
         ]
-        LOGGER.info('Enter call_screen_confirm function: %s', str(switcher[p_idx]))
+        LOGGER.debug('Enter call_screen_confirm function: %s', str(switcher[p_idx]))
         # Update text
         if isFirst == 1:
             refresh_screen()
@@ -121,7 +121,7 @@ def call_screen_confirm(p_idx, isFirst):
         pointer_idx = p_idx
 
     except Exception as ex:
-        LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
+        LOGGER.warning('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
 
 # Màn hình thiet lap thoi gian cam
@@ -146,13 +146,13 @@ def call_screen_inactivate_time(p_idx, isStart, isFirst):
 
         pointer_idx = p_idx
     except Exception as ex:
-        LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
+        LOGGER.warning('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
 
 def call_screen_with_screen_id(screen_id):
     global screen_idx, pointer_idx, time
     try:
-        LOGGER.info('Enter call_screen_with_screen_id function, screen_id: %s', str(screen_id))
+        LOGGER.debug('Enter call_screen_with_screen_id function, screen_id: %s', str(screen_id))
         screen_idx = screen_id
         if screen_id == screens_info["ats_setting"]:
             call_screen_ats_setting(p_idx=0, isFirst=1)
@@ -168,7 +168,7 @@ def call_screen_with_screen_id(screen_id):
             "confirmInactiveStartTime"] or screen_id == screens_info["confirmInactiveEndTime"]:
             call_screen_confirm(p_idx=0, isFirst=1)
     except Exception as ex:
-        LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
+        LOGGER.warning('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
 
 def refresh_screen():
@@ -180,14 +180,14 @@ def refresh_screen():
         process_cmd_lcd(ROW_3, UPDATE_VALUE, '')
         process_cmd_lcd(ROW_4, UPDATE_VALUE, '')
     except Exception as ex:
-        LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
+        LOGGER.warning('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
 
 # Register func nay
 def listen_key_code(keycode):
     global screen_idx
     try:
-        LOGGER.info('Enter listen_key_code function, screen_idx: %s, keycode: %s', str(screen_idx), str(keycode))
+        LOGGER.debug('Enter listen_key_code function, screen_idx: %s, keycode: %s', str(screen_idx), str(keycode))
         if screen_idx == screens_info["ats_setting"]:
             ats_setting_listen_key(keycode)
         elif screen_idx == screens_info["atsGenDeactivateMode"]:
@@ -202,14 +202,14 @@ def listen_key_code(keycode):
         else:
             return
     except Exception as ex:
-        LOGGER.error('Error at call function listen_key_code with message: %s', ex.message)
+        LOGGER.warning('Error at call function listen_key_code with message: %s', ex.message)
 
 
 def ats_setting_listen_key(keycode):
     global screen_idx, pointer_idx
     try:
         p_idx = pointer_idx
-        LOGGER.info('Enter ats_setting_listen_key function, keycode: %s', str(keycode))
+        LOGGER.debug('Enter ats_setting_listen_key function, keycode: %s', str(keycode))
         if keycode == BUTTON_34_EVENT_UP:
             # down
             if p_idx == 2:
@@ -236,14 +236,14 @@ def ats_setting_listen_key(keycode):
         else:
             pass
     except Exception as ex:
-        LOGGER.error('Error at call function ats_setting_listen_key with message: %s', ex.message)
+        LOGGER.warning('Error at call function ats_setting_listen_key with message: %s', ex.message)
 
 
 def ats_deactivate_mode_listen_key(keycode):
     global screen_idx, pointer_idx
     try:
         p_idx = pointer_idx
-        LOGGER.info('Enter ats_deactivate_mode_listen_key function, keycode: %s', str(keycode))
+        LOGGER.debug('Enter ats_deactivate_mode_listen_key function, keycode: %s', str(keycode))
         if keycode == BUTTON_34_EVENT_UP:
             # down
             if p_idx == 1:
@@ -272,14 +272,14 @@ def ats_deactivate_mode_listen_key(keycode):
         else:
             pass
     except Exception as ex:
-        LOGGER.error('Error at call function ats_deactivate_mode_listen_key with message: %s', ex.message)
+        LOGGER.warning('Error at call function ats_deactivate_mode_listen_key with message: %s', ex.message)
 
 
 def ats_inactive_time_listen_key(keycode, isStart):
     global time, pointer_idx
     try:
         p_idx = pointer_idx
-        LOGGER.info('Enter ats_inactive_time_listen_key function, isStart: %s', str(isStart))
+        LOGGER.debug('Enter ats_inactive_time_listen_key function, isStart: %s', str(isStart))
 
         if keycode == BUTTON_34_EVENT_UP:
             # down
@@ -331,14 +331,14 @@ def ats_inactive_time_listen_key(keycode, isStart):
 
                 return
     except Exception as ex:
-        LOGGER.error('Error at call function ats_inactive_time_listen_key with message: %s', ex.message)
+        LOGGER.warning('Error at call function ats_inactive_time_listen_key with message: %s', ex.message)
 
 
 def confirm_listen_key(keycode):
     global pointer_idx, ats_body_setting
     try:
         p_idx = pointer_idx
-        LOGGER.info('Enter confirm_listen_key function, keycode: %s', str(keycode))
+        LOGGER.debug('Enter confirm_listen_key function, keycode: %s', str(keycode))
         if keycode == BUTTON_34_EVENT_UP:
             # down
             if p_idx == 1:
@@ -367,7 +367,7 @@ def confirm_listen_key(keycode):
         else:
             pass
     except Exception as ex:
-        LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
+        LOGGER.warning('Error at call function in confirm_listen_key with message: %s', ex.message)
 
 
 def get_string_time():
@@ -394,14 +394,14 @@ def reset_params():
         pointer_idx = -1
         time = [-1, -1]
     except Exception as ex:
-        LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
+        LOGGER.warning('Error at call function in confirm_listen_key with message: %s', ex.message)
 
 
 # ats_body_setting = {"atsGenDeactivateMode": 0, "atsGenInactiveStartTime": 0, "atsGenInactiveEndTime": 0}
 def call_api_to_smart_site(body):
     from operate.lcd_thread import write_body_send_shared_attributes, send_shared_attributes
     try:
-        LOGGER.info('Enter confirm_listen_key function')
+        LOGGER.debug('Enter confirm_listen_key function')
         if screen_idx == screens_info["confirmDeactivateMode"]:
             json_body = write_body_send_shared_attributes("atsGenDeactivateMode", body["atsGenDeactivateMode"])
         elif screen_idx == screens_info["confirmInactiveStartTime"]:
@@ -414,7 +414,7 @@ def call_api_to_smart_site(body):
 
         call_back_ats_setting()
     except Exception as ex:
-        LOGGER.error('Error at call function in confirm_listen_key with message: %s', ex.message)
+        LOGGER.warning('Error at call function in confirm_listen_key with message: %s', ex.message)
 
 
 def call_back_ats_setting():
@@ -429,6 +429,5 @@ def call_back_ats_setting():
         elif screen_idx == screens_info["confirmInactiveEndTime"]:
             ats_body_setting["atsGenInactiveEndTime"] = 0
             call_screen_ats_setting(p_idx=2, isFirst=1)
-
     except Exception as ex:
-        LOGGER.error('Error at call function in call_back_ats_setting with message: %s', ex.message)
+        LOGGER.warning('Error at call function in call_back_ats_setting with message: %s', ex.message)

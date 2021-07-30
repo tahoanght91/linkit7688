@@ -13,7 +13,7 @@ def get_title_ats(row1):
             process_cmd_lcd(ROW_1, UPDATE_VALUE, show)
             row1 = show
     except Exception as ex:
-        LOGGER.error('Error at get_title_ats function with message: %s', ex.message)
+        LOGGER.warning('Error at get_title_ats function with message: %s', ex.message)
     return row1
 
 
@@ -40,7 +40,7 @@ def get_info_ats(row2_old, row3_old, row4_old):
         list_row.append(row4_old)
         return list_row
     except Exception as ex:
-        LOGGER.error('Error at get_info_ats function with message: %s', ex.message)
+        LOGGER.warning('Error at get_info_ats function with message: %s', ex.message)
 
 
 def get_detail_screen1_ats():
@@ -64,9 +64,9 @@ def get_detail_screen1_ats():
             all_row['row4'] = row4
 
         write_to_json(all_row, last_cmd_lcd)
-        LOGGER.info('ATS SCREEN : %s', 2)
+        LOGGER.debug('ATS SCREEN : %s', 2)
     except Exception as ex:
-        LOGGER.error('Error at get_detail_ats function with message: %s', ex.message)
+        LOGGER.warning('Error at get_detail_ats function with message: %s', ex.message)
 
 
 def get_detail_screen2_ats():
@@ -90,10 +90,10 @@ def get_detail_screen2_ats():
         if all_row['row4'] != row4:
             process_cmd_lcd(ROW_4, UPDATE_VALUE, str(row4))
             all_row['row4'] = row4
-        LOGGER.info('ATS SCREEN : %s', 3)
+        LOGGER.debug('ATS SCREEN : %s', 3)
         write_to_json(all_row, last_cmd_lcd)
     except Exception as ex:
-        LOGGER.error('Error at get_detail_screen2_ats function with message: %s', ex.message)
+        LOGGER.warning('Error at get_detail_screen2_ats function with message: %s', ex.message)
 
 
 def get_detail_screen3_ats():
@@ -120,10 +120,10 @@ def get_detail_screen3_ats():
         if all_row['row4'] != row4:
             process_cmd_lcd(ROW_4, UPDATE_VALUE, str(row4))
             all_row['row4'] = row4
-        LOGGER.info('ATS SCREEN : %s', 4)
+        LOGGER.debug('ATS SCREEN : %s', 4)
         write_to_json(all_row, last_cmd_lcd)
     except Exception as ex:
-        LOGGER.error('Error at get_detail_screen3_ats function with message: %s', ex.message)
+        LOGGER.warning('Error at get_detail_screen3_ats function with message: %s', ex.message)
 
 
 def get_detail_screen4_ats():
@@ -149,10 +149,10 @@ def get_detail_screen4_ats():
         if all_row['row4'] != row4:
             process_cmd_lcd(ROW_4, UPDATE_VALUE, str(row4))
             all_row['row4'] = row4
-        LOGGER.info('ATS SCREEN : %s', 5)
+        LOGGER.debug('ATS SCREEN : %s', 5)
         write_to_json(all_row, last_cmd_lcd)
     except Exception as ex:
-        LOGGER.error('Error at get_detail_screen4_ats function with message: %s', ex.message)
+        LOGGER.warning('Error at get_detail_screen4_ats function with message: %s', ex.message)
 
 
 def get_detail_screen5_ats():
@@ -178,10 +178,10 @@ def get_detail_screen5_ats():
         if all_row['row4'] != row4:
             process_cmd_lcd(ROW_4, UPDATE_VALUE, str(row4))
             all_row['row4'] = row4
-        LOGGER.info('ATS SCREEN : %s', 6)
+        LOGGER.debug('ATS SCREEN : %s', 6)
         write_to_json(all_row, last_cmd_lcd)
     except Exception as ex:
-        LOGGER.error('Error at get_detail_screen5_ats function with message: %s', ex.message)
+        LOGGER.warning('Error at get_detail_screen5_ats function with message: %s', ex.message)
 
 
 def get_screen_ats():
@@ -202,7 +202,7 @@ def get_screen_ats():
         all_row['row4'] = list_row[2]
         write_to_json(all_row, last_cmd_lcd)
     except Exception as ex:
-        LOGGER.error('Error at get_screen_ats function with message: %s', ex.message)
+        LOGGER.warning('Error at get_screen_ats function with message: %s', ex.message)
 
 
 def convert_to_string_default(key_tel, type_check):
@@ -225,4 +225,4 @@ def convert_to_string_default(key_tel, type_check):
         else:
             return '0'
     except Exception as ex:
-        LOGGER.error('Error at convert_to_string_default function with message: %s', ex.message)
+        LOGGER.warning('Error at convert_to_string_default function with message: %s', ex.message)

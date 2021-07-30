@@ -22,7 +22,7 @@ def extract(byte_data):
     atsVgenThresholdState = bytes_to_int(byte_data[50])
     atsVacThresholdState = bytes_to_int(byte_data[51])
 
-    #telemetry
+    # telemetry
     atsVacFreq = bytes_to_int(byte_data[13:15], byteorder=BYTE_ORDER)
     atsVgenFreq = bytes_to_int(byte_data[15:17], byteorder=BYTE_ORDER)
     atsVloadFreq = bytes_to_int(byte_data[17:19], byteorder=BYTE_ORDER)
@@ -69,14 +69,14 @@ def extract(byte_data):
     _read_telemetry('atsGenState', atsGenState)
     _read_telemetry('atsState', atsState)
     _read_telemetry('atsConnect', atsConnect)
+    _read_telemetry('atsErrorState', atsErrorState)
+    _read_telemetry('atsMode', atsMode)
 
-
-    #client attributes
+    # client attributes
     _read_attribute('atsVacP1State', atsVacP1State)
     _read_attribute('atsVacP2State', atsVacP2State)
     _read_attribute('atsVacP3State', atsVacP3State)
     _read_attribute('atsVgenP1State', atsVgenP1State)
     _read_attribute('atsVgenP2State', atsVgenP2State)
     _read_attribute('atsVgenP3State', atsVgenP3State)
-    _read_attribute('atsErrorState', atsErrorState)
-    _read_attribute('atsMode', atsMode)
+

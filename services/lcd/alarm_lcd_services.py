@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from config import *
 from config.common import *
 from config.common_lcd_services import *
@@ -18,11 +19,11 @@ def check_alarm():
         if row1 != BAN_TIN_CANH_BAO:
             process_cmd_lcd(ROW_1, UPDATE_VALUE, BAN_TIN_CANH_BAO)
             row1 = BAN_TIN_CANH_BAO
-            LOGGER.info('Log in row 1 success: %s', row1)
+            LOGGER.debug('Log in row 1 success: %s', row1)
             save_to_file(row1, ROW_1)
         get_alarm(row2, row3, dct_alarm)
     except Exception as ex:
-        LOGGER.error('Error at call function in check_alarm with message: %s', ex.message)
+        LOGGER.warning('Error at call function in check_alarm with message: %s', ex.message)
 
 
 def save_to_file(str_saved, number):
@@ -35,16 +36,15 @@ def save_to_file(str_saved, number):
         elif number == ROW_3:
             all_row['row3'] = str_saved
         write_to_json(all_row, last_cmd_alarm)
-        LOGGER.info('Saved file last_cmd_alarm')
-
+        LOGGER.debug('Saved file last_cmd_alarm')
     except Exception as ex:
-        LOGGER.error('Error at call function in save_to_file with message: %s', ex.message)
+        LOGGER.warning('Error at call function in save_to_file with message: %s', ex.message)
 
 
 def get_alarm(row2, row3, tel_lcd):
     from control import process_cmd_lcd
     try:
-        LOGGER.info('List dtc_alarm: %s', tel_lcd)
+        LOGGER.debug('List dtc_alarm: %s', tel_lcd)
         check_card = check_rfid()
         old_text = row2
         check = False
@@ -87,24 +87,24 @@ def get_alarm(row2, row3, tel_lcd):
                 check = True
                 if row2 != 'CB Quet The!!':
                     row2 = create_for_each('CB Quet The!!', row3)
-            LOGGER.info('check is: %s', str(check))
+            LOGGER.debug('check is: %s', str(check))
             if row2 == old_text and (not check or row2 == 'An Toan!' or row2 == ''):
                 process_cmd_lcd(ROW_2, UPDATE_VALUE, 'An Toan!')
                 delete_row(ROW_3)
         else:
             if row2 == old_text and (row2 == 'An Toan!' or row2 == ''):
-                LOGGER.info('check is if emty dct_alarm')
+                LOGGER.debug('check is if emty dct_alarm')
                 process_cmd_lcd(ROW_2, UPDATE_VALUE, 'An Toan!')
                 delete_row(ROW_3)
     except Exception as ex:
-        LOGGER.error('Error at call function in get_alarm with message: %s', ex.message)
+        LOGGER.warning('Error at call function in get_alarm with message: %s', ex.message)
 
 
 def check_rfid():
     try:
         if CB_RFID in shared_attributes:
             list_card = shared_attributes['mccListRfid']
-            LOGGER.info('Check list check_rfid: %s', list_card)
+            LOGGER.debug('Check list check_rfid: %s', list_card)
             if len(list_card) > 0:
                 if KEY_RFID in client_attributes:
                     LOGGER.info('Key_card is in list of attributes')
@@ -115,7 +115,7 @@ def check_rfid():
                             LOGGER.info('Key_card is in list of card return True')
                             return True
     except Exception as ex:
-        LOGGER.error('Error at call function in check_rfid with message: %s', ex.message)
+        LOGGER.warning('Error at call function in check_rfid with message: %s', ex.message)
     return False
 
 
@@ -127,11 +127,11 @@ def get_time_alarm(row3):
         dt_string = now.strftime("%d/%m/%Y %H:%M")
         if dt_string != row3:
             process_cmd_lcd(ROW_3, UPDATE_VALUE, str(dt_string))
-            LOGGER.info('TIME TO ALARM: %s', str(dt_string))
+            LOGGER.debug('TIME TO ALARM: %s', str(dt_string))
             row = dt_string
             save_to_file(row, ROW_3)
     except Exception as ex:
-        LOGGER.error('Error at call function in get_time_alarm with message: %s', ex.message)
+        LOGGER.warning('Error at call function in get_time_alarm with message: %s', ex.message)
 
 
 def create_for_each(string, row3):
@@ -140,10 +140,10 @@ def create_for_each(string, row3):
     try:
         process_cmd_lcd(ROW_2, UPDATE_VALUE, string)
         get_time_alarm(row3)
-        LOGGER.info('ALarm in line 2 -3 in create_for_each : %s', string)
+        LOGGER.debug('ALarm in line 2 -3 in create_for_each : %s', string)
         save_to_file(string, ROW_2)
     except Exception as ex:
-        LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
+        LOGGER.warning('Error at call function in menu_thread with message: %s', ex.message)
     return string
 
 
@@ -152,9 +152,9 @@ def write_to_json(body, file_url):
         json_last_trace = json.dumps(body)
         with io.open(file_url, 'wb') as last_trace_file:
             last_trace_file.write(json_last_trace)
-        LOGGER.info('Command information just send: %s', body)
+        LOGGER.debug('Command information just send: %s', body)
     except Exception as ex:
-        LOGGER.error('Error at write_to_json function with message: %s', ex.message)
+        LOGGER.warning('Error at write_to_json function with message: %s', ex.message)
 
 
 def read_to_json(file_url):
@@ -162,7 +162,7 @@ def read_to_json(file_url):
         json_file = open(file_url, )
         json_info = json.load(json_file)
     except Exception as ex:
-        LOGGER.error('Error at call function in read_to_json with message: %s', ex.message)
+        LOGGER.warning('Error at call function in read_to_json with message: %s', ex.message)
     return json_info
 
 
@@ -173,7 +173,7 @@ def delete_row(row_number):
         process_cmd_lcd(row_number, UPDATE_VALUE, CHAR_SPACE)
         save_to_file('', row_number)
     except Exception as ex:
-        LOGGER.error('Error at call function in delete_row4 with message: %s', ex.message)
+        LOGGER.warning('Error at call function in delete_row4 with message: %s', ex.message)
 
 
 def remove_json_file_alarm():
@@ -184,7 +184,7 @@ def remove_json_file_alarm():
         file_json['row3'] = ""
         write_to_json(file_json, last_cmd_alarm)
     except Exception as ex:
-        LOGGER.error('Error at remove_json_file_alarm function with message: %s', ex.message)
+        LOGGER.warning('Error at remove_json_file_alarm function with message: %s', ex.message)
 # def create_cmd_multi(str_show, row):
 #     return str(str_show) + SALT_DOLLAR_SIGN + str(row) + END_CMD
 

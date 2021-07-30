@@ -20,6 +20,7 @@ GET_SATE_ACM_SELF_PROPELLED = 'getStateSelfPropelledAcm'
 SET_ACM_SELF_PROPELLED = 'setControlSelfPropelledAcm'
 
 # ATS
+# get state ats
 GET_STATE_ATS = 'getStateAts'
 # auto ats
 SET_ATS_AUTO = 'setAutoAts'
@@ -29,6 +30,8 @@ SET_ATS_MAIN = 'setControlAtsMain'
 SET_ATS_GEN = 'setControlAtsGen'
 # manual off
 SET_ATS_OFF = 'setControlAtsOff'
+# get state gen ats
+GET_STATE_GEN_ATS = 'getStateAtsGen'
 
 # module MCC
 METHOD_DOOR_MCC = 'setControlDoor'
@@ -46,7 +49,10 @@ METHOD_DR9_MCC = 'setControlDr9'
 METHOD_DR10_MCC = 'setControlDr10'
 METHOD_VMB_MCC = 'setControlVmb'
 METHOD_CAM_MCC = 'setControlCam'
-METHOD_DR13_MCC = 'setControlDr13'
+METHOD_VSENS_MCC = 'setControlVsens'
 GET_STATE_MCC_DOOR = 'getStateMccDoor'
 GET_STATE_MCC_LAMP = 'getStateMccLamp'
 GET_STATE_MCC_BELL = 'getStateMccBell'
+GET_STATE_MCC_VMB = 'getStateMccVmb'
+GET_STATE_MCC_VSENS = 'getStateMccVsens'
+GET_STATE_MCC_CAM = 'getStateMccCam'

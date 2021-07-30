@@ -1,4 +1,5 @@
 from config import LOGGER
+from config.common_command import *
 
 
 def get_target_by_command_mcc(command):
@@ -6,6 +7,14 @@ def get_target_by_command_mcc(command):
     try:
         if 'DoorMcc' in command:
             target = 13
+        elif 'BellMcc' in command:
+            target = 12
+        elif 'VmbMcc' in command:
+            target = 15
+        elif 'CamMcc' in command:
+            target = 14
+        elif 'VsensMcc' in command:
+            target = 16
         elif 'LampMcc' in command:
             target = 1
         elif 'DoutReversed1Mcc' in command:
@@ -28,12 +37,6 @@ def get_target_by_command_mcc(command):
             target = 10
         elif 'DoutReversed10Mcc' in command:
             target = 11
-        elif 'BellMcc' in command:
-            target = 12
-        elif 'DoutReversed11Mcc' in command:
-            target = 15
-        elif 'DoutReversed12Mcc' in command:
-            target = 14
         elif 'DoutReversed13Mcc' in command:
             target = 0
         else:
@@ -68,8 +71,10 @@ def get_target_by_command_acm(command):
 def get_target_by_command_ats(command):
     target = -1
     try:
-        if 'MainAts' in command or 'AutoAts' in command or 'GenAts' in command or 'Ats' in command:
+        if COMMAND_ATS_MAIN_ON in command or COMMAND_ATS_AUTO_ON in command or COMMAND_ATS_GEN_ON in command or COMMAND_ATS_OFF in command:
             target = 0
+        elif COMMAND_ATS_STOP_GEN in command or COMMAND_ATS_START_GEN in command:
+            target = 1
         else:
             LOGGER.error('Command is not a string: %s', str(command))
     except Exception as ex:

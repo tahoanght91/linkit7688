@@ -1,4 +1,4 @@
-from config import LOGGER, telemetries
+from config import LOGGER
 from config.common import UPDATE_VALUE
 from config.common_lcd_services import *
 
@@ -15,7 +15,6 @@ def show_temp_condition(_telemetries):
         if all_row['row1'] != title:
             process_cmd_lcd(ROW_1, UPDATE_VALUE, title)
             all_row['row1'] = title
-        LOGGER.info('Check Telemetries: %s', _telemetries)
 
         if 'acmAirc1RunState' and 'acmAirc2RunState' in _telemetries:
             temp1 = _telemetries['acmAirc1RunState']
@@ -41,7 +40,7 @@ def show_temp_condition(_telemetries):
                     process_cmd_lcd(ROW_2, UPDATE_VALUE, cond4)
                     all_row['row2'] = cond4
         else:
-            LOGGER.error("services > lcd > air_screen_lcd_services ")
+            LOGGER.warning("services > lcd > air_screen_lcd_services ")
 
         fan1 = 'Quat: Bat'
         fan2 = 'Quat: Tat'
@@ -73,4 +72,43 @@ def show_temp_condition(_telemetries):
         write_to_json(all_row, last_cmd_lcd)
 
     except Exception as ex:
-        LOGGER.error('Error at call function in menu_thread with message: %s', ex.message)
+        LOGGER.warning('Error at call function in menu_thread with message: %s', ex.message)
+
+
+def show_time_condition(_telemetries):
+    from control import process_cmd_lcd
+    from control.utils import read_to_json, write_to_json
+
+    try:
+        all_row = read_to_json(last_cmd_lcd)
+        if 'acmRunTimeAirc1' in _telemetries:
+            time1 = _telemetries['acmRunTimeAirc1']
+            cond1 = 'T.gian DH1: ' + str(time1) + 'h'
+            if all_row['row2'] != cond1:
+                process_cmd_lcd(ROW_2, UPDATE_VALUE, cond1)
+                all_row['row2'] = cond1
+        else:
+            LOGGER.warning("Time condition 1 is not exist in telemetries")
+
+        if 'acmRunTimeAirc2' in _telemetries:
+            time2 = _telemetries['acmRunTimeAirc2']
+            cond2 = 'T.gian DH2: ' + str(time2) + 'h'
+            if all_row['row3'] != cond2:
+                process_cmd_lcd(ROW_3, UPDATE_VALUE, cond2)
+                all_row['row3'] = cond2
+        else:
+            LOGGER.warning("Time condition 2 is not exist in telemetries")
+
+        if 'acmRunTimeFan' in _telemetries:
+            time3 = _telemetries['acmRunTimeFan']
+            fan = 'T.gian Quat: ' + str(time3) + 'h'
+            if all_row['row4'] != fan:
+                process_cmd_lcd(ROW_4, UPDATE_VALUE, fan)
+                all_row['row4'] = fan
+        else:
+            LOGGER.warning("Time fan is not exist in telemetries")
+        # save to file
+        write_to_json(all_row, last_cmd_lcd)
+
+    except Exception as ex:
+        LOGGER.warning('Error at call function in menu_thread with message: %s', ex.message)

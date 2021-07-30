@@ -1,6 +1,4 @@
 import struct
-import time
-from datetime import datetime
 
 from config import *
 from config.common import *
@@ -47,6 +45,8 @@ def get_state_ats(method):
     try:
         if method == GET_STATE_ATS:
             value = client_attributes.get('atsMode', default_data.atsMode)
+        elif method == GET_STATE_GEN_ATS:
+            value = 0  # TODO: need key for get state of generate
     except Exception as ex:
         LOGGER.error('Error at get_state_ats function with message: %s', ex.message)
     return value
@@ -64,7 +64,7 @@ def get_state_acm(method):
         elif method == GET_STATE_ACM_FAN:
             value = telemetries.get('acmFanRunState', default_data.acmFanRunState)
         elif method == GET_SATE_ACM_SELF_PROPELLED:
-            value = 0 # TODO: change client attributes of lamp
+            value = 0
     except Exception as ex:
         LOGGER.error('Error at get_state_acm function with message: %s', ex.message)
     return value
@@ -77,6 +77,12 @@ def get_state_mcc(method):
             value = telemetries.get('mccDoorState', default_data.mccDoorState)
         elif method == GET_STATE_MCC_BELL:
             value = telemetries.get('mccBellState', default_data.mccBellState)
+        elif method == GET_STATE_MCC_VMB:
+            value = telemetries.get('mccPwRouterState', default_data.mccPwRouterState)
+        elif method == GET_STATE_MCC_VSENS:
+            value = telemetries.get('mccPwSensState', default_data.mccPwSensState)
+        elif method == GET_STATE_MCC_CAM:
+            value = telemetries.get('mccPwCamState', default_data.mccPwCamState)
     except Exception as ex:
         LOGGER.error('Error at get_state_mcc function with message: %s', ex.message)
     return value
@@ -389,11 +395,25 @@ def read_to_json(file_url):
     return json_info
 
 
-def test_lcd_speed():
-    dt = datetime.now()
-    compose_command_lcd(1, UPDATE_VALUE, str(dt.day) + "/" + str(dt.month) + "/" + str(dt.year))
-    while True:
-        dt = datetime.now()
-        compose_command_lcd(2, UPDATE_VALUE, str(dt.hour) + ":" + str(dt.minute) + ":" + str(dt.second)
-                            + "." + str(dt.microsecond / 100000))
-        time.sleep(0.5)
+def validate_log_level(sa_log_level):
+    level = -1
+    try:
+        if isinstance(sa_log_level, int):
+            if sa_log_level == 1:
+                level = logging.DEBUG
+            elif sa_log_level == 2:
+                level = logging.INFO
+            elif sa_log_level == 3:
+                level = logging.WARNING
+            elif sa_log_level == 4:
+                level = logging.ERROR
+            elif sa_log_level == 5:
+                level = logging.CRITICAL
+            else:
+                level = sa_log_level
+            LOGGER.debug('Log level declared on server is: %s', str(level))
+        else:
+            LOGGER.warning('Log level get from server is not number')
+    except Exception as ex:
+        LOGGER.warning('Error at validate_log_level function with message: %s', ex.message)
+    return level

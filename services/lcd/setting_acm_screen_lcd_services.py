@@ -110,6 +110,8 @@ GO_CONFIRM = True
 """---------------------------------------------------------------------------------------------------------------------
                                                 Global variable
    ------------------------------------------------------------------------------------------------------------------"""
+
+
 first_access_flag = True
 screen_level = 0
 index_pointer = 0
@@ -126,6 +128,8 @@ goto_confirm_screen_flag = False
 """---------------------------------------------------------------------------------------------------------------------
                                                 Internal function
    ------------------------------------------------------------------------------------------------------------------"""
+
+
 def acm_setting_print_static_lcd(screen_level_type, screen_index):
     from control import process_cmd_lcd
     global temp_value, set_temp, screen_level, acm_setting_screen_l
@@ -243,6 +247,8 @@ def acm_setting_set_default_value():
 """---------------------------------------------------------------------------------------------------------------------
                                                  External function
    ------------------------------------------------------------------------------------------------------------------"""
+
+
 def acm_setting(button):
     global screen_level, index_pointer, confirm_ok, setting_level, set_temp, goto_confirm_screen_flag
 
@@ -261,4 +267,4 @@ def acm_setting(button):
 
         return ret
     except Exception as ex:
-        LOGGER.error('Error at call function in acm_setting with message: %s', ex.message)
+        LOGGER.warning('Error at call function in acm_setting with message: %s', ex.message)

@@ -36,7 +36,7 @@ def call_screen_confirm(p_idx):
         process_cmd_lcd(ROW_2, UPDATE_VALUE, switcher[p_idx]['row_2'])
         process_cmd_lcd(ROW_3, UPDATE_VALUE, switcher[p_idx]['row_3'])
     except Exception as ex:
-        LOGGER.error('Error at call function in screen_assign_ip_address with message: %s', ex.message)
+        LOGGER.warning('Error at call function in screen_assign_ip_address with message: %s', ex.message)
 
 
 def process_confirm(button):
@@ -124,7 +124,7 @@ def info_setting_process(button):
 
         return ret
     except Exception as ex:
-        LOGGER.error('Error at call function in info_setting_process with message: %s', ex.message)
+        LOGGER.warning('Error at call function in info_setting_process with message: %s', ex.message)
 
 
 def get_default_value():

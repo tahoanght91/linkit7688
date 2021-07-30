@@ -20,9 +20,8 @@ def call():
         file_setting = read_to_json(lcd_setting_data_file)
         if CLIENT.is_connected() and file_setting['setting_rfid_allow'] == 1:
             if 'mccListRfid' in shared_attributes:
-                LOGGER.info('List rfid existence in shared attributes')
                 list_card = shared_attributes['mccListRfid']
-                LOGGER.info('Get rfid card list successful from thingsboard: %s', list_card)
+                LOGGER.debug('Get rfid card list successful from thingsboard: %s', list_card)
                 if len(list_card) > 0:
                     if KEY_RFID in client_attributes:
                         rfid_card = client_attributes.get(KEY_RFID)
@@ -51,6 +50,8 @@ def call():
                     LOGGER.debug('Length of card is 0 or less than 0')
             else:
                 LOGGER.debug('Not found list of rfid card in shared attributes')
+        else:
+            LOGGER.debug('Gateway is disconnect from Thingsboard or allow read rfid is: 1')
         time.sleep(period)
 
 
@@ -59,13 +60,13 @@ def compare_rfid_card(rfid_card, list_card):
     try:
         set_temp = set(list_card)
         if rfid_card in set_temp:
-            LOGGER.info('Card %s is in the rfid card list', rfid_card)
+            LOGGER.debug('Card %s is in the rfid card list', rfid_card)
             result = 1
         else:
-            LOGGER.info('Card %s is not in the rfid card list', rfid_card)
+            LOGGER.debug('Card %s is not in the rfid card list', rfid_card)
             result = 0
     except Exception as ex:
-        LOGGER.error('Error at compare_rfid_card function with message: %s', ex.message)
+        LOGGER.warning('Error at compare_rfid_card function with message: %s', ex.message)
     return result
 
 
@@ -76,7 +77,7 @@ def write_log(rfid_card, status):
         LOGGER.info('Content of log: %s', body)
         return body
     except Exception as ex:
-        LOGGER.info('Error at write_log function with message: %s', ex.message)
+        LOGGER.warning('Error at write_log function with message: %s', ex.message)
 
 
 def send_log(log):
@@ -84,11 +85,11 @@ def send_log(log):
     try:
         response = requests.post(url=url_send_log_rfid, json=log)
         if response.status_code == 200:
-            LOGGER.info('Send log request to Smartsite successful!')
+            LOGGER.debug('Send log request to Smartsite successful!')
             result = True
         else:
-            LOGGER.info('Fail while send log request to Smartsite!')
+            LOGGER.debug('Fail while send log request to Smartsite!')
         return result
     except Exception as ex:
-        LOGGER.info('Error at write_log function with message: %s', ex.message)
+        LOGGER.warning('Error at write_log function with message: %s', ex.message)
 
